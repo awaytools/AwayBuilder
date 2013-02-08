@@ -1,2 +1,2 @@
-awaybuilder-core
-================
+Away Builder
+===========

@@ -2,10 +2,15 @@
 bin/
 bin-debug/
 bin-release/
+out/
 
-# Other files and folders
+# Project property files
+.actionScriptProperties
+.flexProperties
+.flexLibProperties
 .settings/
-
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+.idea/
+.project
+.DS_Store
+*.iml
+output.txt
