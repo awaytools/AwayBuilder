@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	showStatusBar="false" title="Progress"
+	maximizable="false" minimizable="false" resizable="false"
+	closing="closingHandler(event)">
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="5" paddingRight="7" paddingBottom="5" paddingLeft="7"
+			verticalAlign="middle" horizontalAlign="center"/>
+	</s:layout>
+	
+	<mx:ProgressBar id="progressBar" mode="manual" label="Loading Document..."/>
+	
+	<fx:Script>
+	<![CDATA[
+		protected var progressChanged:Boolean = false;
+		
+		private var _progress:Number = 0;
+
+		public function get progress():Number
+		{
+			return this._progress;
+		}
+
+		public function set progress(value:Number):void
+		{
+			if(this._progress == value)
+			{
+				return;
+			}
+			this._progress = value;
+			this.progressChanged = true;
+			this.invalidateProperties();
+		}
+		
+		override protected function commitProperties():void
+		{
+			if(this.progressChanged)
+			{
+				this.progressBar.setProgress(this._progress, 1.0);
+				this.progressChanged = false;
+			}
+			super.commitProperties();
+		}
+
+		protected function closingHandler(event:Event):void
+		{
+			if(this._progress < 1)
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		}
+		
+	]]>
+	</fx:Script>
+</s:Window>

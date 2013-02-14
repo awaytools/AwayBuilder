@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:awaybuilder="library://ns.logic.ly/flex"
+	title="Application Settings"
+	resizable="false" minimizable="false" maximizable="false"
+	minWidth="720" minHeight="480"  xmlns:components="awaybuilder.view.components.*">
+	
+	<!-- if you change the title, be sure to change it in the window-detection
+		part of the ShowSettingsWindowCommand too. -->
+	
+	<components:ApplicationSettingsForm id="form" top="0" right="0" bottom="0" left="0"/>
+</s:Window>

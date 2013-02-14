@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<s:Form top="15" right="20" bottom="{controlBar.height}" left="15">
+		<s:RichEditableText width="100%" editable="false" selectable="false" multiline="true">The following settings apply to the current document only. To set default values for all new documents, visit <s:a id="documentDefaultsLink" linkNormalFormat="{{color: 0x40a9ff, textDecoration: 'underline'}}"
+			linkHoverFormat="{{color: 0xffffff, textDecoration: 'underline'}}">Document Defaults</s:a> in the Application Settings window.</s:RichEditableText>
+		<s:FormItem label="Whatever">
+			<s:TextInput id="whateverInput"/>
+		</s:FormItem>
+	</s:Form>
+	
+	<s:SkinnableContainer id="controlBar" right="0" bottom="0" left="0">
+		<mx:Spacer width="100%"/>
+		<s:Button id="closeButton" label="Close" click="closeButton_clickHandler(event)"/>	
+	</s:SkinnableContainer>
+	
+	<fx:Script>
+	<![CDATA[
+		protected function closeButton_clickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent(new Event(Event.COMPLETE));
+		}
+	]]>
+	</fx:Script>
+</s:Group>

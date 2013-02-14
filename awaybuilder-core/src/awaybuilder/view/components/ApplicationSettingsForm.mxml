@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:awaybuilder="library://ns.logic.ly/flex"  xmlns:components="awaybuilder.view.components.*">
+	
+	<fx:Metadata>
+		[Event(name="resetDefaultSettings",type="awaybuilder.view.components.events.ApplicationSettingsFormEvent")]
+	</fx:Metadata>
+	
+	<s:Group top="0" right="0" bottom="{controlBar.height}" left="0">
+		<s:layout>
+			<s:HorizontalLayout gap="0"/>
+		</s:layout>
+		
+		<s:List id="navigation" width="200" height="100%"
+			dataProvider="{pages}" selectedIndex="0"
+			change="pages.selectedIndex = navigation.selectedIndex"/>
+		
+		<mx:ViewStack id="pages" width="100%" height="100%"
+			change="navigation.selectedIndex = pages.selectedIndex">
+			<s:NavigatorContent label="Editor">
+				<s:Scroller top="0" right="0" bottom="0" left="0">				
+					<components:EditingSurfaceSettingsForm top="0" right="0" bottom="0" left="0"/>
+				</s:Scroller>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Document Defaults" id="documentDefaultsContent">
+				<s:Scroller top="0" right="0" bottom="0" left="0">				
+					<components:DocumentDefaultsSettingsForm top="0" right="0" bottom="0" left="0"/>
+				</s:Scroller>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+	</s:Group>
+	
+	<s:SkinnableContainer id="controlBar" right="0" bottom="0" left="0">
+		<s:Button id="resetButton" label="Reset Defaults" click="resetButton_clickHandler(event)"/>
+		<mx:Spacer width="100%"/>
+		<s:Button id="saveButton" label="Close" click="saveButton_clickHandler(event)"/>	
+	</s:SkinnableContainer>
+	
+	<fx:Script>
+	<![CDATA[
+		import awaybuilder.view.components.events.ApplicationSettingsFormEvent;
+		
+		protected function saveButton_clickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		protected function resetButton_clickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent(new ApplicationSettingsFormEvent(ApplicationSettingsFormEvent.RESET_DEFAULT_SETTINGS));
+		}
+	]]>
+	</fx:Script>
+</s:Group>

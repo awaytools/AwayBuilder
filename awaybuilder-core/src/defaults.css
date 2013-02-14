@@ -1,0 +1,233 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace skins "awaybuilder.view.skins.*";
+@namespace awaybuilder "awaybuilder.view.components.*";
+@namespace renderers "awaybuilder.view.components.renderers.*";
+@namespace propertyEditors "awaybuilder.view.components.propertyEditors.*";
+
+awaybuilder|CoreEditor
+{	
+	backgroundColor: #dbdbdb; 
+	color: #1d1d1c;
+	chromeColor: #dbdbdb;
+}
+
+/*** editor ***/
+
+awaybuilder|EditingSurface
+{
+	skinClass: ClassReference("awaybuilder.view.skins.EditingSurfaceSkin");
+	backgroundColor: #ff00ff;
+	backgroundAlpha: 0;
+	chromeColor: #0079DB;
+}
+
+awaybuilder|EditorGrid
+{
+	gridColor: #cbcbcb;
+}
+
+/*** tool/status bars ***/
+
+awaybuilder|EditToolBar
+{
+	chromeColor: #1d1d1c;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolBarSkin");
+}
+
+awaybuilder|EditStatusBar
+{
+	chromeColor: #1d1d1c;
+	color: #dbdbdb;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolBarSkin");
+}
+
+.toolBar
+{
+	chromeColor: #1d1d1c;
+	color: #dbdbdb;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolBarSkin");
+}
+
+awaybuilder|IObjectPropertyEditor
+{
+	focusSkin: ClassReference("mx.skins.ProgrammaticSkin");
+}
+
+propertyEditors|LabelPropertyEditor s|TextArea
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ResizingTextAreaSkin");
+}
+
+/*** toolbar ***/
+
+mx|VRule
+{
+	strokeWidth: 2;
+	strokeColor: #70706d;
+	shadowColor: #383836;
+}
+
+.toolbarButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+}
+
+s|ToggleButton.toolbarButton
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarToggleButtonSkin");
+}
+
+s|RadioButton.toolbarButton
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ToolBarRadioButtonSkin");
+}
+
+.toolbarButton#newDocumentButton
+{
+	icon: Embed("assets/images/page_white_star.png");
+}
+
+.toolbarButton#openDocumentButton
+{
+	icon: Embed("assets/images/folder_page_white.png");
+}
+
+.toolbarButton#saveDocumentButton
+{
+	icon: Embed("assets/images/disk.png");
+}
+
+.toolbarButton#printDocumentButton
+{
+	icon: Embed("assets/images/printer.png");
+}
+
+.toolbarButton#undoButton
+{
+	icon: Embed("assets/images/arrow_undo.png");
+}
+
+.toolbarButton#redoButton
+{
+	icon: Embed("assets/images/arrow_redo.png");
+}
+
+.toolbarButton#zoomInButton
+{
+	icon: Embed("assets/images/zoom_in.png");
+}
+
+.toolbarButton#zoomOutButton
+{
+	icon: Embed("assets/images/zoom_out.png");
+}
+
+.toolbarButton#helpButton
+{
+	icon: Embed("assets/images/help.png");
+}
+
+.toolbarButton#applicationSettingsButton
+{
+	icon: Embed("assets/images/cog.png");
+}
+
+.toolbarButton#documentSettingsButton
+{
+	icon: Embed("assets/images/page_white_gear.png");
+}
+
+.toolbarButton#reportBugButton
+{
+	icon: Embed("assets/images/bug.png");
+}
+
+.toolbarButton#cutButton
+{
+	icon: Embed("assets/images/cut.png");
+}
+
+.toolbarButton#copyButton
+{
+	icon: Embed("assets/images/page_copy.png");
+}
+
+.toolbarButton#pasteButton
+{
+	icon: Embed("assets/images/paste_plain.png");
+}
+
+.toolbarButton#deleteButton
+{
+	icon: Embed("assets/images/delete.png");
+}
+
+.toolbarButton#rotateClockwiseButton
+{
+	icon: Embed("assets/images/shape_rotate_clockwise.png");
+}
+
+.toolbarButton#rotateCounterClockwiseButton
+{
+	icon: Embed("assets/images/shape_rotate_anticlockwise.png");
+}
+
+.toolbarButton#selectionButton
+{
+	icon: Embed("assets/images/cursor.png");
+}
+
+.toolbarButton#panButton
+{
+	icon: Embed("assets/images/hand.png");
+}
+
+.toolbarButton#resetButton
+{
+	icon: Embed("assets/images/control_start_blue.png");
+}
+
+.toolbarButton#advanceButton
+{
+	icon: Embed("assets/images/control_fastforward_blue.png");
+}
+
+.toolbarButton#playPauseButton
+{
+	icon: Embed("assets/images/control_play_blue.png");
+	selectedIcon: Embed("assets/images/control_pause_blue.png");
+}
+
+awaybuilder|ApplicationSettingsForm s|List
+{
+	borderVisible: false;
+}
+
+awaybuilder|SamplePicker s|List
+{
+	skinClass: ClassReference("awaybuilder.view.skins.SamplesListSkin");
+	borderVisible: false;
+	contentBackgroundColor: #111110;
+	contentBackgroundAlpha: 0.45;
+	color: #dbdbdb;
+}
+
+awaybuilder|SampleItemRenderer #titleLabel
+{
+	fontWeight: bold;
+	fontSize: 14;
+	color: #40a9ff;
+}
+
+awaybuilder|CollapsiblePanel
+{
+	chromeColor: #1d1d1c;
+	color: #dbdbdb;
+	fontSize: 11;
+	skinClass: ClassReference("awaybuilder.view.skins.CollapsiblePanelSkin");
+	backgroundColor:#1d1d1c;
+}
+
+

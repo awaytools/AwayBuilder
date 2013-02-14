@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<s:Form top="15" right="20" bottom="15" left="20">
+		<s:FormHeading label="Document Defaults"/>
+		<s:RichEditableText width="100%" editable="false" selectable="false" multiline="true">The following settings may be changed on a per-document basis in <s:a id="documentSettingsLink" linkNormalFormat="{{color: 0x40a9ff, textDecoration: 'underline'}}"
+			linkHoverFormat="{{color: 0xffffff, textDecoration: 'underline'}}">Document Settings</s:a>. Below, you may set the default values for a new document.</s:RichEditableText>
+		<s:FormItem label="Whatever">
+			<s:TextInput id="whateverInput"/>
+		</s:FormItem>
+	</s:Form>
+</s:Group>

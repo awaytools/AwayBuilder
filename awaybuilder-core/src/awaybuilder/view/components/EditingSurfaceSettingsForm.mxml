@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:astra="http://www.yahoo.com/astra/2006/mxml">
+	
+	<s:Form top="15" right="20" bottom="15" left="20">
+		
+		<s:FormHeading label="Grid"/>
+		<s:FormItem label="Grid Size (in pixels)">
+			<s:NumericStepper id="gridSizeStepper" minimum="1" maximum="1000" stepSize="1"/>
+		</s:FormItem>
+		<s:FormItem label="Snap to Grid">
+			<s:CheckBox id="snapToGridCheck"/>
+		</s:FormItem>
+		<s:FormItem label="Show Grid">
+			<s:CheckBox id="showGridCheck"/>
+		</s:FormItem>
+		
+	</s:Form>
+</s:Group>

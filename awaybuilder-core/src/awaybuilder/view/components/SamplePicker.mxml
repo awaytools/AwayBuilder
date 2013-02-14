@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="500" minHeight="375">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[Event(name="cancel",type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<s:Group top="10" right="15" bottom="{10 + controlBar.height}" left="15">
+		<s:layout>
+			<s:VerticalLayout gap="15"
+				paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0"/>
+		</s:layout>
+		
+		<s:RichEditableText editable="false" width="100%" paragraphSpaceAfter="8" lineHeight="16">
+			<s:p>Welcome. To get started, try opening one of the following sample documents, or create something completely new!</s:p>
+		</s:RichEditableText>
+		
+		<s:List id="samplesList" width="100%" height="100%" labelField="name"/>
+	</s:Group>
+	
+	<s:SkinnableContainer id="controlBar" right="0" bottom="0" left="0">
+		<s:CheckBox id="showAtStartupCheck" label="Display at Startup"/>
+		<mx:Spacer width="100%"/>
+		<s:Button id="closeButton" label="Close" click="closeButton_clickHandler(event)"/>
+	</s:SkinnableContainer>
+		
+	<fx:Script>
+	<![CDATA[
+		import mx.collections.IList;
+		
+		protected var samplesChanged:Boolean = false;
+		
+		private var _samples:IList;
+		
+		public function get samples():IList
+		{
+			return this._samples;
+		}
+		
+		public function set samples(value:IList):void
+		{
+			this._samples = value;
+			this.samplesChanged = true;
+			this.invalidateProperties();
+		}
+		
+		override protected function commitProperties():void
+		{
+			if(this.samplesChanged)
+			{
+				this.samplesList.dataProvider = this._samples;
+				this.samplesChanged = false;
+			}
+			super.commitProperties();
+		}
+		
+		protected function closeButton_clickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent(new Event(Event.CANCEL));
+		}
+		
+	]]>
+	</fx:Script>
+</s:Group>
