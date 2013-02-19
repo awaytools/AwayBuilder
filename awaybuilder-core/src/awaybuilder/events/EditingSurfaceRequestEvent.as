@@ -14,8 +14,15 @@ package awaybuilder.events
 		
 		public static const PAN_TO_CENTER:String = "panToCenter";
 		
-		public static const SWITCH_TO_PAN_TOOL:String = "switchToPanTool";
-		public static const SWITCH_TO_SELECTION_TOOL:String = "switchToSelectionTool";
+//		public static const SWITCH_TO_PAN_TOOL:String = "switchToPanTool";
+//		public static const SWITCH_TO_SELECTION_TOOL:String = "switchToSelectionTool";
+		
+		public static const SWITCH_CAMERA_TO_FREE:String = "switchCameraToFree";
+		public static const SWITCH_CAMERA_TO_TARGET:String = "switchCameraToTarget";
+		
+		public static const SWITCH_TRANSFORM_TRANSLATE:String = "switchTransformToTranslate";
+		public static const SWITCH_TRANSFORM_ROTATE:String = "switchTransformToRotate";
+		public static const SWITCH_TRANSFORM_SCALE:String = "switchTransformToScale";
 		
 		public static const SELECT_ALL:String = "selectAll";
 		public static const SELECT_NONE:String = "selectNone";

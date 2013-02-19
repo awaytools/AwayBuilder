@@ -16,8 +16,14 @@ package awaybuilder
 	import awaybuilder.controller.SaveDocumentSuccessCommand;
 	import awaybuilder.controller.StartupCommand;
 	import awaybuilder.controller.WebLinkCommand;
+	import awaybuilder.controller.scene.SwitchFreeCameraModeCommand;
+	import awaybuilder.controller.scene.SwitchTargetCameraModeCommand;
+	import awaybuilder.controller.scene.SwitchTransformRotateModeCommand;
+	import awaybuilder.controller.scene.SwitchTransformScaleModeCommand;
+	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
 	import awaybuilder.events.ClipboardEvent;
 	import awaybuilder.events.DocumentEvent;
+	import awaybuilder.events.EditingSurfaceRequestEvent;
 	import awaybuilder.events.ReadDocumentDataEvent;
 	import awaybuilder.events.ReadDocumentDataResultEvent;
 	import awaybuilder.events.SaveDocumentEvent;
@@ -77,6 +83,13 @@ package awaybuilder
 			this.commandMap.mapEvent(SaveDocumentEvent.SAVE_DOCUMENT_AS, SaveDocumentCommand);
 			this.commandMap.mapEvent(SaveDocumentEvent.SAVE_DOCUMENT_SUCCESS, SaveDocumentSuccessCommand);
 			this.commandMap.mapEvent(SaveDocumentEvent.SAVE_DOCUMENT_FAIL, SaveDocumentFailCommand);
+			
+			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE, SwitchFreeCameraModeCommand);
+			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, SwitchTargetCameraModeCommand);
+			
+			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE, SwitchTransformRotateModeCommand);
+			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE, SwitchTransformScaleModeCommand);
+			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE, SwitchTransformTranslateModeCommand);
 			
 			this.commandMap.mapEvent(DocumentEvent.PRINT_DOCUMENT, PrintDocumentCommand);
 			

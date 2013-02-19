@@ -35,8 +35,12 @@ package awaybuilder.view.mediators
 		override public function onRegister():void
 		{	
 			this.eventMap.mapListener(this.eventDispatcher, EditorStateChangeEvent.SELECTION_CHANGE, eventDispatcher_selectionChangeHandler);
-			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TO_PAN_TOOL, eventDispatcher_switchToPanToolHandler);
-			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TO_SELECTION_TOOL, eventDispatcher_switchToSelectionToolHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetHandler);
+			
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchToRotateHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchToTranslateHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchToScaleHandler);
 			
 			this.eventMap.mapListener(this.toolBar, ToolBarEvent.NEW_DOCUMENT, toolBar_newDocumentHandler);
 			this.eventMap.mapListener(this.toolBar, ToolBarEvent.OPEN_DOCUMENT, toolBar_openDocumentHandler);
@@ -59,18 +63,39 @@ package awaybuilder.view.mediators
 			this.eventMap.mapListener(this.toolBar, ToolBarEvent.ROTATE_SELECTION_CLOCKWISE, toolBar_rotateSelectionClockwiseHandler);
 			this.eventMap.mapListener(this.toolBar, ToolBarEvent.ROTATE_SELECTION_COUNTER_CLOCKWISE, toolBar_rotateSelectionCounterClockwiseHandler);
 			
-			this.eventMap.mapListener(this.toolBar, ToolBarEvent.SWITCH_MOUSE_TO_PAN, toolBar_switchMouseToPanHandler);
-			this.eventMap.mapListener(this.toolBar, ToolBarEvent.SWITCH_MOUSE_TO_SELECT, toolBar_switchMouseToSelectHandler);
+			this.eventMap.mapListener(this.toolBar, ToolBarEvent.SWITCH_CAMERA_TO_FREE, toolBar_switchMouseToFreeHandler);
+			this.eventMap.mapListener(this.toolBar, ToolBarEvent.SWITCH_CAMERA_TO_TARGET, toolBar_switchMouseToTargetHandler);
+			
+			this.eventMap.mapListener(this.toolBar, ToolBarEvent.TRANSFORM_TRANSLATE, toolBar_switchTranslateHandler);
+			this.eventMap.mapListener(this.toolBar, ToolBarEvent.TRANSFORM_SCALE, toolBar_switchScaleHandler);
+			this.eventMap.mapListener(this.toolBar, ToolBarEvent.TRANSFORM_ROTATE, toolBar_switchRotateHandler);
 		}
 		
-		private function eventDispatcher_switchToPanToolHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToScaleHandler(event:EditingSurfaceRequestEvent):void
 		{
-			this.toolBar.panButton.selected = true;
+			
+			this.toolBar.scaleButton.selected = true;
 		}
 		
-		private function eventDispatcher_switchToSelectionToolHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToRotateHandler(event:EditingSurfaceRequestEvent):void
 		{
-			this.toolBar.selectionButton.selected = true;
+			this.toolBar.rotateButton.selected = true;
+		}
+		
+		private function eventDispatcher_switchToTranslateHandler(event:EditingSurfaceRequestEvent):void
+		{
+			
+			this.toolBar.translateButton.selected = true;
+		}
+		
+		private function eventDispatcher_switchToFreeHandler(event:EditingSurfaceRequestEvent):void
+		{
+			this.toolBar.freeCameraButton.selected = true;
+		}
+		
+		private function eventDispatcher_switchToTargetHandler(event:EditingSurfaceRequestEvent):void
+		{
+			this.toolBar.targetCameraButton.selected = true;
 		}
 		
 		private function eventDispatcher_selectionChangeHandler(event:EditorStateChangeEvent):void
@@ -108,14 +133,30 @@ package awaybuilder.view.mediators
 			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.ROTATE_SELECTION_COUNTER_CLOCKWISE));
 		}
 		
-		private function toolBar_switchMouseToPanHandler(event:ToolBarEvent):void
+		private function toolBar_switchMouseToFreeHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TO_PAN_TOOL));
+			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE));
 		}
 		
-		private function toolBar_switchMouseToSelectHandler(event:ToolBarEvent):void
+		private function toolBar_switchMouseToTargetHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TO_SELECTION_TOOL));
+			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET));
+		}
+		
+		
+		private function toolBar_switchTranslateHandler(event:ToolBarEvent):void
+		{
+			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE));
+		}
+		
+		private function toolBar_switchScaleHandler(event:ToolBarEvent):void
+		{
+			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE));
+		}
+		
+		private function toolBar_switchRotateHandler(event:ToolBarEvent):void
+		{
+			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE));
 		}
 		
 		private function toolBar_newDocumentHandler(event:ToolBarEvent):void

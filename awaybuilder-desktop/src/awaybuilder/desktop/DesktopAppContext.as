@@ -26,7 +26,7 @@ package awaybuilder.desktop
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
 	import awaybuilder.desktop.view.components.MessageBox;
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
-	import awaybuilder.desktop.view.components.SamplesWindow;
+	import awaybuilder.desktop.view.components.WelcomeWindow;
 	import awaybuilder.desktop.view.mediators.AboutWindowMediator;
 	import awaybuilder.desktop.view.mediators.ApplicationSettingsWindowMediator;
 	import awaybuilder.desktop.view.mediators.DesktopAppMediator;
@@ -35,7 +35,7 @@ package awaybuilder.desktop
 	import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
 	import awaybuilder.desktop.view.mediators.MessageBoxMediator;
 	import awaybuilder.desktop.view.mediators.ObjectPropertiesWindowMediator;
-	import awaybuilder.desktop.view.mediators.SamplesWindowMediator;
+	import awaybuilder.desktop.view.mediators.WelcomeWindowMediator;
 	import awaybuilder.events.DocumentEvent;
 	import awaybuilder.events.DocumentLoadEvent;
 	import awaybuilder.events.DocumentRequestEvent;
@@ -94,7 +94,7 @@ package awaybuilder.desktop
 //			this.mediatorMap.mapView(DocumentSettingsWindow, DocumentSettingsWindowMediator);
 //			this.mediatorMap.mapView(ApplicationSettingsWindow, ApplicationSettingsWindowMediator);
 //			this.mediatorMap.mapView(EditedDocumentWarningWindow, EditedDocumentWarningWindowMediator);
-			this.mediatorMap.mapView(SamplesWindow, SamplesWindowMediator);
+			this.mediatorMap.mapView(WelcomeWindow, WelcomeWindowMediator);
 //			this.mediatorMap.mapView(MessageBox, MessageBoxMediator);
 			this.mediatorMap.mapView(AboutWindow, AboutWindowMediator);
 			this.mediatorMap.mapView(DocumentLoadProgressWindow, DocumentLoadProgressWindowMediator);

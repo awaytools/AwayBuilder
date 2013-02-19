@@ -75,8 +75,8 @@ package awaybuilder.desktop.view.mediators
 		private static const MENU_DOCUMENT_SETTINGS:String = "documentSettings";
 		
 		//tools
-		private static const MENU_SELECT_TOOL:String = "selectTool";
-		private static const MENU_PAN_TOOL:String = "panTool";
+		private static const MENU_FREE_CAMERA:String = "freeCamera";
+		private static const MENU_TARGET_CAMERA:String = "targetCamera";
 		private static const MENU_SHOW_OBJECT_PICKER:String = "showObjectPicker";
 		
 		//view
@@ -158,8 +158,8 @@ package awaybuilder.desktop.view.mediators
 			this.eventMap.mapListener(this.eventDispatcher, SettingsEvent.SNAP_TO_GRID_CHANGE, eventDispatcher_snapToGridChangeHandler);
 			this.eventMap.mapListener(this.eventDispatcher, SettingsEvent.SHOW_OBJECT_PICKER_CHANGE, eventDispatcher_showObjectPickerChangeHandler);
 			
-			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TO_SELECTION_TOOL, eventDispatcher_switchToSelectionToolHandler);
-			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TO_PAN_TOOL, eventDispatcher_switchToPanToolHandler);			
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeCameraHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetCameraHandler);			
 			
 			this.eventMap.mapListener(this.app, Event.CLOSE, awaybuilder_closeHandler);
 			this.eventMap.mapListener(this.app, Event.CLOSING, awaybuilder_closingHandler);
@@ -270,13 +270,13 @@ package awaybuilder.desktop.view.mediators
 			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
 		}
 		
-		private function eventDispatcher_switchToSelectionToolHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToFreeCameraHandler(event:EditingSurfaceRequestEvent):void
 		{
 			this._selectionToolItem.checked = true;
 			this._panToolItem.checked = false;
 		}
 		
-		private function eventDispatcher_switchToPanToolHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToTargetCameraHandler(event:EditingSurfaceRequestEvent):void
 		{
 			this._panToolItem.checked = true;
 			this._selectionToolItem.checked = false;
@@ -483,14 +483,14 @@ package awaybuilder.desktop.view.mediators
 					break;
 				}
 				//tools
-				case MENU_SELECT_TOOL:
+				case MENU_FREE_CAMERA:
 				{
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TO_SELECTION_TOOL));
+					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE));
 					break;
 				}
-				case MENU_PAN_TOOL:
+				case MENU_TARGET_CAMERA:
 				{
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TO_PAN_TOOL));
+					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET));
 					break;
 				}
 				case MENU_SHOW_OBJECT_PICKER:
@@ -735,9 +735,9 @@ package awaybuilder.desktop.view.mediators
 			
 			this._toolsMenuItem = new NativeMenuItem("Tools");
 			var toolsMenu:NativeMenu = new NativeMenu();
-			this._selectionToolItem = this.createMenuItem("Selection Tool", MENU_SELECT_TOOL, toolsMenu, -1, "s", []);
+			this._selectionToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "f", []);
 			this._selectionToolItem.checked = true;
-			this._panToolItem = this.createMenuItem("Pan Tool", MENU_PAN_TOOL, toolsMenu, -1, "p", []);
+			this._panToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "t", []);
 			this._panToolItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
 			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);

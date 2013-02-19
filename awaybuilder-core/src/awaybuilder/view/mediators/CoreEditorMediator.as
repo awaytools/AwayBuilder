@@ -20,7 +20,7 @@ package awaybuilder.view.mediators
 		override public function onRegister():void
 		{
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
-			Scene3DManager.init( view.stage, 0);
+			Scene3DManager.init( view.viewPort );
 		}
 		
 		protected function scene_readyHandler(event:Event):void

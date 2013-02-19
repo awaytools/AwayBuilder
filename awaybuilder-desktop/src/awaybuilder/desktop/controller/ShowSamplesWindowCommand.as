@@ -2,7 +2,7 @@ package awaybuilder.desktop.controller
 {
 	import flash.display.Screen;
 	
-	import awaybuilder.desktop.view.components.SamplesWindow;
+	import awaybuilder.desktop.view.components.WelcomeWindow;
 	import awaybuilder.model.IEditorModel;
 	
 	import org.robotlegs.mvcs.Command;
@@ -19,7 +19,7 @@ package awaybuilder.desktop.controller
 		
 		override public function execute():void
 		{
-			var window:SamplesWindow = new SamplesWindow();
+			var window:WelcomeWindow = new WelcomeWindow();
 			this.mediatorMap.createMediator(window);
 			
 			window.open();

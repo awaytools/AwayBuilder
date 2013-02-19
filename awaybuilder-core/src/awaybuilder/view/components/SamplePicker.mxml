@@ -18,7 +18,7 @@
 		</s:layout>
 		
 		<s:RichEditableText editable="false" width="100%" paragraphSpaceAfter="8" lineHeight="16">
-			<s:p>Welcome. To get started, try opening one of the following sample documents, or create something completely new!</s:p>
+			<s:p>To get started, try opening one of the following sample documents, or create something completely new!</s:p>
 		</s:RichEditableText>
 		
 		<s:List id="samplesList" width="100%" height="100%" labelField="name"/>

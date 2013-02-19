@@ -20,8 +20,15 @@ package awaybuilder.view.components.events
 		public static const HOME:String = "home";
 		public static const HELP:String = "help";
 		
-		public static const SWITCH_MOUSE_TO_PAN:String = "switchMouseToPan";
-		public static const SWITCH_MOUSE_TO_SELECT:String = "switchMouseToSelect";
+//		public static const SWITCH_MOUSE_TO_PAN:String = "switchMouseToPan";
+//		public static const SWITCH_MOUSE_TO_SELECT:String = "switchMouseToSelect";
+		
+		public static const SWITCH_CAMERA_TO_FREE:String = "switchCameraToFree";
+		public static const SWITCH_CAMERA_TO_TARGET:String = "switchCameraToTarget";
+		
+		public static const TRANSFORM_TRANSLATE:String = "transformTranslate";
+		public static const TRANSFORM_SCALE:String = "transformScale";
+		public static const TRANSFORM_ROTATE:String = "transformRotate";
 		
 		public static const CLIPBOARD_CUT:String = "clipboardCut";
 		public static const CLIPBOARD_COPY:String = "clipboardCopy";

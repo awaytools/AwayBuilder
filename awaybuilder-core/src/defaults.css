@@ -174,14 +174,26 @@ s|RadioButton.toolbarButton
 	icon: Embed("assets/images/shape_rotate_anticlockwise.png");
 }
 
-.toolbarButton#selectionButton
+.toolbarButton#targetCameraButton
 {
 	icon: Embed("assets/images/cursor.png");
 }
 
-.toolbarButton#panButton
+.toolbarButton#freeCameraButton
 {
 	icon: Embed("assets/images/hand.png");
+}
+.toolbarButton#translateButton
+{
+	icon: Embed("assets/images/arrow_nsew.png");
+}
+.toolbarButton#rotateButton
+{
+	icon: Embed("assets/images/arrow_rotate_anticlockwise.png");
+}
+.toolbarButton#scaleButton
+{
+	icon: Embed("assets/images/arrow_out_longer.png");
 }
 
 .toolbarButton#resetButton
@@ -221,13 +233,12 @@ awaybuilder|SampleItemRenderer #titleLabel
 	color: #40a9ff;
 }
 
-awaybuilder|CollapsiblePanel
+
+.toolsPanel
 {
 	chromeColor: #1d1d1c;
 	color: #dbdbdb;
 	fontSize: 11;
-	skinClass: ClassReference("awaybuilder.view.skins.CollapsiblePanelSkin");
 	backgroundColor:#1d1d1c;
 }
-
 

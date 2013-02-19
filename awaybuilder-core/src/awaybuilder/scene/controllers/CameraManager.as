@@ -1,13 +1,6 @@
 package awaybuilder.scene.controllers
 {
-	import away3d.cameras.Camera3D;
-	import away3d.containers.ObjectContainer3D;
-	import away3d.containers.View3D;
-	
-	import awaybuilder.scene.utils.MathUtils;
-	
 	import com.greensock.TweenMax;
-	import com.greensock.easing.Quad;
 	
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -16,6 +9,16 @@ package awaybuilder.scene.controllers
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
+	
+	import mx.core.UIComponent;
+	
+	import away3d.cameras.Camera3D;
+	import away3d.containers.ObjectContainer3D;
+	import away3d.containers.View3D;
+	import away3d.core.math.Quaternion;
+	
+	import awaybuilder.scene.modes.CameraMode;
+	import awaybuilder.scene.utils.MathUtils;
 
 	/**
 	 * ...
@@ -24,22 +27,22 @@ package awaybuilder.scene.controllers
 	public class CameraManager 
 	{
 		// Singleton instance declaration
-		public static const self:CameraManager = new CameraManager();		
-		public static function get instance():CameraManager { return self; }	
-		
+		private static const self:CameraManager = new CameraManager();		
+		public static function get instance():CameraManager { return self; }			
 		public function CameraManager() { if ( instance ) throw new Error("CameraManager is a singleton"); }			
 		
-		// common variables		
-		public static var dragSmooth:Number = 1;		
+		public static var camera:Camera3D;
+		
+		// common variables	
 		public static var dragging:Boolean = false;
 		public static var hasMoved:Boolean = false;
-		private static var _type:String = "free";
-		private static var _target:ObjectContainer3D;				
+		
+		private static var _mode:String = CameraMode.TARGET;
 		private static var _active:Boolean = false;		
 		
-		private var _xDeg:Number = 0;
-		private var _yDeg:Number = 0;				
-		public var targetProps:Object = { xDegree:0, yDegree:0, radius:0 };		
+		public static var _xDeg:Number = 0;
+		public static var _yDeg:Number = 0;				
+		
 		private var offset:Vector3D = new Vector3D();
 		private var click:Point = new Point();						
 		private var pan:Point = new Point();					
@@ -47,22 +50,18 @@ package awaybuilder.scene.controllers
 		
 		// target mode variables
 		public static var wheelSpeed:Number = 10;
-		public static var mouseSpeed:Number = 1;	
-		public static var locked:Boolean = false;
-		public var radius:Number = 0;			
-		private var _minRadius:Number = 10;		
-		private var lockProps:Object = { xDegree:0, yDegree:0 };		
+		public static var mouseSpeed:Number = 1;		
+		public static var radius:Number = 0;
 		
+		private var _minRadius:Number = 10;								
 		private var stage:Stage;
-		private var camera:Camera3D;
+		
+		private var scope:UIComponent;
 		
 		// free mode variables
-		public static var stickToTerrain:Boolean = false;
         private var _speed:Number = 5;				
 		private var _xSpeed:Number = 0;
         private var _zSpeed:Number = 0;
-		private var _targetXSpeed:Number = 0;
-		private var _targetZSpeed:Number = 0;
 		private var _runMult:Number = 1;
 		private var _pause:Boolean = false;
 		private var tm:Number;
@@ -70,47 +69,54 @@ package awaybuilder.scene.controllers
 		
 		private var poi:ObjectContainer3D;
 		
-		public static function init(stage:Stage, view:View3D, mode:String="target", speed:Number=10):void
+		private var quat:Quaternion;
+		
+		public static function init(scope:UIComponent, view:View3D, mode:String=CameraMode.TARGET, speed:Number=10):void
 		{			
-			instance.stage = stage;
-			instance.camera = view.camera;
+			instance.scope = scope;
+			instance.stage = scope.stage;
+			
+			camera = view.camera;
 			CameraManager.speed = speed;
-			_type = mode;
+			_mode = mode;
 			
 			instance.poi = new ObjectContainer3D();
 			view.scene.addChild(instance.poi);
 			
-			switch(_type)
+			instance.quat = new Quaternion();
+			instance.quat.fromMatrix(camera.transform);						
+			
+			switch(_mode)
 			{
-				case "free": instance.initFreeMode();
+				case CameraMode.FREE: instance.initFreeMode();
 					break;
-				case "target": instance.initTargetMode(5, 1000, 0, 15);
+				case CameraMode.TARGET: instance.initTargetMode(5, 1000, 0, 15);
 					break;
 			}			
 			
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
-			stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
-			stage.addEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
-			stage.addEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
-			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
-			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
-			stage.addEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);					
+			scope.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
+			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
+			instance.stage.addEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
+			scope.addEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
+			scope.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
+			scope.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
+			scope.addEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
+			scope.addEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);					
 			
-			stage.addEventListener(Event.ENTER_FRAME, instance.loop);
+			scope.addEventListener(Event.ENTER_FRAME, instance.loop);
 		}
 		
 		public static function kill():void
 		{
-			instance.stage.removeEventListener(Event.ENTER_FRAME, instance.loop);
-			instance.stage.removeEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
-			instance.stage.removeEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
+			instance.scope.removeEventListener(Event.ENTER_FRAME, instance.loop);
+			instance.scope.removeEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
+			instance.scope.removeEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
 			instance.stage.removeEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
-			instance.stage.removeEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
-			instance.stage.removeEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
-			instance.stage.removeEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
-			instance.stage.removeEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
-			instance.stage.removeEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);				
+			instance.scope.removeEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
+			instance.scope.removeEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
+			instance.scope.removeEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
+			instance.scope.removeEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
+			instance.scope.removeEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);				
 		}			
 		
 		static public function get active():Boolean { return _active; }		
@@ -133,16 +139,16 @@ package awaybuilder.scene.controllers
 			instance._minRadius = value; 
 		}				
 		
-		static public function get type():String { return _type; }		
-		static public function set type(value:String):void 
+		static public function get mode():String { return _mode; }		
+		static public function set mode(value:String):void 
 		{
-			_type = value;
+			_mode = value;
 			
 			switch(value)
 			{
-				case "free": instance.initFreeMode();
+				case CameraMode.FREE: instance.initFreeMode();
 				break;
-				case "target": instance.initTargetMode(5, 1000, 0, 15);
+				case CameraMode.TARGET: instance.initTargetMode(5, 1000, 0, 15);
 				break;
 			}			
 		}
@@ -151,11 +157,11 @@ package awaybuilder.scene.controllers
 		{
 			if (!_pause)
 			{
-				switch(type)
+				switch(mode)
 				{
-					case "free": processFreeMode();
+					case CameraMode.FREE: processFreeMode();
 						break;
-					case "target": processTargetMode();
+					case CameraMode.TARGET: processTargetMode();
 						break;				
 				}				
 			}				
@@ -178,27 +184,22 @@ package awaybuilder.scene.controllers
 				
 		private function processFreeMode():void
 		{			
-			if (!locked && dragging) updateMouseRotation();
+			if (dragging) updateMouseRotation();
 			
-			_xSpeed += (_targetXSpeed * _runMult - _xSpeed) * dragSmooth;
-			_zSpeed += (_targetZSpeed * _runMult - _zSpeed) * dragSmooth;
-			_xDeg += (targetProps.xDegree - _xDeg) * dragSmooth;
-			_yDeg += (targetProps.yDegree - _yDeg) * dragSmooth;	
-			
-			camera.rotationY = _xDeg % 360;
-			camera.rotationX = -_yDeg % 360;
 			camera.moveForward(_zSpeed);
 			camera.moveRight(_xSpeed);
+						
+			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));				
 			
 			/*
-			if (Away3DWorld.terrainEngine.active)
+			if (terrain)
 			{
-				var h:Number = Away3DWorld.terrainEngine.terrain.getHeightAt(Away3DWorld.camera.x, Away3DWorld.camera.z) + 185;			
+				var h:Number = terrain.getHeightAt(camera.x, camera.z) + 185;			
 				
-				//if (stickToTerrain || h > Away3DWorld.camera.y) free mode but not undergroundaaa 
+				//if (stickToTerrain || h > camera.y) free mode but not undergroundaaa 
 				if (stickToTerrain) 
 				{
-					Away3DWorld.camera.y += (h - Away3DWorld.camera.y) * .05;
+					camera.y += (h - camera.y) * .05;
 				}												
 			}
 			*/
@@ -212,64 +213,39 @@ package awaybuilder.scene.controllers
 		{				
 			CameraManager.minRadius = minRadius;
 			
-			if (!isNaN(xDegree)) instance._xDeg = xDegree;
-			if (!isNaN(yDegree)) instance._yDeg = yDegree;				
+			if (!isNaN(xDegree)) _xDeg = xDegree;
+			if (!isNaN(yDegree)) _yDeg = yDegree;								
 			
-			instance.targetProps.yDegree = instance._yDeg;
-			instance.targetProps.xDegree = instance._xDeg;
-			
-			if (!isNaN(radius)) instance.targetProps.radius = radius;
+			if (!isNaN(radius)) CameraManager.radius = radius;
 			else
 			{
-				instance.targetProps.radius = Vector3D.distance(instance.camera.position, instance.poi.scenePosition);
+				radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
 			}							
 			
-			var pos:Vector3D = instance.getCameraPosition(instance._xDeg, instance._yDeg);
+			camera.position = getCameraPosition(_xDeg, -_yDeg);							
+			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));		
 			
-			instance.camera.rotationX = -instance._yDeg % 360;
-			instance.camera.rotationY = instance._xDeg % 360;
-			instance.camera.position = pos;				
-			
-			if (type != "target") type = "target";				
+			if (mode != CameraMode.TARGET) mode = CameraMode.TARGET;				
 			
 			active = true;
 		}			
 		
-		public static function focuseTarget(t:ObjectContainer3D):void
+		private function processTargetMode():void
+		{			
+			if (panning) updatePOIPosition();
+			if (dragging) updateMouseRotation();
+			
+			camera.position = getCameraPosition(_xDeg, -_yDeg);							
+			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));
+		}			
+		
+		
+		
+		
+		public static function focusTarget(t:ObjectContainer3D):void
 		{
 			TweenMax.to(instance.poi, 0.5, {x:t.scenePosition.x, y:t.scenePosition.y, z:t.scenePosition.z});
 		}		
-		
-		private function processTargetMode():void
-		{			
-			this.applyRadius();
-			
-			if (!locked)
-			{
-				if (panning) updatePOIPosition();
-				if (dragging) updateMouseRotation();		
-				
-				_xDeg += (targetProps.xDegree - _xDeg) * dragSmooth;
-				_yDeg += (targetProps.yDegree - _yDeg) * dragSmooth;						
-				
-				camera.position = getCameraPosition(_xDeg, -_yDeg);							
-				camera.rotationY = _xDeg % 360;			
-				camera.rotationX = _yDeg % 360;					
-			}
-			else
-			{
-				targetProps.yDegree = (lockProps.yDegree - _target.rotationX);					
-				targetProps.xDegree = (lockProps.xDegree + _target.rotationY);
-				
-				_xDeg += (targetProps.xDegree - _xDeg) * dragSmooth;
-				_yDeg += (targetProps.yDegree - _yDeg) * dragSmooth;
-				
-				camera.position = getCameraPosition(_xDeg, _yDeg);		
-				camera.rotationY = _xDeg % 360;			
-				camera.rotationX = _yDeg % 360;											
-			}
-		}			
-		
 		
 		
 		
@@ -303,17 +279,8 @@ package awaybuilder.scene.controllers
 			click.x = stage.mouseX;
 			click.y = stage.mouseY;
 			
-			if (type == "free") targetProps.yDegree -= dy * mouseSpeed;			
-			else targetProps.yDegree += dy * mouseSpeed;			
-			
-			if (Math.abs(targetProps.yDegree) % 360 >= 90 && Math.abs(targetProps.yDegree) % 360 <= 270)
-			{
-				targetProps.xDegree -= dx * mouseSpeed;
-			}
-			else
-			{
-				targetProps.xDegree += dx * mouseSpeed;
-			}						
+			_yDeg += (dy * mouseSpeed);
+			_xDeg += (dx * mouseSpeed);
 		}		
 		
 		private function getCameraPosition(xDegree:Number, yDegree:Number):Vector3D
@@ -328,37 +295,6 @@ package awaybuilder.scene.controllers
 			
 			return v;
 		}				
-		
-		private function applyRadius():void
-		{
-			radius += (targetProps.radius - radius) * dragSmooth;
-			
-			if (active && (radius < minRadius)) 
-			{
-				radius = minRadius;
-				targetProps.radius = minRadius;
-			}
-		}					
-		
-		
-		
-		// Lock  ************************************************************************************************************************************
-		
-		public static function lock(xDegree:Number=0, yDegree:Number=0):void 
-		{ 
-			instance.lockProps.xDegree = xDegree;
-			instance.lockProps.yDegree = yDegree;				
-			//instance.targetProps.radius = minRadius;
-			_target.rotationX = _target.rotationX % 360;
-			_target.rotationY = _target.rotationY % 360;
-			locked = true; 				
-		}
-		
-		public static function unlock():void 
-		{ 
-			locked = false; 
-		}				
-		
 		
 		
 		
@@ -403,9 +339,9 @@ package awaybuilder.scene.controllers
 		
 		private function onMouseWheel(event:MouseEvent) : void
 		{
-			if (active && type == "target")
+			if (active && mode == CameraMode.TARGET)
 			{
-				targetProps.radius -= event.delta * wheelSpeed;			
+				radius -= event.delta * wheelSpeed;			
 			}			
 		}						
 		
@@ -423,25 +359,25 @@ package awaybuilder.scene.controllers
 			{
 				if (e.keyCode == Keyboard.ALTERNATE) altPressed = true;		
 				
-				if (type == "free")
+				if (mode == CameraMode.FREE)
 				{
 					switch (e.keyCode) 
 					{					
-						case Keyboard.UP: _targetZSpeed = speed;
+						case Keyboard.UP: _zSpeed = speed;
 							break;
-						case Keyboard.DOWN: _targetZSpeed = -speed;
+						case Keyboard.DOWN: _zSpeed = -speed;
 							break;
-						case Keyboard.LEFT: _targetXSpeed = -speed;
+						case Keyboard.LEFT: _xSpeed = -speed;
 							break;
-						case Keyboard.RIGHT: _targetXSpeed = speed;
+						case Keyboard.RIGHT: _xSpeed = speed;
 							break;
 						case Keyboard.SHIFT: _runMult = 3;
 							break;
-						case Keyboard.SPACE: stickToTerrain = !stickToTerrain;
-							break;				
 					}				
 				}				
 				
+				_zSpeed *= _runMult;
+				_xSpeed *= _runMult;
 			}
 		}
 		
@@ -451,13 +387,13 @@ package awaybuilder.scene.controllers
 			{
 				if (e.keyCode == Keyboard.ALTERNATE) altPressed = false;
 				
-				if (type == "free")
+				if (mode == CameraMode.FREE)
 				{
 					switch (e.keyCode) 
 					{
-						case Keyboard.UP: case Keyboard.DOWN: _targetZSpeed = 0;
+						case Keyboard.UP: case Keyboard.DOWN: _zSpeed = 0;
 							break;
-						case Keyboard.LEFT: case Keyboard.RIGHT: _targetXSpeed = 0;
+						case Keyboard.LEFT: case Keyboard.RIGHT: _xSpeed = 0;
 							break;
 						case Keyboard.SHIFT: _runMult = 1;
 							break;

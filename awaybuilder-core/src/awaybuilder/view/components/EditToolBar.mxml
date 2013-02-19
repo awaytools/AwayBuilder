@@ -14,7 +14,8 @@
 	</fx:Metadata>
 	
 	<fx:Declarations>
-		<s:RadioButtonGroup id="mouseToolGroup" change="mouseToolGroup_changeHandler(event)"/>
+		<s:RadioButtonGroup id="cameraModeToolGroup" change="cameraModeToolGroup_changeHandler(event)"/>
+		<s:RadioButtonGroup id="transformModeToolGroup" change="transformModeToolGroup_changeHandler(event)"/>
 	</fx:Declarations>
 	
 	<!-- document -->
@@ -36,11 +37,11 @@
 		click="redoButton_clickHandler(event)"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
-	<!-- mouse modes -->
-	<s:RadioButton id="selectionButton" styleName="toolbarButton" toolTip="Selection Tool"
-		selected="true" group="{mouseToolGroup}"/>
-	<s:RadioButton id="panButton" styleName="toolbarButton" toolTip="Pan Tool"
-		group="{mouseToolGroup}"/>
+	<!-- camera modes -->
+	<s:RadioButton id="targetCameraButton" styleName="toolbarButton" toolTip="Target Camera Mode" value="Target"
+		selected="true" group="{cameraModeToolGroup}"/>
+	<s:RadioButton id="freeCameraButton" styleName="toolbarButton" toolTip="Free Camera Mode" value="Free"
+		group="{cameraModeToolGroup}"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
 	<!-- clipboard -->
@@ -63,14 +64,22 @@
 		toolTip="Delete Selected Object"
 		enabled="false"
 		click="deleteButton_clickHandler(event)"/>
-	<s:Button id="rotateCounterClockwiseButton" styleName="toolbarButton"
+	<!--<s:Button id="rotateCounterClockwiseButton" styleName="toolbarButton"
 		toolTip="Rotate Counter-Clockwise"
 		enabled="false"
 		click="rotateCounterClockwiseButton_clickHandler(event)"/>
 	<s:Button id="rotateClockwiseButton" styleName="toolbarButton"
 		toolTip="Rotate Clockwise"
 		enabled="false"
-		click="rotateClockwiseButton_clickHandler(event)"/>
+		click="rotateClockwiseButton_clickHandler(event)"/>-->
+	<mx:VRule styleName="toolbarSeparator" height="21"/>
+	<!-- transform modes -->
+	<s:RadioButton id="translateButton" styleName="toolbarButton" toolTip="Translate Transform Mode" value="Translate"
+				   selected="true" group="{transformModeToolGroup}"/>
+	<s:RadioButton id="rotateButton" styleName="toolbarButton" toolTip="Rotate Transform Mode" value="Rotate"
+				   group="{transformModeToolGroup}"/>
+	<s:RadioButton id="scaleButton" styleName="toolbarButton" toolTip="Scale Transform Mode" value="Scale"
+				   group="{transformModeToolGroup}"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
 	<mx:Spacer width="100%"/>
@@ -153,21 +162,36 @@
 				this.cutButton.enabled = this._objectSelectionCount > 0;
 				this.copyButton.enabled = this._objectSelectionCount > 0;
 				this.deleteButton.enabled = this._connectionSelectionCount > 0 || this._objectSelectionCount > 0;
-				this.rotateClockwiseButton.enabled = this._objectSelectionCount > 0;
-				this.rotateCounterClockwiseButton.enabled = this._objectSelectionCount > 0;
+//				this.rotateClockwiseButton.enabled = this._objectSelectionCount > 0;
+//				this.rotateCounterClockwiseButton.enabled = this._objectSelectionCount > 0;
 				this.selectionCountChanged = false;
 			}
 		}
 		
-		protected function mouseToolGroup_changeHandler(event:Event):void
+		protected function transformModeToolGroup_changeHandler(event:Event):void
 		{
-			if(this.mouseToolGroup.selection == this.panButton)
+			if(this.transformModeToolGroup.selectedValue == "Translate")
 			{
-				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SWITCH_MOUSE_TO_PAN));
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TRANSFORM_TRANSLATE));
+			}
+			else if(this.transformModeToolGroup.selectedValue == "Rotate")
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TRANSFORM_ROTATE));
 			}
 			else
 			{
-				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SWITCH_MOUSE_TO_SELECT));
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TRANSFORM_SCALE));
+			}
+		}
+		protected function cameraModeToolGroup_changeHandler(event:Event):void
+		{
+			if(this.cameraModeToolGroup.selectedValue == "Free")
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SWITCH_CAMERA_TO_FREE));
+			}
+			else
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SWITCH_CAMERA_TO_TARGET));
 			}
 		}
 		

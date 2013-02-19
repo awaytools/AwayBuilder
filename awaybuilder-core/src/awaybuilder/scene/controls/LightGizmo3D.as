@@ -19,8 +19,9 @@ package awaybuilder.scene.controls
 		{
 			this.light = light;
 			
-			cone = new Mesh(new ConeGeometry(50, 100, 16, 1, true, false), new ColorMaterial());
-			cone.name = light.name + "_Gizmo";
+			cone = new Mesh(new ConeGeometry(50, 100, 16, 1, true, false), new ColorMaterial());			
+			//cone.name = light.name + "_Gizmo";
+			cone.name = light.name;
 			cone.mouseEnabled = true;
 			cone.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			this.addChild(cone);

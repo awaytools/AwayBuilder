@@ -1,15 +1,13 @@
 package awaybuilder.scene.views
 {
-	import away3d.cameras.Camera3D;
 	import away3d.containers.View3D;
+	import away3d.core.math.Quaternion;
 	import away3d.core.pick.PickingType;
 	import away3d.entities.Mesh;
-	import away3d.lights.DirectionalLight;
+	import away3d.events.MouseEvent3D;
 	import away3d.lights.PointLight;
-	import away3d.materials.ColorMaterial;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
-	import away3d.primitives.CubeGeometry;
 	import away3d.primitives.PlaneGeometry;
 	import away3d.utils.Cast;
 	
@@ -17,7 +15,8 @@ package awaybuilder.scene.views
 	import awaybuilder.scene.controllers.Scene3DManager;
 	import awaybuilder.scene.utils.MathUtils;
 	
-	import flash.display.BlendMode;
+	import com.greensock.TweenMax;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Vector3D;
@@ -43,24 +42,30 @@ package awaybuilder.scene.views
 		private var CubeTextureBottom:Class;
 		
 		public var cube:Mesh;
+		public var currentOrientation:String = "front";
 		private var view:View3D;
+		
 		
 		public function OrientationTool()
 		{
+			this.mouseChildren = true;
 			this.addEventListener(Event.ADDED_TO_STAGE, handleAddedToStage);		
 		}
 		
 		protected function handleAddedToStage(event:Event):void
 		{
 			//Create OrientationView
-			view = new View3D();			
-			view.shareContext = true;
+			view = new View3D();		
+			view.mousePicker = PickingType.RAYCAST_BEST_HIT;			
 			view.stage3DProxy = Scene3DManager.stage3DProxy;
+			view.shareContext = true;
 			view.antiAlias = 4;
 			view.camera.position = new Vector3D(0, 0, -200);
+			view.camera.lens.near = 50;
+			view.camera.lens.far = 500;			
 			view.width = 120;
 			view.height = 120;			
-			view.mousePicker = PickingType.RAYCAST_BEST_HIT;			
+						
 			
 			//Create light
 			var ambientLight:PointLight = new PointLight();
@@ -70,30 +75,41 @@ package awaybuilder.scene.views
 			ambientLight.diffuse = 1;
 			ambientLight.specular = 0.1;				
 			
+			var picker:StaticLightPicker = new StaticLightPicker([ambientLight]);
+			
 			view.camera.addChild(ambientLight);
 			
-			var planeGeometry:PlaneGeometry = new PlaneGeometry(100, 100);
+			var planeGeometry:PlaneGeometry = new PlaneGeometry(100, 100);			
 			
 			var frontMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureFront));
-			frontMaterial.lightPicker = new StaticLightPicker([ambientLight]);							
+			frontMaterial.lightPicker = picker;			
 			var frontPlane:Mesh = new Mesh(planeGeometry);
+			frontPlane.name = "front";
+			frontPlane.mouseEnabled = true;
+			frontPlane.addEventListener(MouseEvent3D.MOUSE_DOWN, handleSelectOrientation);
 			frontPlane.material = frontMaterial;
 			frontPlane.rotationX = -90;
 			frontPlane.z = -planeGeometry.width/2;
 			view.scene.addChild(frontPlane);
 			
 			var backMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureBack));
-			backMaterial.lightPicker = new StaticLightPicker([ambientLight]);
+			backMaterial.lightPicker = picker;
 			var backPlane:Mesh = new Mesh(planeGeometry);
+			backPlane.name = "back";
+			backPlane.mouseEnabled = true;
+			backPlane.addEventListener(MouseEvent3D.MOUSE_DOWN, handleSelectOrientation);			
 			backPlane.material = backMaterial;
 			backPlane.rotationX = 90;
 			backPlane.rotationZ = 180;
 			backPlane.z = 50;			
 			view.scene.addChild(backPlane);
 			
-			var leftMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureLeft));
-			leftMaterial.lightPicker = new StaticLightPicker([ambientLight]);
+			var leftMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureLeft));			
+			leftMaterial.lightPicker = picker;
 			var leftPlane:Mesh = new Mesh(planeGeometry);
+			leftPlane.name = "left";
+			leftPlane.mouseEnabled = true;
+			leftPlane.addEventListener(MouseEvent3D.MOUSE_DOWN, handleSelectOrientation);			
 			leftPlane.material = leftMaterial;
 			leftPlane.rotationY = 90;
 			leftPlane.rotationZ = 90;
@@ -101,8 +117,11 @@ package awaybuilder.scene.views
 			view.scene.addChild(leftPlane);			
 				
 			var rightMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureRight));
-			rightMaterial.lightPicker = new StaticLightPicker([ambientLight]);
+			rightMaterial.lightPicker = picker;
 			var rightPlane:Mesh = new Mesh(planeGeometry);
+			rightPlane.name = "right";
+			rightPlane.mouseEnabled = true;
+			rightPlane.addEventListener(MouseEvent3D.MOUSE_DOWN, handleSelectOrientation);			
 			rightPlane.material = rightMaterial;
 			rightPlane.rotationY = -90;
 			rightPlane.rotationZ = -90;
@@ -110,31 +129,57 @@ package awaybuilder.scene.views
 			view.scene.addChild(rightPlane);			
 			
 			var topMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureTop));
-			topMaterial.lightPicker = new StaticLightPicker([ambientLight]);
+			topMaterial.lightPicker = picker;
 			var topPlane:Mesh = new Mesh(planeGeometry);
+			topPlane.name = "top";
+			topPlane.mouseEnabled = true;
+			topPlane.addEventListener(MouseEvent3D.MOUSE_DOWN, handleSelectOrientation);			
 			topPlane.material = topMaterial;
 			topPlane.y = 50;			
 			view.scene.addChild(topPlane);				
 			
 			var bottomMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(CubeTextureBottom));
-			bottomMaterial.lightPicker = new StaticLightPicker([ambientLight]);
+			bottomMaterial.lightPicker = picker;
 			var bottomPlane:Mesh = new Mesh(planeGeometry);
+			bottomPlane.name = "bottom";
+			bottomPlane.mouseEnabled = true;
+			bottomPlane.addEventListener(MouseEvent3D.MOUSE_DOWN, handleSelectOrientation);			
 			bottomPlane.material = bottomMaterial;
 			bottomPlane.rotationX = 180;
 			bottomPlane.y = -50;			
 			view.scene.addChild(bottomPlane);				
 			
-			
 			this.addChild(view);
+		}
+		
+		protected function handleSelectOrientation(e:Event):void
+		{
+			currentOrientation = e.target.name;
+			
+			trace(CameraManager._yDeg);
+			
+			switch(e.target.name)
+			{
+				case "top": TweenMax.to(CameraManager, 0.5, {_yDeg:90, _xDeg:0});				 
+					break;
+				case "bottom": TweenMax.to(CameraManager, 0.5, {_yDeg:-90, _xDeg:0});
+					break;
+				case "left": TweenMax.to(CameraManager, 0.5, {_yDeg:0, _xDeg:90});
+					break;
+				case "right": TweenMax.to(CameraManager, 0.5, {_yDeg:0, _xDeg:-90});
+					break;
+				case "front": TweenMax.to(CameraManager, 0.5, {_yDeg:0, _xDeg:0});
+					break;	
+				case "back": TweenMax.to(CameraManager, 0.5, {_yDeg:0, _xDeg:180});
+					break;					
+			} 
 		}
 		
 		public function update():void
 		{
-			view.camera.rotationX = Scene3DManager.camera.rotationX;
-			view.camera.rotationY = Scene3DManager.camera.rotationY;
-			view.camera.rotationZ = Scene3DManager.camera.rotationZ;
+			view.camera.eulers = Scene3DManager.camera.eulers;
 			
-			var camPos:Vector3D = getCameraPosition(CameraManager.instance.targetProps.xDegree, -CameraManager.instance.targetProps.yDegree);
+			var camPos:Vector3D = getCameraPosition(CameraManager._xDeg, -CameraManager._yDeg);
 			view.camera.x = -camPos.x;
 			view.camera.y = -camPos.y;
 			view.camera.z = -camPos.z;
