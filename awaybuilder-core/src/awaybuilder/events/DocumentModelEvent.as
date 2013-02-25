@@ -6,6 +6,7 @@ package awaybuilder.events
 	{
 		public static const DOCUMENT_NAME_CHANGED:String = "documentNameChanged";
 		public static const DOCUMENT_EDITED:String = "documentEdited";
+		public static const DOCUMENT_UPDATED:String = "documentUpdated";
 		
 		public function DocumentModelEvent(type:String)
 		{

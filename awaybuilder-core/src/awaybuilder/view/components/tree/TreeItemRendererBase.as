@@ -1,4 +1,4 @@
-package com.sparkTree
+package awaybuilder.view.components.tree
 {
 import flash.display.DisplayObjectContainer;
 import flash.events.Event;
@@ -20,7 +20,7 @@ import spark.components.supportClasses.ItemRenderer;
  * <a href="https://github.com/kachurovskiy/Spark-Tree/issues#issue/2">and 
  * updates renderer when it changes</a>.</p>
  */
-public class TreeItemRenderer extends ItemRenderer implements ITreeItemRenderer
+public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRenderer
 {
 	
 	//--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ public class TreeItemRenderer extends ItemRenderer implements ITreeItemRenderer
 	//
 	//--------------------------------------------------------------------------
 	
-	public function TreeItemRenderer()
+	public function TreeItemRendererBase()
 	{
 		super();
 		

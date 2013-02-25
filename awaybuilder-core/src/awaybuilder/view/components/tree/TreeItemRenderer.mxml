@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tree:TreeItemRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" width="100%"
+	doubleClick="treeitemrendererbase1_doubleClickHandler(event)" doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*">
+	
+	<fx:Script>
+		<![CDATA[
+			protected function disclosureButton_clickHandler(event:MouseEvent):void
+			{
+				toggle();
+			}
+			
+			protected function treeitemrendererbase1_doubleClickHandler(event:MouseEvent):void
+			{
+				toggle();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<tree:layout>
+		<s:HorizontalLayout paddingLeft="{indentation + 4}" verticalAlign="middle"
+			paddingBottom="4" paddingTop="4"/>
+	</tree:layout>
+	
+	<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
+					selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
+	
+	<s:Label id="labelDisplay" text="{label}" color="{textColor}"/>
+	
+</tree:TreeItemRendererBase>

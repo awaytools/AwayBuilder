@@ -49,23 +49,23 @@ package awaybuilder.desktop.services
 		
 		public function save(data:XML, path:String):void
 		{	
-			try
-			{
-				var bytes:ByteArray = new ByteArray();
-				bytes.writeUTFBytes(data.toXMLString());
-				bytes.deflate();
-				
-				var file:File = new File(path);
-				var saveStream:FileStream = new FileStream();
-				saveStream.open(file, FileMode.WRITE);
-				saveStream.writeBytes(bytes);
-				saveStream.close();
-				this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_SUCCESS, file.name, file.nativePath));
-			}
-			catch(error:Error)
-			{
-				this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_FAIL, file.name, file.nativePath));
-			}
+//			try
+//			{
+//				var bytes:ByteArray = new ByteArray();
+//				bytes.writeUTFBytes(data.toXMLString());
+//				bytes.deflate();
+//				
+//				var file:File = new File(path);
+//				var saveStream:FileStream = new FileStream();
+//				saveStream.open(file, FileMode.WRITE);
+//				saveStream.writeBytes(bytes);
+//				saveStream.close();
+//				this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_SUCCESS, file.name, file.nativePath));
+//			}
+//			catch(error:Error)
+//			{
+//				this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_FAIL, file.name, file.nativePath));
+//			}
 			
 		}
 		
@@ -112,7 +112,7 @@ package awaybuilder.desktop.services
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
 			
-			this.dispatch(new ReadDocumentDataEvent(ReadDocumentDataEvent.REPLACE_DOCUMENT, file.name, file.nativePath));
+			this.dispatch(new ReadDocumentDataEvent(ReadDocumentDataEvent.REPLACE_DOCUMENT, file.name, file.url));
 		}
 		
 		private function file_open_cancelHandler(event:Event):void

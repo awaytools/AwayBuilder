@@ -1,4 +1,4 @@
-package com.sparkTree
+package awaybuilder.view.components.tree
 {
 import flash.events.Event;
 

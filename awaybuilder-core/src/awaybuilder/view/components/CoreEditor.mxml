@@ -3,7 +3,7 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	backgroundAlpha="0" creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
-	xmlns:flextoolbox="library://ns.flextoolbox.com/flex"  xmlns:components="awaybuilder.view.components.*">
+	xmlns:flextoolbox="library://ns.flextoolbox.com/flex"  xmlns:components="awaybuilder.view.components.*" xmlns:tree="awaybuilder.view.components.tree.*">
 	
 	<s:layout>
 		<s:VerticalLayout gap="0" paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0"/>
@@ -11,32 +11,41 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
-			import awaybuilder.scene.controllers.Scene3DManager;
-			import awaybuilder.scene.events.Scene3DManagerEvent;
-			protected function handleGridObjectType(item:Object, column:GridColumn):String
+			
+			[Bindable] public var scenegraph:ArrayCollection;
+			
+			private function init():void
 			{
-				return getQualifiedClassName(item).split("::")[1];
 			}
 			
-			protected function handleScene3DManagerSelection(event:awaybuilder.scene.events.Scene3DManagerEvent):void
-			{
-				var items:Vector.<Object> = new Vector.<Object>();
-				for (var i:int=0;i<Scene3DManager.selectedObjects.length;i++)
-				{
-					items.push(Scene3DManager.selectedObjects.getItemAt(i));
-				}
-				objectsGrid.selectedItems = items;			
-			}
+//			import awaybuilder.scene.controllers.Scene3DManager;
+//			import awaybuilder.scene.events.Scene3DManagerEvent;
+//			protected function handleGridObjectType(item:Object, column:GridColumn):String
+//			{
+//				return getQualifiedClassName(item).split("::")[1];
+//			}
+			
+//			protected function handleScene3DManagerSelection(event:awaybuilder.scene.events.Scene3DManagerEvent):void
+//			{
+//				var items:Vector.<Object> = new Vector.<Object>();
+//				for (var i:int=0;i<Scene3DManager.selectedObjects.length;i++)
+//				{
+//					items.push(Scene3DManager.selectedObjects.getItemAt(i));
+//				}
+//				objectsGrid.selectedItems = items;			
+//			}
 			protected function handleObjectSelection(e:MouseEvent):void
 			{
-				Scene3DManager.selectObjectByName(objectsGrid.selectedItem.name);
+//				Scene3DManager.selectObjectByName(objectsGrid.selectedItem.name);
 			}	
 			
 			protected function skinnablecontainer1_creationCompleteHandler(event:FlexEvent):void
 			{
-				Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, handleScene3DManagerSelection);
+//				Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, handleScene3DManagerSelection);
+				
 			}
 			
 		]]>
@@ -50,17 +59,14 @@
 		
 		<!--<components:ObjectPicker id="objectPicker" height="100%" depth="1"/>-->
 		<s:Panel width="300" height="100%" styleName="toolsPanel" title="Scene Graph" alpha="1">
-			<s:DataGrid id="objectsGrid" left="10" right="10" top="10" bottom="10" color="0x000000"
-						click="handleObjectSelection(event)" dataProvider="{Scene3DManager.objects}"
-						selectionMode="multipleRows">
-				<s:columns>
-					<s:ArrayList>
-						<s:GridColumn dataField="name" headerText="Name" />
-						<s:GridColumn labelFunction="handleGridObjectType" headerText="Type" />
-					</s:ArrayList>
-				</s:columns>
-			</s:DataGrid>	
+			<tree:Tree id="tree" dataProvider="{scenegraph}" borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
+					   labelField="label"
+					   width="100%" height="100%" textRollOverColor="yellow" 
+					   textSelectedColor="0xFFFFFF" dragEnabled="false" dropEnabled="false"
+					   dragMoveEnabled="true">
+			</tree:Tree>
 		</s:Panel>
+		
 		<mx:UIComponent id="viewPort" width="100%" height="100%"/>
 		<!--<components:EditingSurface id="editor" width="100%" height="100%"/>-->
 	</s:Group>

@@ -2,6 +2,8 @@ package awaybuilder.controller
 {
 	import flash.net.URLRequest;
 	
+	import mx.collections.ArrayCollection;
+	
 	import away3d.entities.Mesh;
 	import away3d.events.AssetEvent;
 	import away3d.library.AssetLibrary;
@@ -14,6 +16,7 @@ package awaybuilder.controller
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.model.vo.ScenegraphTreeVO;
 	import awaybuilder.scene.controllers.Scene3DManager;
 	
 	import org.robotlegs.mvcs.Command;
@@ -37,6 +40,7 @@ package awaybuilder.controller
 		
 		override public function execute():void
 		{
+//			scenegraph = new ArrayCollection();
 			document.name = event.name;
 			Parsers.enableAllBundled();
 			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);		
@@ -56,7 +60,114 @@ package awaybuilder.controller
 		private var bear:Mesh;
 		
 		private function onAssetComplete(e:AssetEvent):void
-		{			
+		{		
+			var scenegraph = new ArrayCollection();
+			var item:ScenegraphTreeVO = new ScenegraphTreeVO( "Mesh" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "ObjectContainer3D" );
+			item.children = new ArrayCollection();
+			item.children.addItem( new ScenegraphTreeVO( "subitem1" ) );
+			item.children.addItem( new ScenegraphTreeVO( "subitem2" ) );
+			item.children.addItem( new ScenegraphTreeVO( "subitem3" ) );
+			item.children.addItem( new ScenegraphTreeVO( "subitem4" ) );
+			item.children.addItem( new ScenegraphTreeVO( "subitem42" ) );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "Material" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "Geometry" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "Animator" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "AnimationSet" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "AnimationNode" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "Texture" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "LightPicker" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "Light" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "ShadowMapper" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "ShadowMethod" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "EffectsMethod" );
+			scenegraph.addItem( item );
+			item = new ScenegraphTreeVO( "Camera" );
+			scenegraph.addItem( item );
+				
+			document.scenegraph = scenegraph;
+//				-- ObjectContainer3D
+//				|    |
+//				|    -- ObjectContainer3D...
+//				|    -- Camera §
+//				|    -- Light §
+//				|    -- Mesh...
+//				|    -- Mesh...
+//				|    -- Mesh
+//				|         |
+//				|         -- Material §
+//				|         -- Geometry §
+//				|         -- Animator §
+//				|         -- SubMesh...
+//				|         -- SubMesh...
+//				|         -- SubMesh
+//				|              |
+//				|              -- Material §
+//				|              -- SubGeometry §
+//				|
+//				-- Material
+//				|    |
+//				|    -- LightPicker §
+//				|    -- DiffuseTexture §
+//				|    -- DiffuseMethod
+//				|    -- SpecularTexture §
+//				|    -- SpecularMethod
+//				|    -- NormalTexture §
+//				|    -- NormalMethod
+//				|    -- ShadowMethod §
+//				|    -- EffectsMethod §
+//				|    -- EffectsMethod §
+//				|    -- EffectsMethod §...
+//				|
+//				-- Geometry
+//				|   |
+//				|   -- SubGeometry
+//				|   -- SubGeometry
+//				|   -- SubGeometry...
+//				|
+//				-- Animator
+//				|    |
+//				|    -- AnimationSet §
+//				|
+//				-- AnimationSet
+//				|    |
+//				|    -- AnimationNode
+//				|    -- AnimationNode
+//				|    -- AnimationNode...
+//				|
+//				-- AnimationNode
+//				|
+//				-- Texture
+//				|
+//				-- LightPicker
+//				|    |
+//				|    -- Light §
+//				|
+//				-- Light
+//				|    |
+//				|    -- ShadowMapper §
+//				|
+//				-- ShadowMapper
+//				|
+//				-- ShadowMethod
+//				|
+//				-- EffectsMethod
+//				|
+//				-- Camera
+
+			
 			if (e.asset.assetType == AssetType.MESH) 
 			{			
 				bear = e.asset as Mesh;

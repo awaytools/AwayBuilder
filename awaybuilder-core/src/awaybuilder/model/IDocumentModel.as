@@ -1,5 +1,6 @@
 package awaybuilder.model
 {
+	import mx.collections.ArrayCollection;
 
 	public interface IDocumentModel
 	{
@@ -11,7 +12,9 @@ package awaybuilder.model
 		function set suppressEdits(value:Boolean):void;
 		function get path():String;
 		function set path(value:String):void;
-//		function get objects():Vector.<IEditorObjectView>;
+		
+		function get scenegraph():ArrayCollection;
+		function set scenegraph(value:ArrayCollection):void;
 
 //		function addObject(object:IEditorObjectView):void;
 //		function removeObject(object:IEditorObjectView):void;
