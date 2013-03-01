@@ -14,7 +14,7 @@ _libs/_ - library directory with .swc files.
 ### Files to include in the library:
 * __src/assets/*__
 * __src/defaults.css__
-(in Flash Builder: Project Properties -> Flex Library Build Path-> Assets -> select All)
+(in Flash Builder: Project Properties -> Flex Library Build Path -> Assets -> select All)
 
 ## awaybuilder-desktop
 Project must be set up as Flex AIR project
