@@ -29,6 +29,7 @@ package awaybuilder.scene.controllers
 	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
 	
@@ -153,8 +154,10 @@ package awaybuilder.scene.controllers
 			orientationTool.x = scope.width - orientationTool.width - 10;
 			orientationTool.y = 5;
 			
-			stage3DProxy.width = stage.stageWidth;
-			stage3DProxy.height = stage.stageHeight;			
+			stage3DProxy.x = scope.x;
+			stage3DProxy.y = scope.localToGlobal(new Point(scope.x, scope.y)).y;
+			stage3DProxy.width = scope.width;
+			stage3DProxy.height = scope.height;			
 			
 			view.width = scope.width;
 			view.height = scope.height;
@@ -216,32 +219,36 @@ package awaybuilder.scene.controllers
 		
 		private function onKeyDown(e:KeyboardEvent):void
 		{
-			switch (e.keyCode) 
-			{					
-				case Keyboard.F: 
+			if (e.shiftKey)
+			{
+				switch (e.keyCode) 
+				{					
+					case Keyboard.F: 
+						
+						if (selectedObject != null) CameraManager.focusTarget(selectedObject);
+						
+						break;				
 					
-					if (selectedObject != null) CameraManager.focusTarget(selectedObject);
+					case Keyboard.T: setTransformMode(GizmoMode.TRANSLATE);
+						
+						break;				
 					
-					break;				
-				
-				case Keyboard.T: setTransformMode(GizmoMode.TRANSLATE);
-										
-					break;				
-				
-				case Keyboard.R: setTransformMode(GizmoMode.ROTATE);
+					case Keyboard.R: setTransformMode(GizmoMode.ROTATE);
+						
+						break;				
 					
-					break;				
-				
-				case Keyboard.S: setTransformMode(GizmoMode.SCALE);
+					case Keyboard.S: setTransformMode(GizmoMode.SCALE);
+						
+						break;					
 					
-					break;					
-				
-				case Keyboard.CONTROL:
-					
-					multiSelection = true;
-					
-					break;								
-			}			
+					case Keyboard.CONTROL:
+						
+						multiSelection = true;
+						
+						break;								
+				}							
+			}
+
 		}
 		
 		private function onKeyUp(e:KeyboardEvent):void
@@ -351,7 +358,7 @@ package awaybuilder.scene.controllers
 		public static function addMesh(mesh:Mesh):void
 		{			
 			mesh.mouseEnabled = true;
-			mesh.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			mesh.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			mesh.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
 			
 			scene.addChild(mesh);

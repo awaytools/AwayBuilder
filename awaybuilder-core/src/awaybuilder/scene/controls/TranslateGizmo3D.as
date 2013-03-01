@@ -35,7 +35,7 @@ package awaybuilder.scene.controls
 			
 			xCylinder = new Mesh(cylGeom, xAxisMaterial);			
 			xCylinder.name = "xAxis";
-			xCylinder.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			xCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			xCylinder.mouseEnabled = true;
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
@@ -45,7 +45,7 @@ package awaybuilder.scene.controls
 			
 			xCone = new Mesh(coneGeom, xAxisMaterial);
 			xCone.name = "xAxis";
-			xCone.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			xCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			xCone.mouseEnabled = true;
 			xCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			xCone.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
@@ -55,7 +55,7 @@ package awaybuilder.scene.controls
 			
 			yCylinder = new Mesh(cylGeom, yAxisMaterial);
 			yCylinder.name = "yAxis";
-			yCylinder.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			yCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			yCylinder.mouseEnabled = true;
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
@@ -65,7 +65,7 @@ package awaybuilder.scene.controls
 			
 			yCone = new Mesh(coneGeom, yAxisMaterial);
 			yCone.name = "yAxis";
-			yCone.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			yCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			yCone.mouseEnabled = true;
 			yCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			yCone.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
@@ -75,7 +75,7 @@ package awaybuilder.scene.controls
 			
 			zCylinder = new Mesh(cylGeom, zAxisMaterial);
 			zCylinder.name = "zAxis";
-			zCylinder.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			zCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			zCylinder.mouseEnabled = true;
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
@@ -84,7 +84,7 @@ package awaybuilder.scene.controls
 			
 			zCone = new Mesh(coneGeom, zAxisMaterial);
 			zCone.name = "zAxis";
-			zCone.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			zCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			zCone.mouseEnabled = true;
 			zCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			zCone.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			

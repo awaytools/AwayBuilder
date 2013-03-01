@@ -94,14 +94,14 @@ package awaybuilder.scene.controllers
 					break;
 			}			
 			
-			scope.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
-			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
+			instance.stage.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
+			instance.stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
 			instance.stage.addEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
-			scope.addEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
-			scope.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
-			scope.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
-			scope.addEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
-			scope.addEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);					
+			instance.stage.addEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
+			instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
+			instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
+			instance.stage.addEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
+			instance.stage.addEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);					
 			
 			scope.addEventListener(Event.ENTER_FRAME, instance.loop);
 		}
@@ -109,14 +109,14 @@ package awaybuilder.scene.controllers
 		public static function kill():void
 		{
 			instance.scope.removeEventListener(Event.ENTER_FRAME, instance.loop);
-			instance.scope.removeEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
-			instance.scope.removeEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
+			instance.stage.removeEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
+			instance.stage.removeEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
 			instance.stage.removeEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
-			instance.scope.removeEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
-			instance.scope.removeEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
-			instance.scope.removeEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
-			instance.scope.removeEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
-			instance.scope.removeEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);				
+			instance.stage.removeEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
+			instance.stage.removeEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
+			instance.stage.removeEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
+			instance.stage.removeEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
+			instance.stage.removeEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);				
 		}			
 		
 		static public function get active():Boolean { return _active; }		
