@@ -131,7 +131,9 @@ package awaybuilder.scene.controllers
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, instance.onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, instance.onKeyUp);			
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
-			stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);
+			stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
+			scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);
+			scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
 			
 			scope.addEventListener(Event.RESIZE, instance.handleScreenSize);
 			instance.handleScreenSize();
@@ -167,6 +169,18 @@ package awaybuilder.scene.controllers
 		
 		// Mouse Events *************************************************************************************************************************************************
 		
+		private function onMouseOut(e:MouseEvent):void
+		{		
+			CameraManager.active = false;
+			Scene3DManager.active = false;			
+		}
+		
+		private function onMouseOver(e:MouseEvent):void
+		{
+			CameraManager.active = true;
+			Scene3DManager.active = true;				
+		}			
+		
 		private function onMouseDown(e:MouseEvent):void
 		{
 			
@@ -183,35 +197,25 @@ package awaybuilder.scene.controllers
 		//Change gizmo mode to transform the selected mesh
 		public static function setTransformMode(mode:String):void
 		{
+			currentGizmo.active = false;
+			currentGizmo.hide();			
+			
 			switch (mode) 
 			{													
-				case GizmoMode.TRANSLATE :
-					
-					currentGizmo.active = false;
-					currentGizmo.hide();
-					currentGizmo = translateGizmo;
-					if (selectedObject) currentGizmo.show(selectedObject);
+				case GizmoMode.TRANSLATE : currentGizmo = translateGizmo;
 					
 					break;				
 				
-				case GizmoMode.ROTATE:
-					
-					currentGizmo.active = false;
-					currentGizmo.hide();
-					currentGizmo = rotateGizmo;
-					if (selectedObject) currentGizmo.show(selectedObject);
+				case GizmoMode.ROTATE: currentGizmo = rotateGizmo;
 					
 					break;				
 				
-				case GizmoMode.SCALE:
-					
-					currentGizmo.active = false;
-					currentGizmo.hide();
-					currentGizmo = scaleGizmo;
-					if (selectedObject) currentGizmo.show(selectedObject);
+				case GizmoMode.SCALE: currentGizmo = scaleGizmo;
 					
 					break;													
-			}						
+			}
+			
+			if (selectedObject) currentGizmo.show(selectedObject);			
 		}
 		
 		

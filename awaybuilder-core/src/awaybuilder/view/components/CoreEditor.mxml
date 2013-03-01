@@ -2,8 +2,11 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	backgroundAlpha="0" creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
-	xmlns:flextoolbox="library://ns.flextoolbox.com/flex"  xmlns:components="awaybuilder.view.components.*" xmlns:tree="awaybuilder.view.components.tree.*">
+	backgroundAlpha="0"
+	creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
+	xmlns:flextoolbox="library://ns.flextoolbox.com/flex" 
+	xmlns:components="awaybuilder.view.components.*" 
+	xmlns:tree="awaybuilder.view.components.tree.*">
 	
 	<s:layout>
 		<s:VerticalLayout gap="0" paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0"/>

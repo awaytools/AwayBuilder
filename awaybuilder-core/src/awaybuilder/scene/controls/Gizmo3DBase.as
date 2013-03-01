@@ -38,9 +38,9 @@ package awaybuilder.scene.controls
 			ambientLight = new DirectionalLight(1, 1, 1);
 			ambientLight.name = "AmbientLight";
 			ambientLight.color = 0xFFFFFF;
-			ambientLight.ambient = 0.5;
-			ambientLight.diffuse = 1;
-			ambientLight.specular = 0.1;			
+			ambientLight.ambient = 0.75;
+			ambientLight.diffuse = 0.5;
+			ambientLight.specular = 0.5;			
 			
 			var picker:StaticLightPicker = new StaticLightPicker([ambientLight]);
 			
