@@ -16,9 +16,6 @@ _libs/_ - library directory with .swc files.
 * __src/defaults.css__
 (in Flash Builder: Project Properties -> Flex Library Build Path-> Assets -> select All)
 
-### Additional compiler options:
--keep-as3-metadata+=Inject -keep-as3-metadata+=PostConstruct
-
 ## awaybuilder-desktop
 Project must be set up as Flex AIR project
 
@@ -28,6 +25,3 @@ _src/AwayBuilderApplication.mxml_ - main application
 _src/AwayBuilderApplication-app.xml_ - AIR application descriptor
 
 _awaybuilder-core_ project must be added as linked library
-
-### Additional compiler options:
--keep-as3-metadata+=Inject -keep-as3-metadata+=PostConstruct
