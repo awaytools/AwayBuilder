@@ -14,3 +14,7 @@ out/
 .DS_Store
 *.iml
 output.txt
+
+# compiled
+.air
+.exe
