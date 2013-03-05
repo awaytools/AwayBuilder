@@ -90,7 +90,7 @@ package awaybuilder.scene.controllers
 			view.stage3DProxy = stage3DProxy;	
 			view.mousePicker = PickingType.RAYCAST_BEST_HIT;
 			view.camera.lens.near = 1;
-			view.camera.lens.far = 10000;			
+			view.camera.lens.far = 100000;			
 			view.camera.position = new Vector3D(0, 200, -1000);
 			view.camera.rotationX = 0;
 			view.camera.rotationY = 0;	
