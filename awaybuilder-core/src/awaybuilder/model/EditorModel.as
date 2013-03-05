@@ -6,7 +6,7 @@ package awaybuilder.model
 
 	public class EditorModel extends Actor implements IEditorModel
 	{
-		private var _zoom:Number = 1;
+		private var _zoom:Number = 0.9;
 
 		public function get zoom():Number
 		{

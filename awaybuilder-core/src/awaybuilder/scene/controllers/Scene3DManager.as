@@ -136,7 +136,7 @@ package awaybuilder.scene.controllers
 			scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
 			
 			scope.addEventListener(Event.RESIZE, instance.handleScreenSize);
-			instance.handleScreenSize();
+			instance.resize();
 			
 			stage3DProxy.addEventListener(Event.ENTER_FRAME, instance.loop);		
 			
@@ -153,19 +153,28 @@ package awaybuilder.scene.controllers
 		
 		private function handleScreenSize(e:Event=null):void 
 		{
+//			resize();
+			scope.addEventListener(Event.ENTER_FRAME, validateSizeOnNextFrame );
+		}	
+		private function validateSizeOnNextFrame( e:Event ):void 
+		{
+			resize();
+		}	
+		private function resize():void 
+		{
+			scope.addEventListener(Event.ENTER_FRAME, validateSizeOnNextFrame );
 			orientationTool.x = scope.width - orientationTool.width - 10;
 			orientationTool.y = 5;
 			
-			stage3DProxy.x = scope.x;
-			stage3DProxy.y = scope.localToGlobal(new Point(scope.x, scope.y)).y;
+			var position:Point = scope.localToGlobal(new Point(0, 0));
+			stage3DProxy.x = position.x;
+			stage3DProxy.y = position.y;
 			stage3DProxy.width = scope.width;
 			stage3DProxy.height = scope.height;			
 			
 			view.width = scope.width;
 			view.height = scope.height;
-		}	
-		
-		
+		}
 		
 		// Mouse Events *************************************************************************************************************************************************
 		

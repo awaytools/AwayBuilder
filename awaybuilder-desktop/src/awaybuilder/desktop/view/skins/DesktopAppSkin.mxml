@@ -10,17 +10,7 @@
 	</fx:Metadata>
 	
 	<fx:Script fb:purpose="styling">
-		/*  Define the skin elements that should not be colorized. 
-		*  For WindowedApplication, border and status bar background are colorized,
-		*  but the content area and status text are not. 
-		*  Exclude the titleBar and scroller because they are SparkSkins and we 
-		*  don't want to colorize them twice.
-		* 
-		* @langversion 3.0
-		* @playerversion Flash 10
-		* @playerversion AIR 1.5
-		* @productversion Flex 4 
-		*/
+
 		static private const exclusions:Array = ["backgroundRect", "contentGroup", "statusText"];
 		
 		/**

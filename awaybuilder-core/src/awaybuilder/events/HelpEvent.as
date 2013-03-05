@@ -4,8 +4,8 @@ package awaybuilder.events
 	
 	public class HelpEvent extends Event
 	{
-		public static const SHOW_SAMPLES:String = "showSamples";
-		public static const HIDE_SAMPLES:String = "hideSamples";
+		public static const SHOW_WELCOME:String = "showWelcome";
+		public static const HIDE_WELCOME:String = "hideWelcome";
 		
 		public function HelpEvent(type:String)
 		{

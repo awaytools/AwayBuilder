@@ -19,7 +19,7 @@ package awaybuilder.desktop.view.mediators
 			ModalityManager.modalityManager.addModalNature(this.window);
 			window.nativeWindow.x = (Screen.mainScreen.bounds.width - window.nativeWindow.width) / 2;
 			window.nativeWindow.y = (Screen.mainScreen.bounds.height - window.nativeWindow.height) / 2;
-			this.eventMap.mapListener(this.eventDispatcher, HelpEvent.HIDE_SAMPLES, eventDispatcher_hideSamplesHandler);
+			this.eventMap.mapListener(this.eventDispatcher, HelpEvent.HIDE_WELCOME, eventDispatcher_hideSamplesHandler);
 			this.eventMap.mapListener(this.window, Event.CLOSING, window_closingHandler);
 		}
 		

@@ -12,7 +12,14 @@ awaybuilder|CoreEditor
 	chromeColor: #dbdbdb;
 }
 
-/*** editor ***/
+s|NumericStepper 
+{
+	color: #000000;
+}
+s|TextInput 
+{
+	color: #000000;
+}
 
 awaybuilder|EditingSurface
 {

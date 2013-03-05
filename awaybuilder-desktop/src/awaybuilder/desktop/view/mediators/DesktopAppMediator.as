@@ -37,16 +37,14 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.events.EditorStateChangeEvent;
 	import awaybuilder.events.HelpEvent;
 	import awaybuilder.events.MessageBoxEvent;
-	import awaybuilder.events.NudgeEvent;
 	import awaybuilder.events.SaveDocumentEvent;
 	import awaybuilder.events.SettingsEvent;
 	import awaybuilder.events.WebLinkEvent;
-	import awaybuilder.utils.logging.AwayBuilderLogger;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.SettingsModel;
 	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.utils.ZoomUtil;
+	import awaybuilder.utils.logging.AwayBuilderLogger;
 	
 	import org.robotlegs.mvcs.Mediator;
 
@@ -55,6 +53,7 @@ package awaybuilder.desktop.view.mediators
 		//file
 		private static const MENU_NEW:String = "new";
 		private static const MENU_OPEN:String = "open";
+		private static const MENU_IMPORT:String = "import";
 		private static const MENU_SAVE:String = "save";
 		private static const MENU_SAVE_AS:String = "saveAs";
 		private static const MENU_PRINT:String = "print";
@@ -203,7 +202,7 @@ package awaybuilder.desktop.view.mediators
 			}
 			else if(this.settingsModel.showSamplesAtStartup)
 			{
-				this.dispatch(new HelpEvent(HelpEvent.SHOW_SAMPLES));
+				this.dispatch(new HelpEvent(HelpEvent.SHOW_WELCOME));
 			}
 			this.updateMenus();
 			this.updateMenuEnabled();
@@ -502,12 +501,12 @@ package awaybuilder.desktop.view.mediators
 				//view
 				case MENU_ZOOM_OUT:
 				{
-					this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
+					//this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
 					break;
 				}
 				case MENU_ZOOM_IN:
 				{
-					this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
+					//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
 					break;
 				}
 				case MENU_PAN_TO_CENTER:
@@ -549,7 +548,7 @@ package awaybuilder.desktop.view.mediators
 				}
 				case MENU_SAMPLES:
 				{
-					this.dispatch(new HelpEvent(HelpEvent.SHOW_SAMPLES));
+					this.dispatch(new HelpEvent(HelpEvent.SHOW_WELCOME));
 					break;
 				}
 				default:
@@ -577,11 +576,11 @@ package awaybuilder.desktop.view.mediators
 			}
 			else if(event.ctrlKey && String.fromCharCode(event.charCode) == "=")
 			{
-				this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
+				//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
 			}
 			else if(event.ctrlKey && String.fromCharCode(event.charCode) == "-")
 			{
-				this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
+				//this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
 			}
 //			if(this.editorModel.selectedObjects.length > 0)
 //			{
@@ -679,13 +678,15 @@ package awaybuilder.desktop.view.mediators
 			this._fileMenuItem = new NativeMenuItem("File");
 			var fileMenu:NativeMenu = new NativeMenu();
 			
-			this.createMenuItem("New Document", MENU_NEW, fileMenu, -1, "n");
-			this.createMenuItem("Open Document...", MENU_OPEN, fileMenu, -1, "o");
+			this.createMenuItem("New Library", MENU_NEW, fileMenu, -1, "n");
+			this.createMenuItem("Open Away3D Library...", MENU_OPEN, fileMenu, -1, "o");
 			fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Save Document", MENU_SAVE, fileMenu, -1, "s");
-			this.createMenuItem("Save Document As...", MENU_SAVE_AS, fileMenu, -1, "S");
+			this.createMenuItem("Import 3D", MENU_IMPORT, fileMenu, -1, "i");
 			fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Print...", MENU_PRINT, fileMenu, -1, "p");
+			this.createMenuItem("Save Away3D Library", MENU_SAVE, fileMenu, -1, "s");
+			this.createMenuItem("Save Library As...", MENU_SAVE_AS, fileMenu, -1, "S");
+			/*fileMenu.addItem(new NativeMenuItem("", true));
+			this.createMenuItem("Print...", MENU_PRINT, fileMenu, -1, "p");*/
 			
 			if(!NativeApplication.supportsMenu)
 			{
