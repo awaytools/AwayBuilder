@@ -1,5 +1,14 @@
 package awaybuilder.scene.controllers
 {
+	import away3d.cameras.Camera3D;
+	import away3d.containers.ObjectContainer3D;
+	import away3d.containers.View3D;
+	import away3d.core.math.Quaternion;
+	import away3d.entities.Mesh;
+	
+	import awaybuilder.scene.modes.CameraMode;
+	import awaybuilder.scene.utils.MathUtils;
+	
 	import com.greensock.TweenMax;
 	
 	import flash.display.Stage;
@@ -11,14 +20,6 @@ package awaybuilder.scene.controllers
 	import flash.ui.Keyboard;
 	
 	import mx.core.UIComponent;
-	
-	import away3d.cameras.Camera3D;
-	import away3d.containers.ObjectContainer3D;
-	import away3d.containers.View3D;
-	import away3d.core.math.Quaternion;
-	
-	import awaybuilder.scene.modes.CameraMode;
-	import awaybuilder.scene.utils.MathUtils;
 
 	/**
 	 * ...
@@ -36,17 +37,19 @@ package awaybuilder.scene.controllers
 		// common variables	
 		public static var dragging:Boolean = false;
 		public static var hasMoved:Boolean = false;
+		public static var panning:Boolean = false;
+		public static var running:Boolean = false;
+		public static var runMultiplier:Number = 3;
 		
 		private static var _mode:String = CameraMode.TARGET;
-		private static var _active:Boolean = false;		
+		private static var _active:Boolean = false;			
 		
 		public static var _xDeg:Number = 0;
 		public static var _yDeg:Number = 0;				
 		
 		private var offset:Vector3D = new Vector3D();
 		private var click:Point = new Point();						
-		private var pan:Point = new Point();					
-		private var altPressed:Boolean = false;
+		private var pan:Point = new Point();		
 		
 		// target mode variables
 		public static var wheelSpeed:Number = 10;
@@ -62,10 +65,10 @@ package awaybuilder.scene.controllers
         private var _speed:Number = 5;				
 		private var _xSpeed:Number = 0;
         private var _zSpeed:Number = 0;
-		private var _runMult:Number = 1;
+		private var _runMultiplier:Number = 3;
 		private var _pause:Boolean = false;
 		private var tm:Number;
-		private var panning:Boolean = false;
+		private var ispanning:Boolean = false;
 		
 		private var poi:ObjectContainer3D;
 		
@@ -186,23 +189,13 @@ package awaybuilder.scene.controllers
 		{			
 			if (dragging) updateMouseRotation();
 			
-			camera.moveForward(_zSpeed);
-			camera.moveRight(_xSpeed);
-						
-			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));				
+			if (running) _runMultiplier = runMultiplier;
+			else _runMultiplier = 1;			
 			
-			/*
-			if (terrain)
-			{
-				var h:Number = terrain.getHeightAt(camera.x, camera.z) + 185;			
-				
-				//if (stickToTerrain || h > camera.y) free mode but not undergroundaaa 
-				if (stickToTerrain) 
-				{
-					camera.y += (h - camera.y) * .05;
-				}												
-			}
-			*/
+			camera.moveForward(_zSpeed * _runMultiplier);
+			camera.moveRight(_xSpeed * _runMultiplier);
+						
+			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));			
 		}
 		
 		
@@ -232,7 +225,7 @@ package awaybuilder.scene.controllers
 		
 		private function processTargetMode():void
 		{			
-			if (panning) updatePOIPosition();
+			if (ispanning) updatePOIPosition();
 			if (dragging) updateMouseRotation();
 			
 			camera.position = getCameraPosition(_xDeg, -_yDeg);							
@@ -243,7 +236,30 @@ package awaybuilder.scene.controllers
 		
 		
 		public static function focusTarget(t:ObjectContainer3D):void
-		{
+		{			
+			if (t is Mesh)
+			{
+				var sx:Number = Math.abs(Mesh(t).scaleX);
+				var sy:Number = Math.abs(Mesh(t).scaleY);
+				var sz:Number = Math.abs(Mesh(t).scaleZ);
+				
+				var bmax:Vector3D = Mesh(t).bounds.max.clone();
+				
+				bmax.x *= sx;
+				bmax.y *= sy;
+				bmax.z *= sz;				
+				
+				var tr:Number = bmax.length * 2;
+				
+				var ms0:Number = Math.max(sx, sy);
+				var ms1:Number = Math.max(ms0, sz);
+				
+				//adjust mouseWheel speed according size and scale of the mesh;
+				wheelSpeed = (bmax.length / 30) * ms1;
+												
+				TweenMax.to(CameraManager, 0.5, {radius:tr});
+			}
+			
 			TweenMax.to(instance.poi, 0.5, {x:t.scenePosition.x, y:t.scenePosition.y, z:t.scenePosition.z});
 		}		
 		
@@ -305,12 +321,12 @@ package awaybuilder.scene.controllers
 		{
 			pan.x = stage.mouseX;
 			pan.y = stage.mouseY;			
-			panning = true;
+			ispanning = true;
 		}
 		
 		private function onMouseMiddleUp(e:MouseEvent):void
 		{
-			panning = false;
+			ispanning = false;
 		}		
 		
 		private function onMouseDown(event : MouseEvent) : void
@@ -320,11 +336,11 @@ package awaybuilder.scene.controllers
 				click.x = stage.mouseX;
 				click.y = stage.mouseY;				
 				
-				if (altPressed)
+				if (panning)
 				{
 					pan.x = stage.mouseX;
 					pan.y = stage.mouseY;
-					panning = true;
+					ispanning = true;
 				}
 				else dragging = true;				
 				hasMoved = false;
@@ -334,22 +350,63 @@ package awaybuilder.scene.controllers
 		private function onMouseUp(event : MouseEvent) : void
 		{
 			dragging = false;
-			panning = false;
+			ispanning = false;
 		}
 		
 		private function onMouseWheel(event:MouseEvent) : void
 		{
-			if (active && mode == CameraMode.TARGET)
+			if (active)
 			{
-				radius -= event.delta * wheelSpeed;			
+				switch(mode)
+				{
+					case CameraMode.TARGET: radius -= event.delta * wheelSpeed;
+						break;
+					case CameraMode.FREE: camera.moveForward(speed * event.delta);
+						break;						
+				}
 			}			
 		}						
 		
 		private function onMouseLeave(event:Event) : void
 		{
-			panning = false;			
+			ispanning = false;			
 		}					
 		
+		
+		
+		// Free Camera Moves ********************************************************************************************************************************************
+		
+		public static function moveForward(moveSpeed:Number):void
+		{
+			if (active && mode == CameraMode.FREE)
+			{
+				instance._zSpeed = moveSpeed;
+			}
+		}
+		
+		public static function moveBackward(moveSpeed:Number):void
+		{
+			if (active && mode == CameraMode.FREE)
+			{
+				instance._zSpeed = -moveSpeed;
+			}			
+		}		
+		
+		public static function moveLeft(moveSpeed:Number):void
+		{
+			if (active && mode == CameraMode.FREE)
+			{
+				instance._xSpeed = -moveSpeed;
+			}			
+		}
+		
+		public static function moveRight(moveSpeed:Number):void
+		{
+			if (active && mode == CameraMode.FREE)
+			{
+				instance._xSpeed = moveSpeed;
+			}			
+		}		
 		
 		// Keyboard Events ******************************************************************************************************************************************
 		
@@ -357,27 +414,24 @@ package awaybuilder.scene.controllers
 		{
 			if (active)
 			{
-				if (e.keyCode == Keyboard.ALTERNATE) altPressed = true;		
+				if (e.keyCode == Keyboard.ALTERNATE) CameraManager.panning = true;		
 				
 				if (mode == CameraMode.FREE)
 				{
 					switch (e.keyCode) 
 					{					
-						case Keyboard.UP: _zSpeed = speed;
+						case Keyboard.UP: moveForward(speed);
 							break;
-						case Keyboard.DOWN: _zSpeed = -speed;
+						case Keyboard.DOWN: moveBackward(speed);
 							break;
-						case Keyboard.LEFT: _xSpeed = -speed;
+						case Keyboard.LEFT: moveLeft(speed);
 							break;
-						case Keyboard.RIGHT: _xSpeed = speed;
+						case Keyboard.RIGHT: moveRight(speed);
 							break;
-						case Keyboard.SHIFT: _runMult = 3;
+						case Keyboard.SHIFT: CameraManager.running = true;
 							break;
 					}				
 				}				
-				
-				_zSpeed *= _runMult;
-				_xSpeed *= _runMult;
 			}
 		}
 		
@@ -385,21 +439,21 @@ package awaybuilder.scene.controllers
 		{
 			if (active)
 			{
-				if (e.keyCode == Keyboard.ALTERNATE) altPressed = false;
+				if (e.keyCode == Keyboard.ALTERNATE) CameraManager.panning = false;
 				
 				if (mode == CameraMode.FREE)
 				{
 					switch (e.keyCode) 
 					{
-						case Keyboard.UP: case Keyboard.DOWN: _zSpeed = 0;
+						case Keyboard.UP: case Keyboard.DOWN: moveForward(0);
 							break;
-						case Keyboard.LEFT: case Keyboard.RIGHT: _xSpeed = 0;
+						case Keyboard.LEFT: case Keyboard.RIGHT: moveLeft(0);
 							break;
-						case Keyboard.SHIFT: _runMult = 1;
+						case Keyboard.SHIFT: CameraManager.running = false;
 							break;
 					}				
 				}				
-			}
+			}			
 		}		
 		
 	}

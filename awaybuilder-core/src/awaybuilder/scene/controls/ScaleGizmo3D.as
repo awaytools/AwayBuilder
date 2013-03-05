@@ -214,7 +214,6 @@ package awaybuilder.scene.controls
 				
 				case "allAxis":
 									
-					
 					mScale.x += trans;
 					mScale.y += trans;
 					mScale.z += trans;

@@ -162,7 +162,7 @@ package awaybuilder.scene.controllers
 		}	
 		private function resize():void 
 		{
-			scope.addEventListener(Event.ENTER_FRAME, validateSizeOnNextFrame );
+			scope.removeEventListener(Event.ENTER_FRAME, validateSizeOnNextFrame );
 			orientationTool.x = scope.width - orientationTool.width - 10;
 			orientationTool.y = 5;
 			
