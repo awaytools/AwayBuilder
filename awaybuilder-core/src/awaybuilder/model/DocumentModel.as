@@ -71,5 +71,27 @@ package awaybuilder.model
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		
+		private var _sceneObjects:ArrayCollection = new ArrayCollection();
+		public function get sceneObjects():ArrayCollection
+		{
+			return this._sceneObjects;
+		}
+		public function set sceneObjects(value:ArrayCollection):void
+		{
+			this._sceneObjects = value;
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+		}
+		
+		private var _selectedObjects:Vector.<Object> = new Vector.<Object>();
+		public function get selectedObjects():Vector.<Object>
+		{
+			return this._selectedObjects;
+		}
+		public function set selectedObjects(value:Vector.<Object>):void
+		{
+			this._selectedObjects = value;
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+		}
+		
 	}
 }

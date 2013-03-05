@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tree:TreeItemRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" width="100%"
+	xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
 	doubleClick="treeitemrendererbase1_doubleClickHandler(event)" doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*">
+	
+	<tree:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</tree:states>
 	
 	<fx:Script>
 		<![CDATA[
@@ -22,12 +28,24 @@
 	
 	<tree:layout>
 		<s:HorizontalLayout paddingLeft="{indentation + 4}" verticalAlign="middle"
-			paddingBottom="4" paddingTop="4"/>
+			paddingBottom="4" paddingTop="4" gap="1"/>
 	</tree:layout>
 	
 	<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
 					selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
-	
-	<s:Label id="labelDisplay" text="{label}" color="{textColor}"/>
+	<s:Group>
+		<s:Rect top="0" bottom="0" left="0" right="0" includeIn="hovered,selected" radiusX="2" radiusY="2" alpha.hovered="0.5">
+			<s:stroke>
+				<s:SolidColorStroke color="0x004F8F"/>
+			</s:stroke>
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0x004F8F" alpha="0.1" ratio="0.2"/>
+					<s:GradientEntry color="0x004F8F" alpha="0.5" ratio="0.9"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+		<s:Label id="labelDisplay" text="{label}" color="{textColor}" paddingTop="5" paddingBottom="4" paddingLeft="5" paddingRight="5" />
+	</s:Group>
 	
 </tree:TreeItemRendererBase>

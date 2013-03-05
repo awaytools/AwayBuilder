@@ -73,7 +73,7 @@ package awaybuilder.desktop
 			this.commandMap.mapEvent(DocumentEvent.CLOSE_DOCUMENT, CloseDocumentCommand);
 			
 			this.commandMap.mapEvent(MessageBoxEvent.SHOW_MESSAGE_BOX, ShowMessageBoxCommand);
-			this.commandMap.mapEvent(HelpEvent.SHOW_SAMPLES, ShowSamplesWindowCommand);
+			this.commandMap.mapEvent(HelpEvent.SHOW_WELCOME, ShowSamplesWindowCommand);
 			this.commandMap.mapEvent(SettingsEvent.SHOW_APPLICATION_SETTINGS, ShowApplicationSettingsWindowCommand);
 			this.commandMap.mapEvent(SettingsEvent.SHOW_APPLICATION_SETTINGS_DOCUMENT_DEFAULTS, ShowApplicationSettingsWindowCommand);
 			this.commandMap.mapEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS, ShowDocumentSettingsWindowCommand);

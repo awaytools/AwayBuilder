@@ -8,14 +8,20 @@ package awaybuilder.model
 		function set name(value:String):void;
 		function get edited():Boolean;
 		function set edited(value:Boolean):void;
-		function get suppressEdits():Boolean;
-		function set suppressEdits(value:Boolean):void;
+//		function get suppressEdits():Boolean;
+//		function set suppressEdits(value:Boolean):void;
 		function get path():String;
 		function set path(value:String):void;
 		
 		function get scenegraph():ArrayCollection;
 		function set scenegraph(value:ArrayCollection):void;
 
+		function get sceneObjects():ArrayCollection;
+		function set sceneObjects(value:ArrayCollection):void;
+		
+		function get selectedObjects():Vector.<Object>;
+		function set selectedObjects(value:Vector.<Object>):void;
+		
 //		function addObject(object:IEditorObjectView):void;
 //		function removeObject(object:IEditorObjectView):void;
 

@@ -380,6 +380,32 @@ package awaybuilder.view.components.tree
 				getStyle("folderClosedIcon") || getStyle("defaultLeafIcon");
 		}
 		
+		public function expandAll():void
+		{
+			for( var i:int = 0; i < dataProvider.length; i++ ) 
+			{
+				var item:Object = dataProvider.getItemAt( i );
+				if (dataDescriptor.hasChildren(item))
+				{
+					var children:IList = IList(dataDescriptor.getChildren(item));
+						_dataProvider.openBranch(children, item, true);
+				}
+			}
+		}
+		
+		public function collapseAll():void
+		{
+			for( var i:int = 0; i < dataProvider.length; i++ ) 
+			{
+				var item:Object = dataProvider.getItemAt( i );
+				if (dataDescriptor.hasChildren(item))
+				{
+					var children:IList = IList(dataDescriptor.getChildren(item));
+					_dataProvider.closeBranch(children, item, true);
+				}
+			}
+		}
+		
 		public function expandItem(item:Object, open:Boolean = true, cancelable:Boolean = true):void
 		{
 			if (dataDescriptor.hasChildren(item))

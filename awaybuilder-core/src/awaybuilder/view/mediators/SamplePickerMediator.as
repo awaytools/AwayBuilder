@@ -30,7 +30,7 @@ package awaybuilder.view.mediators
 		
 		private function picker_cancelHandler(event:Event):void
 		{
-			this.dispatch(new HelpEvent(HelpEvent.HIDE_SAMPLES));
+			this.dispatch(new HelpEvent(HelpEvent.HIDE_WELCOME));
 		}
 		
 		private function showAtStartupCheck_changeHandler(event:Event):void

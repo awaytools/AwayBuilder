@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-
-    ADOBE SYSTEMS INCORPORATED
-    Copyright 2008 Adobe Systems Incorporated
-    All Rights Reserved.
-
-    NOTICE: Adobe permits you to use, modify, and distribute this file
-    in accordance with the terms of the license agreement accompanying it.
-
--->
-
-<!--- The default skin class for a Spark List component.  
-
-      @see spark.components.List
-        
-      @langversion 3.0
-      @playerversion Flash 10
-      @playerversion AIR 1.5
-      @productversion Flex 4
--->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
       xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="112"
       alpha.disabled="0.5" blendMode="normal"> 
@@ -32,18 +11,6 @@
     </s:states>
     
     <fx:Declarations>
-        <!--- 
-              Defines the appearance of the the List's drop indicator.
-              To customize the drop indicator appearance, create a custom ListSkin class.
-              The List's layout takes care to size and position the dropIndicator.
-              The size of the <code>dropIndicator</code> is typically set to the size of the gaps between the items.
-              The minimum and maximum settings are typically respected only in the direction
-              along the major axis (the gap axis).  For example a VerticalLayout ignores the 
-              <code>minWidth</code> and <code>maxWidth</code> settings, 
-              but respect <code>minHeight</code> and <code>maxHeight</code>. 
-        
-              @copy spark.components.List#dropIndicator
-        -->
         <fx:Component id="dropIndicator">
             <s:Group minWidth="3" minHeight="3" maxWidth="3" maxHeight="3">
                 <s:Rect left="0" right="0" top="0" bottom="0">
