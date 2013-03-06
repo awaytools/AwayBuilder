@@ -1,11 +1,11 @@
-package awaybuilder.desktop.services
+package awaybuilder.desktop.model
 {
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
 	import flash.utils.Dictionary;
 	
-	import awaybuilder.events.ReadDocumentDataEvent;
+	import awaybuilder.controller.events.ReadDocumentDataEvent;
 	import awaybuilder.services.IDocumentService;
 	
 	import org.robotlegs.mvcs.Actor;
@@ -24,12 +24,21 @@ package awaybuilder.desktop.services
 			file.addEventListener(Event.CANCEL, file_open_cancelHandler);
 			this._filesToOpen.push(file);
 			var filters:Array = [];
-//			filters.push( new FileFilter("Away3D library (*.awd, *.3ds, *.obj, *.md2, *.md5)", "*.awd;*.3ds;*.obj;*.md2;*.md5") );
 			filters.push( new FileFilter("Away3D (*.awd)", "*.awd") );
 			file.browseForOpen("Open Away3D Library", filters);
 		}
+		public function importDocument():void
+		{
+			var file:File = new File();
+			file.addEventListener(Event.SELECT, file_import_selectHandler);
+			file.addEventListener(Event.CANCEL, file_import_cancelHandler);
+			this._filesToOpen.push(file);
+			var filters:Array = [];
+			filters.push( new FileFilter("*.awd, *.3ds, *.obj, *.md2, *.md5", "*.awd;*.3ds;*.obj;*.md2;*.md5") );
+			file.browseForOpen("Open For Import", filters);
+		}
 		
-		public function saveAs(data:XML, defaultName:String):void
+		public function saveAs(data:Object, defaultName:String):void
 		{
 //			if(defaultName.indexOf(FILE_EXTENSION) != defaultName.length - FILE_EXTENSION.length)
 //			{
@@ -44,7 +53,7 @@ package awaybuilder.desktop.services
 //			this._fileToData[file] = data;
 		}
 		
-		public function save(data:XML, path:String):void
+		public function save(data:Object, path:String):void
 		{	
 //			try
 //			{
@@ -113,6 +122,24 @@ package awaybuilder.desktop.services
 		}
 		
 		private function file_open_cancelHandler(event:Event):void
+		{
+			var file:File = File(event.currentTarget);
+			file.removeEventListener(Event.SELECT, file_open_selectHandler);
+			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
+			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
+		}
+		
+		private function file_import_selectHandler(event:Event):void
+		{
+			var file:File = File(event.currentTarget);
+			file.removeEventListener(Event.SELECT, file_open_selectHandler);
+			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
+			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
+			
+			this.dispatch(new ReadDocumentDataEvent(ReadDocumentDataEvent.READ_DOCUMENT_DATA, file.name, file.url));
+		}
+		
+		private function file_import_cancelHandler(event:Event):void
 		{
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);

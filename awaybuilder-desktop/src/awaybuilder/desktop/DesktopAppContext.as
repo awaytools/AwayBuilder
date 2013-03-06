@@ -1,6 +1,8 @@
 package awaybuilder.desktop
 {
-	import flash.desktop.NativeApplication;
+    import awaybuilder.desktop.model.FileSystemDocumentService;
+
+    import flash.desktop.NativeApplication;
 	import flash.display.DisplayObjectContainer;
 	
 	import mx.core.FlexGlobals;
@@ -15,33 +17,22 @@ package awaybuilder.desktop
 	import awaybuilder.desktop.controller.ShowDocumentSettingsWindowCommand;
 	import awaybuilder.desktop.controller.ShowMessageBoxCommand;
 	import awaybuilder.desktop.controller.ShowSamplesWindowCommand;
-	import awaybuilder.desktop.events.AboutEvent;
-	import awaybuilder.desktop.events.OpenFromInvokeEvent;
+	import awaybuilder.desktop.controller.events.AboutEvent;
+	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
 	import awaybuilder.desktop.model.UpdateModel;
-	import awaybuilder.desktop.services.FileSystemDocumentService;
 	import awaybuilder.desktop.view.components.AboutWindow;
-	import awaybuilder.desktop.view.components.ApplicationSettingsWindow;
 	import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
-	import awaybuilder.desktop.view.components.DocumentSettingsWindow;
-	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
-	import awaybuilder.desktop.view.components.MessageBox;
-	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
 	import awaybuilder.desktop.view.components.WelcomeWindow;
 	import awaybuilder.desktop.view.mediators.AboutWindowMediator;
-	import awaybuilder.desktop.view.mediators.ApplicationSettingsWindowMediator;
-	import awaybuilder.desktop.view.mediators.DesktopAppMediator;
+	import awaybuilder.desktop.view.mediators.ApplicationMediator;
 	import awaybuilder.desktop.view.mediators.DocumentLoadProgressWindowMediator;
-	import awaybuilder.desktop.view.mediators.DocumentSettingsWindowMediator;
-	import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
-	import awaybuilder.desktop.view.mediators.MessageBoxMediator;
-	import awaybuilder.desktop.view.mediators.ObjectPropertiesWindowMediator;
 	import awaybuilder.desktop.view.mediators.WelcomeWindowMediator;
-	import awaybuilder.events.DocumentEvent;
-	import awaybuilder.events.DocumentLoadEvent;
-	import awaybuilder.events.DocumentRequestEvent;
-	import awaybuilder.events.HelpEvent;
-	import awaybuilder.events.MessageBoxEvent;
-	import awaybuilder.events.SettingsEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.DocumentLoadEvent;
+	import awaybuilder.controller.events.DocumentRequestEvent;
+	import awaybuilder.controller.events.HelpEvent;
+	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.services.IDocumentService;
 	
 	import org.robotlegs.base.ContextEvent;
@@ -66,6 +57,7 @@ package awaybuilder.desktop
 			
 			this.commandMap.mapEvent(DocumentRequestEvent.REQUEST_NEW_DOCUMENT, DocumentRequestCommand);
 			this.commandMap.mapEvent(DocumentRequestEvent.REQUEST_OPEN_DOCUMENT, DocumentRequestCommand);
+			this.commandMap.mapEvent(DocumentRequestEvent.REQUEST_IMPORT_DOCUMENT, DocumentRequestCommand);
 			this.commandMap.mapEvent(DocumentRequestEvent.REQUEST_CLOSE_DOCUMENT, DocumentRequestCommand);
 			
 			this.commandMap.mapEvent(OpenFromInvokeEvent.OPEN_FROM_INVOKE, OpenFromInvokeCommand);
@@ -89,7 +81,7 @@ package awaybuilder.desktop
 			var ns:Namespace = descriptor.namespace();
 			this.injector.mapValue(String, descriptor.ns::versionNumber, "version");
 			
-			this.mediatorMap.mapView(AwayBuilderApplication, DesktopAppMediator);
+			this.mediatorMap.mapView(AwayBuilderApplication, ApplicationMediator);
 //			this.mediatorMap.mapView(ObjectPropertiesWindow, ObjectPropertiesWindowMediator);
 //			this.mediatorMap.mapView(DocumentSettingsWindow, DocumentSettingsWindowMediator);
 //			this.mediatorMap.mapView(ApplicationSettingsWindow, ApplicationSettingsWindowMediator);

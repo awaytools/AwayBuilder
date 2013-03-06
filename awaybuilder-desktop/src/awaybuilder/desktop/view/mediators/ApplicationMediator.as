@@ -24,31 +24,30 @@ package awaybuilder.desktop.view.mediators
 	
 	import spark.components.supportClasses.SkinnableTextBase;
 	
-	import awaybuilder.desktop.events.AboutEvent;
-	import awaybuilder.desktop.events.OpenFromInvokeEvent;
+	import awaybuilder.desktop.controller.events.AboutEvent;
+	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
 	import awaybuilder.desktop.model.UpdateModel;
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
-	import awaybuilder.events.ClipboardEvent;
-	import awaybuilder.events.DocumentEvent;
-	import awaybuilder.events.DocumentModelEvent;
-	import awaybuilder.events.DocumentRequestEvent;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.events.EditorStateChangeEvent;
-	import awaybuilder.events.HelpEvent;
-	import awaybuilder.events.MessageBoxEvent;
-	import awaybuilder.events.SaveDocumentEvent;
-	import awaybuilder.events.SettingsEvent;
-	import awaybuilder.events.WebLinkEvent;
+	import awaybuilder.controller.events.ClipboardEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.controller.events.DocumentRequestEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.EditorStateChangeEvent;
+	import awaybuilder.controller.events.HelpEvent;
+	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.WebLinkEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.SettingsModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	
 	import org.robotlegs.mvcs.Mediator;
 
-	public class DesktopAppMediator extends Mediator
+	public class ApplicationMediator extends Mediator
 	{
 		//file
 		private static const MENU_NEW:String = "new";
@@ -77,6 +76,10 @@ package awaybuilder.desktop.view.mediators
 		private static const MENU_FREE_CAMERA:String = "freeCamera";
 		private static const MENU_TARGET_CAMERA:String = "targetCamera";
 		private static const MENU_SHOW_OBJECT_PICKER:String = "showObjectPicker";
+		private static const TRANSLATE_MODE:String = "translateMode";
+		private static const ROTATE_MODE:String = "rotateMode";
+		private static const SCALE_MODE:String = "scaleMode";
+		
 		
 		//view
 		private static const MENU_ZOOM_IN:String = "zoomIn";
@@ -97,9 +100,6 @@ package awaybuilder.desktop.view.mediators
 		
 		[Inject]
 		public var documentModel:IDocumentModel;
-		
-		[Inject]
-		public var editorModel:IEditorModel;
 		
 		[Inject]
 		public var undoRedoModel:UndoRedoModel;
@@ -133,6 +133,9 @@ package awaybuilder.desktop.view.mediators
 		
 		private var _panToolItem:NativeMenuItem;
 		private var _selectionToolItem:NativeMenuItem;
+		private var _translateItem:NativeMenuItem;
+		private var _rotateItem:NativeMenuItem;
+		private var _scaleItem:NativeMenuItem;
 		private var _showObjectPickerItem:NativeMenuItem;
 		private var _snapToGridItem:NativeMenuItem;
 		private var _showGridItem:NativeMenuItem;
@@ -158,7 +161,11 @@ package awaybuilder.desktop.view.mediators
 			this.eventMap.mapListener(this.eventDispatcher, SettingsEvent.SHOW_OBJECT_PICKER_CHANGE, eventDispatcher_showObjectPickerChangeHandler);
 			
 			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeCameraHandler);
-			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetCameraHandler);			
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetCameraHandler);
+			
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchTranslateHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchRotateHandler);
+			this.eventMap.mapListener(this.eventDispatcher, EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchScaleCameraHandler);
 			
 			this.eventMap.mapListener(this.app, Event.CLOSE, awaybuilder_closeHandler);
 			this.eventMap.mapListener(this.app, Event.CLOSING, awaybuilder_closingHandler);
@@ -271,14 +278,35 @@ package awaybuilder.desktop.view.mediators
 		
 		private function eventDispatcher_switchToFreeCameraHandler(event:EditingSurfaceRequestEvent):void
 		{
-			this._selectionToolItem.checked = true;
-			this._panToolItem.checked = false;
+			this._selectionToolItem.checked = false;
+			this._panToolItem.checked = true;
 		}
 		
 		private function eventDispatcher_switchToTargetCameraHandler(event:EditingSurfaceRequestEvent):void
 		{
-			this._panToolItem.checked = true;
-			this._selectionToolItem.checked = false;
+			this._panToolItem.checked = false;
+			this._selectionToolItem.checked = true;
+		}
+		
+		private function eventDispatcher_switchTranslateHandler(event:EditingSurfaceRequestEvent):void
+		{
+			this._translateItem.checked = true;
+			this._rotateItem.checked = false;
+			this._scaleItem.checked = false;
+		}
+		
+		private function eventDispatcher_switchRotateHandler(event:EditingSurfaceRequestEvent):void
+		{
+			this._translateItem.checked = false;
+			this._rotateItem.checked = true;
+			this._scaleItem.checked = false;
+		}
+		
+		private function eventDispatcher_switchScaleCameraHandler(event:EditingSurfaceRequestEvent):void
+		{
+			this._translateItem.checked = false;
+			this._rotateItem.checked = false;
+			this._scaleItem.checked = true;
 		}
 		
 		private function awaybuilder_dragEnterHandler(event:DragEvent):void
@@ -381,6 +409,11 @@ package awaybuilder.desktop.view.mediators
 				case MENU_OPEN:
 				{
 					this.dispatch(new DocumentRequestEvent(DocumentRequestEvent.REQUEST_OPEN_DOCUMENT));
+					break;
+				}
+				case MENU_IMPORT:
+				{
+					this.dispatch(new DocumentRequestEvent(DocumentRequestEvent.REQUEST_IMPORT_DOCUMENT));
 					break;
 				}
 				case MENU_SAVE:
@@ -492,12 +525,21 @@ package awaybuilder.desktop.view.mediators
 					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET));
 					break;
 				}
-				case MENU_SHOW_OBJECT_PICKER:
+				case TRANSLATE_MODE:
 				{
-					this._showObjectPickerItem.checked = !this._showObjectPickerItem.checked;
-					this.settingsModel.showObjectPicker = this._showObjectPickerItem.checked;
+					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE));
 					break;
-				}
+				}	
+				case ROTATE_MODE:
+				{
+					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE));
+					break;
+				}	
+				case SCALE_MODE:
+				{
+					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE));
+					break;
+				}	
 				//view
 				case MENU_ZOOM_OUT:
 				{
@@ -736,13 +778,20 @@ package awaybuilder.desktop.view.mediators
 			
 			this._toolsMenuItem = new NativeMenuItem("Tools");
 			var toolsMenu:NativeMenu = new NativeMenu();
-			this._selectionToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "f", []);
+			this._selectionToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "F", []);
 			this._selectionToolItem.checked = true;
-			this._panToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "t", []);
+			this._panToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "T", []);
 			this._panToolItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
-			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);
-			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
+			this._translateItem = this.createMenuItem("Translate Transform Mode", TRANSLATE_MODE, toolsMenu, -1, "t", []);
+			this._translateItem.checked = true;
+			this._rotateItem = this.createMenuItem("Rotate Transform Mode", ROTATE_MODE, toolsMenu, -1, "r", []);
+			this._rotateItem.checked = false;
+			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "s", []);
+			this._scaleItem.checked = false;
+			toolsMenu.addItem(new NativeMenuItem("", true));
+//			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);
+//			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
 			this._toolsMenuItem.submenu = toolsMenu;
 			this._mainMenu.addItem(this._toolsMenuItem);
 			

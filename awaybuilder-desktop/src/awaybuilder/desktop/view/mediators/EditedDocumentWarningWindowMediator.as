@@ -6,7 +6,7 @@ package awaybuilder.desktop.view.mediators
 	
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
-	import awaybuilder.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.WindowModel;
 	

@@ -2,8 +2,8 @@ package awaybuilder.desktop.controller
 {
 	import flash.filesystem.File;
 	
-	import awaybuilder.desktop.events.OpenFromInvokeEvent;
-	import awaybuilder.events.ReadDocumentDataEvent;
+	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+	import awaybuilder.controller.events.ReadDocumentDataEvent;
 	import awaybuilder.model.IDocumentModel;
 	
 	import org.robotlegs.mvcs.Command;

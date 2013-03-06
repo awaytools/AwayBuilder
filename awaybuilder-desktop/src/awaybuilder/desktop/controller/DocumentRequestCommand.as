@@ -1,8 +1,8 @@
 package awaybuilder.desktop.controller
 {
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
-	import awaybuilder.events.DocumentRequestEvent;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.DocumentRequestEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.WindowModel;
 	

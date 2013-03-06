@@ -4,8 +4,8 @@ package awaybuilder.desktop.controller
 	import flash.display.Screen;
 	
 	import awaybuilder.desktop.view.components.ApplicationSettingsWindow;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.events.SettingsEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	
 	import org.robotlegs.mvcs.Command;
 	

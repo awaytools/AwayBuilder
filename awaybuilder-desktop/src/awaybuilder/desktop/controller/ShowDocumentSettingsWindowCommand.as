@@ -3,7 +3,7 @@ package awaybuilder.desktop.controller
 	import flash.display.Screen;
 	
 	import awaybuilder.desktop.view.components.DocumentSettingsWindow;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
 	
 	import org.robotlegs.mvcs.Command;
 	

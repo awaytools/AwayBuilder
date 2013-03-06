@@ -5,7 +5,7 @@
 	<fx:Script fb:purpose="styling">
 
 		static private const exclusions:Array = ["backgroundRect", "backgroundBitmapRect", "contentGroup"];
-		
+
 		/**
 		 * @private
 		 */
@@ -19,14 +19,14 @@
 			useChromeColor = true;
 			super.initializationComplete();
 		} 
-		
+
 		/**
 		 *  @private
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
 		{
 			backgroundFill.color = getStyle("backgroundColor");
-			backgroundFill.alpha = backgroundBitmapFill.alpha = getStyle("backgroundAlpha");
+//			backgroundFill.alpha = backgroundBitmapRect.alpha = getStyle("backgroundAlpha");
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 		}
 	</fx:Script>
@@ -46,10 +46,13 @@
 			<s:SolidColor id="backgroundFill"/>
 		</s:fill>
 	</s:Rect>
-	<s:Rect id="backgroundBitmapRect" left="0" right="0" top="0" bottom="0" maxHeight="250" >
+	<s:Rect id="backgroundBitmapRect" left="0" right="0" top="0" bottom="0" >
 		<s:fill>
 			<!--- @private -->
-			<s:BitmapFill id="backgroundBitmapFill" fillMode="repeat" source="@Embed('/../assets/images/dialog-background.png')"/>
+            <s:LinearGradient rotation="90">
+                <s:GradientEntry color="#192432"/>
+                <s:GradientEntry color="#1d1d1c"/>
+            </s:LinearGradient>
 		</s:fill>
 	</s:Rect>
 

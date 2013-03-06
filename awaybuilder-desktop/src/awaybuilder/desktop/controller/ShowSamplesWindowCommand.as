@@ -3,7 +3,6 @@ package awaybuilder.desktop.controller
 	import flash.display.Screen;
 	
 	import awaybuilder.desktop.view.components.WelcomeWindow;
-	import awaybuilder.model.IEditorModel;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -13,9 +12,6 @@ package awaybuilder.desktop.controller
 		
 		[Inject]
 		public var mainWindow:AwayBuilderApplication;
-		
-		[Inject]
-		public var editor:IEditorModel;
 		
 		override public function execute():void
 		{

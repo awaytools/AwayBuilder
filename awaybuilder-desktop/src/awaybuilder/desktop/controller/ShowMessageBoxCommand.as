@@ -1,8 +1,8 @@
 package awaybuilder.desktop.controller
 {
 	import awaybuilder.desktop.view.components.MessageBox;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.events.MessageBoxEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.MessageBoxEvent;
 	
 	import org.robotlegs.mvcs.Command;
 	

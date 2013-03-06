@@ -12,7 +12,7 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.components.IEditorObjectView;
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
-	import awaybuilder.events.EditorStateChangeEvent;
+	import awaybuilder.controller.events.EditorStateChangeEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.UndoRedoModel;

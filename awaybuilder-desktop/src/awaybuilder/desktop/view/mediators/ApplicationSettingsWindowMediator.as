@@ -4,7 +4,7 @@ package awaybuilder.desktop.view.mediators
 	
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.ApplicationSettingsWindow;
-	import awaybuilder.events.SettingsEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	

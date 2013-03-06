@@ -5,7 +5,7 @@ package awaybuilder.desktop.view.mediators
 	
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.WelcomeWindow;
-	import awaybuilder.events.HelpEvent;
+	import awaybuilder.controller.events.HelpEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	

@@ -3,7 +3,7 @@ package awaybuilder.desktop.view.mediators
 	
 	import flash.events.Event;
 	
-	import awaybuilder.desktop.events.AboutEvent;
+	import awaybuilder.desktop.controller.events.AboutEvent;
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.AboutWindow;
 	

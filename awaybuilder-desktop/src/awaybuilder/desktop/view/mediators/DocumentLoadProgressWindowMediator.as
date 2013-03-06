@@ -4,7 +4,7 @@ package awaybuilder.desktop.view.mediators
 	
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
-	import awaybuilder.events.DocumentLoadEvent;
+	import awaybuilder.controller.events.DocumentLoadEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 
