@@ -252,27 +252,6 @@ public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRende
 		return isBranch && hasChildren;
 	}
 	
-	//----------------------------------
-	//  textColor
-	//----------------------------------
-	
-	private var _textColor:uint = 0;
-	
-	[Bindable("textColorChange")]
-	public function get textColor():uint
-	{
-		return _textColor;
-	}
-	
-	public function set textColor(value:uint):void
-	{
-		if (_textColor == value)
-			return;
-		
-		_textColor = value;
-		dispatchEvent(new Event("textColorChange"));
-	}
-	
 	//--------------------------------------------------------------------------
 	//
 	//  Properties
@@ -311,8 +290,6 @@ public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRende
 	override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 	{
 		super.updateDisplayList(unscaledWidth, unscaledHeight);
-		
-		textColor = getTextColor();
 	}
 	
 	//--------------------------------------------------------------------------
@@ -324,23 +301,6 @@ public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRende
 	public function toggle():void
 	{
 		tree.expandItem(data, !_isOpen);
-	}
-	
-	public function getTextColor():uint
-	{
-		if (!tree)
-			return 0;
-		if (!tree.useTextColors)
-			return getStyle("color");
-		
-		if (!enabled)
-			return getStyle("disabledColor");
-		else if (selected)
-			return getStyle("textSelectedColor");
-		else if (hovered)
-			return getStyle("textRollOverColor");
-		else
-			return getStyle("color");
 	}
 	
 	private function updateChildren():void

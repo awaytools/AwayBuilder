@@ -3,7 +3,7 @@ package awaybuilder.controller
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	
-	import awaybuilder.events.WebLinkEvent;
+	import awaybuilder.controller.events.WebLinkEvent;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	
 	import org.robotlegs.mvcs.Command;

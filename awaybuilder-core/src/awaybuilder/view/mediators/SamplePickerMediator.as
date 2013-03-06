@@ -2,7 +2,7 @@ package awaybuilder.view.mediators
 {
 	import flash.events.Event;
 	
-	import awaybuilder.events.HelpEvent;
+	import awaybuilder.controller.events.HelpEvent;
 	import awaybuilder.model.SamplesModel;
 	import awaybuilder.model.SettingsModel;
 	import awaybuilder.view.components.SamplePicker;

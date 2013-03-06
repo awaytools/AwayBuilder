@@ -1,20 +1,11 @@
 package awaybuilder.controller
 {
-	import flash.desktop.Clipboard;
-	import flash.desktop.ClipboardTransferMode;
-	import flash.errors.IllegalOperationError;
-	import flash.utils.ByteArray;
-
-	import awaybuilder.events.ReadDocumentDataEvent;
-	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.IDocumentModel;
 
 	import org.robotlegs.mvcs.Command;
 
 	public class PasteCommand extends Command
 	{
-		[Inject]
-		public var editor:IEditorModel;
 		
 		[Inject]
 		public var document:IDocumentModel;

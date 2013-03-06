@@ -46,15 +46,6 @@ package awaybuilder.view.components.tree
 	[Style(name="indentation", type="Number", inherit="no", theme="spark")]
 	
 	/**
-	 *  Color of the text when the user rolls over a row.
-	 */
-	[Style(name="textRollOverColor", type="uint", format="Color", inherit="yes")]
-	
-	/**
-	 *  Color of the text when the user selects a row.
-	 */
-	[Style(name="textSelectedColor", type="uint", format="Color", inherit="yes")]
-	/**
 	 * Custom Spark Tree that is based on Spark List. Supports most of MX Tree
 	 * features and does not have it's bugs.
 	 */

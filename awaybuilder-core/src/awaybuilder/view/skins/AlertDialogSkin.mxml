@@ -152,10 +152,12 @@
                 <s:SolidColor id="backgroundFill" color="#FFFFFF"/>
             </s:fill>
         </s:Rect>
-		<s:Rect id="backgroundBitmap" left="1" right="1" top="1" bottom="1" maxHeight="250">
+		<s:Rect id="backgroundBitmap" left="1" right="1" top="1" bottom="1">
 			<s:fill>
-				<!--- @private -->
-				<s:BitmapFill id="backgroundBitmapFill" fillMode="repeat" source="@Embed('/../assets/images/dialog-background.png')"/>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="#192432"/>
+					<s:GradientEntry color="#1d1d1c"/>
+				</s:LinearGradient>
 			</s:fill>
 		</s:Rect>
         

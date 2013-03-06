@@ -1,6 +1,6 @@
 package awaybuilder.view.mediators
 {
-	import awaybuilder.events.SettingsEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.view.components.ApplicationSettingsForm;
 	import awaybuilder.view.components.events.ApplicationSettingsFormEvent;
 

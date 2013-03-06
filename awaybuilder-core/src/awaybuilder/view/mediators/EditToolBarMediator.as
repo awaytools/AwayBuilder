@@ -1,17 +1,14 @@
 package awaybuilder.view.mediators
 {
-	import awaybuilder.events.ClipboardEvent;
-	import awaybuilder.events.DocumentEvent;
-	import awaybuilder.events.DocumentRequestEvent;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.events.EditorStateChangeEvent;
-	import awaybuilder.events.SaveDocumentEvent;
-	import awaybuilder.events.SettingsEvent;
-	import awaybuilder.events.WebLinkEvent;
+	import awaybuilder.controller.events.ClipboardEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.DocumentRequestEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.EditorStateChangeEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.WebLinkEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.events.ToolBarEvent;
@@ -22,9 +19,6 @@ package awaybuilder.view.mediators
 	{
 		[Inject]
 		public var toolBar:EditToolBar;
-		
-		[Inject]
-		public var editor:IEditorModel;
 		
 		[Inject]
 		public var document:IDocumentModel;

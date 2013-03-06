@@ -2,7 +2,11 @@ package awaybuilder.model
 {
 	import mx.collections.ArrayCollection;
 	
-	import awaybuilder.events.DocumentModelEvent;
+	import spark.collections.Sort;
+	
+	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.model.vo.ScenegraphGroupItemVO;
+	import awaybuilder.model.vo.ScenegraphItemVO;
 	
 	import org.robotlegs.mvcs.Actor;
 
@@ -39,16 +43,6 @@ package awaybuilder.model
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_EDITED));
 		}
 		
-		private var _suppressEdits:Boolean = false;
-		public function get suppressEdits():Boolean
-		{
-			return this._suppressEdits;
-		}
-		public function set suppressEdits(value:Boolean):void
-		{
-			this._suppressEdits = value;
-		}
-		
 		private var _savedNativePath:String;
 		public function get path():String
 		{
@@ -60,6 +54,7 @@ package awaybuilder.model
 		}
 		
 		
+		private var _scenegraphSort:Sort = new Sort();
 		private var _scenegraph:ArrayCollection = new ArrayCollection();
 		public function get scenegraph():ArrayCollection
 		{
@@ -68,20 +63,36 @@ package awaybuilder.model
 		public function set scenegraph(value:ArrayCollection):void
 		{
 			this._scenegraph = value;
+			_scenegraphSort.compareFunction = compareGroupItems;
+			this._scenegraph.sort = _scenegraphSort;
+			this._scenegraph.refresh();
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
-		
-		private var _sceneObjects:ArrayCollection = new ArrayCollection();
-		public function get sceneObjects():ArrayCollection
+		private function compareGroupItems( a:Object, b:Object ):int
 		{
-			return this._sceneObjects;
-		}
-		public function set sceneObjects(value:ArrayCollection):void
-		{
-			this._sceneObjects = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			var group1:ScenegraphGroupItemVO = a as ScenegraphGroupItemVO;
+			var group2:ScenegraphGroupItemVO = b as ScenegraphGroupItemVO;
+			
+			if (group1 == null && group2 == null)
+				return 0;
+			
+			if (group1 == null)
+				return 1;
+			
+			if (group2 == null)
+				return -1;
+			
+			if (group1.weight < group2.weight)
+				return -1;
+			
+			if (group1.weight > group2.weight)
+				return 1;
+			
+			return 0;
+
 		}
 		
+
 		private var _selectedObjects:Vector.<Object> = new Vector.<Object>();
 		public function get selectedObjects():Vector.<Object>
 		{
@@ -91,6 +102,21 @@ package awaybuilder.model
 		{
 			this._selectedObjects = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+		}
+		
+		public function getScenegraphGroup( type:String ):ScenegraphGroupItemVO 
+		{
+			for each( var item:ScenegraphItemVO in _scenegraph ) 
+			{
+				if( item is ScenegraphGroupItemVO ) 
+				{
+					var group:ScenegraphGroupItemVO = item as ScenegraphGroupItemVO;
+					if( group.type == type ) {
+						return group;
+					}
+				}
+			}
+			return null;
 		}
 		
 	}

@@ -25,27 +25,21 @@
 		]]>
 	</fx:Script>
 	
+	<s:Rect top="1" bottom="1" left="0" right="0" includeIn="hovered,selected" alpha.hovered="0.3">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x105F9F" alpha="0.4" ratio="0.2"/>
+				<s:GradientEntry color="0x105F9F" alpha="0.5" ratio="0.9"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
 	
-	<tree:layout>
-		<s:HorizontalLayout paddingLeft="{indentation + 4}" verticalAlign="middle"
-			paddingBottom="4" paddingTop="4" gap="1"/>
-	</tree:layout>
+	<s:HGroup paddingLeft="{indentation + 4}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1" height="24">
+		<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
+						selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
+		
+		<s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
+	</s:HGroup>
 	
-	<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
-					selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
-	<s:Group>
-		<s:Rect top="0" bottom="0" left="0" right="0" includeIn="hovered,selected" radiusX="2" radiusY="2" alpha.hovered="0.5">
-			<s:stroke>
-				<s:SolidColorStroke color="0x004F8F"/>
-			</s:stroke>
-			<s:fill>
-				<s:LinearGradient rotation="90">
-					<s:GradientEntry color="0x004F8F" alpha="0.1" ratio="0.2"/>
-					<s:GradientEntry color="0x004F8F" alpha="0.5" ratio="0.9"/>
-				</s:LinearGradient>
-			</s:fill>
-		</s:Rect>
-		<s:Label id="labelDisplay" text="{label}" color="{textColor}" paddingTop="5" paddingBottom="4" paddingLeft="5" paddingRight="5" />
-	</s:Group>
 	
 </tree:TreeItemRendererBase>

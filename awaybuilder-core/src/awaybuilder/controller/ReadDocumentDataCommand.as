@@ -1,9 +1,11 @@
 package awaybuilder.controller
 {
+	import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.managers.CursorManager;
 	
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimationStateBase;
@@ -18,14 +20,15 @@ package awaybuilder.controller
 	import away3d.library.assets.AssetType;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.TextureMaterial;
+	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.textures.BitmapTexture;
 	
-	import awaybuilder.events.ReadDocumentDataEvent;
+	import awaybuilder.controller.events.ReadDocumentDataEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.model.vo.ScenegraphTreeVO;
-	import awaybuilder.scene.controllers.Scene3DManager;
+	import awaybuilder.model.vo.ScenegraphGroupItemVO;
+	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import org.robotlegs.mvcs.Command;
 
@@ -36,9 +39,6 @@ package awaybuilder.controller
 		public var document:IDocumentModel;
 		
 		[Inject]
-		public var editor:IEditorModel;
-		
-		[Inject]
 		public var undoRedo:UndoRedoModel;
 		
 		[Inject]
@@ -47,32 +47,55 @@ package awaybuilder.controller
 		
 		private var _scenegraph:ArrayCollection;
 		
-		private var _sceneObjects:ArrayCollection;
+		private var _sceneGroup:ScenegraphGroupItemVO;
 		
-		private var _materialObjects:ArrayCollection;
+		private var _materialGroup:ScenegraphGroupItemVO;
 		
-		private var _animationObjects:ArrayCollection;
+		private var _animationGroup:ScenegraphGroupItemVO;
 		
-		private var _geometryObjects:ArrayCollection;
+		private var _geometryGroup:ScenegraphGroupItemVO;
 		
-		private var _lightObjects:ArrayCollection;
+		private var _textureGroup:ScenegraphGroupItemVO;
 		
 		override public function execute():void
 		{
-			_scenegraph = new ArrayCollection();
-			_sceneObjects = new ArrayCollection();
-			_materialObjects = new ArrayCollection();
-			_animationObjects = new ArrayCollection();
-			_geometryObjects = new ArrayCollection();
-			_lightObjects = new ArrayCollection();
+			_scenegraph = document.scenegraph;
+			
+			_sceneGroup = document.getScenegraphGroup( ScenegraphGroupItemVO.SCENE_GROUP );
+			if( !_sceneGroup ) 
+			{
+				_sceneGroup = new ScenegraphGroupItemVO( "Scene", ScenegraphGroupItemVO.SCENE_GROUP );
+			}
+			_materialGroup = document.getScenegraphGroup( ScenegraphGroupItemVO.MATERIAL_GROUP );
+			if( !_materialGroup ) 
+			{
+				_materialGroup = new ScenegraphGroupItemVO( "Materials", ScenegraphGroupItemVO.MATERIAL_GROUP );
+			}
+			_animationGroup = document.getScenegraphGroup( ScenegraphGroupItemVO.ANIMATION_GROUP );
+			if( !_animationGroup ) 
+			{
+				_animationGroup = new ScenegraphGroupItemVO( "Animations", ScenegraphGroupItemVO.ANIMATION_GROUP );
+			}
+			_geometryGroup = document.getScenegraphGroup( ScenegraphGroupItemVO.GEOMETRY_GROUP );
+			if( !_geometryGroup ) 
+			{
+				_geometryGroup = new ScenegraphGroupItemVO( "Geometry", ScenegraphGroupItemVO.GEOMETRY_GROUP );
+			}
+			_textureGroup = document.getScenegraphGroup( ScenegraphGroupItemVO.TEXTURE_GROUP );
+			if( !_textureGroup ) 
+			{
+				_textureGroup = new ScenegraphGroupItemVO( "Texture", ScenegraphGroupItemVO.TEXTURE_GROUP );
+			}
 			
 			document.name = event.name;
 			Parsers.enableAllBundled();
 			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
-			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);		
+			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.addEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
 			AssetLibrary.load(new URLRequest(event.path));	
+			CursorManager.setBusyCursor();
 		}
+		
 		
 		private function loadErrorHandler( event:LoaderEvent ):void
 		{
@@ -81,30 +104,27 @@ package awaybuilder.controller
 		
 		private function resourceCompleteHandler( event:LoaderEvent ):void
 		{
-			if( _animationObjects.length ) 
+			if( _animationGroup.children.length && !document.getScenegraphGroup( ScenegraphGroupItemVO.ANIMATION_GROUP ) ) 
 			{
-				var animationItem:ScenegraphTreeVO = new ScenegraphTreeVO( "Animation", null );
-				animationItem.children = _animationObjects;
-				_scenegraph.addItemAt( animationItem, 0 );
+				_scenegraph.addItem( _animationGroup );
 			}
-			if( _geometryObjects.length ) 
+			if( _geometryGroup.children.length && !document.getScenegraphGroup( ScenegraphGroupItemVO.GEOMETRY_GROUP ) ) 
 			{
-				var geometryItem:ScenegraphTreeVO = new ScenegraphTreeVO( "Geometry", null );
-				geometryItem.children = _geometryObjects;
-				_scenegraph.addItemAt( geometryItem, 0 );
+				_scenegraph.addItem( _geometryGroup );
 			}
-			if( _sceneObjects.length ) 
+			if( _sceneGroup.children.length && !document.getScenegraphGroup( ScenegraphGroupItemVO.SCENE_GROUP ) ) 
 			{
-				var sceneItem:ScenegraphTreeVO = new ScenegraphTreeVO( "Scene", null );
-				sceneItem.children = _sceneObjects;
-				_scenegraph.addItemAt( sceneItem, 0 );
+				_scenegraph.addItem( _sceneGroup );
+			}
+			if( _textureGroup.children.length && !document.getScenegraphGroup( ScenegraphGroupItemVO.TEXTURE_GROUP ) ) 
+			{
+				_scenegraph.addItem( _textureGroup );
+			}
+			if( _materialGroup.children.length && !document.getScenegraphGroup( ScenegraphGroupItemVO.MATERIAL_GROUP ) ) 
+			{
+				_scenegraph.addItem( _materialGroup );
 			}
 			
-			var lightsItem:ScenegraphTreeVO = new ScenegraphTreeVO( "Lights", null );
-			_scenegraph.addItem( lightsItem );
-			
-			document.scenegraph = _scenegraph;
-			document.sceneObjects = _sceneObjects;
 //			trace( _mesh.parent );
 //			if( _mesh.material ) {
 //				Scene3DManager.addMesh( _mesh );
@@ -112,137 +132,95 @@ package awaybuilder.controller
 //			else {
 //				Alert.show( "Mesh was not added to scene, material is undefined", "Warning" ); 
 //			}
-			
+			CursorManager.removeBusyCursor();
 		}
 		private function assetCompleteHandler( event:AssetEvent ):void
 		{		
 				
-			trace( event.asset.assetType );
+//			trace( event.asset.assetType );
 			
 //			var _light:DirectionalLight = new DirectionalLight(-1, -1, 1);
 ////			_direction = new Vector3D(-1, -1, 1);
 //			var _lightPicker:StaticLightPicker = new StaticLightPicker([_light]);
 //			Scene3DManager.addLight( _light );
 //			
-			var item:ScenegraphTreeVO;
+			var item:ScenegraphItemVO;
 			if (event.asset.assetType == AssetType.MESH) 
 			{
 				var mesh:Mesh = event.asset as Mesh;
-				item = new ScenegraphTreeVO( mesh.name , mesh );
-				_sceneObjects.addItem( item );
+				item = new ScenegraphItemVO( mesh.name , mesh );
+				_sceneGroup.children.addItem( item );
 				
-				if( mesh.material ) {
-					Scene3DManager.addMesh( mesh );
+				if( !mesh.material ) {
+					mesh.material = DefaultMaterialManager.getDefaultMaterial();
 				}
-				else {
-					Alert.show( "Mesh was not added to scene, material is undefined", "Warning" ); 
-				}
-				
+				Scene3DManager.addMesh( mesh );
+//				if( mesh.material ) {
+//					Scene3DManager.addMesh( mesh );
+//				}
+//				else {
+//					Alert.show( "Mesh was not added to scene, material is undefined", "Warning" ); 
+//				}
 //				mesh.castsShadows = true;
 			} 
 			else if (event.asset.assetType == AssetType.CONTAINER) 
 			{
 				var c:ObjectContainer3D = event.asset as ObjectContainer3D;
-				item = new ScenegraphTreeVO( "Container (" + c.name +")", c );
+				item = new ScenegraphItemVO( c.name, c );
 				item.children = new ArrayCollection();
-				_sceneObjects.addItem( item );
+				_sceneGroup.children.addItem( item );
 			}
 			else if (event.asset.assetType == AssetType.MATERIAL) 
 			{
 				var material:TextureMaterial = event.asset as TextureMaterial;
-				item = new ScenegraphTreeVO( "Material (" + material.name +")", material );
+				item = new ScenegraphItemVO( material.name, material );
 				item.children = new ArrayCollection();
 				if( material.lightPicker ) {
-					item.children.addItem( new ScenegraphTreeVO( "LightPicker (" + material.lightPicker.name +")", material.lightPicker ) );
+					item.children.addItem( new ScenegraphItemVO( "LightPicker (" + material.lightPicker.name +")", material.lightPicker ) );
 				}
 				if( material.diffuseMethod ) {
-					item.children.addItem( new ScenegraphTreeVO( "DiffuseMethod", material.diffuseMethod ) );
+					item.children.addItem( new ScenegraphItemVO( "DiffuseMethod", material.diffuseMethod ) );
 				}
 				if( material.normalMethod ) {
-					item.children.addItem( new ScenegraphTreeVO( "NormalMethod", material.normalMethod ) );
+					item.children.addItem( new ScenegraphItemVO( "NormalMethod", material.normalMethod ) );
 				}
 				
-				/*item.children.addItem( new ScenegraphTreeVO( "Material (" + material.name +")" ) );
-				item.children.addItem( new ScenegraphTreeVO( "Material (" + material.name +")" ) );
-				item.children.addItem( new ScenegraphTreeVO( "Material (" + material.name +")" ) );
-				item.children.addItem( new ScenegraphTreeVO( "Material (" + material.name +")" ) );*/
-				_scenegraph.addItem( item );
+				_materialGroup.children.addItem( item );
 			}
 			else if (event.asset.assetType == AssetType.TEXTURE) 
 			{
 				var texture:BitmapTexture = event.asset as BitmapTexture;
-				item = new ScenegraphTreeVO( "Texture (" + texture.originalName.split("/").pop() +")", texture );
-				_scenegraph.addItem( item );
+				item = new ScenegraphItemVO( "Texture (" + texture.originalName.split("/").pop() +")", texture );
+				_textureGroup.children.addItem( item );
 			}
 			else if (event.asset.assetType == AssetType.GEOMETRY) 
 			{
 				var geometry:Geometry = event.asset as Geometry;
-				item = new ScenegraphTreeVO( geometry.name ,geometry );
-				_geometryObjects.addItem( item );
+				item = new ScenegraphItemVO( geometry.name ,geometry );
+				_geometryGroup.children.addItem( item );
 				item.children = new ArrayCollection();
 				for each( var g:SubGeometry in geometry.subGeometries ) {
-					item.children.addItem( new ScenegraphTreeVO( "SubGeometry",g ) );
+					item.children.addItem( new ScenegraphItemVO( "SubGeometry",g ) );
 				}
 			}
 			else if (event.asset.assetType == AssetType.ANIMATION_SET) 
 			{
 				var animationSet:AnimationSetBase = event.asset as AnimationSetBase;
-				item = new ScenegraphTreeVO( "Animation Set (" + animationSet.name +")",animationSet );
-				_animationObjects.addItem( item );
+				item = new ScenegraphItemVO( "Animation Set (" + animationSet.name +")",animationSet );
+				_animationGroup.children.addItem( item );
 			}
 			else if (event.asset.assetType == AssetType.ANIMATION_STATE) 
 			{
 				var animationState:AnimationStateBase = event.asset as AnimationStateBase;
-				item = new ScenegraphTreeVO( "Animation State (" + animationState.name +")",animationState );
-				_animationObjects.addItem( item );
+				item = new ScenegraphItemVO( "Animation State (" + animationState.name +")",animationState );
+				_animationGroup.children.addItem( item );
 			}
 			else if (event.asset.assetType == AssetType.ANIMATION_NODE) 
 			{
 				var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
-				item = new ScenegraphTreeVO( "Animation Node (" + animationNode.name +")",animationNode );
-				_animationObjects.addItem( item );
+				item = new ScenegraphItemVO( "Animation Node (" + animationNode.name +")",animationNode );
+				_animationGroup.children.addItem( item );
 			}
-//			switch( event.asset.assetType ) {
-//				case AssetType.MESH:
-//					var mesh:Mesh = event.asset as Mesh;
-////					mesh.castsShadows = true;
-//					Scene3DManager.addMesh(mesh);
-//					break;
-//				case AssetType.MATERIAL:
-//					var material:TextureMaterial = event.asset as TextureMaterial;
-////					material.shadowMethod = new FilteredShadowMapMethod(_light);
-////					material.lightPicker = _lightPicker;
-//					material.gloss = 30;
-//					material.specular = 1;
-//					material.ambientColor = 0x303040;
-//					material.ambient = 1;
-////					Scene3DManager.a
-//					break;
-//			}
-			
-//			if (e.asset.assetType == AssetType.MESH) 
-//			{			
-//				bear = e.asset as Mesh;
-//				
-//				var meshMaterial:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(BearDiffuse));
-//				//bearMaterial.shadowMethod = filteredShadowMapMethod;
-//				meshMaterial.normalMap = Cast.bitmapTexture(BearNormal);
-//				meshMaterial.specularMap = Cast.bitmapTexture(BearSpecular);
-//				meshMaterial.gloss = 50;
-//				meshMaterial.specular = 0.5;
-//				meshMaterial.ambientColor = 0xAAAAAA;
-//				meshMaterial.ambient = 0.5;					
-//				
-//				//var meshMaterial:ColorMaterial = new ColorMaterial();
-//				
-//				bear.material = meshMaterial;
-//				bear.castsShadows = true;
-//				bear.rotationY = 45;
-//				
-//				Scene3DManager.addMesh(bear);
-//				Scene3DManager.addLightToMesh(bear, "SunLight");
-//				
-//			}
 			
 		}				
 

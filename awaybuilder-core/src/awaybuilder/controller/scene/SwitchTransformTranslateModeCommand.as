@@ -1,9 +1,9 @@
 package awaybuilder.controller.scene
 {
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.scene.controllers.CameraManager;
-	import awaybuilder.scene.controllers.Scene3DManager;
-	import awaybuilder.scene.modes.GizmoMode;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.utils.scene.CameraManager;
+	import awaybuilder.utils.scene.Scene3DManager;
+	import awaybuilder.utils.scene.modes.GizmoMode;
 	
 	import org.robotlegs.mvcs.Command;
 

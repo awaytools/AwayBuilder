@@ -1,10 +1,9 @@
 package awaybuilder.controller
 {
-	import awaybuilder.events.DocumentEvent;
-	import awaybuilder.events.MessageBoxEvent;
-	import awaybuilder.events.ReadDocumentDataResultEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
-	import awaybuilder.model.IDocumentModel;
 	
 	import org.robotlegs.mvcs.Command;
 	

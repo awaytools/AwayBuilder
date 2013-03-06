@@ -82,8 +82,8 @@
 			</s:HGroup>
 			<tree:Tree id="tree" dataProvider="{scenegraph}" borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
 					   labelField="label" change="tree_changeHandler(event)"
-					   width="250" height="100%" textRollOverColor="yellow" 
-					   textSelectedColor="0xFFFFFF" dragEnabled="false" dropEnabled="false"
+					   width="250" height="100%"
+					   dragEnabled="false" dropEnabled="false"
 					   dragMoveEnabled="true">
 			</tree:Tree>
 		</components:CollapsiblePanel>

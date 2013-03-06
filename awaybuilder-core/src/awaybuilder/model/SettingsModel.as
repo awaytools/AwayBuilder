@@ -2,7 +2,7 @@ package awaybuilder.model
 {
 	import flash.net.SharedObject;
 	
-	import awaybuilder.events.SettingsEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	
 	import org.robotlegs.mvcs.Actor;

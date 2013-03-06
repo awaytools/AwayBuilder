@@ -1,7 +1,7 @@
 package awaybuilder.controller
 {
-	import awaybuilder.events.MessageBoxEvent;
-	import awaybuilder.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.IDocumentModel;

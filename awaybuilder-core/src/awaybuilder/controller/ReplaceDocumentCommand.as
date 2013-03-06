@@ -1,7 +1,7 @@
 package awaybuilder.controller
 {
-	import awaybuilder.events.DocumentEvent;
-	import awaybuilder.events.ReadDocumentDataEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.ReadDocumentDataEvent;
 	import awaybuilder.model.IDocumentModel;
 	
 	import org.robotlegs.mvcs.Command;

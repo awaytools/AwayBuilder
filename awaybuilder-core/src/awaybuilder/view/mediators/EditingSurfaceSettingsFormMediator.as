@@ -3,7 +3,7 @@ package awaybuilder.view.mediators
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import awaybuilder.events.SettingsEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.model.ISettingsModel;
 	import awaybuilder.model.SettingsModel;
 	import awaybuilder.view.components.EditingSurfaceSettingsForm;

@@ -1,15 +1,12 @@
 package awaybuilder.controller
 {
-	import awaybuilder.events.ClipboardEvent;
+	import awaybuilder.controller.events.ClipboardEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
 	
 	import org.robotlegs.mvcs.Command;
 
 	public class CopyCommand extends Command
 	{
-		[Inject]
-		public var editor:IEditorModel;
 		
 		[Inject]
 		public var document:IDocumentModel;

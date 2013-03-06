@@ -12,69 +12,67 @@
 	
 	<s:Spacer width="100%"/>
 	
-	<s:Button id="zoomOutButton" styleName="toolbarButton" toolTip="Zoom Out" autoRepeat="true"
+	<!--<s:Button id="zoomOutButton" styleName="toolbarButton" toolTip="Zoom Out" autoRepeat="true"
 			  buttonDown="zoomOutButton_clickHandler(event)"/>
 	<s:HSlider id="zoomSlider" minimum="0" maximum="1" stepSize="0.001" value="0.9"
 		liveDragging="true" focusEnabled="false"
 		dataTipFormatFunction="{zoomSlider_dataTipFormat}"
 		change="zoomSlider_changeHandler(event)"/>
 	<s:Button id="zoomInButton" styleName="toolbarButton" toolTip="Zoom In" autoRepeat="true"
-		buttonDown="zoomInButton_clickHandler(event)"/>
+		buttonDown="zoomInButton_clickHandler(event)"/>-->
 	
 	<fx:Script>
 	<![CDATA[
-		import mx.events.FlexEvent;
 		
-		import awaybuilder.view.components.events.ToolBarZoomEvent;
 
-		public function get zoom():Number
-		{
-			if(!this.zoomSlider)
-			{
-				return 1000;
-			}
-			return this.zoomSlider.value;
-		}
-
-		public function set zoom(value:Number):void
-		{
-			if(this.zoom == value)
-			{
-				return;
-			}
-			this.zoomSlider.value = value;
-		}
-
-		private function zoomSlider_dataTipFormat(value:Number):String
-		{
-			
-//			if(value >= 1)
+//		public function get zoom():Number
+//		{
+//			if(!this.zoomSlider)
 //			{
-//				value = 1 + 4 * (value - 1);
+//				return 1000;
 //			}
-//			else
+//			return this.zoomSlider.value;
+//		}
+//
+//		public function set zoom(value:Number):void
+//		{
+//			if(this.zoom == value)
 //			{
-//				value = 0.25 + 0.75 * value;
+//				return;
 //			}
-//			return int(value * 100) + "%";
-			
-			return (Math.round((1-value)*10000)).toString();
-		}
-		
-		protected function zoomInButton_clickHandler(event:FlexEvent):void
-		{
-			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_IN));
-		}
-		
-		protected function zoomOutButton_clickHandler(event:FlexEvent):void
-		{
-			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_OUT));
-		}
-		
-		protected function zoomSlider_changeHandler(event:Event):void
-		{
-			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_TO, this.zoom));
-		}
+//			this.zoomSlider.value = value;
+//		}
+//
+//		private function zoomSlider_dataTipFormat(value:Number):String
+//		{
+//			
+////			if(value >= 1)
+////			{
+////				value = 1 + 4 * (value - 1);
+////			}
+////			else
+////			{
+////				value = 0.25 + 0.75 * value;
+////			}
+////			return int(value * 100) + "%";
+//			
+//			return (Math.round((1-value)*10000)).toString();
+//		}
+//		
+//		protected function zoomInButton_clickHandler(event:FlexEvent):void
+//		{
+//			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_IN));
+//		}
+//		
+//		protected function zoomOutButton_clickHandler(event:FlexEvent):void
+//		{
+//			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_OUT));
+//		}
+//		
+//		protected function zoomSlider_changeHandler(event:Event):void
+//		{
+//			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_TO, this.zoom));
+//		}
 
 	]]>
 	</fx:Script>

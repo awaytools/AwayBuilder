@@ -1,10 +1,11 @@
 package awaybuilder.controller
 {
+	import mx.collections.ArrayCollection;
+	
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
-	import awaybuilder.model.IObjectPickerModel;
 	import awaybuilder.model.ISettingsModel;
 	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	
 	import org.robotlegs.mvcs.Command;
 
@@ -14,28 +15,29 @@ package awaybuilder.controller
 		public var document:IDocumentModel;
 		
 		[Inject]
-		public var editor:IEditorModel;
-		
-		[Inject]
 		public var undoRedo:UndoRedoModel;
 
 		[Inject]
 		public var settings:ISettingsModel;
 
-		[Inject]
-		public var objectPickerModel:IObjectPickerModel;
-
+		
 		override public function execute():void
 		{
-			this.document.name = "Untitled Document 1";
-			this.document.edited = false;
-			this.document.path = null;
-
-			this.undoRedo.clear();
+			undoRedo.clear();
 			
-			this.editor.zoom = 1;
-			this.editor.panX = 0;
-			this.editor.panY = 0;
+			document.name = "Untitled Library 1";
+			document.edited = false;
+			document.path = null;
+
+			var graph:ArrayCollection = new ArrayCollection();
+			
+			var _lightGroup:ScenegraphGroupItemVO = new ScenegraphGroupItemVO( "Lights", ScenegraphGroupItemVO.LIGHT_GROUP );
+			graph.addItem( _lightGroup );
+			
+			document.scenegraph = graph;
+				
+//			Scene3DManager.clear();
+			
 		}
 	}
 }

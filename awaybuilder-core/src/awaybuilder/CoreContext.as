@@ -3,6 +3,7 @@ package awaybuilder
 	import flash.display.DisplayObjectContainer;
 	
 	import awaybuilder.controller.CopyCommand;
+	import awaybuilder.controller.ImportDocumentCommand;
 	import awaybuilder.controller.NewDocumentCommand;
 	import awaybuilder.controller.OpenDocumentCommand;
 	import awaybuilder.controller.PasteCommand;
@@ -21,20 +22,16 @@ package awaybuilder
 	import awaybuilder.controller.scene.SwitchTransformRotateModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformScaleModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
-	import awaybuilder.events.ClipboardEvent;
-	import awaybuilder.events.DocumentEvent;
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.events.ReadDocumentDataEvent;
-	import awaybuilder.events.ReadDocumentDataResultEvent;
-	import awaybuilder.events.SaveDocumentEvent;
-	import awaybuilder.events.SettingsEvent;
-	import awaybuilder.events.WebLinkEvent;
-	import awaybuilder.model.DesktopObjectPickerModel;
+	import awaybuilder.controller.events.ClipboardEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.ReadDocumentDataEvent;
+	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.WebLinkEvent;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.EditorModel;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IEditorModel;
-	import awaybuilder.model.IObjectPickerModel;
 	import awaybuilder.model.ISettingsModel;
 	import awaybuilder.model.SamplesModel;
 	import awaybuilder.model.SettingsModel;
@@ -75,6 +72,7 @@ package awaybuilder
 			
 			this.commandMap.mapEvent(DocumentEvent.NEW_DOCUMENT, NewDocumentCommand);
 			this.commandMap.mapEvent(DocumentEvent.OPEN_DOCUMENT, OpenDocumentCommand);
+			this.commandMap.mapEvent(DocumentEvent.IMPORT_DOCUMENT, ImportDocumentCommand);
 			this.commandMap.mapEvent(ReadDocumentDataEvent.REPLACE_DOCUMENT, ReplaceDocumentCommand);
 			this.commandMap.mapEvent(ReadDocumentDataEvent.READ_DOCUMENT_DATA, ReadDocumentDataCommand);
 			this.commandMap.mapEvent(ReadDocumentDataResultEvent.READ_DOCUMENT_DATA_FAULT, ReadDocumentDataFaultCommand);
@@ -109,13 +107,10 @@ package awaybuilder
 			this.commandMap.mapEvent(WebLinkEvent.LINK_ONLINE_HELP, WebLinkCommand);
 			
 			this.injector.mapSingletonOf(IDocumentModel, DocumentModel);
-			this.injector.mapSingletonOf(IEditorModel, EditorModel);
 			this.injector.mapSingletonOf(ISettingsModel, SettingsModel);
-			this.injector.mapSingletonOf(IObjectPickerModel, DesktopObjectPickerModel)
 			this.injector.mapSingleton(UndoRedoModel);
 			this.injector.mapSingleton(WindowModel);
 			this.injector.mapSingleton(SamplesModel);
-			this.injector.mapValue(DesktopObjectPickerModel, this.injector.getInstance(IObjectPickerModel));
 			this.injector.mapValue(SettingsModel, this.injector.getInstance(ISettingsModel));
 			
 			this.mediatorMap.mapView(CoreEditor, CoreEditorMediator);

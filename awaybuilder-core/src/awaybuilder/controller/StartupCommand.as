@@ -1,7 +1,7 @@
 package awaybuilder.controller
 {
-	import awaybuilder.events.DocumentEvent;
-
+	import awaybuilder.controller.events.DocumentEvent;
+	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.mvcs.Command;
 

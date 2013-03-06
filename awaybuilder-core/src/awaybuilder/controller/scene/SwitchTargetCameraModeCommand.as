@@ -1,8 +1,8 @@
 package awaybuilder.controller.scene
 {
-	import awaybuilder.events.EditingSurfaceRequestEvent;
-	import awaybuilder.scene.controllers.CameraManager;
-	import awaybuilder.scene.modes.CameraMode;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.utils.scene.CameraManager;
+	import awaybuilder.utils.scene.modes.CameraMode;
 	
 	import org.robotlegs.mvcs.Command;
 

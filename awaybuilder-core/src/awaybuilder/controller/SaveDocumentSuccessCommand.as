@@ -2,7 +2,7 @@ package awaybuilder.controller
 {
 	import flash.events.Event;
 	
-	import awaybuilder.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.WindowModel;
