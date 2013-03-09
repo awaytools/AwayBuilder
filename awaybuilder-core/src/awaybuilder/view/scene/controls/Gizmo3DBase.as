@@ -21,6 +21,7 @@ package awaybuilder.view.scene.controls
 		public var currentMesh:Entity;	
 		public var currentAxis:String = "";
 		
+		protected var content:ObjectContainer3D;
 		protected var click:Point = new Point();
 		protected var click2:Point = new Point();
 		protected var xAxisMaterial:ColorMaterial = new ColorMaterial(0xff0000, 1);
@@ -34,6 +35,8 @@ package awaybuilder.view.scene.controls
 		
 		public function Gizmo3DBase()
 		{
+			content = new ObjectContainer3D();
+			this.addChild(content);
 			
 			ambientLight = new DirectionalLight(1, 1, 1);
 			ambientLight.name = "AmbientLight";
@@ -58,9 +61,9 @@ package awaybuilder.view.scene.controls
 		{			
 			var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(this.scenePosition);
 			var scale:Number = dist.length/1000;
-			this.scaleX = scale;
-			this.scaleY = scale;
-			this.scaleZ = scale;
+			content.scaleX = scale;
+			content.scaleY = scale;
+			content.scaleZ = scale;
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
 		}			
@@ -72,16 +75,16 @@ package awaybuilder.view.scene.controls
 			if (currentMesh.parent is LightGizmo3D) 
 			{
 				this.position = mesh.parent.parent.scenePosition;
-				this.rotationX = mesh.parent.parent.rotationX;
-				this.rotationY = mesh.parent.parent.rotationY;
-				this.rotationZ = mesh.parent.parent.rotationZ;				
+				content.rotationX = mesh.parent.parent.rotationX;
+				content.rotationY = mesh.parent.parent.rotationY;
+				content.rotationZ = mesh.parent.parent.rotationZ;				
 			}
 			else
 			{
 				this.position = mesh.scenePosition;
-				this.rotationX = mesh.rotationX;
-				this.rotationY = mesh.rotationY;
-				this.rotationZ = mesh.rotationZ;				
+				content.rotationX = mesh.rotationX;
+				content.rotationY = mesh.rotationY;
+				content.rotationZ = mesh.rotationZ;				
 			}
 			
 

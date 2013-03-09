@@ -43,7 +43,10 @@ package awaybuilder.view.scene.controls
 		private var actualMesh:ObjectContainer3D;
 		
 		private var startValue:Vector3D;
-		private var endValue:Vector3D;		
+		private var endValue:Vector3D;	
+		
+		private var initUp:Vector3D;
+		private var initRight:Vector3D;
 		
 		public function RotateGizmo3D()
 		{
@@ -56,7 +59,6 @@ package awaybuilder.view.scene.controls
 			sphere.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			sphere.mouseEnabled = true;
 			sphere.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			sphere.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			this.addChild(sphere);
 			
 			var torusGeometry:TorusGeometry = new TorusGeometry(100, 5, 30, 8, false);
@@ -66,26 +68,23 @@ package awaybuilder.view.scene.controls
 			xTorus.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			xTorus.mouseEnabled = true;
 			xTorus.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			xTorus.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			xTorus.rotationY = 90;
-			this.addChild(xTorus);					
+			content.addChild(xTorus);					
 			
 			yTorus = new Mesh(torusGeometry, yAxisMaterial);
 			yTorus.name = "yAxis";
 			yTorus.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			yTorus.mouseEnabled = true;
 			yTorus.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			yTorus.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			yTorus.rotationX = -90;
-			this.addChild(yTorus);				
+			content.addChild(yTorus);				
 			
 			zTorus = new Mesh(torusGeometry, zAxisMaterial);
 			zTorus.name = "zAxis";
 			zTorus.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			zTorus.mouseEnabled = true;
 			zTorus.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			zTorus.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
-			this.addChild(zTorus);			
+			content.addChild(zTorus);			
 			
 			lines = new SegmentSet();	
 			
@@ -98,30 +97,41 @@ package awaybuilder.view.scene.controls
 			yLine = new LineSegment(new Vector3D(), new Vector3D(), 0xCC99CC, 0xCC99CC, 3);
 			lines.addSegment(yLine);			
 			
-			//Scene3DManager.scene.addChild(lines);
+			//this.addChild(lines);
 		}
 		
 		override public function update():void
 		{			
-			super.update();				
+			super.update();									
 			
-			freeXAxis = Scene3DManager.camera.rightVector.clone();							
-			freeYAxis = Scene3DManager.camera.downVector.clone();
-			freeZAxis = Scene3DManager.camera.forwardVector.clone();							
-						
-			freeZAxis.scaleBy(100);
-			freeXAxis.scaleBy(100);
-			freeYAxis.scaleBy(100);					
+			sphere.scaleX = content.scaleX;
+			sphere.scaleY = content.scaleY;
+			sphere.scaleZ = content.scaleZ;
 			
 			xLine.end = freeXAxis;
 			yLine.end = freeYAxis;			
 			zLine.end = freeZAxis;			
-		}		
-		
+		}
+	
 		protected function handleMouseDown(e:MouseEvent3D):void
 		{
-			currentAxis = e.target.name			
-							
+			currentAxis = e.target.name
+				
+			freeZAxis = e.localPosition;
+			freeXAxis = freeZAxis.crossProduct(new Vector3D(0, 1, 0));
+			freeYAxis = freeZAxis.crossProduct(freeXAxis);
+			
+			//freeXAxis = Scene3DManager.camera.rightVector.clone();
+			//freeYAxis = Scene3DManager.camera.downVector.clone();
+			//freeZAxis = Scene3DManager.camera.forwardVector.clone();						
+			
+			freeXAxis = freeXAxis.subtract(content.rightVector);
+			
+			freeYAxis = freeYAxis.subtract(content.upVector);																
+			
+			initUp = content.upVector;
+			initRight = content.rightVector;
+			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;
 			
@@ -183,52 +193,52 @@ package awaybuilder.view.scene.controls
 				case "xAxis":
 					
 					var xv1:Vector3D = Scene3DManager.camera.rightVector;
-					var xv2:Vector3D = this.rightVector; 
+					var xv2:Vector3D = content.rightVector; 
 					xv1.normalize();
 					xv2.normalize();
 					var ax:Number = xv1.dotProduct(xv2);
 					if (ax < 0) trans = -trans;							
 					
-					this.rotate(new Vector3D(1, 0, 0), trans);
+					content.rotate(new Vector3D(1, 0, 0), trans);
 					
 					break;
 				
 				case "yAxis":
 					
 					var yv1:Vector3D = Scene3DManager.camera.downVector;
-					var yv2:Vector3D = this.upVector; 			
+					var yv2:Vector3D = content.upVector; 			
 					yv1.normalize();
 					yv2.normalize();
 					var ay:Number = yv1.dotProduct(yv2);
 					if (ay < 0) trans = -trans;									
 					
-					this.rotate(new Vector3D(0, 1, 0), trans);				
+					content.rotate(new Vector3D(0, 1, 0), trans);				
 					
 					break;
 				
 				case "zAxis":
 					
 					var zv1:Vector3D = Scene3DManager.camera.rightVector;
-					var zv2:Vector3D = this.forwardVector; 			
+					var zv2:Vector3D = content.forwardVector; 			
 					zv1.normalize();
 					zv2.normalize();
 					var az:Number = zv1.dotProduct(zv2);
 					if (az < 0) trans = -trans;				
 					
-					this.rotate(new Vector3D(0, 0, 1), trans);					
+					content.rotate(new Vector3D(0, 0, 1), trans);					
 					
 					break;				
 				
-				case "allAxis":				
-									
-					//quat.fromAxisAngle(this.upVector, rx);
-										
-					this.eulers = quat.rotatePoint(new Vector3D(this.eulers.x + dy, this.eulers.y - dx, 0));
+				case "allAxis":														
+
+					content.rotate(freeXAxis, dy);
+					content.rotate(freeYAxis, dx);
+
 					
 					break;					
 			}					
 		
-			actualMesh.eulers = this.eulers;
+			actualMesh.eulers = content.eulers;
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			

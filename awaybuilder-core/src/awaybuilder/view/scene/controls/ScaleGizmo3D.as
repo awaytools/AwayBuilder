@@ -50,7 +50,7 @@ package awaybuilder.view.scene.controls
 			mCube.mouseEnabled = true;
 			mCube.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			mCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
-			this.addChild(mCube);							
+			content.addChild(mCube);							
 			
 			xCylinder = new Mesh(cylGeom, xAxisMaterial);
 			xCylinder.name = "xAxis";
@@ -60,7 +60,7 @@ package awaybuilder.view.scene.controls
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			xCylinder.x = 50;
 			xCylinder.rotationY = -90;
-			this.addChild(xCylinder);		
+			content.addChild(xCylinder);		
 			
 			xCube = new Mesh(cubeGeom, xAxisMaterial);
 			xCube.name = "xAxis";
@@ -70,7 +70,7 @@ package awaybuilder.view.scene.controls
 			xCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			xCube.rotationY = -90;
 			xCube.x = 100 + (cubeGeom.height/2);
-			this.addChild(xCube);					
+			content.addChild(xCube);					
 			
 			yCylinder = new Mesh(cylGeom, yAxisMaterial);
 			yCylinder.name = "yAxis";
@@ -80,7 +80,7 @@ package awaybuilder.view.scene.controls
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			yCylinder.y = 50;
 			yCylinder.rotationX = -90;
-			this.addChild(yCylinder);			
+			content.addChild(yCylinder);			
 			
 			yCube = new Mesh(cubeGeom, yAxisMaterial);
 			yCube.name = "yAxis";
@@ -90,7 +90,7 @@ package awaybuilder.view.scene.controls
 			yCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			yCube.rotationX = 90;
 			yCube.y = 100 + (cubeGeom.height/2);
-			this.addChild(yCube);			
+			content.addChild(yCube);			
 			
 			zCylinder = new Mesh(cylGeom, zAxisMaterial);
 			zCylinder.name = "zAxis";
@@ -99,7 +99,7 @@ package awaybuilder.view.scene.controls
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			zCylinder.z = 50;
-			this.addChild(zCylinder);			
+			content.addChild(zCylinder);			
 			
 			zCube = new Mesh(cubeGeom, zAxisMaterial);
 			zCube.name = "zAxis";
@@ -109,7 +109,7 @@ package awaybuilder.view.scene.controls
 			zCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			zCube.rotationX = 180;
 			zCube.z = 100 + (cubeGeom.height/2);
-			this.addChild(zCube);
+			content.addChild(zCube);
 			
 			
 		}
@@ -193,7 +193,7 @@ package awaybuilder.view.scene.controls
 				case "xAxis":
 					
 					var xv1:Vector3D = Scene3DManager.camera.rightVector;
-					var xv2:Vector3D = this.rightVector; 
+					var xv2:Vector3D = content.rightVector; 
 					xv1.normalize();
 					xv2.normalize();
 					var ax:Number = xv1.dotProduct(xv2);
@@ -206,7 +206,7 @@ package awaybuilder.view.scene.controls
 				case "yAxis":
 					
 					var yv1:Vector3D = Scene3DManager.camera.upVector;
-					var yv2:Vector3D = this.upVector; 			
+					var yv2:Vector3D = content.upVector; 			
 					yv1.normalize();
 					yv2.normalize();
 					var ay:Number = yv1.dotProduct(yv2);
@@ -219,7 +219,7 @@ package awaybuilder.view.scene.controls
 				case "zAxis":
 					
 					var zv1:Vector3D = Scene3DManager.camera.rightVector;
-					var zv2:Vector3D = this.forwardVector; 			
+					var zv2:Vector3D = content.forwardVector; 			
 					zv1.normalize();
 					zv2.normalize();
 					var az:Number = zv1.dotProduct(zv2);

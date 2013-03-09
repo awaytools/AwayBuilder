@@ -1,5 +1,14 @@
 package awaybuilder.utils.scene
 {
+	import away3d.cameras.Camera3D;
+	import away3d.containers.ObjectContainer3D;
+	import away3d.containers.View3D;
+	import away3d.core.math.Quaternion;
+	import away3d.entities.Mesh;
+	
+	import awaybuilder.utils.MathUtils;
+	import awaybuilder.utils.scene.modes.CameraMode;
+	
 	import com.greensock.TweenMax;
 	
 	import flash.display.Stage;
@@ -9,15 +18,6 @@ package awaybuilder.utils.scene
 	import flash.geom.Vector3D;
 	
 	import mx.core.UIComponent;
-	
-	import away3d.cameras.Camera3D;
-	import away3d.containers.ObjectContainer3D;
-	import away3d.containers.View3D;
-	import away3d.core.math.Quaternion;
-	import away3d.entities.Mesh;
-	
-	import awaybuilder.utils.MathUtils;
-	import awaybuilder.utils.scene.modes.CameraMode;
 
 	/**
 	 * ...
@@ -145,7 +145,13 @@ package awaybuilder.utils.scene
 			{
 				case CameraMode.FREE: instance.initFreeMode();
 				break;
-				case CameraMode.TARGET: instance.initTargetMode(5, 1000, 0, 15);
+				case CameraMode.TARGET: 
+										
+					var poiPos:Vector3D = Vector3D(camera.scenePosition);
+					instance.poi.position = poiPos;
+					instance.poi.eulers = camera.eulers;
+					instance.poi.moveForward(300);
+					instance.initTargetMode(5, 300, _xDeg, _yDeg);
 				break;
 			}			
 		}
@@ -238,19 +244,20 @@ package awaybuilder.utils.scene
 				bmax.y *= sy;
 				bmax.z *= sz;				
 				
-				var tr:Number = bmax.length * 2;
-				
-				var ms0:Number = Math.max(sx, sy);
-				var ms1:Number = Math.max(ms0, sz);
-				
-				//adjust mouseWheel speed according size and scale of the mesh;
-				wheelSpeed = (bmax.length / 30) * ms1;
+				var tr:Number = bmax.length * 2;				
 												
-				TweenMax.to(CameraManager, 0.5, {radius:tr});
+				TweenMax.to(CameraManager, 0.5, {radius:tr, onComplete:instance.calculateWheelSpeed, onCompleteParams:[t]});
 			}
 			
 			TweenMax.to(instance.poi, 0.5, {x:t.scenePosition.x, y:t.scenePosition.y, z:t.scenePosition.z});
 		}		
+		
+		private function calculateWheelSpeed(t:ObjectContainer3D):void
+		{
+			//adjust mouseWheel speed according size and scale of the mesh;
+			var dist:Vector3D = camera.scenePosition.subtract(t.scenePosition);
+			wheelSpeed = dist.length/60; 
+		}
 		
 		
 		

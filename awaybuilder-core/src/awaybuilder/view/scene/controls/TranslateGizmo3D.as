@@ -45,61 +45,53 @@ package awaybuilder.view.scene.controls
 			xCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			xCylinder.mouseEnabled = true;
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			xCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			xCylinder.x = 50;
 			xCylinder.rotationY = -90;
-			this.addChild(xCylinder);		
+			content.addChild(xCylinder);		
 			
 			xCone = new Mesh(coneGeom, xAxisMaterial);
 			xCone.name = "xAxis";
 			xCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			xCone.mouseEnabled = true;
-			xCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			xCone.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
+			xCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);	
 			xCone.rotationY = -90;
 			xCone.x = 100 + (coneGeom.height/2);
-			this.addChild(xCone);					
+			content.addChild(xCone);					
 			
 			yCylinder = new Mesh(cylGeom, yAxisMaterial);
 			yCylinder.name = "yAxis";
 			yCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			yCylinder.mouseEnabled = true;
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			yCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			yCylinder.y = 50;
 			yCylinder.rotationX = -90;
-			this.addChild(yCylinder);			
+			content.addChild(yCylinder);			
 			
 			yCone = new Mesh(coneGeom, yAxisMaterial);
 			yCone.name = "yAxis";
 			yCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			yCone.mouseEnabled = true;
-			yCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			yCone.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
+			yCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);		
 			yCone.rotationX = 90;
 			yCone.y = 100 + (coneGeom.height/2);
-			this.addChild(yCone);			
+			content.addChild(yCone);			
 			
 			zCylinder = new Mesh(cylGeom, zAxisMaterial);
 			zCylinder.name = "zAxis";
 			zCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			zCylinder.mouseEnabled = true;
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			zCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			zCylinder.z = 50;
-			this.addChild(zCylinder);			
+			content.addChild(zCylinder);			
 			
 			zCone = new Mesh(coneGeom, zAxisMaterial);
 			zCone.name = "zAxis";
 			zCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			zCone.mouseEnabled = true;
-			zCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
-			zCone.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
+			zCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);		
 			zCone.rotationX = 180;
 			zCone.z = 100 + (coneGeom.height/2);
-			this.addChild(zCone);
-			
-				
+			content.addChild(zCone);	
 		}
 		
 		override public function update():void
@@ -116,6 +108,8 @@ package awaybuilder.view.scene.controls
 				
 			actualMesh = currentMesh;			
 			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;			
+			
+			startValue = actualMesh.position;
 			
 			switch(currentAxis)
 			{
@@ -143,9 +137,7 @@ package awaybuilder.view.scene.controls
 			
 			hasMoved = true;
 			active = true;
-			CameraManager.active = false;
-			
-			startValue = actualMesh.position;
+			CameraManager.active = false;				
 				
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
@@ -163,39 +155,39 @@ package awaybuilder.view.scene.controls
 				case "xAxis":
 					
 					var xv1:Vector3D = Scene3DManager.camera.rightVector;
-					var xv2:Vector3D = this.rightVector; 
+					var xv2:Vector3D = content.rightVector; 
 					xv1.normalize();
 					xv2.normalize();
 					var ax:Number = xv1.dotProduct(xv2);
 					if (ax < 0) trans = -trans;					
 					
-					this.translate(this.rightVector, trans);
+					this.translate(content.rightVector, trans);
 					
 					break;
 				
 				case "yAxis":
 					
 					var yv1:Vector3D = Scene3DManager.camera.upVector;
-					var yv2:Vector3D = this.upVector; 			
+					var yv2:Vector3D = content.upVector; 			
 					yv1.normalize();
 					yv2.normalize();
 					var ay:Number = yv1.dotProduct(yv2);
 					if (ay < 0) trans = -trans;					
 					
-					this.translate(this.upVector, trans);
+					this.translate(content.upVector, trans);
 					
 					break;
 				
 				case "zAxis":
 					
 					var zv1:Vector3D = Scene3DManager.camera.rightVector;
-					var zv2:Vector3D = this.forwardVector; 			
+					var zv2:Vector3D = content.forwardVector; 			
 					zv1.normalize();
 					zv2.normalize();
 					var az:Number = zv1.dotProduct(zv2);
 					if (az < 0) trans = -trans;					
 					
-					this.translate(this.forwardVector, trans);						
+					this.translate(content.forwardVector, trans);						
 					
 					break;				
 			}					
