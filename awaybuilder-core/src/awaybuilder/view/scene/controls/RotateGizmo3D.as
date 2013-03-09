@@ -10,9 +10,11 @@ package awaybuilder.view.scene.controls
 	import away3d.primitives.SphereGeometry;
 	import away3d.primitives.TorusGeometry;
 	
+	import awaybuilder.utils.MathUtils;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
-	import awaybuilder.utils.MathUtils;
+	import awaybuilder.utils.scene.modes.GizmoMode;
+	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -37,6 +39,11 @@ package awaybuilder.view.scene.controls
 		private var quat:Quaternion = new Quaternion();
 		private var t1 : Quaternion = new Quaternion();
 		private var t2 : Quaternion = new Quaternion();
+		
+		private var actualMesh:ObjectContainer3D;
+		
+		private var startValue:Vector3D;
+		private var endValue:Vector3D;		
 		
 		public function RotateGizmo3D()
 		{
@@ -121,6 +128,9 @@ package awaybuilder.view.scene.controls
 			click2.x = Scene3DManager.stage.mouseX;
 			click2.y = Scene3DManager.stage.mouseY;			
 			
+			actualMesh = currentMesh;			
+			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;			
+			
 			switch(currentAxis)
 			{
 				case "xAxis":
@@ -151,6 +161,8 @@ package awaybuilder.view.scene.controls
 			hasMoved = true;
 			active = true;
 			CameraManager.active = false;			
+			
+			startValue = actualMesh.eulers;
 			
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
@@ -215,15 +227,13 @@ package awaybuilder.view.scene.controls
 					
 					break;					
 			}					
-			
-			var actualMesh:ObjectContainer3D = currentMesh;
-			
-			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;
-			
+		
 			actualMesh.eulers = this.eulers;
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.ROTATE, actualMesh, actualMesh.eulers, startValue, actualMesh.eulers));
 		}		
 		
 		protected function handleMouseUp(event:Event):void
@@ -239,6 +249,8 @@ package awaybuilder.view.scene.controls
 			yTorus.material = yAxisMaterial;
 			zTorus.material = zAxisMaterial;
 			sphere.material = sphereMaterial;
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.ROTATE, actualMesh, actualMesh.eulers, startValue, actualMesh.eulers));
 		}		
 		
 		

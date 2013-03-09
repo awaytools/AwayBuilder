@@ -11,6 +11,9 @@ package awaybuilder.view.scene.controls
 	
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
+	import awaybuilder.utils.scene.modes.GizmoMode;
+	import awaybuilder.view.scene.controls.Gizmo3DBase;
+	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -27,6 +30,12 @@ package awaybuilder.view.scene.controls
 		private var zCube:Mesh;
 		
 		private var mCube:Mesh;
+		
+		private var currentScale:Vector3D = new Vector3D(1, 1, 1);
+		private var actualMesh:ObjectContainer3D;
+		
+		private var startValue:Vector3D;
+		private var endValue:Vector3D;	
 		
 		private var initPosition:Vector3D;
 		
@@ -114,6 +123,13 @@ package awaybuilder.view.scene.controls
 		{
 			currentAxis = e.target.name
 			
+			actualMesh = currentMesh;			
+			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;				
+			
+			currentScale.x = 1;
+			currentScale.y = actualMesh.scaleY / actualMesh.scaleX;
+			currentScale.z = actualMesh.scaleZ / actualMesh.scaleX;				
+			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
 			
@@ -151,6 +167,11 @@ package awaybuilder.view.scene.controls
 			active = true;
 			CameraManager.active = false;
 			
+			startValue = new Vector3D();
+			startValue.x = actualMesh.scaleX;
+			startValue.y = actualMesh.scaleY;
+			startValue.z = actualMesh.scaleZ;			
+			
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 		}
@@ -160,13 +181,9 @@ package awaybuilder.view.scene.controls
 			var dx:Number = Scene3DManager.stage.mouseX - click.x;
 			var dy:Number = -(Scene3DManager.stage.mouseY - click.y);
 			
-			var trans:Number = ((dx+dy)/2);
+			var trans:Number = ((dx+dy)/2);					
 			
-			var actualMesh:ObjectContainer3D = currentMesh;
-			
-			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;			
-			
-			var mScale:Object = new Object();
+			var mScale:Vector3D = new Vector3D();
 			mScale.x = actualMesh.scaleX;
 			mScale.y = actualMesh.scaleY;
 			mScale.z = actualMesh.scaleZ;
@@ -194,7 +211,7 @@ package awaybuilder.view.scene.controls
 					yv2.normalize();
 					var ay:Number = yv1.dotProduct(yv2);
 					if (ay < 0) trans = -trans;					
-										
+					
 					mScale.y += trans;
 					
 					break;
@@ -213,10 +230,10 @@ package awaybuilder.view.scene.controls
 					break;				
 				
 				case "allAxis":
-									
-					mScale.x += trans;
-					mScale.y += trans;
-					mScale.z += trans;
+					
+					mScale.x += (trans * currentScale.x)/100;
+					mScale.y += (trans * currentScale.y)/100;
+					mScale.z += (trans * currentScale.z)/100;
 					
 					break;				
 				
@@ -229,6 +246,8 @@ package awaybuilder.view.scene.controls
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.SCALE, actualMesh, mScale, startValue, mScale));
 		}
 		
 		protected function handleMouseUp(event:Event):void
@@ -247,6 +266,13 @@ package awaybuilder.view.scene.controls
 			yCylinder.material = yAxisMaterial;			
 			zCube.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
+			
+			var sc:Vector3D = new Vector3D();
+			sc.x = actualMesh.scaleX;
+			sc.y = actualMesh.scaleY;
+			sc.z = actualMesh.scaleZ;
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.SCALE, actualMesh, sc, startValue, sc));
 		}		
 		
 	}

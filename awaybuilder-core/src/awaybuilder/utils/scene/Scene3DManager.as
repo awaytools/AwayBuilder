@@ -1,17 +1,5 @@
 package awaybuilder.utils.scene
 {
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import flash.geom.Vector3D;
-	import flash.ui.Keyboard;
-	
-	import mx.collections.ArrayList;
-	import mx.core.UIComponent;
-	
 	import away3d.cameras.Camera3D;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
@@ -34,7 +22,21 @@ package awaybuilder.utils.scene
 	import awaybuilder.view.scene.controls.RotateGizmo3D;
 	import awaybuilder.view.scene.controls.ScaleGizmo3D;
 	import awaybuilder.view.scene.controls.TranslateGizmo3D;
+	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	import awaybuilder.view.scene.events.Scene3DManagerEvent;
+	
+	import flash.display.Stage;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.geom.Vector3D;
+	import flash.ui.Keyboard;
+	import flash.utils.setTimeout;
+	
+	import mx.collections.ArrayList;
+	import mx.core.UIComponent;
 	
 
 	public class Scene3DManager extends EventDispatcher
@@ -101,10 +103,16 @@ package awaybuilder.utils.scene
 			
 			//Create Gizmos
 			translateGizmo = new TranslateGizmo3D();
+			translateGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
+			translateGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
 			scene.addChild(translateGizmo);
 			rotateGizmo = new RotateGizmo3D();
+			rotateGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
+			rotateGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
 			scene.addChild(rotateGizmo);
 			scaleGizmo = new ScaleGizmo3D();
+			scaleGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
+			scaleGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
 			scene.addChild(scaleGizmo);	
 			
 			//assing default gizmo
@@ -138,6 +146,16 @@ package awaybuilder.utils.scene
 			stage3DProxy.addEventListener(Event.ENTER_FRAME, instance.loop);		
 			
 			dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.READY));
+		}
+		
+		private function handleGizmoActionRelease(e:Gizmo3DEvent):void
+		{
+			dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.TRANSFORM_RELEASE, e.mode, e.object, e.currentValue, e.startValue, e.endValue));
+		}
+						
+		private function handleGizmoAction(e:Gizmo3DEvent):void
+		{
+			dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.TRANSFORM, e.mode, e.object, e.currentValue, e.startValue, e.endValue));
 		}
 		
 		private function loop(e:Event):void 
@@ -312,6 +330,26 @@ package awaybuilder.utils.scene
 		
 		// Meshes Handling *********************************************************************************************************************************************
 		
+		public static function clear(disposeMaterials:Boolean=false):void
+		{
+			for each(var o:Entity in objects.source)
+			{
+				if (o is Mesh)
+				{
+					if (Mesh(o).material && disposeMaterials) Mesh(o).material.dispose();
+				}
+				scene.removeChild(o);
+			}
+			
+			for each(var l:LightBase in lights.source)
+			{
+				l.dispose()
+			}			
+			
+			lights.removeAll();
+			objects.removeAll();
+		}
+		
 		public static function addMesh(mesh:Mesh):void
 		{			
 			mesh.mouseEnabled = true;
@@ -388,7 +426,9 @@ package awaybuilder.utils.scene
 					
 					break;
 				}
-			}			
+			}	
+			
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}		
 		
 		public static function selectObjectByName(meshName:String):void

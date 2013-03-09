@@ -11,6 +11,8 @@ package awaybuilder.view.scene.controls
 	
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
+	import awaybuilder.utils.scene.modes.GizmoMode;
+	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -27,6 +29,11 @@ package awaybuilder.view.scene.controls
 		private var zCone:Mesh;
 		
 		private var initPosition:Vector3D;
+		
+		private var startValue:Vector3D;
+		private var endValue:Vector3D;
+		
+		private var actualMesh:ObjectContainer3D;
 		
 		public function TranslateGizmo3D()
 		{
@@ -107,6 +114,9 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
 				
+			actualMesh = currentMesh;			
+			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;			
+			
 			switch(currentAxis)
 			{
 				case "xAxis":
@@ -134,6 +144,8 @@ package awaybuilder.view.scene.controls
 			hasMoved = true;
 			active = true;
 			CameraManager.active = false;
+			
+			startValue = actualMesh.position;
 				
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
@@ -188,14 +200,12 @@ package awaybuilder.view.scene.controls
 					break;				
 			}					
 			
-			var actualMesh:ObjectContainer3D = currentMesh;
-			
-			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;
-			
 			actualMesh.position = this.position;					
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
 		}
 		
 		protected function handleMouseUp(event:Event):void
@@ -213,6 +223,8 @@ package awaybuilder.view.scene.controls
 			yCylinder.material = yAxisMaterial;			
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
 		}		
 		
 	}
