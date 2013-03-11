@@ -45,9 +45,6 @@ package awaybuilder.view.scene.controls
 		private var startValue:Vector3D;
 		private var endValue:Vector3D;	
 		
-		private var initUp:Vector3D;
-		private var initRight:Vector3D;
-		
 		public function RotateGizmo3D()
 		{
 			this.visible = false;
@@ -97,7 +94,7 @@ package awaybuilder.view.scene.controls
 			yLine = new LineSegment(new Vector3D(), new Vector3D(), 0xCC99CC, 0xCC99CC, 3);
 			lines.addSegment(yLine);			
 			
-			//this.addChild(lines);
+			this.addChild(lines);
 		}
 		
 		override public function update():void
@@ -115,22 +112,21 @@ package awaybuilder.view.scene.controls
 	
 		protected function handleMouseDown(e:MouseEvent3D):void
 		{
-			currentAxis = e.target.name
-				
-			freeZAxis = e.localPosition;
-			freeXAxis = freeZAxis.crossProduct(new Vector3D(0, 1, 0));
-			freeYAxis = freeZAxis.crossProduct(freeXAxis);
+			currentAxis = e.target.name			
 			
-			//freeXAxis = Scene3DManager.camera.rightVector.clone();
-			//freeYAxis = Scene3DManager.camera.downVector.clone();
-			//freeZAxis = Scene3DManager.camera.forwardVector.clone();						
+			//freeZAxis = Scene3DManager.camera.backVector;
+			//freeYAxis = sphere.rightVector.crossProduct(Scene3DManager.camera.rightVector);
+			//freeYAxis = freeZAxis.crossProduct(freeXAxis);
 			
-			freeXAxis = freeXAxis.subtract(content.rightVector);
+			/*
+			freeXAxis = sphere.rightVector.clone();
+			freeYAxis = sphere.downVector.clone();
+			freeZAxis = sphere.forwardVector.clone();
 			
-			freeYAxis = freeYAxis.subtract(content.upVector);																
-			
-			initUp = content.upVector;
-			initRight = content.rightVector;
+			freeXAxis.scaleBy(50);
+			freeYAxis.scaleBy(50);
+			freeZAxis.scaleBy(50);
+			*/
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;
@@ -172,7 +168,7 @@ package awaybuilder.view.scene.controls
 			active = true;
 			CameraManager.active = false;			
 			
-			startValue = actualMesh.eulers;
+			startValue = actualMesh.eulers.clone();
 			
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
@@ -231,9 +227,11 @@ package awaybuilder.view.scene.controls
 				
 				case "allAxis":														
 
-					content.rotate(freeXAxis, dy);
-					content.rotate(freeYAxis, dx);
-
+					//sphere.rotate(freeXAxis, dy);
+					//sphere.rotate(freeYAxis, dx);			
+					
+					//content.eulers = startValue.add(sphere.eulers); 
+					
 					
 					break;					
 			}					
@@ -260,7 +258,9 @@ package awaybuilder.view.scene.controls
 			zTorus.material = zAxisMaterial;
 			sphere.material = sphereMaterial;
 			
-			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.ROTATE, actualMesh, actualMesh.eulers, startValue, actualMesh.eulers));
+			sphere.eulers = new Vector3D();
+			
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.ROTATE, actualMesh, actualMesh.eulers, startValue, actualMesh.eulers.clone()));
 		}		
 		
 		

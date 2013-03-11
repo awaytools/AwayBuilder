@@ -192,7 +192,7 @@ package awaybuilder.view.scene.controls
 					break;				
 			}					
 			
-			actualMesh.position = this.position;					
+			actualMesh.position = this.position.clone();					
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
@@ -216,7 +216,7 @@ package awaybuilder.view.scene.controls
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
 			
-			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position.clone()));
 		}		
 		
 	}
