@@ -3,10 +3,9 @@
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	backgroundAlpha="0" 
-	xmlns:flextoolbox="library://ns.flextoolbox.com/flex" 
-	xmlns:components="awaybuilder.view.components.*" 
+	xmlns:components="awaybuilder.view.components.*"
 	xmlns:tree="awaybuilder.view.components.tree.*"
-	tabChildren="false" tabEnabled="false" xmlns:propertyEditors="awaybuilder.view.components.propertyEditors.*">
+	tabChildren="false" tabEnabled="false">
 	
 	<s:layout>
 		<s:VerticalLayout gap="0" paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0"/>
@@ -26,19 +25,6 @@
 			private function init():void
 			{
 			}
-			
-//			import awaybuilder.scene.controllers.Scene3DManager;
-//			import awaybuilder.scene.events.Scene3DManagerEvent;
-//			protected function handleGridObjectType(item:Object, column:GridColumn):String
-//			{
-//				return getQualifiedClassName(item).split("::")[1];
-//			}
-			
-//			protected function handleObjectSelection(e:MouseEvent):void
-//			{
-//				Scene3DManager.selectObjectByName(objectsGrid.selectedItem.name);
-//			}	
-			
 			
 			protected function tree_changeHandler(event:IndexChangeEvent):void
 			{
@@ -74,8 +60,10 @@
 			<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="2" paddingTop="2" paddingBottom="2" height="23">
 				<s:Label width="100%" text="Library" fontWeight="bold"/>
 				<s:Button id="collapseButton" label="collapse all" height="19" visible="false" includeInLayout="{collapseButton.visible}"
+                          skinClass="awaybuilder.view.skins.ButtonSkin"
 						  click="collapseButton_clickHandler(event)"/>
-				<s:Button id="expandButton" label="expand all" height="19" visible="false" includeInLayout="{expandButton.visible}" 
+				<s:Button id="expandButton" label="expand all" height="19" visible="false" includeInLayout="{expandButton.visible}"
+                          skinClass="awaybuilder.view.skins.ButtonSkin"
 						  click="expandButton_clickHandler(event)"/>
 				<!--<s:ToggleButton id="disclosureButton"
 								skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>-->
@@ -88,18 +76,9 @@
 			</tree:Tree>
 		</components:CollapsiblePanel>
 		
-		<mx:UIComponent id="scope" width="100%" height="100%"/>
+		<mx:UIComponent id="viewScope" width="100%" height="100%"/>
 		
-		<components:CollapsiblePanel id="propertiesPanel" visible="false" includeInLayout="{propertiesPanel.visible}" height="100%" styleName="propertiesPanel" chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
-									 skinClass="awaybuilder.view.skins.CollapsibleRightPanelSkin"
-									 
-									 >
-			<s:Scroller width="210" height="100%">
-				<propertyEditors:MeshPropertyEditor width="100%"/>
-			</s:Scroller>
-
-		</components:CollapsiblePanel>
-		<!--<components:EditingSurface id="editor" width="100%" height="100%"/>-->
+		<components:PropertiesPanel id="propertiesPanel" visible="false" includeInLayout="{propertiesPanel.visible}" height="100%"/>
 	</s:Group>
 		
 	<components:EditStatusBar id="appStatusBar" width="100%"/>

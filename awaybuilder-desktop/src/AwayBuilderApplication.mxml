@@ -6,7 +6,7 @@
 	title="" 
 	showStatusBar="false"
 	frameRate="60" backgroundColor="0x333333" backgroundAlpha="0"
-	invoke="invokeHandler(event)" minWidth="1000" minHeight="700"
+	invoke="invokeHandler(event)" minWidth="1000" minHeight="700" visible="true"
 	preinitialize="preinitializeHandler(event)"  xmlns:components="awaybuilder.view.components.*">
 	
 	<fx:Declarations>

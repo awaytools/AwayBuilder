@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tree:TreeItemRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
-	doubleClick="treeitemrendererbase1_doubleClickHandler(event)" doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*">
+                            xmlns:s="library://ns.adobe.com/flex/spark"
+                            xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
+                            doubleClick="treeitemrendererbase1_doubleClickHandler(event)" doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*"
+                            height="24">
 	
 	<tree:states>
 		<s:State name="normal" />
 		<s:State name="hovered" />
 		<s:State name="selected" />
 	</tree:states>
-	
+
+    <tree:layout>
+        <s:HorizontalLayout paddingLeft="{indentation + 4}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1"/>
+    </tree:layout>
 	<fx:Script>
 		<![CDATA[
 			protected function disclosureButton_clickHandler(event:MouseEvent):void
@@ -25,7 +29,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:Rect top="1" bottom="1" left="0" right="0" includeIn="hovered,selected" alpha.hovered="0.3">
+	<s:Rect height="22" width="{this.width}" y="1" includeIn="hovered,selected" alpha.hovered="0.3" includeInLayout="false">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0x105F9F" alpha="0.4" ratio="0.2"/>
@@ -34,12 +38,10 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:HGroup paddingLeft="{indentation + 4}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1" height="24">
-		<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
-						selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
-		
-		<s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
-	</s:HGroup>
-	
+    <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
+                    selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
+
+    <s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
+
 	
 </tree:TreeItemRendererBase>

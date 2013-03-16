@@ -36,7 +36,7 @@ package awaybuilder.view.components.events
 		
 		public static const DELETE_SELECTION:String = "deleteSelection";
 		public static const ROTATE_SELECTION_CLOCKWISE:String = "rotateSelectionClockwise";
-		public static const ROTATE_SELECTION_COUNTER_CLOCKWISE:String = "rotateSelectionCounterClockwise";;
+		public static const FOCUS_OBJECT:String = "focusOnObject";
 		
 		public function ToolBarEvent(type:String)
 		{

@@ -1,6 +1,18 @@
 package awaybuilder
 {
-	import flash.display.DisplayObjectContainer;
+import awaybuilder.controller.events.SceneEvent;
+import awaybuilder.controller.history.RedoCommand;
+import awaybuilder.controller.history.UndoCommand;
+import awaybuilder.controller.history.UndoRedoEvent;
+import awaybuilder.controller.scene.ChangeMaterialCommand;
+import awaybuilder.controller.scene.ChangeMeshCommand;
+import awaybuilder.controller.scene.RotateObjectCommand;
+import awaybuilder.controller.scene.ScaleObjectCommand;
+import awaybuilder.controller.scene.TranslateObjectCommand;
+import awaybuilder.view.components.PropertiesPanel;
+import awaybuilder.view.mediators.PropertiesPanelMediator;
+
+import flash.display.DisplayObjectContainer;
 	
 	import awaybuilder.controller.CopyCommand;
 	import awaybuilder.controller.ImportDocumentCommand;
@@ -69,7 +81,7 @@ package awaybuilder
 			super.startup();
 			
 			this.commandMap.mapEvent(ContextEvent.STARTUP, StartupCommand);
-			
+
 			this.commandMap.mapEvent(DocumentEvent.NEW_DOCUMENT, NewDocumentCommand);
 			this.commandMap.mapEvent(DocumentEvent.OPEN_DOCUMENT, OpenDocumentCommand);
 			this.commandMap.mapEvent(DocumentEvent.IMPORT_DOCUMENT, ImportDocumentCommand);
@@ -88,7 +100,14 @@ package awaybuilder
 			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE, SwitchTransformRotateModeCommand);
 			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE, SwitchTransformScaleModeCommand);
 			this.commandMap.mapEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE, SwitchTransformTranslateModeCommand);
-			
+
+            this.commandMap.mapEvent(SceneEvent.ROTATE_OBJECT, RotateObjectCommand);
+            this.commandMap.mapEvent(SceneEvent.TRANSLATE_OBJECT, TranslateObjectCommand);
+            this.commandMap.mapEvent(SceneEvent.SCALE_OBJECT, ScaleObjectCommand);
+
+            this.commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
+            this.commandMap.mapEvent(SceneEvent.CHANGE_MATERIAL, ChangeMaterialCommand);
+
 			this.commandMap.mapEvent(DocumentEvent.PRINT_DOCUMENT, PrintDocumentCommand);
 			
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);
@@ -105,7 +124,10 @@ package awaybuilder
 			this.commandMap.mapEvent(WebLinkEvent.LINK_DOWNLOAD, WebLinkCommand);
 			this.commandMap.mapEvent(WebLinkEvent.LINK_HOME, WebLinkCommand);
 			this.commandMap.mapEvent(WebLinkEvent.LINK_ONLINE_HELP, WebLinkCommand);
-			
+
+            commandMap.mapEvent( UndoRedoEvent.REDO, RedoCommand );
+            commandMap.mapEvent( UndoRedoEvent.UNDO, UndoCommand );
+
 			this.injector.mapSingletonOf(IDocumentModel, DocumentModel);
 			this.injector.mapSingletonOf(ISettingsModel, SettingsModel);
 			this.injector.mapSingleton(UndoRedoModel);
@@ -114,6 +136,7 @@ package awaybuilder
 			this.injector.mapValue(SettingsModel, this.injector.getInstance(ISettingsModel));
 			
 			this.mediatorMap.mapView(CoreEditor, CoreEditorMediator);
+            this.mediatorMap.mapView(PropertiesPanel, PropertiesPanelMediator);
 //			this.mediatorMap.mapView(ObjectPickerItemRenderer, ObjectPickerItemRendererMediator);
 			this.mediatorMap.mapView(EditToolBar, EditToolBarMediator);
 			this.mediatorMap.mapView(EditStatusBar, EditStatusBarMediator);

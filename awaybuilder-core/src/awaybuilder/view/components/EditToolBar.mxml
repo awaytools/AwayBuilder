@@ -36,6 +36,11 @@
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
 	<!-- camera modes -->
+
+    <s:Button id="focusButton" styleName="toolbarButton"
+              toolTip="Focus On Object" enabled="false"
+              click="focusButton_clickHandler(event)"/>
+
 	<components:SwitchButton id="targetCameraButton" styleName="toolbarButton" toolTip="Target Camera Mode" value="Target" tabFocusEnabled="false" tabEnabled="false" tabChildren="false" focusEnabled="false"
 		selected="true" group="{cameraModeToolGroup}"/>
 	<components:SwitchButton id="freeCameraButton" styleName="toolbarButton" toolTip="Free Camera Mode" value="Free" tabFocusEnabled="false" tabEnabled="false" tabChildren="false"
@@ -213,9 +218,9 @@
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.DELETE_SELECTION));
 		}
 		
-		protected function rotateCounterClockwiseButton_clickHandler(event:MouseEvent):void
+		protected function focusButton_clickHandler(event:MouseEvent):void
 		{
-			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.ROTATE_SELECTION_COUNTER_CLOCKWISE));
+			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.FOCUS_OBJECT));
 		}
 		
 		protected function rotateClockwiseButton_clickHandler(event:MouseEvent):void

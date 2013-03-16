@@ -21,19 +21,6 @@ s|TextInput
 	color: #000000;
 }
 
-awaybuilder|EditingSurface
-{
-	skinClass: ClassReference("awaybuilder.view.skins.EditingSurfaceSkin");
-	backgroundColor: #ff00ff;
-	backgroundAlpha: 0;
-	chromeColor: #0079DB;
-}
-
-awaybuilder|EditorGrid
-{
-	gridColor: #cbcbcb;
-}
-
 /*** tool/status bars ***/
 
 awaybuilder|EditToolBar
@@ -54,11 +41,6 @@ awaybuilder|EditStatusBar
 	chromeColor: #1d1d1c;
 	color: #dbdbdb;
 	skinClass: ClassReference("awaybuilder.view.skins.ToolBarSkin");
-}
-
-awaybuilder|IObjectPropertyEditor
-{
-	focusSkin: ClassReference("mx.skins.ProgrammaticSkin");
 }
 
 propertyEditors|LabelPropertyEditor s|TextArea
@@ -93,22 +75,22 @@ s|RadioButton.toolbarButton
 
 .toolbarButton#newDocumentButton
 {
-	icon: Embed("assets/images/page_white_star.png");
+	icon: Embed("/assets/images/page_white_star.png");
 }
 
 .toolbarButton#openDocumentButton
 {
-	icon: Embed("assets/images/folder_page_white.png");
+	icon: Embed("/assets/images/folder_page_white.png");
 }
 
 .toolbarButton#saveDocumentButton
 {
-	icon: Embed("assets/images/disk.png");
+	icon: Embed("/assets/images/disk.png");
 }
 
 .toolbarButton#printDocumentButton
 {
-	icon: Embed("assets/images/printer.png");
+	icon: Embed("/assets/images/printer.png");
 }
 
 .toolbarButton#undoButton
@@ -213,11 +195,27 @@ s|RadioButton.toolbarButton
 	icon: Embed("assets/images/control_fastforward_blue.png");
 }
 
+.toolbarButton#focusButton
+{
+    icon: Embed("assets/images/eye.png");
+}
+
 .toolbarButton#playPauseButton
 {
 	icon: Embed("assets/images/control_play_blue.png");
 	selectedIcon: Embed("assets/images/control_pause_blue.png");
 }
+
+s|Button.editSubmeshMaterialButtonStyle
+{
+    skinClass: ClassReference("awaybuilder.view.skins.ToolbarToggleButtonSkin");
+}
+
+.editSubmeshMaterialButtonStyle
+{
+    icon: Embed("assets/images/pencil.png");
+}
+
 
 awaybuilder|ApplicationSettingsForm s|List
 {
@@ -240,6 +238,12 @@ awaybuilder|SampleItemRenderer #titleLabel
 	color: #40a9ff;
 }
 
+s|DropDownList
+{
+    skinClass: ClassReference("awaybuilder.view.skins.DropDownListSkin");
+    contentBackgroundColor: #333333;
+    borderColor: #222222;
+}
 
 .toolsPanel
 {
@@ -249,3 +253,10 @@ awaybuilder|SampleItemRenderer #titleLabel
 	backgroundColor:#1d1d1c;
 }
 
+awaybuilder|CollapsiblePanel {
+    chromeColor: #1d1d1c;
+    color: #dbdbdb;
+    fontSize: 11;
+    backgroundColor: #1d1d1c;
+    skinClass: ClassReference("awaybuilder.view.skins.CollapsibleDropdownPanelSkin");
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:CollapsiblePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+                             xmlns:s="library://ns.adobe.com/flex/spark"
+                             xmlns:components="awaybuilder.view.components.*"
+                             xmlns:propertyEditors="awaybuilder.view.components.propertyEditors.*"
+                             styleName="propertiesPanel"
+                             chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
+                             skinClass="awaybuilder.view.skins.CollapsibleRightPanelSkin"
+                             currentState="mesh">
+
+    <components:states>
+        <s:State name="group"/>
+        <s:State name="mesh"/>
+        <s:State name="material"/>
+        <s:State name="texture"/>
+        <s:State name="light"/>
+        <s:State name="geometry"/>
+        <s:State name="container"/>
+    </components:states>
+    <fx:Script><![CDATA[
+
+        import awaybuilder.model.vo.MaterialItemVO;
+
+        import awaybuilder.model.vo.MeshItemVO;
+
+        private var _data:Object;
+        [Bindable]
+        public function set data( value:Object ): void
+        {
+            this._data = value;
+        }
+        public function get data(): Object
+        {
+            return this._data;
+        }
+        ]]></fx:Script>
+    <s:Scroller width="210" height="100%">
+        <s:Group>
+            <propertyEditors:MeshPropertyEditor width="100%" includeIn="mesh" data="{data as MeshItemVO}"/>
+            <s:Group includeIn="group"><s:Label text="Group Options"/></s:Group>
+            <propertyEditors:MaterialPropertiesEditor width="100%" includeIn="material" data="{data as MaterialItemVO}"/>
+            <s:Group includeIn="texture"><s:Label text="Texture Options"/></s:Group>
+            <s:Group includeIn="light"><s:Label text="Light Options"/></s:Group>
+            <s:Group includeIn="geometry"><s:Label text="Geometry Options"/></s:Group>
+            <s:Group includeIn="container"><s:Label text="Container Options"/></s:Group>
+        </s:Group>
+    </s:Scroller>
+
+</components:CollapsiblePanel>

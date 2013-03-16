@@ -12,14 +12,6 @@ import mx.styles.IStyleClient;
 
 import spark.components.supportClasses.ItemRenderer;
 
-/**
- * Base class for all Spark Tree item renderers. Provides various properties
- * that can be used in descendant's UI.
- * 
- * <p>Watches the <code>data</code> children collection for modifications
- * <a href="https://github.com/kachurovskiy/Spark-Tree/issues#issue/2">and 
- * updates renderer when it changes</a>.</p>
- */
 public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRenderer
 {
 	
@@ -58,16 +50,14 @@ public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRende
 	{
 		var eventDispatcher:IEventDispatcher = super.data as IEventDispatcher;
 		if (eventDispatcher)
-			eventDispatcher.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,
-				data_propertyChangeHandler);
+			eventDispatcher.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler);
 		
 		super.data = value;
 		updateChildren();
 		
 		eventDispatcher = value as IEventDispatcher;
 		if (eventDispatcher)
-			eventDispatcher.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,
-				data_propertyChangeHandler);
+			eventDispatcher.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler);
 	}
 	
 	//--------------------------------------------------------------------------
@@ -199,27 +189,6 @@ public class TreeItemRendererBase extends ItemRenderer implements ITreeItemRende
 		
 		_isOpen = value;
 		dispatchEvent(new Event("isOpenChange"));
-	}
-	
-	//----------------------------------
-	//  icon
-	//----------------------------------
-	
-	protected var _icon:Class;
-	
-	[Bindable("iconChange")]
-	public function get icon():Class
-	{
-		return _icon;
-	}
-	
-	public function set icon(value:Class):void
-	{
-		if (_icon == value)
-			return;
-		
-		_icon = value;
-		dispatchEvent(new Event("iconChange"));
 	}
 	
 	//----------------------------------

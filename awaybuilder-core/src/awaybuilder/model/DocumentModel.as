@@ -72,36 +72,23 @@ package awaybuilder.model
 		{
 			var group1:ScenegraphGroupItemVO = a as ScenegraphGroupItemVO;
 			var group2:ScenegraphGroupItemVO = b as ScenegraphGroupItemVO;
-			
-			if (group1 == null && group2 == null)
-				return 0;
-			
-			if (group1 == null)
-				return 1;
-			
-			if (group2 == null)
-				return -1;
-			
-			if (group1.weight < group2.weight)
-				return -1;
-			
-			if (group1.weight > group2.weight)
-				return 1;
-			
+			if (group1 == null && group2 == null) return 0;
+			if (group1 == null)	return 1;
+			if (group2 == null)	return -1;
+			if (group1.weight < group2.weight) return -1;
+			if (group1.weight > group2.weight) return 1;
 			return 0;
-
 		}
-		
 
-		private var _selectedObjects:Vector.<Object> = new Vector.<Object>();
-		public function get selectedObjects():Vector.<Object>
+		private var _selectedObjects:Vector.<ScenegraphItemVO> = new Vector.<ScenegraphItemVO>();
+		public function get selectedObjects():Vector.<ScenegraphItemVO>
 		{
 			return this._selectedObjects;
 		}
-		public function set selectedObjects(value:Vector.<Object>):void
+		public function set selectedObjects(value:Vector.<ScenegraphItemVO>):void
 		{
 			this._selectedObjects = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			//this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		
 		public function getScenegraphGroup( type:String ):ScenegraphGroupItemVO 
@@ -118,6 +105,30 @@ package awaybuilder.model
 			}
 			return null;
 		}
+
+        public function getScenegraphItem( value:Object ):ScenegraphItemVO
+        {
+            return getItemInCollection( _scenegraph, value );
+        }
+        private function getItemInCollection( children:ArrayCollection, value:Object ):ScenegraphItemVO
+        {
+            for each( var vo:ScenegraphItemVO in children )
+            {
+                if( vo.item == value ) {
+                    return vo;
+                }
+                if( vo.children && vo.children.length )
+                {
+                    var item:ScenegraphItemVO = getItemInCollection( vo.children, value );
+                    if( item ) {
+                        return item;
+                    }
+
+                }
+            }
+            return null;
+        }
+
 		
 	}
 }

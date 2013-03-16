@@ -1,6 +1,8 @@
 package awaybuilder.controller
 {
-	import mx.collections.ArrayCollection;
+import awaybuilder.utils.scene.Scene3DManager;
+
+import mx.collections.ArrayCollection;
 	
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.ISettingsModel;
@@ -36,7 +38,7 @@ package awaybuilder.controller
 			
 			document.scenegraph = graph;
 				
-//			Scene3DManager.clear();
+			Scene3DManager.clear();
 			
 		}
 	}

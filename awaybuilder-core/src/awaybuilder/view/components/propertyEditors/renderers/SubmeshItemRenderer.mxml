@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+                autoDrawBackground="false">
+
+    <s:layout>
+        <s:HorizontalLayout verticalAlign="middle"/>
+    </s:layout>
+    <fx:Script><![CDATA[
+        import awaybuilder.model.vo.MaterialItemVO;
+        import awaybuilder.model.vo.SubMeshVO;
+        import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
+
+        import mx.collections.ArrayCollection;
+
+        import spark.events.IndexChangeEvent;
+
+        [Bindable]
+        private var _subMesh:SubMeshVO;
+
+        [Bindable]
+        private var _selectedMaterial:MaterialItemVO;
+
+        override public function set data(value:Object):void {
+            super.data = value;
+            _subMesh = value as SubMeshVO;
+            for each(var material:MaterialItemVO in _subMesh.linkedMaterials) {
+                if (material.item == _subMesh.material.item) {
+                    _selectedMaterial = material;
+                }
+            }
+        }
+
+        private function dropDownList1_changeHandler(event:IndexChangeEvent):void {
+            var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject);
+            newValue.material = dropDownList.selectedItem as MaterialItemVO;
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, newValue, true));
+        }
+
+        private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
+        {
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _subMesh.linkedObject.material, true));
+        }
+        ]]></fx:Script>
+
+    <s:DropDownList id="dropDownList" width="100%"
+                    dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}"
+                    change="dropDownList1_changeHandler(event)"/>
+    <s:Button id="editSubmeshMaterialButton" styleName="editSubmeshMaterialButtonStyle"
+              width="23" height="23" click="editSubmeshMaterialButton_clickHandler(event)"/>
+</s:ItemRenderer>

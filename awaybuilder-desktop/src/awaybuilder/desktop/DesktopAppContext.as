@@ -1,8 +1,10 @@
 package awaybuilder.desktop
 {
     import awaybuilder.desktop.model.FileSystemDocumentService;
+import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
+import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
 
-    import flash.desktop.NativeApplication;
+import flash.desktop.NativeApplication;
 	import flash.display.DisplayObjectContainer;
 	
 	import mx.core.FlexGlobals;
@@ -85,7 +87,7 @@ package awaybuilder.desktop
 //			this.mediatorMap.mapView(ObjectPropertiesWindow, ObjectPropertiesWindowMediator);
 //			this.mediatorMap.mapView(DocumentSettingsWindow, DocumentSettingsWindowMediator);
 //			this.mediatorMap.mapView(ApplicationSettingsWindow, ApplicationSettingsWindowMediator);
-//			this.mediatorMap.mapView(EditedDocumentWarningWindow, EditedDocumentWarningWindowMediator);
+			this.mediatorMap.mapView(EditedDocumentWarningWindow, EditedDocumentWarningWindowMediator);
 			this.mediatorMap.mapView(WelcomeWindow, WelcomeWindowMediator);
 //			this.mediatorMap.mapView(MessageBox, MessageBoxMediator);
 			this.mediatorMap.mapView(AboutWindow, AboutWindowMediator);

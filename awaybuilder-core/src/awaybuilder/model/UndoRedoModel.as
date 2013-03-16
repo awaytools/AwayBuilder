@@ -1,6 +1,9 @@
 package awaybuilder.model
 {
-	import org.robotlegs.mvcs.Actor;
+    import awaybuilder.controller.history.HistoryEvent;
+import awaybuilder.controller.history.UndoRedoEvent;
+
+import org.robotlegs.mvcs.Actor;
 	
 	public class UndoRedoModel extends Actor
 	{
@@ -9,11 +12,11 @@ package awaybuilder.model
 			super();
 		}
 		
-		private var _undoStack:Vector.<UndoRedoItem> = new <UndoRedoItem>[];
-		private var _redoStack:Vector.<UndoRedoItem> = new <UndoRedoItem>[];
-		
-		public var maxUndoActions:int = 20;
-		
+		private var _undoStack:Vector.<HistoryEvent> = new <HistoryEvent>[];
+		private var _redoStack:Vector.<HistoryEvent> = new <HistoryEvent>[];
+
+		public var maxUndoActions:int = 133;
+
 		public function get canUndo():Boolean
 		{
 			return this._undoStack.length > 0;
@@ -23,15 +26,24 @@ package awaybuilder.model
 		{
 			return this._redoStack.length > 0;
 		}
-		
-		public function registerAction(item:UndoRedoItem):void
+
+        public function getLastActon():HistoryEvent
+        {
+            if( canUndo ) {
+                return _undoStack[ _undoStack.length-1 ];
+            }
+            return null;
+        }
+
+		public function registerAction(event:HistoryEvent):void
 		{
 			this._redoStack.length = 0;
-			this._undoStack.push(item);
+			this._undoStack.push(event);
 			while(this._undoStack.length > this.maxUndoActions)
 			{
 				this._undoStack.shift();
 			}
+            dispatch( new UndoRedoEvent(UndoRedoEvent.UNDO_LIST_CHANGE) );
 		}
 		
 		public function clear():void
@@ -45,10 +57,15 @@ package awaybuilder.model
 			{
 				return;
 			}
-			
-			const item:UndoRedoItem = this._undoStack.pop();
-			item.undo();
-			this._redoStack.push(item);
+            var event:HistoryEvent = this._undoStack.pop();
+            var undoEvent:HistoryEvent = event.clone() as HistoryEvent;
+            var undoValue:Object = undoEvent.oldValue;
+            undoEvent.oldValue = undoEvent.newValue;
+            undoEvent.newValue = undoValue;
+            undoEvent.isHistoryAction = true;
+			dispatch( undoEvent );
+			this._redoStack.push(event);
+            dispatch( new UndoRedoEvent(UndoRedoEvent.UNDO_LIST_CHANGE) );
 		}
 		
 		public function redo():void
@@ -57,9 +74,12 @@ package awaybuilder.model
 			{
 				return;
 			}
-			const item:UndoRedoItem = this._redoStack.pop();
-			item.redo();
-			this._undoStack.push(item);
+			var event:HistoryEvent = this._redoStack.pop();
+            var redoEvent:HistoryEvent = event.clone() as HistoryEvent;
+            redoEvent.isHistoryAction = true;
+            dispatch( redoEvent );
+			this._undoStack.push(event);
+            dispatch( new UndoRedoEvent(UndoRedoEvent.UNDO_LIST_CHANGE) );
 		}
 	}
 }

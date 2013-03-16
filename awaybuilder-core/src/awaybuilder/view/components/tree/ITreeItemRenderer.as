@@ -32,8 +32,5 @@ public interface ITreeItemRenderer extends IItemRenderer
 	function get isOpen():Boolean;
 	function set isOpen(value:Boolean):void;
 	
-	function get icon():Class;
-	function set icon(value:Class):void;
-	
 }
 }

@@ -1,6 +1,8 @@
 package awaybuilder.model
 {
-	import mx.collections.ArrayCollection;
+import awaybuilder.model.vo.ScenegraphItemVO;
+
+import mx.collections.ArrayCollection;
 	
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 
@@ -17,9 +19,11 @@ package awaybuilder.model
 		function set scenegraph(value:ArrayCollection):void;
 		
 		function getScenegraphGroup( type:String ):ScenegraphGroupItemVO;
+
+        function getScenegraphItem( value:Object ):ScenegraphItemVO;
 		
-		function get selectedObjects():Vector.<Object>;
-		function set selectedObjects(value:Vector.<Object>):void;
+		function get selectedObjects():Vector.<ScenegraphItemVO>;
+		function set selectedObjects(value:Vector.<ScenegraphItemVO>):void;
 		
 //		function addObject(object:IEditorObjectView):void;
 //		function removeObject(object:IEditorObjectView):void;

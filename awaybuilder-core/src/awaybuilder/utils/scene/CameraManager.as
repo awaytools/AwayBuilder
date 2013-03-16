@@ -10,7 +10,7 @@ package awaybuilder.utils.scene
 	import awaybuilder.utils.scene.modes.CameraMode;
 	
 	import com.greensock.TweenMax;
-	
+
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -23,7 +23,7 @@ package awaybuilder.utils.scene
 	 * ...
 	 * @author Cornflex
 	 */
-	public class CameraManager 
+	public class CameraManager
 	{
 		// Singleton instance declaration
 		private static const self:CameraManager = new CameraManager();		
@@ -250,7 +250,7 @@ package awaybuilder.utils.scene
 			}
 			
 			TweenMax.to(instance.poi, 0.5, {x:t.scenePosition.x, y:t.scenePosition.y, z:t.scenePosition.z});
-		}		
+		}
 		
 		private function calculateWheelSpeed(t:ObjectContainer3D):void
 		{

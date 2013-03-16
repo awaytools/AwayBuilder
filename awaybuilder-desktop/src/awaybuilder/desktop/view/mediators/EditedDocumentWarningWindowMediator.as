@@ -95,6 +95,7 @@ package awaybuilder.desktop.view.mediators
 		
 		private function window_cancelHandler(event:Event):void
 		{
+            trace( "cancel" );
 			this.window.close();
 		}
 	}

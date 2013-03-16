@@ -1,73 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
-	<s:layout>
-		<s:FormLayout/>
-	</s:layout>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
-			<s:Label width="100%" text="Mesh Properties" fontWeight="bold"/>
-			<s:Button label="Focus"/>
-			<!--<s:ToggleButton id="disclosureButton"
-			skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>-->
-		</s:HGroup>
-		<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Select..." width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Select..." width="100%"/>
-		</s:FormItem>
-		
-		<s:FormItem label="Rotation X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:NumericStepper minimum="-999999" maximum="999999" width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Rotation Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:NumericStepper minimum="-999999" maximum="999999" width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Rotation Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:NumericStepper minimum="-999999" maximum="999999" width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Scale X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:NumericStepper minimum="-999999" maximum="999999" width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Scale Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:NumericStepper minimum="-999999" maximum="999999" width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Scale Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:NumericStepper minimum="-999999" maximum="999999" width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Children" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Select..." width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Extra" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Select..." width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Material" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:DropDownList width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Geometry" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:DropDownList width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Animator" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:DropDownList width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput width="100%"/>
-		</s:FormItem>
-		<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:CheckBox/>
-		</s:FormItem>
-		<s:FormItem label="Sub Meshes" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Submesh1" width="100%"/>
-			<s:Button label="Submesh2" width="100%"/>
-			<s:Button label="Submesh3" width="100%"/>
-		</s:FormItem>
-		
-	</s:Form>
+    <fx:Script><![CDATA[
+        import away3d.entities.Mesh;
 
-	
-</s:Group>
+        import awaybuilder.model.vo.MeshItemVO;
+        import awaybuilder.model.vo.SubMeshVO;
+
+
+        private var _data:MeshItemVO;
+        [Bindable]
+        public function get data():MeshItemVO
+        {
+            return _data;
+        }
+        public function set data(value:MeshItemVO):void
+        {
+            if( value ) {
+                _data = value;
+                trace( "set data = " + value );
+                trace( "set data = " + _data.subMeshes );
+            }
+
+        }
+
+        private function position_commitHandler(event:Event):void {
+            var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue, true));
+        }
+
+        private function rotation_commitHandler(event:Event):void {
+            var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
+        }
+
+        private function scale_commitHandler(event:Event):void {
+            var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
+        }
+
+        private function name_changeHandler(event:Event):void {
+            var newValue:MeshItemVO = new MeshItemVO(data.item as Mesh);
+            newValue.name = nameInput.text;
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, newValue, true));
+        }
+
+        private function castShadowBox_changeHandler(event:Event):void {
+            //data.castShadows = castShadowBox.selected;
+        }
+
+        private function materialButton_clickHandler(event:MouseEvent):void {
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, data.item.material, true));
+        }
+
+
+        ]]></fx:Script>
+
+    <s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
+        <s:Label width="100%" text="Mesh Properties" fontWeight="bold"/>
+    </s:HGroup>
+
+    <components:CollapsiblePanel width="100%" title="General" collapsed="false">
+        <s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+
+            <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
+            </s:FormItem>
+
+            <!--<s:FormItem label="Children" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
+                <!--<s:Button label="Select..." width="100%"/>-->
+            <!--</s:FormItem>-->
+            <!--<s:FormItem label="Extra" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
+                <!--<s:Button label="Select..." width="100%"/>-->
+            <!--</s:FormItem>-->
+            <!--<s:FormItem label="Material" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">-->
+                <!--<s:Button id="materialButton" width="100%" label="{data.item.material.name}" click="materialButton_clickHandler(event)"/>-->
+                <!--&lt;!&ndash;<s:Button label="..." width="22"/>&ndash;&gt;-->
+            <!--</s:FormItem>-->
+            <!--<s:FormItem label="Geometry" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
+                <!--<s:DropDownList width="100%"/>-->
+            <!--</s:FormItem>-->
+            <!--<s:FormItem label="Animator" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
+                <!--<s:DropDownList width="100%"/>-->
+            <!--</s:FormItem>-->
+            <!--<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
+                <!--<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{data.castShadows}"/>-->
+            <!--</s:FormItem>-->
+
+        </s:Form>
+    </components:CollapsiblePanel>
+    <components:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
+        <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+            <s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="xStepper"
+                                  minimum="-999999" maximum="999999" width="100%" value="{data.x}"
+                                  change="position_commitHandler(event)" />
+            </s:FormItem>
+            <s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="yStepper"
+                                  minimum="-999999" maximum="999999" width="100%" value="{data.y}"
+                                  change="position_commitHandler(event)"/>
+            </s:FormItem>
+            <s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="zStepper"
+                                  minimum="-999999" maximum="999999" width="100%" value="{data.z}"
+                                  change="position_commitHandler(event)"/>
+            </s:FormItem>
+            <s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
+                <s:Button label="Select..." width="100%"/>
+            </s:FormItem>
+
+            <s:FormItem label="Rotation X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="rotationXStepper"
+                                  minimum="-360" maximum="360" width="100%" value="{data.rotationX}"
+                                  change="rotation_commitHandler(event)"/>
+            </s:FormItem>
+            <s:FormItem label="Rotation Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="rotationYStepper"
+                                  minimum="-360" maximum="360" width="100%" value="{data.rotationY}"
+                                  change="rotation_commitHandler(event)"/>
+            </s:FormItem>
+            <s:FormItem label="Rotation Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="rotationZStepper"
+                                  minimum="-360" maximum="360" width="100%" value="{data.rotationZ}"
+                                  change="rotation_commitHandler(event)"/>
+            </s:FormItem>
+            <s:FormItem label="Scale X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="scaleXStepper"
+                                  minimum="-999999" maximum="999999" width="100%" value="{data.scaleX}"
+                                  change="scale_commitHandler(event)" />
+            </s:FormItem>
+            <s:FormItem label="Scale Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="scaleYStepper"
+                                  minimum="-999999" maximum="999999" width="100%" value="{data.scaleY}"
+                                  change="scale_commitHandler(event)"/>
+            </s:FormItem>
+            <s:FormItem label="Scale Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <s:NumericStepper id="scaleZStepper"
+                                  minimum="-999999" maximum="999999" width="100%" value="{data.scaleZ}"
+                                  change="scale_commitHandler(event)"/>
+            </s:FormItem>
+        </s:Form>
+    </components:CollapsiblePanel>
+    <components:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="true">
+        <s:List dataProvider="{data.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
+    </components:CollapsiblePanel>
+</s:VGroup>

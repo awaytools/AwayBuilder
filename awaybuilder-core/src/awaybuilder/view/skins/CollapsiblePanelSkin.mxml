@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" blendMode="normal" mouseEnabled="false" 
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" blendMode="normal" mouseEnabled="false"
 			 minWidth="{collapseButton.width}" maxWidth="300" minHeight="127"
 			 alpha.disabled="0.5" alpha.disabledWithControlBar="0.5">
-	
+
 	<fx:Metadata>
 		[HostComponent("awaybuilder.view.components.CollapsiblePanel")]
 	</fx:Metadata>
-	
+
 		<fx:Script fb:purpose="styling">
-		/* Define the skin elements that should not be colorized. 
+		/* Define the skin elements that should not be colorized.
 		For panel, border and title background are skinned, but the content area and title text are not. */
 		static private const exclusions:Array = ["contentGroup", "collapseButton"];
-		
+
 		/**
 		 * @private
-		 */  
+		 */
 		override public function get colorizeExclusions():Array {return exclusions;}
-		
+
 		/**
 		 * @private
 		 */
@@ -26,25 +26,25 @@
 			useChromeColor = true;
 			super.initializationComplete();
 		}
-		
+
 		/**
 		 * @private
-		 */  
+		 */
 		private function setPartCornerRadii(target:Rect, includeBottom:Boolean):void
-		{            
+		{
 			target.topLeftRadiusX = cornerRadius;
 			target.topRightRadiusX = cornerRadius;
 			target.bottomLeftRadiusX = includeBottom ? cornerRadius : 0;
 			target.bottomRightRadiusX = includeBottom ? cornerRadius : 0;
 		}
-		
+
 		private var cornerRadius:Number;
 	</fx:Script>
-	
+
 	<fx:Declarations>
 		<s:Power id="collapseEaser" exponent="2" easeInFraction="0.7" />
 	</fx:Declarations>
-	
+
 	<s:states>
 		<s:State name="normal" />
 		<s:State name="disabled" />
@@ -52,7 +52,7 @@
 		<s:State name="normalWithControlBar" stateGroups="withControls" />
 		<s:State name="disabledWithControlBar" stateGroups="withControls" />
 	</s:states>
-	
+
 	<s:transitions>
 		<s:Transition fromState="*" toState="collapsed">
 			<s:Parallel duration="150">
@@ -70,17 +70,17 @@
 			</s:Sequence>
 		</s:Transition>
 	</s:transitions>
-	
+
 	<!-- drop shadow can't be hittable so all other graphics go in this group -->
 	<s:Group left="0" right="0" top="0" bottom="0">
-		
+
 		<!-- layer 3: contents -->
 		<!--- Contains the horizontal stack of collapse bar, content and controlbar. -->
 		<s:Group left="0" right="0" top="0" bottom="0" id="contents">
 			<s:layout>
 				<s:HorizontalLayout gap="0" horizontalAlign="right" />
 			</s:layout>
-			
+
 			<!--
 			Note: setting the minimum size to 0 here so that changes to the host component's
 			size will not be thwarted by this skin part's minimum size.   This is a compromise,
@@ -93,7 +93,7 @@
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
 			</s:Group>
-			
+
 			<s:Group width="10" height="100%">
 				<s:Rect left="0" right="0" top="0" bottom="0">
 					<s:stroke>

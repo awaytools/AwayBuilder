@@ -7,12 +7,16 @@ package awaybuilder.controller.events
 		public static const ADD_OBJECTS:String = "addObjects";
 		public static const PASTE_OBJECTS:String = "pasteObjects";
 		public static const DELETE_OBJECTS:String = "deleteObjects";
-		
+
+        public static const FOCUS_SELECTION:String = "focusOnSelection";
+
 		public static const DELETE_SELECTION:String = "deleteSelection";
 		public static const ROTATE_SELECTION_CLOCKWISE:String = "rotateSelectionClockwise";
 		public static const ROTATE_SELECTION_COUNTER_CLOCKWISE:String = "rotateSelectionCounterClockwise";
+
+
 		
-		public static const PAN_TO_CENTER:String = "panToCenter";
+		public static const FOCUS_SELECTED:String = "focusOnSelected";
 		
 //		public static const SWITCH_TO_PAN_TOOL:String = "switchToPanTool";
 //		public static const SWITCH_TO_SELECTION_TOOL:String = "switchToSelectionTool";

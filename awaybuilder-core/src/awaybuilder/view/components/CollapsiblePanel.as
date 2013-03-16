@@ -42,7 +42,7 @@ package awaybuilder.view.components
 			this.invalidateSkinState();
 			this.dispatchEvent(new Event("collapsedChange"));
 		}
-		
+
 		override protected function commitProperties():void
 		{
 			if(this.collapsedChanged)
@@ -58,12 +58,13 @@ package awaybuilder.view.components
 		
 		override protected function partAdded(partName:String, instance:Object):void
 		{
+            super.partAdded( partName, instance );
 			if(instance == this.collapseButton)
 			{
 				this.collapseButton.addEventListener(MouseEvent.CLICK, collapseButton_clickHandler);
 			}
 		}
-		
+
 		override protected function partRemoved(partName:String, instance:Object):void
 		{
 			if(instance == this.collapseButton)

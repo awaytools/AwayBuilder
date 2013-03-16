@@ -1,6 +1,11 @@
 package awaybuilder.controller
 {
-	import flash.events.ProgressEvent;
+import away3d.materials.MaterialBase;
+
+import awaybuilder.model.vo.MaterialItemVO;
+import awaybuilder.model.vo.MeshItemVO;
+
+import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
 	
 	import mx.collections.ArrayCollection;
@@ -9,6 +14,8 @@ package awaybuilder.controller
 	
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimationStateBase;
+	import away3d.animators.data.Skeleton;
+	import away3d.animators.data.SkeletonPose;
 	import away3d.animators.nodes.AnimationNodeBase;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
@@ -56,7 +63,9 @@ package awaybuilder.controller
 		private var _geometryGroup:ScenegraphGroupItemVO;
 		
 		private var _textureGroup:ScenegraphGroupItemVO;
-		
+
+        private var _skeletonGroup:ScenegraphGroupItemVO;
+
 		override public function execute():void
 		{
 			_scenegraph = document.scenegraph;
@@ -86,6 +95,11 @@ package awaybuilder.controller
 			{
 				_textureGroup = new ScenegraphGroupItemVO( "Texture", ScenegraphGroupItemVO.TEXTURE_GROUP );
 			}
+            _skeletonGroup = document.getScenegraphGroup( ScenegraphGroupItemVO.SKELETON_GROUP );
+            if( !_skeletonGroup )
+            {
+                _skeletonGroup = new ScenegraphGroupItemVO( "Skeleton", ScenegraphGroupItemVO.SKELETON_GROUP );
+            }
 			
 			document.name = event.name;
 			Parsers.enableAllBundled();
@@ -124,6 +138,10 @@ package awaybuilder.controller
 			{
 				_scenegraph.addItem( _materialGroup );
 			}
+            if( _skeletonGroup.children.length && !document.getScenegraphGroup( ScenegraphGroupItemVO.SKELETON_GROUP ) )
+            {
+                _scenegraph.addItem( _skeletonGroup );
+            }
 			
 //			trace( _mesh.parent );
 //			if( _mesh.material ) {
@@ -148,12 +166,16 @@ package awaybuilder.controller
 			if (event.asset.assetType == AssetType.MESH) 
 			{
 				var mesh:Mesh = event.asset as Mesh;
-				item = new ScenegraphItemVO( mesh.name , mesh );
+                if( !mesh.material ) {
+                    mesh.material = DefaultMaterialManager.getDefaultMaterial();
+                    item = new MaterialItemVO( mesh.material );
+                    _materialGroup.children.addItem( item );
+                }
+
+				item = new MeshItemVO( mesh );
 				_sceneGroup.children.addItem( item );
 				
-				if( !mesh.material ) {
-					mesh.material = DefaultMaterialManager.getDefaultMaterial();
-				}
+
 				Scene3DManager.addMesh( mesh );
 //				if( mesh.material ) {
 //					Scene3DManager.addMesh( mesh );
@@ -172,18 +194,18 @@ package awaybuilder.controller
 			}
 			else if (event.asset.assetType == AssetType.MATERIAL) 
 			{
-				var material:TextureMaterial = event.asset as TextureMaterial;
-				item = new ScenegraphItemVO( material.name, material );
-				item.children = new ArrayCollection();
-				if( material.lightPicker ) {
-					item.children.addItem( new ScenegraphItemVO( "LightPicker (" + material.lightPicker.name +")", material.lightPicker ) );
-				}
-				if( material.diffuseMethod ) {
-					item.children.addItem( new ScenegraphItemVO( "DiffuseMethod", material.diffuseMethod ) );
-				}
-				if( material.normalMethod ) {
-					item.children.addItem( new ScenegraphItemVO( "NormalMethod", material.normalMethod ) );
-				}
+				var material:MaterialBase = event.asset as MaterialBase;
+				item = new MaterialItemVO( material );
+//				item.children = new ArrayCollection();
+//				if( material.lightPicker ) {
+//					item.children.addItem( new ScenegraphItemVO( "LightPicker (" + material.lightPicker.name +")", material.lightPicker ) );
+//				}
+//				if( material.diffuseMethod ) {
+//					item.children.addItem( new ScenegraphItemVO( "DiffuseMethod", material.diffuseMethod ) );
+//				}
+//				if( material.normalMethod ) {
+//					item.children.addItem( new ScenegraphItemVO( "NormalMethod", material.normalMethod ) );
+//				}
 				
 				_materialGroup.children.addItem( item );
 			}
@@ -198,10 +220,6 @@ package awaybuilder.controller
 				var geometry:Geometry = event.asset as Geometry;
 				item = new ScenegraphItemVO( geometry.name ,geometry );
 				_geometryGroup.children.addItem( item );
-				item.children = new ArrayCollection();
-				for each( var g:SubGeometry in geometry.subGeometries ) {
-					item.children.addItem( new ScenegraphItemVO( "SubGeometry",g ) );
-				}
 			}
 			else if (event.asset.assetType == AssetType.ANIMATION_SET) 
 			{
@@ -220,6 +238,18 @@ package awaybuilder.controller
 				var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
 				item = new ScenegraphItemVO( "Animation Node (" + animationNode.name +")",animationNode );
 				_animationGroup.children.addItem( item );
+			}
+			else if (event.asset.assetType == AssetType.SKELETON) 
+			{
+				var s:Skeleton = event.asset as Skeleton;
+				item = new ScenegraphItemVO( "Skeleton (" + s.name +")",s );
+                _skeletonGroup.children.addItem( item );
+			}
+			else if (event.asset.assetType == AssetType.SKELETON_POSE) 
+			{
+				var sp:SkeletonPose = event.asset as SkeletonPose;
+				item = new ScenegraphItemVO( "Skeleton Pose (" + sp.name +")",sp );
+                _skeletonGroup.children.addItem( item );
 			}
 			
 		}				
