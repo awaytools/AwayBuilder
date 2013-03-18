@@ -24,11 +24,11 @@ package awaybuilder.controller
 			if(this.event.type == SaveDocumentEvent.SAVE_DOCUMENT_AS ||
 				!this.document.path)
 			{
-				this.documentService.saveAs(document.scenegraph, this.document.name);
+				this.documentService.saveAs(document, this.document.name);
 			}
 			else
 			{
-				this.documentService.save(document.scenegraph, this.document.path);
+				this.documentService.save(document, this.document.path);
 			}
 		}
 	}
