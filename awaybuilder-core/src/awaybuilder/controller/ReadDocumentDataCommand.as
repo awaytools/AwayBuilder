@@ -13,7 +13,7 @@ import flash.events.ProgressEvent;
 	import mx.managers.CursorManager;
 	
 	import away3d.animators.AnimationSetBase;
-	import away3d.animators.AnimationStateBase;
+	//import away3d.animators.AnimationStateBase;
 	import away3d.animators.data.Skeleton;
 	import away3d.animators.data.SkeletonPose;
 	import away3d.animators.nodes.AnimationNodeBase;
@@ -227,12 +227,14 @@ import flash.events.ProgressEvent;
 				item = new ScenegraphItemVO( "Animation Set (" + animationSet.name +")",animationSet );
 				_animationGroup.children.addItem( item );
 			}
+			/*
 			else if (event.asset.assetType == AssetType.ANIMATION_STATE) 
 			{
 				var animationState:AnimationStateBase = event.asset as AnimationStateBase;
 				item = new ScenegraphItemVO( "Animation State (" + animationState.name +")",animationState );
 				_animationGroup.children.addItem( item );
 			}
+			*/
 			else if (event.asset.assetType == AssetType.ANIMATION_NODE) 
 			{
 				var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
