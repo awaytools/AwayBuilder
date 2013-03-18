@@ -2,8 +2,11 @@ package awaybuilder.controller
 {
 import away3d.materials.MaterialBase;
 
+import awaybuilder.model.vo.BitmapTextureVO;
+
 import awaybuilder.model.vo.MaterialItemVO;
 import awaybuilder.model.vo.MeshItemVO;
+import awaybuilder.model.vo.TextureMaterialVO;
 
 import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
@@ -163,96 +166,77 @@ import flash.events.ProgressEvent;
 //			Scene3DManager.addLight( _light );
 //			
 			var item:ScenegraphItemVO;
-			if (event.asset.assetType == AssetType.MESH) 
-			{
-				var mesh:Mesh = event.asset as Mesh;
-                if( !mesh.material ) {
-                    mesh.material = DefaultMaterialManager.getDefaultMaterial();
-                    item = new MaterialItemVO( mesh.material );
-                    _materialGroup.children.addItem( item );
-                }
 
-				item = new MeshItemVO( mesh );
-				_sceneGroup.children.addItem( item );
-				
+            switch( event.asset.assetType )
+            {
+                case AssetType.MESH:
+                    var mesh:Mesh = event.asset as Mesh;
+                    if( !mesh.material )
+                    {
+                        mesh.material = DefaultMaterialManager.getDefaultMaterial();
+                        item = new MaterialItemVO( mesh.material );
+                        _materialGroup.children.addItem( item );
+                    }
 
-				Scene3DManager.addMesh( mesh );
-//				if( mesh.material ) {
-//					Scene3DManager.addMesh( mesh );
-//				}
-//				else {
-//					Alert.show( "Mesh was not added to scene, material is undefined", "Warning" ); 
-//				}
-//				mesh.castsShadows = true;
-			} 
-			else if (event.asset.assetType == AssetType.CONTAINER) 
-			{
-				var c:ObjectContainer3D = event.asset as ObjectContainer3D;
-				item = new ScenegraphItemVO( c.name, c );
-				item.children = new ArrayCollection();
-				_sceneGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.MATERIAL) 
-			{
-				var material:MaterialBase = event.asset as MaterialBase;
-				item = new MaterialItemVO( material );
-//				item.children = new ArrayCollection();
-//				if( material.lightPicker ) {
-//					item.children.addItem( new ScenegraphItemVO( "LightPicker (" + material.lightPicker.name +")", material.lightPicker ) );
-//				}
-//				if( material.diffuseMethod ) {
-//					item.children.addItem( new ScenegraphItemVO( "DiffuseMethod", material.diffuseMethod ) );
-//				}
-//				if( material.normalMethod ) {
-//					item.children.addItem( new ScenegraphItemVO( "NormalMethod", material.normalMethod ) );
-//				}
-				
-				_materialGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.TEXTURE) 
-			{
-				var texture:BitmapTexture = event.asset as BitmapTexture;
-				item = new ScenegraphItemVO( "Texture (" + texture.originalName.split("/").pop() +")", texture );
-				_textureGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.GEOMETRY) 
-			{
-				var geometry:Geometry = event.asset as Geometry;
-				item = new ScenegraphItemVO( geometry.name ,geometry );
-				_geometryGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.ANIMATION_SET) 
-			{
-				var animationSet:AnimationSetBase = event.asset as AnimationSetBase;
-				item = new ScenegraphItemVO( "Animation Set (" + animationSet.name +")",animationSet );
-				_animationGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.ANIMATION_STATE) 
-			{
-				var animationState:AnimationStateBase = event.asset as AnimationStateBase;
-				item = new ScenegraphItemVO( "Animation State (" + animationState.name +")",animationState );
-				_animationGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.ANIMATION_NODE) 
-			{
-				var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
-				item = new ScenegraphItemVO( "Animation Node (" + animationNode.name +")",animationNode );
-				_animationGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.SKELETON) 
-			{
-				var s:Skeleton = event.asset as Skeleton;
-				item = new ScenegraphItemVO( "Skeleton (" + s.name +")",s );
-                _skeletonGroup.children.addItem( item );
-			}
-			else if (event.asset.assetType == AssetType.SKELETON_POSE) 
-			{
-				var sp:SkeletonPose = event.asset as SkeletonPose;
-				item = new ScenegraphItemVO( "Skeleton Pose (" + sp.name +")",sp );
-                _skeletonGroup.children.addItem( item );
-			}
-			
-		}				
+                    item = new MeshItemVO( mesh );
+                    _sceneGroup.children.addItem( item );
+                    Scene3DManager.addMesh( mesh );
+                    break;
+                case AssetType.CONTAINER:
+                    var c:ObjectContainer3D = event.asset as ObjectContainer3D;
+                    item = new ScenegraphItemVO( c.name, c );
+                    item.children = new ArrayCollection();
+                    _sceneGroup.children.addItem( item );
+                    break;
+                case AssetType.MATERIAL:
+                    var material:TextureMaterial = event.asset as TextureMaterial;
+                    if( material )
+                    {
+                        item = new TextureMaterialVO( material );
+                        _materialGroup.children.addItem( item );
+                    }
+                    else
+                    {
+                        trace( "MATERIAL asset = " + event.asset );
+                    }
+                    break;
+                case AssetType.TEXTURE:
+                    var texture:BitmapTexture = event.asset as BitmapTexture;
+                    item = new BitmapTextureVO( texture );
+                    _textureGroup.children.addItem( item );
+                    break;
+                case AssetType.GEOMETRY:
+                    var geometry:Geometry = event.asset as Geometry;
+                    item = new ScenegraphItemVO( geometry.name ,geometry );
+                    _geometryGroup.children.addItem( item );
+                    break;
+                case AssetType.ANIMATION_SET:
+                    var animationSet:AnimationSetBase = event.asset as AnimationSetBase;
+                    item = new ScenegraphItemVO( "Animation Set (" + animationSet.name +")",animationSet );
+                    _animationGroup.children.addItem( item );
+                    break;
+                case AssetType.ANIMATION_STATE:
+                    var animationState:AnimationStateBase = event.asset as AnimationStateBase;
+                    item = new ScenegraphItemVO( "Animation State (" + animationState.name +")",animationState );
+                    _animationGroup.children.addItem( item );
+                    break;
+                case AssetType.ANIMATION_NODE:
+                    var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
+                    item = new ScenegraphItemVO( "Animation Node (" + animationNode.name +")",animationNode );
+                    _animationGroup.children.addItem( item );
+                    break;
+                case AssetType.SKELETON:
+                    var s:Skeleton = event.asset as Skeleton;
+                    item = new ScenegraphItemVO( "Skeleton (" + s.name +")",s );
+                    _skeletonGroup.children.addItem( item );
+                    break;
+                case AssetType.SKELETON_POSE:
+                    var sp:SkeletonPose = event.asset as SkeletonPose;
+                    item = new ScenegraphItemVO( "Skeleton Pose (" + sp.name +")",sp );
+                    _skeletonGroup.children.addItem( item );
+                    break;
+            }
+		}
 
 	}
 }

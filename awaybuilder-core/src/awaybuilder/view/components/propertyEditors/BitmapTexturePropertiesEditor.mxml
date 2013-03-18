@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark" paddingLeft="6" paddingRight="6" paddingBottom="6" paddingTop="6">
+    <fx:Declarations>
+    </fx:Declarations>
+    <fx:Script><![CDATA[
+        import away3d.materials.MaterialBase;
+        import away3d.textures.BitmapTexture;
+
+        import awaybuilder.model.vo.BitmapTextureVO;
+
+        import awaybuilder.model.vo.MaterialItemVO;
+
+        [Bindable]
+        public var data:BitmapTextureVO;
+
+        private function name_changeHandler( event:Event ):void
+        {
+            var newValue:BitmapTextureVO = new BitmapTextureVO( data.item as BitmapTexture );
+//            newValue.name = nameInput.text;
+//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
+        }
+
+        private function repeatBox_changeHandler( event:Event ):void
+        {
+            var newValue:MaterialItemVO = new MaterialItemVO( data.item as MaterialBase );
+//            newValue.repeat = repeatBox.selected;
+//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
+        }
+
+        ]]></fx:Script>
+
+
+    <s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+        <s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
+            <s:Label width="100%" text="Texture Properties" fontWeight="bold"/>
+        </s:HGroup>
+        <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+            <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
+        </s:FormItem>
+    </s:Form>
+    <s:BitmapImage width="100%" source="{data.bitmapData}" scaleMode="letterbox"/>
+
+</s:VGroup>

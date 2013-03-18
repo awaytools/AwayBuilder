@@ -7,11 +7,14 @@
  */
 package awaybuilder.controller.scene {
 import away3d.materials.MaterialBase;
+import away3d.textures.BitmapTexture;
 
 import awaybuilder.controller.events.SceneEvent;
 import awaybuilder.controller.history.HistoryCommandBase;
 import awaybuilder.model.IDocumentModel;
+import awaybuilder.model.vo.BitmapTextureVO;
 import awaybuilder.model.vo.MaterialItemVO;
+import awaybuilder.model.vo.TextureMaterialVO;
 
 public class ChangeMaterialCommand extends HistoryCommandBase
 {
@@ -23,14 +26,16 @@ public class ChangeMaterialCommand extends HistoryCommandBase
 
     override public function execute():void
     {
-        var material:MaterialItemVO = event.newValue as MaterialItemVO;
-        var vo:MaterialItemVO = document.getScenegraphItem( material.item ) as MaterialItemVO;
+        var material:TextureMaterialVO = event.newValue as TextureMaterialVO;
+        var vo:TextureMaterialVO = document.getScenegraphItem( material.item ) as TextureMaterialVO;
 
         vo.name = material.name;
         vo.repeat = material.repeat;
+        vo.texture = new BitmapTextureVO( material.texture.item as BitmapTexture );
 
         vo.item.name = material.name;
         vo.item.repeat = material.repeat;
+        vo.item.texture = material.texture.item;
 
         addToHistory( event );
     }

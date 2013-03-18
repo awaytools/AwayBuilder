@@ -18,6 +18,7 @@ package awaybuilder.view.components.propertyEditors
         public static const MATERIAL_NAME_CHANGE:String = "materialNameChange";
 
         public static const SHOW_MATERIAL_PROPERTIES:String = "showMaterialProperties";
+        public static const SHOW_TEXTURE_PROPERTIES:String = "showTextureProperties";
 
         public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=false ) {
             super( type, bubbles, cancelable );

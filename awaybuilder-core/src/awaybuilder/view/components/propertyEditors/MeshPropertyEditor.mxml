@@ -20,8 +20,6 @@
         {
             if( value ) {
                 _data = value;
-                trace( "set data = " + value );
-                trace( "set data = " + _data.subMeshes );
             }
 
         }

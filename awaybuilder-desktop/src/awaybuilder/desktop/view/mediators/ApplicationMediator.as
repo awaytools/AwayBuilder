@@ -228,8 +228,8 @@ import flash.display.NativeMenuItem;
 
         private function context_undoListChangeHandler(event:UndoRedoEvent):void
         {
-//            this.undoButton.enabled = undoRedo.canUndo;
-//            this.redoButton.enabled = undoRedo.canRedo;
+            _undoItem.enabled = undoRedoModel.canUndo;
+            _redoItem.enabled = undoRedoModel.canRedo;
         }
 
 		private function updatePageTitle():void
@@ -794,16 +794,16 @@ import flash.display.NativeMenuItem;
 			
 			this._toolsMenuItem = new NativeMenuItem("Tools");
 			var toolsMenu:NativeMenu = new NativeMenu();
-			this._selectionToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "F", []);
+			this._selectionToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "T", []);
 			this._selectionToolItem.checked = true;
-			this._panToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "T", []);
+			this._panToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "F", []);
 			this._panToolItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
-			this._translateItem = this.createMenuItem("Translate Transform Mode", TRANSLATE_MODE, toolsMenu, -1, "t", []);
+			this._translateItem = this.createMenuItem("Translate Transform Mode", TRANSLATE_MODE, toolsMenu, -1, "T");
 			this._translateItem.checked = true;
-			this._rotateItem = this.createMenuItem("Rotate Transform Mode", ROTATE_MODE, toolsMenu, -1, "r", []);
+			this._rotateItem = this.createMenuItem("Rotate Transform Mode", ROTATE_MODE, toolsMenu, -1, "R" );
 			this._rotateItem.checked = false;
-			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "s", []);
+			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "S" );
 			this._scaleItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
 //			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);

@@ -84,16 +84,20 @@ import awaybuilder.model.vo.ScenegraphItemVO;
 			
 //			trace( "e.keyCode " + e.keyCode );
 			switch (e.keyCode) 
-			{					
-				case Keyboard.UP: 
+			{
+                case Keyboard.W:
+                case Keyboard.UP:
 					CameraManager.moveForward(CameraManager.speed);
 					break;
+                case Keyboard.S:
 				case Keyboard.DOWN: 
 					CameraManager.moveBackward(CameraManager.speed);
 					break;
+                case Keyboard.A:
 				case Keyboard.LEFT: 
 					CameraManager.moveLeft(CameraManager.speed);
 					break;
+                case Keyboard.D:
 				case Keyboard.RIGHT: 
 					CameraManager.moveRight(CameraManager.speed);
 					break;
@@ -118,10 +122,14 @@ import awaybuilder.model.vo.ScenegraphItemVO;
 			
 			switch (e.keyCode) 
 			{
+                case Keyboard.W:
+                case Keyboard.S:
 				case Keyboard.UP: 
 				case Keyboard.DOWN: 
 					CameraManager.moveForward(0);
 					break;
+                case Keyboard.A:
+                case Keyboard.D:
 				case Keyboard.LEFT: 
 				case Keyboard.RIGHT: 
 					CameraManager.moveLeft(0);

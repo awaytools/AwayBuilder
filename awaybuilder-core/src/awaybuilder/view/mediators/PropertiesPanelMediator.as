@@ -6,15 +6,18 @@ import away3d.core.base.SubMesh;
 import away3d.entities.Mesh;
 import away3d.materials.MaterialBase;
 import away3d.materials.TextureMaterial;
+import away3d.textures.BitmapTexture;
 
-    import awaybuilder.controller.events.DocumentModelEvent;
+import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
+import awaybuilder.model.vo.BitmapTextureVO;
 import awaybuilder.model.vo.MaterialItemVO;
 import awaybuilder.model.vo.MeshItemVO;
 import awaybuilder.model.vo.ScenegraphGroupItemVO;
 import awaybuilder.model.vo.SubMeshVO;
 import awaybuilder.model.vo.SubMeshVO;
+import awaybuilder.model.vo.TextureMaterialVO;
 import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
 
@@ -50,7 +53,7 @@ import awaybuilder.view.components.PropertiesPanel;
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler, PropertyEditorEvent );
             addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler, PropertyEditorEvent );
             addViewListener( PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, view_showMaterialPropertiesHandler, PropertyEditorEvent );
-
+            addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler, PropertyEditorEvent );
         }
 
         //----------------------------------------------------------------------
@@ -122,6 +125,10 @@ import awaybuilder.view.components.PropertiesPanel;
             this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,[event.data]));
 
         }
+        private function view_showTexturePropertiesHandler(event:PropertyEditorEvent):void
+        {
+            this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,[event.data]));
+        }
 
         //----------------------------------------------------------------------
         //
@@ -147,7 +154,8 @@ import awaybuilder.view.components.PropertiesPanel;
         }
         private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
         {
-            view.data = new MaterialItemVO( event.items[0] );
+            trace( view.data );
+            view.data = new TextureMaterialVO( event.items[0] );
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
@@ -175,13 +183,10 @@ import awaybuilder.view.components.PropertiesPanel;
             }
             if( event.items.length )
             {
-                view.visible = true;
                 if( event.items.length == 1 )
                 {
                     if( event.items[0] is Mesh )
                     {
-                        view.currentState = "mesh";
-
                         var mesh:MeshItemVO = new MeshItemVO( event.items[0] );
                         for each( var subMesh:SubMeshVO in  mesh.subMeshes )
                         {
@@ -190,6 +195,7 @@ import awaybuilder.view.components.PropertiesPanel;
                             }
                         }
                         view.data = mesh;
+                        view.currentState = "mesh";
                     }
                     else if( event.items[0] is ObjectContainer3D )
                     {
@@ -198,8 +204,18 @@ import awaybuilder.view.components.PropertiesPanel;
                     }
                     else if( event.items[0] is TextureMaterial )
                     {
+
+                        var material:TextureMaterialVO = new TextureMaterialVO( event.items[0] );
+                        if( document.getScenegraphGroup(ScenegraphGroupItemVO.TEXTURE_GROUP) ) {
+                            material.linkedTextures = document.getScenegraphGroup(ScenegraphGroupItemVO.TEXTURE_GROUP).children;
+                        }
+                        view.data = material;
                         view.currentState = "material";
-                        view.data = new MaterialItemVO( event.items[0] );
+                    }
+                    else if( event.items[0] is BitmapTexture )
+                    {
+                        view.currentState = "texture";
+                        view.data = new BitmapTextureVO( event.items[0] );
                     }
                     else if( event.items[0] is Geometry )
                     {
@@ -214,6 +230,7 @@ import awaybuilder.view.components.PropertiesPanel;
                 {
                     view.currentState = "group"
                 }
+                view.visible = true;
             }
             else
             {
