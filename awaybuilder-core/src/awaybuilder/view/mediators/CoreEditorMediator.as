@@ -1,29 +1,34 @@
 package awaybuilder.view.mediators
 {
     import awaybuilder.controller.events.DocumentModelEvent;
-import awaybuilder.controller.events.EditingSurfaceRequestEvent;
-import awaybuilder.controller.events.SceneEvent;
+    import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+    import awaybuilder.controller.events.ReadDocumentDataEvent;
+    import awaybuilder.controller.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.MeshItemVO;
-import awaybuilder.model.vo.ScenegraphGroupItemVO;
-import awaybuilder.model.vo.ScenegraphItemVO;
+    import awaybuilder.model.vo.DocumentBaseVO;
+    import awaybuilder.model.vo.MeshVO;
+    import awaybuilder.model.vo.ScenegraphGroupItemVO;
+    import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
     import awaybuilder.view.components.events.CoreEditorEvent;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
-
+    
     import flash.events.ErrorEvent;
     import flash.events.KeyboardEvent;
     import flash.events.UncaughtErrorEvent;
     import flash.geom.Vector3D;
     import flash.ui.Keyboard;
-
+    
+    import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.FlexGlobals;
-
+    
     import org.robotlegs.mvcs.Mediator;
+    
+    import spark.collections.Sort;
 
     public class CoreEditorMediator extends Mediator
 	{
@@ -32,6 +37,9 @@ import awaybuilder.model.vo.ScenegraphItemVO;
 		
 		[Inject]
 		public var document:IDocumentModel;
+		
+		private var _scenegraphSort:Sort = new Sort();
+		private var _scenegraph:ArrayCollection;
 		
 		override public function onRegister():void
 		{
@@ -46,9 +54,10 @@ import awaybuilder.model.vo.ScenegraphItemVO;
             addViewListener(CoreEditorEvent.TREE_CHANGE, view_treeChangeHandler, CoreEditorEvent);
 
             addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler, DocumentModelEvent);
+			addContextListener(ReadDocumentDataEvent.READ_DOCUMENT_DATA_COMPLETE, context_readDocumentDataHandler, ReadDocumentDataEvent);
+			
             addContextListener(SceneEvent.ITEMS_SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
             addContextListener(EditingSurfaceRequestEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler, EditingSurfaceRequestEvent);
-
 
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			view.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);	
@@ -72,7 +81,7 @@ import awaybuilder.model.vo.ScenegraphItemVO;
                 if( groupItem ) {
                      continue;
                 }
-				items.push(ScenegraphItemVO(selectedItems[i]).item);
+				items.push(ScenegraphItemVO(selectedItems[i]).item.linkedObject);
 			}
 
 			this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,items));
@@ -146,16 +155,106 @@ import awaybuilder.model.vo.ScenegraphItemVO;
 		
 		private function updateScenegraph():void
 		{
-			view.scenegraph = document.scenegraph;
+			_scenegraph = new ArrayCollection();
+			var branch:ScenegraphGroupItemVO;
+			if( document.scene && document.scene.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Scene", ScenegraphGroupItemVO.SCENE_GROUP );
+				branch.children = getBranchCildren( document.scene );
+				_scenegraph.addItem( branch );
+			}
+			if( document.materials && document.materials.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Materials", ScenegraphGroupItemVO.MATERIAL_GROUP );
+				branch.children = getBranchCildren( document.materials );
+				_scenegraph.addItem( branch );
+			}
+			if( document.animations && document.animations.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Animations", ScenegraphGroupItemVO.ANIMATION_GROUP );
+				branch.children = getBranchCildren( document.animations );
+				_scenegraph.addItem( branch );
+			}
+			if( document.geometry && document.geometry.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Geometry", ScenegraphGroupItemVO.GEOMETRY_GROUP );
+				branch.children = getBranchCildren( document.geometry );
+				_scenegraph.addItem( branch );
+			}
+			if( document.textures && document.textures.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Textures", ScenegraphGroupItemVO.TEXTURE_GROUP );
+				branch.children = getTextureBranchCildren( document.textures );
+				_scenegraph.addItem( branch );
+			}
+			if( document.skeletons && document.skeletons.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Skeletons", ScenegraphGroupItemVO.SKELETON_GROUP );
+				branch.children = getBranchCildren( document.skeletons );
+				_scenegraph.addItem( branch );
+			}
+			if( document.lights && document.lights.length ) 
+			{
+				branch = new ScenegraphGroupItemVO( "Lights", ScenegraphGroupItemVO.LIGHT_GROUP );
+				branch.children = getBranchCildren( document.lights );
+				_scenegraph.addItem( branch );
+			}
+			
+			
+			_scenegraphSort.compareFunction = compareGroupItems;
+			_scenegraph.sort = _scenegraphSort;
+			_scenegraph.refresh();
+			
+			view.scenegraph = _scenegraph;
+			
 			view.tree.expandAll();
 			view.expandButton.visible = false;
 			view.collapseButton.visible = true;
 		}
+		
+		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
+		{
+			var children:ArrayCollection = new ArrayCollection();
+			for each( var o:DocumentBaseVO in objects )
+			{
+				children.addItem( new ScenegraphItemVO( o.name, o ) );
+			}
+			return children;
+		}
+		private function getTextureBranchCildren( objects:ArrayCollection ):ArrayCollection
+		{
+			var children:ArrayCollection = new ArrayCollection();
+			for each( var o:DocumentBaseVO in objects )
+			{
+				children.addItem( new ScenegraphItemVO( "Texture (" + o.name.split("/").pop() +")", o ) );
+			}
+			return children;
+		}
+		
+		private function compareGroupItems( a:Object, b:Object, fields:Array=null ):int
+		{
+			var group1:ScenegraphGroupItemVO = a as ScenegraphGroupItemVO;
+			var group2:ScenegraphGroupItemVO = b as ScenegraphGroupItemVO;
+			if (group1 == null && group2 == null) return 0;
+			if (group1 == null)	return 1;
+			if (group2 == null)	return -1;
+			if (group1.weight < group2.weight) return -1;
+			if (group1.weight > group2.weight) return 1;
+			return 0;
+		}
+		
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
 		//
 		//----------------------------------------------------------------------
+		
+		
+		
+		private function context_readDocumentDataHandler(event:ReadDocumentDataEvent):void
+		{
+			updateScenegraph();
+		}
 		
 		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
@@ -164,6 +263,7 @@ import awaybuilder.model.vo.ScenegraphItemVO;
 		
 		private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
 		{
+			
 //			if( event.items.length )
 //			{
 //				if( event.items.length == 1 )
@@ -217,7 +317,7 @@ import awaybuilder.model.vo.ScenegraphItemVO;
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-            var object:MeshItemVO = document.getScenegraphItem( event.object ) as MeshItemVO;
+            var object:MeshVO = document.getSceneObject( event.object ) as MeshVO;
             object = object.clone();
             switch( event.gizmoMode ) {
                 case GizmoMode.TRANSLATE:

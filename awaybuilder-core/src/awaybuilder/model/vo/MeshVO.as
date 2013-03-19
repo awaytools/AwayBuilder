@@ -1,15 +1,14 @@
 package awaybuilder.model.vo {
 
-    import away3d.containers.ObjectContainer3D;
-import away3d.core.base.SubMesh;
-import away3d.entities.Mesh;
-
-import mx.collections.ArrayCollection;
+    import away3d.core.base.SubMesh;
+    import away3d.entities.Mesh;
+    
+    import mx.collections.ArrayCollection;
 
 [Bindable]
-    public class MeshItemVO extends ScenegraphItemVO
+    public class MeshVO extends DocumentBaseVO
     {
-        public function MeshItemVO( item:Mesh )
+        public function MeshVO( item:Mesh )
         {
             super( item.name, item );
             x = item.x;
@@ -44,15 +43,18 @@ import mx.collections.ArrayCollection;
         public var rotationY:Number;
         public var rotationZ:Number;
 
-        public var name:String;
-
         public var castShadows:Boolean;
 
         public var subMeshes:ArrayCollection;
 
-        public function clone():MeshItemVO
+		public function get mesh():Mesh
+		{
+			return linkedObject as Mesh;
+		}
+		
+        public function clone():MeshVO
         {
-            var vo:MeshItemVO = new MeshItemVO( this.item as Mesh );
+            var vo:MeshVO = new MeshVO( this.linkedObject as Mesh );
             return vo;
         }
     }

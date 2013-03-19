@@ -23,9 +23,9 @@
 
         import awaybuilder.model.vo.BitmapTextureVO;
 
-        import awaybuilder.model.vo.MaterialItemVO;
+        import awaybuilder.model.vo.MaterialVO;
 
-        import awaybuilder.model.vo.MeshItemVO;
+        import awaybuilder.model.vo.MeshVO;
         import awaybuilder.model.vo.TextureMaterialVO;
 
         private var _data:Object;
@@ -41,7 +41,7 @@
         ]]></fx:Script>
     <s:Scroller width="210" height="100%" excludeFrom="empty">
         <s:Group>
-            <propertyEditors:MeshPropertyEditor width="100%" includeIn="mesh" data="{data as MeshItemVO}"/>
+            <propertyEditors:MeshPropertyEditor width="100%" includeIn="mesh" data="{data as MeshVO}"/>
             <s:Group includeIn="group"><s:Label text="Group Options"/></s:Group>
             <propertyEditors:MaterialPropertiesEditor width="100%" includeIn="material" data="{data as TextureMaterialVO}"/>
             <propertyEditors:BitmapTexturePropertiesEditor width="100%" includeIn="texture" data="{data as BitmapTextureVO}"/>

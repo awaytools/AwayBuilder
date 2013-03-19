@@ -12,8 +12,8 @@ import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
 import awaybuilder.model.vo.BitmapTextureVO;
-import awaybuilder.model.vo.MaterialItemVO;
-import awaybuilder.model.vo.MeshItemVO;
+import awaybuilder.model.vo.MaterialVO;
+import awaybuilder.model.vo.MeshVO;
 import awaybuilder.model.vo.ScenegraphGroupItemVO;
 import awaybuilder.model.vo.SubMeshVO;
 import awaybuilder.model.vo.SubMeshVO;
@@ -65,39 +65,39 @@ import awaybuilder.view.components.PropertiesPanel;
 
         private function view_translateHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshItemVO = view.data as MeshItemVO;
+            var vo:MeshVO = view.data as MeshVO;
             var oldValue:Vector3D = new Vector3D( vo.x, vo.y, vo.z );
-            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo.item],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo.linkedObject],oldValue, event.data, true));
         }
         private function view_rotateHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshItemVO = view.data as MeshItemVO;
+            var vo:MeshVO = view.data as MeshVO;
             var oldValue:Vector3D = new Vector3D( vo.rotationX, vo.rotationY, vo.rotationZ );
-            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo.item],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo.linkedObject],oldValue, event.data, true));
         }
         private function view_scaleHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshItemVO = view.data as MeshItemVO;
+            var vo:MeshVO = view.data as MeshVO;
             var oldValue:Vector3D = new Vector3D( vo.scaleX, vo.scaleY, vo.scaleZ );
-            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo.item],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo.linkedObject],oldValue, event.data, true));
         }
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshItemVO = view.data as MeshItemVO;
-            var oldValue:MeshItemVO = new MeshItemVO( vo.item as Mesh );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.item],oldValue, event.data));
+            var vo:MeshVO = view.data as MeshVO;
+            var oldValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.linkedObject],oldValue, event.data));
         }
         private function view_meshNameChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshItemVO = view.data as MeshItemVO;
-            var oldValue:MeshItemVO = new MeshItemVO( vo.item as Mesh );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.item],oldValue, event.data, true));
+            var vo:MeshVO = view.data as MeshVO;
+            var oldValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.linkedObject],oldValue, event.data, true));
         }
         private function view_meshSubmeshChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshItemVO = view.data as MeshItemVO;
-            var oldValue:MeshItemVO = new MeshItemVO( vo.item as Mesh );
-            var newValue:MeshItemVO = new MeshItemVO( vo.item as Mesh );
+            var vo:MeshVO = view.data as MeshVO;
+            var oldValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
+            var newValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
             for each( var subMesh:SubMeshVO in newValue.subMeshes )
             {
                 if( subMesh.linkedObject == SubMeshVO(event.data).linkedObject )
@@ -105,19 +105,19 @@ import awaybuilder.view.components.PropertiesPanel;
                     subMesh.material = SubMeshVO(event.data).material;
                 }
             }
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.item],oldValue, newValue));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.linkedObject],oldValue, newValue));
         }
         private function view_materialChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MaterialItemVO = view.data as MaterialItemVO;
-            var oldValue:MaterialItemVO = new MaterialItemVO( vo.item as MaterialBase );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[vo.item],oldValue, event.data));
+            var vo:MaterialVO = view.data as MaterialVO;
+            var oldValue:MaterialVO = new MaterialVO( vo.linkedObject as MaterialBase );
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[vo.linkedObject],oldValue, event.data));
         }
         private function view_materialNameChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MaterialItemVO = view.data as MaterialItemVO;
-            var oldValue:MaterialItemVO = new MaterialItemVO( vo.item as MaterialBase );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[vo.item],oldValue, event.data, true));
+            var vo:MaterialVO = view.data as MaterialVO;
+            var oldValue:MaterialVO = new MaterialVO( vo.linkedObject as MaterialBase );
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[vo.linkedObject],oldValue, event.data, true));
         }
 
         private function view_showMaterialPropertiesHandler(event:PropertyEditorEvent):void
@@ -143,11 +143,11 @@ import awaybuilder.view.components.PropertiesPanel;
 
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
-            var mesh:MeshItemVO = new MeshItemVO( event.items[0] );
+            var mesh:MeshVO = new MeshVO( event.items[0] );
 
             for each( var subMesh:SubMeshVO in  mesh.subMeshes )
             {
-                subMesh.linkedMaterials = document.getScenegraphGroup(ScenegraphGroupItemVO.MATERIAL_GROUP).children;
+                subMesh.linkedMaterials = document.materials;
             }
 
             view.data = mesh;
@@ -160,7 +160,7 @@ import awaybuilder.view.components.PropertiesPanel;
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
             var mesh:Mesh = event.items[0] as Mesh;
-            var vo:MeshItemVO = view.data as MeshItemVO;
+            var vo:MeshVO = view.data as MeshVO;
             vo.x = mesh.x;
             vo.y = mesh.y;
             vo.z = mesh.z;
@@ -187,12 +187,10 @@ import awaybuilder.view.components.PropertiesPanel;
                 {
                     if( event.items[0] is Mesh )
                     {
-                        var mesh:MeshItemVO = new MeshItemVO( event.items[0] );
+                        var mesh:MeshVO = new MeshVO( event.items[0] );
                         for each( var subMesh:SubMeshVO in  mesh.subMeshes )
                         {
-                            if( document.getScenegraphGroup(ScenegraphGroupItemVO.MATERIAL_GROUP) ) {
-                                subMesh.linkedMaterials = document.getScenegraphGroup(ScenegraphGroupItemVO.MATERIAL_GROUP).children;
-                            }
+                            subMesh.linkedMaterials = document.materials;
                         }
                         view.data = mesh;
                         view.currentState = "mesh";
@@ -206,9 +204,7 @@ import awaybuilder.view.components.PropertiesPanel;
                     {
 
                         var material:TextureMaterialVO = new TextureMaterialVO( event.items[0] );
-                        if( document.getScenegraphGroup(ScenegraphGroupItemVO.TEXTURE_GROUP) ) {
-                            material.linkedTextures = document.getScenegraphGroup(ScenegraphGroupItemVO.TEXTURE_GROUP).children;
-                        }
+						material.linkedTextures = document.textures;
                         view.data = material;
                         view.currentState = "material";
                     }

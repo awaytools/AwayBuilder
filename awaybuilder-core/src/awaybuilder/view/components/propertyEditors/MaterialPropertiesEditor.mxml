@@ -22,34 +22,37 @@
         {
             if( !value ) return;
             _data = value;
-            for each(var texture:BitmapTextureVO in _data.linkedTextures) {
-                if (texture.item == _data.texture.item) {
+            for each(var texture:BitmapTextureVO in _data.linkedTextures) 
+			{
+                if (texture.linkedObject == _data.texture.linkedObject) 
+				{
                     _selectedTexture = texture;
                 }
             }
         }
+		
         [Bindable]
         private var _selectedTexture:BitmapTextureVO;
 
         private function name_changeHandler(event:Event):void {
-            var newValue:TextureMaterialVO = new TextureMaterialVO(data.item as TextureMaterial);
+            var newValue:TextureMaterialVO = new TextureMaterialVO(data.linkedObject as TextureMaterial);
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
         private function repeatBox_changeHandler(event:Event):void {
-            var newValue:TextureMaterialVO = new TextureMaterialVO(data.item as TextureMaterial);
+            var newValue:TextureMaterialVO = new TextureMaterialVO(data.linkedObject as TextureMaterial);
             newValue.repeat = repeatBox.selected;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }
 
         private function dropDownList_changeHandler(event:IndexChangeEvent):void {
-            var newValue:TextureMaterialVO = new TextureMaterialVO(_data.item as TextureMaterial);
+            var newValue:TextureMaterialVO = new TextureMaterialVO(_data.linkedObject as TextureMaterial);
             newValue.texture = dropDownList.selectedItem as BitmapTextureVO;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }
         private function editTextureButton_clickHandler(event:MouseEvent):void {
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, data.texture.item, true));
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, data.texture.linkedObject, true));
         }
         ]]></fx:Script>
 
@@ -70,7 +73,7 @@
     <components:CollapsiblePanel width="100%" title="Texture" collapsed="false">
         <s:HGroup width="100%">
             <s:DropDownList id="dropDownList" width="100%"
-                            dataProvider="{data.linkedTextures}" selectedItem="{_selectedTexture}"
+                            dataProvider="{data.linkedTextures}" selectedItem="{_selectedTexture}" labelField="name"
                             change="dropDownList_changeHandler(event)"/>
             <s:Button id="editTextureButton" styleName="editSubmeshMaterialButtonStyle"
                       width="23" height="23" click="editTextureButton_clickHandler(event)"/>

@@ -9,21 +9,21 @@
 
         import awaybuilder.model.vo.BitmapTextureVO;
 
-        import awaybuilder.model.vo.MaterialItemVO;
+        import awaybuilder.model.vo.MaterialVO;
 
         [Bindable]
         public var data:BitmapTextureVO;
 
         private function name_changeHandler( event:Event ):void
         {
-            var newValue:BitmapTextureVO = new BitmapTextureVO( data.item as BitmapTexture );
+            var newValue:BitmapTextureVO = new BitmapTextureVO( data.linkedObject as BitmapTexture );
 //            newValue.name = nameInput.text;
 //            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
         private function repeatBox_changeHandler( event:Event ):void
         {
-            var newValue:MaterialItemVO = new MaterialItemVO( data.item as MaterialBase );
+            var newValue:MaterialVO = new MaterialVO( data.linkedObject as MaterialBase );
 //            newValue.repeat = repeatBox.selected;
 //            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }

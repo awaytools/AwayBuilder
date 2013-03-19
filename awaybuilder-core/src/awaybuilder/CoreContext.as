@@ -1,19 +1,5 @@
 package awaybuilder
 {
-import awaybuilder.controller.events.SceneEvent;
-import awaybuilder.controller.history.RedoCommand;
-import awaybuilder.controller.history.UndoCommand;
-import awaybuilder.controller.history.UndoRedoEvent;
-import awaybuilder.controller.scene.ChangeMaterialCommand;
-import awaybuilder.controller.scene.ChangeMeshCommand;
-import awaybuilder.controller.scene.RotateObjectCommand;
-import awaybuilder.controller.scene.ScaleObjectCommand;
-import awaybuilder.controller.scene.TranslateObjectCommand;
-import awaybuilder.view.components.PropertiesPanel;
-import awaybuilder.view.mediators.PropertiesPanelMediator;
-
-import flash.display.DisplayObjectContainer;
-	
 	import awaybuilder.controller.CopyCommand;
 	import awaybuilder.controller.ImportDocumentCommand;
 	import awaybuilder.controller.NewDocumentCommand;
@@ -29,19 +15,28 @@ import flash.display.DisplayObjectContainer;
 	import awaybuilder.controller.SaveDocumentSuccessCommand;
 	import awaybuilder.controller.StartupCommand;
 	import awaybuilder.controller.WebLinkCommand;
-	import awaybuilder.controller.scene.SwitchFreeCameraModeCommand;
-	import awaybuilder.controller.scene.SwitchTargetCameraModeCommand;
-	import awaybuilder.controller.scene.SwitchTransformRotateModeCommand;
-	import awaybuilder.controller.scene.SwitchTransformScaleModeCommand;
-	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
 	import awaybuilder.controller.events.ClipboardEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
 	import awaybuilder.controller.events.ReadDocumentDataEvent;
 	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SceneEvent;
 	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.events.WebLinkEvent;
+	import awaybuilder.controller.history.RedoCommand;
+	import awaybuilder.controller.history.UndoCommand;
+	import awaybuilder.controller.history.UndoRedoEvent;
+	import awaybuilder.controller.scene.ChangeMaterialCommand;
+	import awaybuilder.controller.scene.ChangeMeshCommand;
+	import awaybuilder.controller.scene.RotateObjectCommand;
+	import awaybuilder.controller.scene.ScaleObjectCommand;
+	import awaybuilder.controller.scene.SwitchFreeCameraModeCommand;
+	import awaybuilder.controller.scene.SwitchTargetCameraModeCommand;
+	import awaybuilder.controller.scene.SwitchTransformRotateModeCommand;
+	import awaybuilder.controller.scene.SwitchTransformScaleModeCommand;
+	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
+	import awaybuilder.controller.scene.TranslateObjectCommand;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.ISettingsModel;
@@ -56,6 +51,7 @@ import flash.display.DisplayObjectContainer;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.EditingSurfaceSettingsForm;
+	import awaybuilder.view.components.PropertiesPanel;
 	import awaybuilder.view.components.SamplePicker;
 	import awaybuilder.view.mediators.ApplicationSettingsFormMediator;
 	import awaybuilder.view.mediators.CoreEditorMediator;
@@ -64,7 +60,10 @@ import flash.display.DisplayObjectContainer;
 	import awaybuilder.view.mediators.EditStatusBarMediator;
 	import awaybuilder.view.mediators.EditToolBarMediator;
 	import awaybuilder.view.mediators.EditingSurfaceSettingsFormMediator;
+	import awaybuilder.view.mediators.PropertiesPanelMediator;
 	import awaybuilder.view.mediators.SamplePickerMediator;
+	
+	import flash.display.DisplayObjectContainer;
 	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.mvcs.Context;

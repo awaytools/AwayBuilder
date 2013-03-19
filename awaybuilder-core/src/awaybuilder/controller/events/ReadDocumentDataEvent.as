@@ -5,6 +5,7 @@ package awaybuilder.controller.events
 	public class ReadDocumentDataEvent extends Event
 	{
 		public static const READ_DOCUMENT_DATA:String = "readDocumentData";
+		public static const READ_DOCUMENT_DATA_COMPLETE:String = "readDocumentDataComplete";
 		public static const REPLACE_DOCUMENT:String = "readAndReplaceData";
 		
 		public function ReadDocumentDataEvent(type:String, name:String, path:String)

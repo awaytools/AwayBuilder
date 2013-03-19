@@ -19,16 +19,13 @@ package awaybuilder.controller
 		
 		override public function execute():void
 		{
-//			var xmlData:XML = writeXML(this.document.objects, this.documentNamespace);
-//			writeSettingsXML(xmlData, this.document, this.documentNamespace);
-			if(this.event.type == SaveDocumentEvent.SAVE_DOCUMENT_AS ||
-				!this.document.path)
+			if( (this.event.type==SaveDocumentEvent.SAVE_DOCUMENT_AS) || !this.document.path)
 			{
-				this.documentService.saveAs(document.scenegraph, this.document.name);
+				this.documentService.saveAs(document, this.document.name);
 			}
 			else
 			{
-				this.documentService.save(document.scenegraph, this.document.path);
+				this.documentService.save(document, this.document.path);
 			}
 		}
 	}

@@ -31,7 +31,6 @@
 
         private function invokeHandler(event:InvokeEvent):void
         {
-            trace("invokeHandler" + event);
             if(event.arguments.length == 1)
             {
                 const extensions:Vector.<String> = new <String>["awd"];

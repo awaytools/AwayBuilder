@@ -75,22 +75,22 @@ s|RadioButton.toolbarButton
 
 .toolbarButton#newDocumentButton
 {
-	icon: Embed("/assets/images/page_white_star.png");
+	icon: Embed("assets/images/page_white_star.png");
 }
 
 .toolbarButton#openDocumentButton
 {
-	icon: Embed("/assets/images/folder_page_white.png");
+	icon: Embed("assets/images/folder_page_white.png");
 }
 
 .toolbarButton#saveDocumentButton
 {
-	icon: Embed("/assets/images/disk.png");
+	icon: Embed("assets/images/disk.png");
 }
 
 .toolbarButton#printDocumentButton
 {
-	icon: Embed("/assets/images/printer.png");
+	icon: Embed("assets/images/printer.png");
 }
 
 .toolbarButton#undoButton

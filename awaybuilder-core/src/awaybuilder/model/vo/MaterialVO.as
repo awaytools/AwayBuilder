@@ -1,35 +1,15 @@
-/**
- * Created with IntelliJ IDEA.
- * User: Mike
- * Date: 14.03.13
- * Time: 17:13
- * To change this template use File | Settings | File Templates.
- */
 package awaybuilder.model.vo
 {
     import away3d.materials.MaterialBase;
-import away3d.materials.lightpickers.LightPickerBase;
-import away3d.materials.methods.BasicAmbientMethod;
-import away3d.materials.methods.BasicDiffuseMethod;
-import away3d.materials.methods.BasicNormalMethod;
-import away3d.materials.methods.BasicSpecularMethod;
-import away3d.materials.methods.ShadowMapMethodBase;
+    import away3d.materials.lightpickers.LightPickerBase;
 
-import flash.display3D.textures.Texture;
-import flash.geom.ColorTransform;
-
-import mx.collections.ArrayCollection;
-
-import mx.states.AddItems;
-
-[Bindable]
-    public class MaterialItemVO extends ScenegraphItemVO
+	[Bindable]
+    public class MaterialVO extends DocumentBaseVO
     {
-        public function MaterialItemVO( item:MaterialBase )
+        public function MaterialVO( item:MaterialBase )
         {
             super( item.name, item );
 
-            name = item.name;
             repeat = item.repeat;
 
 //            alphaBlending = item.alphaB
@@ -61,7 +41,6 @@ import mx.states.AddItems;
 //            specularT
         }
 
-        public var name:String;
         public var repeat:Boolean;
 
         public var alphaPremultiplied:Boolean;
@@ -72,9 +51,9 @@ import mx.states.AddItems;
         public var mipmap:Boolean;
         public var smooth:Boolean;
 
-        public function clone():MaterialItemVO
+        public function clone():MaterialVO
         {
-            var vo:MaterialItemVO = new MaterialItemVO( this.item as MaterialBase );
+            var vo:MaterialVO = new MaterialVO( this.linkedObject as MaterialBase );
             return vo;
         }
     }

@@ -34,7 +34,9 @@ package awaybuilder.desktop.model
 			file.addEventListener(Event.CANCEL, file_import_cancelHandler);
 			this._filesToOpen.push(file);
 			var filters:Array = [];
-			filters.push( new FileFilter("*.awd, *.3ds, *.obj, *.md2, *.md5", "*.awd;*.3ds;*.obj;*.md2;*.md5") );
+			filters.push( new FileFilter("3D and Images", "*.awd;*.3ds;*.obj;*.md2;*.md5;*.png;*.jpg;*.atf;*.dae") );
+			filters.push( new FileFilter("3D (*.awd, *.3ds, *.obj, *.md2, *.md5, *.dae)", "*.awd;*.3ds;*.obj;*.md2;*.md5;*.dae") );
+			filters.push( new FileFilter("Images (*.png, *.jpg, *.atf)", "*.png;*.jpg;*.atf") );
 			file.browseForOpen("Open For Import", filters);
 		}
 		

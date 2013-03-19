@@ -16,7 +16,8 @@ package awaybuilder.controller
 			//this hack exists because AIR apparently won't display an open
 			//dialog immediately following the closing of another window.
 			//weird, I know. 10ms isn't noticeable, so rock on!
-			setTimeout(this.fileService.open, 10);
+//			setTimeout(this.fileService.open, 10);
+			this.fileService.open();
 		}
 	}
 }

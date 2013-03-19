@@ -1,15 +1,14 @@
 package awaybuilder.controller
 {
+import awaybuilder.model.IDocumentModel;
+import awaybuilder.model.ISettingsModel;
+import awaybuilder.model.UndoRedoModel;
+import awaybuilder.model.vo.ScenegraphGroupItemVO;
 import awaybuilder.utils.scene.Scene3DManager;
 
 import mx.collections.ArrayCollection;
-	
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.ISettingsModel;
-	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.model.vo.ScenegraphGroupItemVO;
-	
-	import org.robotlegs.mvcs.Command;
+
+import org.robotlegs.mvcs.Command;
 
 	public class NewDocumentCommand extends Command
 	{	
@@ -36,10 +35,17 @@ import mx.collections.ArrayCollection;
 			var _lightGroup:ScenegraphGroupItemVO = new ScenegraphGroupItemVO( "Lights", ScenegraphGroupItemVO.LIGHT_GROUP );
 			graph.addItem( _lightGroup );
 			
-			document.scenegraph = graph;
-				
-			Scene3DManager.clear();
+			document.scene = new ArrayCollection();
+			document.materials = new ArrayCollection();
+			document.animations = new ArrayCollection();
+			document.geometry = new ArrayCollection();
+			document.textures = new ArrayCollection();
+			document.skeletons = new ArrayCollection();
+			document.lights = new ArrayCollection();
 			
+			document.selectedObjects = new Vector.<Object>();
+			
+			Scene3DManager.clear();
 		}
 	}
 }

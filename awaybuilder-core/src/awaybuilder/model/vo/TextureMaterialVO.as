@@ -5,16 +5,15 @@ package awaybuilder.model.vo {
     import away3d.materials.methods.BasicNormalMethod;
     import away3d.materials.methods.BasicSpecularMethod;
     import away3d.materials.methods.ShadowMapMethodBase;
-import away3d.textures.BitmapTexture;
-import away3d.textures.Texture2DBase;
-
+    import away3d.textures.BitmapTexture;
+    import away3d.textures.Texture2DBase;
+    
     import flash.display3D.textures.Texture;
-
     import flash.geom.ColorTransform;
+    
+    import mx.collections.ArrayCollection;
 
-import mx.collections.ArrayCollection;
-
-public class TextureMaterialVO extends MaterialItemVO
+	public class TextureMaterialVO extends MaterialVO
     {
         public function TextureMaterialVO( item:TextureMaterial )
         {
@@ -37,7 +36,7 @@ public class TextureMaterialVO extends MaterialItemVO
             ambientMethod = item.ambientMethod;
             ambientTexture = item.ambientTexture;
 //            diffuse = item.diff
-//            diffuseColor = item.di
+//            diffuseColor = item.di 
             diffuseMethod = item.diffuseMethod;
 //            diffuseTexture = item.diffuse
             specular = item.specular;
@@ -49,7 +48,7 @@ public class TextureMaterialVO extends MaterialItemVO
         public var texture:BitmapTextureVO;
 
         public var alphaBlending:Boolean;
-        public var alphaThreshold:Boolean;
+        public var alphaThreshold:Number;
 
         public var colorTransform:ColorTransform;
         public var gloss:Number;
@@ -72,9 +71,9 @@ public class TextureMaterialVO extends MaterialItemVO
 
         public var linkedTextures:ArrayCollection;
 
-        override public function clone():MaterialItemVO
+        override public function clone():MaterialVO
         {
-            var vo:TextureMaterialVO = new TextureMaterialVO( this.item as TextureMaterial );
+            var vo:TextureMaterialVO = new TextureMaterialVO( this.linkedObject as TextureMaterial );
             return vo;
         }
     }

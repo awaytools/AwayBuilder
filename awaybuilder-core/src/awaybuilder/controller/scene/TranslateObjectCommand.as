@@ -3,7 +3,7 @@ package awaybuilder.controller.scene
     import awaybuilder.controller.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.MeshItemVO;
+    import awaybuilder.model.vo.MeshVO;
 
     import flash.geom.Vector3D;
 
@@ -18,15 +18,15 @@ package awaybuilder.controller.scene
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
-            var vo:MeshItemVO = document.getScenegraphItem( event.items[0] ) as MeshItemVO;
+            var vo:MeshVO = document.getSceneObject( event.items[0] ) as MeshVO;
 
             vo.x = vector.x;
             vo.y = vector.y;
             vo.z = vector.z;
 
-            vo.item.x = vector.x;
-            vo.item.y = vector.y;
-            vo.item.z = vector.z;
+            vo.linkedObject.x = vector.x;
+            vo.linkedObject.y = vector.y;
+            vo.linkedObject.z = vector.z;
 
             addToHistory( event );
         }

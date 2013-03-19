@@ -6,17 +6,17 @@
     <fx:Script><![CDATA[
         import away3d.entities.Mesh;
 
-        import awaybuilder.model.vo.MeshItemVO;
+        import awaybuilder.model.vo.MeshVO;
         import awaybuilder.model.vo.SubMeshVO;
 
 
-        private var _data:MeshItemVO;
+        private var _data:MeshVO;
         [Bindable]
-        public function get data():MeshItemVO
+        public function get data():MeshVO
         {
             return _data;
         }
-        public function set data(value:MeshItemVO):void
+        public function set data(value:MeshVO):void
         {
             if( value ) {
                 _data = value;
@@ -40,7 +40,7 @@
         }
 
         private function name_changeHandler(event:Event):void {
-            var newValue:MeshItemVO = new MeshItemVO(data.item as Mesh);
+            var newValue:MeshVO = new MeshVO(data.mesh);
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, newValue, true));
         }
@@ -50,7 +50,7 @@
         }
 
         private function materialButton_clickHandler(event:MouseEvent):void {
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, data.item.material, true));
+//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, data.material, true));
         }
 
 

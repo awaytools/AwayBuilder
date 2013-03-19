@@ -1,15 +1,33 @@
 package awaybuilder.desktop.view.mediators
 {
 
-import awaybuilder.controller.events.SceneEvent;
-import awaybuilder.controller.history.UndoRedoEvent;
-
-import flash.desktop.NativeApplication;
+	import awaybuilder.controller.events.ClipboardEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.controller.events.DocumentRequestEvent;
+	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.events.HelpEvent;
+	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SceneEvent;
+	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.WebLinkEvent;
+	import awaybuilder.controller.history.UndoRedoEvent;
+	import awaybuilder.desktop.controller.events.AboutEvent;
+	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+	import awaybuilder.desktop.model.UpdateModel;
+	import awaybuilder.desktop.utils.ModalityManager;
+	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
+	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.SettingsModel;
+	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.utils.logging.AwayBuilderLogger;
+	
+	import flash.desktop.NativeApplication;
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.display.NativeMenu;
-import flash.display.NativeMenuItem;
-import flash.display.NativeMenuItem;
+	import flash.display.NativeMenuItem;
 	import flash.display.NativeWindow;
 	import flash.display.NativeWindowDisplayState;
 	import flash.events.Event;
@@ -25,31 +43,11 @@ import flash.display.NativeMenuItem;
 	import mx.events.DragEvent;
 	import mx.managers.DragManager;
 	import mx.managers.IFocusManagerComponent;
-	
-	import spark.components.supportClasses.SkinnableTextBase;
-	
-	import awaybuilder.desktop.controller.events.AboutEvent;
-	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-	import awaybuilder.desktop.model.UpdateModel;
-	import awaybuilder.desktop.utils.ModalityManager;
-	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
-	import awaybuilder.controller.events.ClipboardEvent;
-	import awaybuilder.controller.events.DocumentEvent;
-	import awaybuilder.controller.events.DocumentModelEvent;
-	import awaybuilder.controller.events.DocumentRequestEvent;
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
-	import awaybuilder.controller.events.EditorStateChangeEvent;
-	import awaybuilder.controller.events.HelpEvent;
-	import awaybuilder.controller.events.MessageBoxEvent;
-	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.controller.events.SettingsEvent;
-	import awaybuilder.controller.events.WebLinkEvent;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.SettingsModel;
-	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.utils.logging.AwayBuilderLogger;
+	import mx.utils.ObjectUtil;
 	
 	import org.robotlegs.mvcs.Mediator;
+	
+	import spark.components.supportClasses.SkinnableTextBase;
 
 	public class ApplicationMediator extends Mediator
 	{
@@ -178,14 +176,15 @@ import flash.display.NativeMenuItem;
 
             addContextListener( UndoRedoEvent.UNDO_LIST_CHANGE, context_undoListChangeHandler);
             
-			this.eventMap.mapListener(this.app, Event.CLOSE, awaybuilder_closeHandler);
-			this.eventMap.mapListener(this.app, Event.CLOSING, awaybuilder_closingHandler);
-			this.eventMap.mapListener(this._propertiesWindow, AIREvent.WINDOW_ACTIVATE, propertiesWindow_windowActivateHandler);
-			this.eventMap.mapListener(this.app, AIREvent.WINDOW_ACTIVATE, awaybuilder_windowActivateHandler);
-			this.eventMap.mapListener(this.app, AIREvent.WINDOW_DEACTIVATE, awaybuilder_windowDeactivateHandler);
+//			this.eventMap.mapListener(this._propertiesWindow, AIREvent.WINDOW_ACTIVATE, propertiesWindow_windowActivateHandler);
 			
-			this.eventMap.mapListener(this.app, DragEvent.DRAG_ENTER, awaybuilder_dragEnterHandler);
-			this.eventMap.mapListener(this.app, DragEvent.DRAG_DROP, awaybuilder_dragDropHandler);
+			addViewListener( Event.CLOSE, awaybuilder_closeHandler );
+			addViewListener( Event.CLOSING, awaybuilder_closingHandler );
+			addViewListener( AIREvent.WINDOW_ACTIVATE, awaybuilder_windowActivateHandler );
+			addViewListener( AIREvent.WINDOW_ACTIVATE, awaybuilder_windowDeactivateHandler );
+			
+			addViewListener( DragEvent.DRAG_ENTER, awaybuilder_dragEnterHandler );
+			addViewListener( DragEvent.DRAG_DROP, awaybuilder_dragDropHandler );
 			
 			if(this.app.stage)
 			{
@@ -337,6 +336,7 @@ import flash.display.NativeMenuItem;
 		private function awaybuilder_dragEnterHandler(event:DragEvent):void
 		{
 			const dragSource:DragSource = event.dragSource;
+//			trace( ObjectUtil.toString( event.dragSource ) );
 			if(dragSource.hasFormat("air:file list"))
 			{
 				var fileList:Array = dragSource.dataForFormat("air:file list") as Array;
@@ -358,6 +358,7 @@ import flash.display.NativeMenuItem;
 		private function awaybuilder_dragDropHandler(event:DragEvent):void
 		{
 			var file:File = event.dragSource.dataForFormat("air:file list")[0];
+			trace( " event.dragSource = " + event.dragSource );
 			this.dispatch(new OpenFromInvokeEvent(OpenFromInvokeEvent.OPEN_FROM_INVOKE, file));
 		}
 		
@@ -609,7 +610,7 @@ import flash.display.NativeMenuItem;
 				}
 				default:
 				{
-					AwayBuilderLogger.warn("Menu item not implemented: " + itemData + ".");
+					trace("Menu item not implemented: " + itemData + ".");
 				}
 			}
 		}
@@ -737,9 +738,10 @@ import flash.display.NativeMenuItem;
 			this.createMenuItem("New Library", MENU_NEW, fileMenu, -1, "n");
 			this.createMenuItem("Open Away3D Library...", MENU_OPEN, fileMenu, -1, "o");
 			fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Import 3D", MENU_IMPORT, fileMenu, -1, "i");
+			this.createMenuItem("Import 3D or Texture", MENU_IMPORT, fileMenu, -1, "i");
+			
 			fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Save Away3D Library", MENU_SAVE, fileMenu, -1, "s");
+			this.createMenuItem("Save Library", MENU_SAVE, fileMenu, -1, "s");
 			this.createMenuItem("Save Library As...", MENU_SAVE_AS, fileMenu, -1, "S");
 			/*fileMenu.addItem(new NativeMenuItem("", true));
 			this.createMenuItem("Print...", MENU_PRINT, fileMenu, -1, "p");*/

@@ -13,7 +13,7 @@ import awaybuilder.controller.events.SceneEvent;
 import awaybuilder.controller.history.HistoryCommandBase;
 import awaybuilder.model.IDocumentModel;
 import awaybuilder.model.vo.BitmapTextureVO;
-import awaybuilder.model.vo.MaterialItemVO;
+import awaybuilder.model.vo.MaterialVO;
 import awaybuilder.model.vo.TextureMaterialVO;
 
 public class ChangeMaterialCommand extends HistoryCommandBase
@@ -27,15 +27,15 @@ public class ChangeMaterialCommand extends HistoryCommandBase
     override public function execute():void
     {
         var material:TextureMaterialVO = event.newValue as TextureMaterialVO;
-        var vo:TextureMaterialVO = document.getScenegraphItem( material.item ) as TextureMaterialVO;
+        var vo:TextureMaterialVO = document.getMaterial( material.linkedObject ) as TextureMaterialVO;
 
         vo.name = material.name;
         vo.repeat = material.repeat;
-        vo.texture = new BitmapTextureVO( material.texture.item as BitmapTexture );
+        vo.texture = new BitmapTextureVO( material.texture.linkedObject as BitmapTexture );
 
-        vo.item.name = material.name;
-        vo.item.repeat = material.repeat;
-        vo.item.texture = material.texture.item;
+        vo.linkedObject.name = material.name;
+        vo.linkedObject.repeat = material.repeat;
+        vo.linkedObject.texture = material.texture.linkedObject;
 
         addToHistory( event );
     }
