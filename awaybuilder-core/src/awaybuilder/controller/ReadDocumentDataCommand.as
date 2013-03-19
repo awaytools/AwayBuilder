@@ -52,6 +52,7 @@ import org.robotlegs.mvcs.Command;
 		override public function execute():void
 		{
 			document.name = event.name;
+			document.path = event.path;
 			Parsers.enableAllBundled();
 			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
 			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);

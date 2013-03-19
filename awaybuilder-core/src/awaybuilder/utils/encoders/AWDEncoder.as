@@ -6,7 +6,8 @@ package awaybuilder.utils.encoders
 	import away3d.entities.Mesh;
 	
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.MeshItemVO;
+	import awaybuilder.model.vo.DocumentBaseVO;
+	import awaybuilder.model.vo.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	
@@ -14,6 +15,8 @@ package awaybuilder.utils.encoders
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
+	
+	import mx.collections.ArrayCollection;
 	
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
@@ -44,16 +47,19 @@ package awaybuilder.utils.encoders
 		
 		public function encode(document : IDocumentModel, output : ByteArray) : Boolean
 		{
-			var object : ScenegraphItemVO;
-			var scene : ScenegraphGroupItemVO;
+			var scene : Array;
 			
 			_body = new ByteArray();
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
 			
-			scene = document.getScenegraphGroup(ScenegraphGroupItemVO.SCENE_GROUP);
-			for each (object in scene.children) {
-				_encodeChild(object);
+			scene = document.scene.source;
+			for each ( var vo:DocumentBaseVO in scene ) 
+			{
+				if( vo is MeshVO ) // also can be ContainerVO
+				{
+					_encodeChild( vo as MeshVO );
+				}
 			}
 			
 			// Header
@@ -112,17 +118,9 @@ package awaybuilder.utils.encoders
 			}
 		}
 		
-		private function _encodeChild(vo : ScenegraphItemVO) : void
+		private function _encodeChild(vo : MeshVO) : void
 		{
-			var child : ScenegraphItemVO;
-			
-			if (vo is MeshItemVO) {
-				_encodeMesh(Mesh(MeshItemVO(vo).item));
-			}
-			
-			for each (child in vo.children) {
-				_encodeChild(child);
-			}
+			_encodeMesh(vo.mesh);
 		}
 		
 		

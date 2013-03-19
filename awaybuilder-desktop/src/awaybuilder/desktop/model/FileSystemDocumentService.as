@@ -52,6 +52,9 @@ package awaybuilder.desktop.model
 		
 		public function saveAs(data:Object, defaultName:String):void
 		{
+			trace(defaultName);
+			trace(defaultName.toLowerCase().indexOf(FILE_EXTENSION));
+			trace(defaultName.length - FILE_EXTENSION.length);
 			if(defaultName.toLowerCase().indexOf(FILE_EXTENSION) != defaultName.length - FILE_EXTENSION.length)
 			{
 				defaultName += FILE_EXTENSION;
