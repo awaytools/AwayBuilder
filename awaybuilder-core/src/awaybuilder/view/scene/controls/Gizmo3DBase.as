@@ -27,9 +27,11 @@ package awaybuilder.view.scene.controls
 		protected var xAxisMaterial:ColorMaterial = new ColorMaterial(0xff0000, 1);
 		protected var yAxisMaterial:ColorMaterial = new ColorMaterial(0x00cc00, 1);
 		protected var zAxisMaterial:ColorMaterial = new ColorMaterial(0x0033ff, 1);
-		protected var highlightMaterial:ColorMaterial = new ColorMaterial(0xffcc00);
+		protected var highlightOverMaterial:ColorMaterial = new ColorMaterial(0xffcc00);
+		protected var highlightDownMaterial:ColorMaterial = new ColorMaterial(0xfff000);
 		protected var sphereMaterial:ColorMaterial = new ColorMaterial(0xFFFFFF, 0.3);
 		protected var sphereHighlightMaterial:ColorMaterial = new ColorMaterial(0xFFFFFF, 0.6);
+		protected var cubeMaterial:ColorMaterial = new ColorMaterial();
 		
 		private var ambientLight:DirectionalLight;
 		
@@ -50,7 +52,8 @@ package awaybuilder.view.scene.controls
 			xAxisMaterial.lightPicker = picker;
 			yAxisMaterial.lightPicker = picker;
 			zAxisMaterial.lightPicker = picker;
-			highlightMaterial.lightPicker = picker;
+			highlightOverMaterial.lightPicker = picker;
+			highlightDownMaterial.lightPicker = picker;
 			sphereMaterial.lightPicker = picker;
 			sphereHighlightMaterial.lightPicker = picker;			
 			
@@ -64,6 +67,12 @@ package awaybuilder.view.scene.controls
 			content.scaleX = scale;
 			content.scaleY = scale;
 			content.scaleZ = scale;
+			
+			if (!active && currentMesh != null) 
+			{
+				this.position = currentMesh.scenePosition;
+				this.content.eulers = currentMesh.eulers;
+			}
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
 		}			

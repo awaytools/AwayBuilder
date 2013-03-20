@@ -61,9 +61,11 @@ package awaybuilder.view.scene.controls
 			var torusGeometry:TorusGeometry = new TorusGeometry(100, 5, 30, 8, false);
 			
 			xTorus = new Mesh(torusGeometry, xAxisMaterial);
-			xTorus.name = "xAxis";
+			xTorus.name = "xAxis"; 
 			xTorus.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			xTorus.mouseEnabled = true;
+			xTorus.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			xTorus.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);
 			xTorus.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			xTorus.rotationY = 90;
 			content.addChild(xTorus);					
@@ -72,6 +74,8 @@ package awaybuilder.view.scene.controls
 			yTorus.name = "yAxis";
 			yTorus.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			yTorus.mouseEnabled = true;
+			yTorus.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			yTorus.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			yTorus.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			yTorus.rotationX = -90;
 			content.addChild(yTorus);				
@@ -80,6 +84,8 @@ package awaybuilder.view.scene.controls
 			zTorus.name = "zAxis";
 			zTorus.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			zTorus.mouseEnabled = true;
+			zTorus.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			zTorus.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			zTorus.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			content.addChild(zTorus);			
 			
@@ -95,6 +101,60 @@ package awaybuilder.view.scene.controls
 			lines.addSegment(yLine);			
 			
 			this.addChild(lines);
+		}
+		
+		protected function handleMouseOut(event:MouseEvent3D):void
+		{
+			if (!active) 
+			{
+				switch(event.target.name)
+				{
+					case "xAxis":
+												
+						xTorus.material = xAxisMaterial;
+						
+						break;
+					
+					case "yAxis":
+						
+						yTorus.material = yAxisMaterial;
+						
+						break;
+					
+					case "zAxis":
+						
+						zTorus.material = zAxisMaterial;
+						
+						break;								
+				}							
+			}			
+		}
+		
+		protected function handleMouseOver(event:MouseEvent3D):void
+		{
+			if (!active) 
+			{
+				switch(event.target.name)
+				{
+					case "xAxis":
+						
+						xTorus.material = highlightOverMaterial;
+						
+						break;
+					
+					case "yAxis":
+						
+						yTorus.material = highlightOverMaterial;
+						
+						break;
+					
+					case "zAxis":
+						
+						zTorus.material = highlightOverMaterial;
+						
+						break;								
+				}							
+			}			
 		}
 		
 		override public function update():void
@@ -141,19 +201,19 @@ package awaybuilder.view.scene.controls
 			{
 				case "xAxis":
 					
-					xTorus.material = highlightMaterial;
+					xTorus.material = highlightDownMaterial;
 					
 					break;
 				
 				case "yAxis":
 					
-					yTorus.material = highlightMaterial;
+					yTorus.material = highlightDownMaterial;
 					
 					break;
 				
 				case "zAxis":
 					
-					zTorus.material = highlightMaterial;
+					zTorus.material = highlightDownMaterial;
 					
 					break;				
 				
@@ -259,6 +319,10 @@ package awaybuilder.view.scene.controls
 			sphere.material = sphereMaterial;
 			
 			sphere.eulers = new Vector3D();
+			
+			xTorus.material = xAxisMaterial;
+			yTorus.material = yAxisMaterial;
+			zTorus.material = zAxisMaterial;
 			
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.ROTATE, actualMesh, actualMesh.eulers, startValue, actualMesh.eulers.clone()));
 		}		

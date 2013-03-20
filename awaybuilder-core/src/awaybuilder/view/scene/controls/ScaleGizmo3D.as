@@ -44,10 +44,12 @@ package awaybuilder.view.scene.controls
 			var cubeGeom:CubeGeometry = new CubeGeometry(20, 20, 20, 1, 1, 1, true);
 			var cylGeom:CylinderGeometry = new CylinderGeometry(5, 5, 100, 16, 1, true, true, true, false);
 			
-			mCube = new Mesh(cubeGeom, new ColorMaterial());
+			mCube = new Mesh(cubeGeom, cubeMaterial);
 			mCube.name = "allAxis";
 			mCube.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			mCube.mouseEnabled = true;
+			mCube.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			mCube.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			mCube.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			mCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			content.addChild(mCube);							
@@ -56,6 +58,8 @@ package awaybuilder.view.scene.controls
 			xCylinder.name = "xAxis";
 			xCylinder.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			xCylinder.mouseEnabled = true;
+			xCylinder.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			xCylinder.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			xCylinder.x = 50;
@@ -66,6 +70,8 @@ package awaybuilder.view.scene.controls
 			xCube.name = "xAxis";
 			xCube.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			xCube.mouseEnabled = true;
+			xCube.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			xCube.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			xCube.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			xCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			xCube.rotationY = -90;
@@ -76,6 +82,8 @@ package awaybuilder.view.scene.controls
 			yCylinder.name = "yAxis";
 			yCylinder.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			yCylinder.mouseEnabled = true;
+			yCylinder.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			yCylinder.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			yCylinder.y = 50;
@@ -86,6 +94,8 @@ package awaybuilder.view.scene.controls
 			yCube.name = "yAxis";
 			yCube.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			yCube.mouseEnabled = true;
+			yCube.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			yCube.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			yCube.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			yCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			yCube.rotationX = 90;
@@ -96,6 +106,8 @@ package awaybuilder.view.scene.controls
 			zCylinder.name = "zAxis";
 			zCylinder.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			zCylinder.mouseEnabled = true;
+			zCylinder.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			zCylinder.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);
 			zCylinder.z = 50;
@@ -105,14 +117,86 @@ package awaybuilder.view.scene.controls
 			zCube.name = "zAxis";
 			zCube.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			zCube.mouseEnabled = true;
+			zCube.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			zCube.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);				
 			zCube.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			zCube.addEventListener(MouseEvent3D.MOUSE_UP, handleMouseUp);			
 			zCube.rotationX = 180;
 			zCube.z = 100 + (cubeGeom.height/2);
-			content.addChild(zCube);
-			
-			
+			content.addChild(zCube);						
 		}
+		
+		protected function handleMouseOut(event:MouseEvent3D):void
+		{
+			if (!active) 
+			{
+				switch(event.target.name)
+				{					
+					case "xAxis":
+						
+						xCube.material = xAxisMaterial;
+						xCylinder.material = xAxisMaterial;
+						
+						break;
+					
+					case "yAxis":
+						
+						yCube.material = yAxisMaterial;
+						yCylinder.material = yAxisMaterial;
+						
+						break;
+					
+					case "zAxis":
+						
+						zCube.material = zAxisMaterial;
+						zCylinder.material = zAxisMaterial;
+						
+						break;		
+					
+					case "allAxis":
+						
+						mCube.material = cubeMaterial;
+						
+						break;					
+				}							
+			}			
+		}
+		
+		protected function handleMouseOver(event:MouseEvent3D):void
+		{
+			if (!active) 
+			{
+				switch(event.target.name)
+				{
+					case "xAxis":
+						
+						xCube.material = highlightOverMaterial;
+						xCylinder.material = highlightOverMaterial;
+						
+						break;
+					
+					case "yAxis":
+						
+						yCube.material = highlightOverMaterial;
+						yCylinder.material = highlightOverMaterial;
+						
+						break;
+					
+					case "zAxis":
+						
+						zCube.material = highlightOverMaterial;
+						zCylinder.material = highlightOverMaterial;
+						
+						break;		
+					
+					case "allAxis":
+						
+						mCube.material = highlightOverMaterial;
+						
+						break;								
+				}							
+			}			
+		}			
 		
 		override public function update():void
 		{			
@@ -137,28 +221,28 @@ package awaybuilder.view.scene.controls
 			{
 				case "xAxis":
 					
-					xCube.material = highlightMaterial;
-					xCylinder.material = highlightMaterial;
+					xCube.material = highlightDownMaterial;
+					xCylinder.material = highlightDownMaterial;
 					
 					break;
 				
 				case "yAxis":
 					
-					yCube.material = highlightMaterial;
-					yCylinder.material = highlightMaterial;
+					yCube.material = highlightDownMaterial;
+					yCylinder.material = highlightDownMaterial;
 					
 					break;
 				
 				case "zAxis":
 					
-					zCube.material = highlightMaterial;
-					zCylinder.material = highlightMaterial;
+					zCube.material = highlightDownMaterial;
+					zCylinder.material = highlightDownMaterial;
 					
 					break;		
 				
 				case "allAxis":
 					
-					mCube.material = highlightMaterial;
+					mCube.material = highlightDownMaterial;
 					
 					break;							
 			}

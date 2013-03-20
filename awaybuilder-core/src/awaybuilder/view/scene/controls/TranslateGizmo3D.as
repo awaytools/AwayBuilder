@@ -44,6 +44,8 @@ package awaybuilder.view.scene.controls
 			xCylinder.name = "xAxis";
 			xCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			xCylinder.mouseEnabled = true;
+			xCylinder.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			xCylinder.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			xCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			xCylinder.x = 50;
 			xCylinder.rotationY = -90;
@@ -53,6 +55,8 @@ package awaybuilder.view.scene.controls
 			xCone.name = "xAxis";
 			xCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			xCone.mouseEnabled = true;
+			xCone.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			xCone.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			xCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);	
 			xCone.rotationY = -90;
 			xCone.x = 100 + (coneGeom.height/2);
@@ -62,6 +66,8 @@ package awaybuilder.view.scene.controls
 			yCylinder.name = "yAxis";
 			yCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			yCylinder.mouseEnabled = true;
+			yCylinder.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			yCylinder.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			yCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			yCylinder.y = 50;
 			yCylinder.rotationX = -90;
@@ -71,6 +77,8 @@ package awaybuilder.view.scene.controls
 			yCone.name = "yAxis";
 			yCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			yCone.mouseEnabled = true;
+			yCone.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			yCone.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			yCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);		
 			yCone.rotationX = 90;
 			yCone.y = 100 + (coneGeom.height/2);
@@ -78,8 +86,10 @@ package awaybuilder.view.scene.controls
 			
 			zCylinder = new Mesh(cylGeom, zAxisMaterial);
 			zCylinder.name = "zAxis";
-			zCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;
+			zCylinder.pickingCollider = PickingColliderType.PB_BEST_HIT;			
 			zCylinder.mouseEnabled = true;
+			zCylinder.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			zCylinder.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			zCylinder.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);
 			zCylinder.z = 50;
 			content.addChild(zCylinder);			
@@ -88,11 +98,73 @@ package awaybuilder.view.scene.controls
 			zCone.name = "zAxis";
 			zCone.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			zCone.mouseEnabled = true;
+			zCone.addEventListener(MouseEvent3D.MOUSE_OVER, handleMouseOver);
+			zCone.addEventListener(MouseEvent3D.MOUSE_OUT, handleMouseOut);			
 			zCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);		
 			zCone.rotationX = 180;
 			zCone.z = 100 + (coneGeom.height/2);
 			content.addChild(zCone);	
 		}
+		
+		protected function handleMouseOut(event:MouseEvent3D):void
+		{
+			if (!active) 
+			{
+				switch(event.target.name)
+				{					
+					case "xAxis":
+						
+						xCone.material = xAxisMaterial;
+						xCylinder.material = xAxisMaterial;
+						
+						break;
+					
+					case "yAxis":
+						
+						yCone.material = yAxisMaterial;
+						yCylinder.material = yAxisMaterial;
+						
+						break;
+					
+					case "zAxis":
+						
+						zCone.material = zAxisMaterial;
+						zCylinder.material = zAxisMaterial;
+						
+						break;								
+				}							
+			}			
+		}
+		
+		protected function handleMouseOver(event:MouseEvent3D):void
+		{
+			if (!active) 
+			{
+				switch(event.target.name)
+				{
+					case "xAxis":
+						
+						xCone.material = highlightOverMaterial;
+						xCylinder.material = highlightOverMaterial;
+						
+						break;
+					
+					case "yAxis":
+						
+						yCone.material = highlightOverMaterial;
+						yCylinder.material = highlightOverMaterial;
+						
+						break;
+					
+					case "zAxis":
+						
+						zCone.material = highlightOverMaterial;
+						zCylinder.material = highlightOverMaterial;
+						
+						break;								
+				}							
+			}			
+		}		
 		
 		override public function update():void
 		{			
@@ -115,22 +187,22 @@ package awaybuilder.view.scene.controls
 			{
 				case "xAxis":
 					
-					xCone.material = highlightMaterial;
-					xCylinder.material = highlightMaterial;
+					xCone.material = highlightDownMaterial;
+					xCylinder.material = highlightDownMaterial;
 					
 					break;
 				
 				case "yAxis":
 					
-					yCone.material = highlightMaterial;
-					yCylinder.material = highlightMaterial;
+					yCone.material = highlightDownMaterial;
+					yCylinder.material = highlightDownMaterial;
 					
 					break;
 				
 				case "zAxis":
 					
-					zCone.material = highlightMaterial;
-					zCylinder.material = highlightMaterial;
+					zCone.material = highlightDownMaterial;
+					zCylinder.material = highlightDownMaterial;
 					
 					break;				
 			}
@@ -159,6 +231,8 @@ package awaybuilder.view.scene.controls
 					xv1.normalize();
 					xv2.normalize();
 					var ax:Number = xv1.dotProduct(xv2);
+					
+					trace (ax);
 					if (ax < 0) trans = -trans;					
 					
 					this.translate(content.rightVector, trans);
