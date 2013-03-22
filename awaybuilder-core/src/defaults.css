@@ -4,6 +4,13 @@
 @namespace awaybuilder "awaybuilder.view.components.*";
 @namespace renderers "awaybuilder.view.components.renderers.*";
 @namespace propertyEditors "awaybuilder.view.components.propertyEditors.*";
+@namespace controls "awaybuilder.view.components.controls.*";
+
+global {
+	modalTransparency: 0.5;
+	modalTransparencyColor: #000003;
+	modalTransparencyDuration: 200;
+}
 
 awaybuilder|CoreEditor
 {	
@@ -19,6 +26,18 @@ s|NumericStepper
 s|TextInput 
 {
 	color: #000000;
+}
+
+s|Button 
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ButtonSkin")
+}
+s|TitleWindow 
+{
+	chromeColor: #1d1d1c;
+	color: #dbdbdb;
+	fontSize: 12;
+	backgroundColor:#1d1d1c;
 }
 
 /*** tool/status bars ***/
@@ -253,7 +272,7 @@ s|DropDownList
 	backgroundColor:#1d1d1c;
 }
 
-awaybuilder|CollapsiblePanel {
+controls|CollapsiblePanel {
     chromeColor: #1d1d1c;
     color: #dbdbdb;
     fontSize: 11;

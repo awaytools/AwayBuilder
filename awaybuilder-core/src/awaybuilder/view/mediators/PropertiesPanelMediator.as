@@ -154,8 +154,9 @@ import awaybuilder.view.components.PropertiesPanel;
         }
         private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
         {
-            trace( view.data );
-            view.data = new TextureMaterialVO( event.items[0] );
+			var material:TextureMaterialVO = new TextureMaterialVO( event.items[0] );
+			material.linkedTextures = document.textures;
+			view.data = material;
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
@@ -227,6 +228,7 @@ import awaybuilder.view.components.PropertiesPanel;
                     view.currentState = "group"
                 }
                 view.visible = true;
+				view.validateNow();
             }
             else
             {

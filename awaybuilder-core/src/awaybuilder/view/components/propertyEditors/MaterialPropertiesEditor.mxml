@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-          xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*">
+          xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*">
     <fx:Declarations>
     </fx:Declarations>
     <fx:Script><![CDATA[
-        import away3d.materials.TextureMaterial;
-
-        import awaybuilder.model.vo.BitmapTextureVO;
-
-        import awaybuilder.model.vo.TextureMaterialVO;
-
-        import spark.events.IndexChangeEvent;
+		import away3d.materials.utils.DefaultMaterialManager;
+		
+		import awaybuilder.model.vo.BitmapTextureVO;
+		import awaybuilder.model.vo.TextureMaterialVO;
+		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
+		
+		import spark.events.IndexChangeEvent;
 
         private var _data:TextureMaterialVO;
-        [Bindable]
+		
+		[Bindable]
+		private var _selectedTexture:BitmapTextureVO;
+		
+		[Bindable]
         public function get data():TextureMaterialVO
         {
             return _data;
@@ -22,45 +26,64 @@
         {
             if( !value ) return;
             _data = value;
+			if( _data.material == DefaultMaterialManager.getDefaultMaterial() )
+			{
+				this.enabled = false;
+			}
             for each(var texture:BitmapTextureVO in _data.linkedTextures) 
 			{
                 if (texture.linkedObject == _data.texture.linkedObject) 
 				{
-                    _selectedTexture = texture;
+                   _selectedTexture = texture;
                 }
             }
         }
 		
-        [Bindable]
-        private var _selectedTexture:BitmapTextureVO;
-
-        private function name_changeHandler(event:Event):void {
-            var newValue:TextureMaterialVO = new TextureMaterialVO(data.linkedObject as TextureMaterial);
+        private function name_changeHandler(event:Event):void 
+		{
+            var newValue:TextureMaterialVO = new TextureMaterialVO(data.material);
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
-        private function repeatBox_changeHandler(event:Event):void {
-            var newValue:TextureMaterialVO = new TextureMaterialVO(data.linkedObject as TextureMaterial);
+        private function repeatBox_changeHandler(event:Event):void 
+		{
+            var newValue:TextureMaterialVO = new TextureMaterialVO(data.material);
             newValue.repeat = repeatBox.selected;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }
 
-        private function dropDownList_changeHandler(event:IndexChangeEvent):void {
-            var newValue:TextureMaterialVO = new TextureMaterialVO(_data.linkedObject as TextureMaterial);
-            newValue.texture = dropDownList.selectedItem as BitmapTextureVO;
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
+        private function dropDownList_changeHandler(event:IndexChangeEvent):void 
+		{
+			if( dropDownList.selectedItem ) {
+				var newValue:TextureMaterialVO = new TextureMaterialVO(data.material);
+				newValue.texture = dropDownList.selectedItem as BitmapTextureVO;
+				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
+			}
         }
-        private function editTextureButton_clickHandler(event:MouseEvent):void {
+		
+        private function editTextureButton_clickHandler(event:MouseEvent):void 
+		{
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, data.texture.linkedObject, true));
         }
-        ]]></fx:Script>
+		
+		private function dropDownIconFunction(item:BitmapTextureVO):Object 
+		{
+			return item.bitmapData;
+		}
+		
+		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, data, true));
+		}
+		
+	]]></fx:Script>
 
     <s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
         <s:Label width="100%" text="Material Properties" fontWeight="bold"/>
     </s:HGroup>
 
-    <components:CollapsiblePanel width="100%" title="General" collapsed="false">
+    <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
             <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
@@ -69,16 +92,21 @@
                 <s:CheckBox id="repeatBox" change="repeatBox_changeHandler(event)" selected="{data.repeat}"/>
             </s:FormItem>
         </s:Form>
-    </components:CollapsiblePanel>
-    <components:CollapsiblePanel width="100%" title="Texture" collapsed="false">
-        <s:HGroup width="100%">
-            <s:DropDownList id="dropDownList" width="100%"
-                            dataProvider="{data.linkedTextures}" selectedItem="{_selectedTexture}" labelField="name"
-                            change="dropDownList_changeHandler(event)"/>
+    </controls:CollapsiblePanel>
+    <controls:CollapsiblePanel width="100%" title="Texture" collapsed="false" >
+        <s:HGroup width="100%" verticalAlign="middle">
+            <controls:ExtendedDropDownList id="dropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.propertyEditors.renderers.TextureItemRenderer"
+				                            dataProvider="{data.linkedTextures}" selectedItem="{_selectedTexture}"
+											labelField="name"
+											newItemLabel="Add New Texture"
+											iconFunction="{dropDownIconFunction}"
+				                            change="dropDownList_changeHandler(event)"
+											addNewItem="dropDownList_addNewItemHandler(event)"/>
             <s:Button id="editTextureButton" styleName="editSubmeshMaterialButtonStyle"
                       width="23" height="23" click="editTextureButton_clickHandler(event)"/>
         </s:HGroup>
-    </components:CollapsiblePanel>
+    </controls:CollapsiblePanel>
 
 
 

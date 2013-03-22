@@ -1,9 +1,15 @@
 package awaybuilder.controller
 {
+import away3d.materials.TextureMaterial;
+import away3d.materials.utils.DefaultMaterialManager;
+import away3d.textures.BitmapTexture;
+
 import awaybuilder.model.IDocumentModel;
 import awaybuilder.model.ISettingsModel;
 import awaybuilder.model.UndoRedoModel;
+import awaybuilder.model.vo.BitmapTextureVO;
 import awaybuilder.model.vo.ScenegraphGroupItemVO;
+import awaybuilder.model.vo.TextureMaterialVO;
 import awaybuilder.utils.scene.Scene3DManager;
 
 import mx.collections.ArrayCollection;
@@ -30,18 +36,23 @@ import org.robotlegs.mvcs.Command;
 			document.edited = false;
 			document.path = null;
 
-			var graph:ArrayCollection = new ArrayCollection();
-			
-			var _lightGroup:ScenegraphGroupItemVO = new ScenegraphGroupItemVO( "Lights", ScenegraphGroupItemVO.LIGHT_GROUP );
-			graph.addItem( _lightGroup );
-			
 			document.scene = new ArrayCollection();
-			document.materials = new ArrayCollection();
+			
+			var material:TextureMaterialVO = new TextureMaterialVO( DefaultMaterialManager.getDefaultMaterial() );
+			material.name = "Away3D Default";
+			document.materials = new ArrayCollection([material]);
+			
 			document.animations = new ArrayCollection();
 			document.geometry = new ArrayCollection();
-			document.textures = new ArrayCollection();
+			
+			var texture:BitmapTextureVO = new BitmapTextureVO( DefaultMaterialManager.getDefaultTexture() );
+			texture.name = "Away3D Default";
+			document.textures = new ArrayCollection([texture]);
+			
 			document.skeletons = new ArrayCollection();
 			document.lights = new ArrayCollection();
+			
+			
 			
 			document.selectedObjects = new Vector.<Object>();
 			

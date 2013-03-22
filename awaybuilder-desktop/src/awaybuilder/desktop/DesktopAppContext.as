@@ -1,45 +1,44 @@
 package awaybuilder.desktop
 {
+    import awaybuilder.CoreContext;
+    import awaybuilder.controller.events.DocumentEvent;
+    import awaybuilder.controller.events.DocumentLoadEvent;
+    import awaybuilder.controller.events.DocumentRequestEvent;
+    import awaybuilder.controller.events.HelpEvent;
+    import awaybuilder.controller.events.MessageBoxEvent;
+    import awaybuilder.controller.events.SettingsEvent;
+    import awaybuilder.desktop.controller.CloseDocumentCommand;
+    import awaybuilder.desktop.controller.DocumentRequestCommand;
+    import awaybuilder.desktop.controller.OpenFromInvokeCommand;
+    import awaybuilder.desktop.controller.ShowAboutWindowCommand;
+    import awaybuilder.desktop.controller.ShowApplicationSettingsWindowCommand;
+    import awaybuilder.desktop.controller.ShowDocumentLoadProgressWindowCommand;
+    import awaybuilder.desktop.controller.ShowDocumentSettingsWindowCommand;
+    import awaybuilder.desktop.controller.ShowMessageBoxCommand;
+    import awaybuilder.desktop.controller.ShowSamplesWindowCommand;
+    import awaybuilder.desktop.controller.events.AboutEvent;
+    import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
     import awaybuilder.desktop.model.FileSystemDocumentService;
-import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
-import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
-
-import flash.desktop.NativeApplication;
-	import flash.display.DisplayObjectContainer;
-	
-	import mx.core.FlexGlobals;
-	
-	import awaybuilder.CoreContext;
-	import awaybuilder.desktop.controller.CloseDocumentCommand;
-	import awaybuilder.desktop.controller.DocumentRequestCommand;
-	import awaybuilder.desktop.controller.OpenFromInvokeCommand;
-	import awaybuilder.desktop.controller.ShowAboutWindowCommand;
-	import awaybuilder.desktop.controller.ShowApplicationSettingsWindowCommand;
-	import awaybuilder.desktop.controller.ShowDocumentLoadProgressWindowCommand;
-	import awaybuilder.desktop.controller.ShowDocumentSettingsWindowCommand;
-	import awaybuilder.desktop.controller.ShowMessageBoxCommand;
-	import awaybuilder.desktop.controller.ShowSamplesWindowCommand;
-	import awaybuilder.desktop.controller.events.AboutEvent;
-	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-	import awaybuilder.desktop.model.UpdateModel;
-	import awaybuilder.desktop.view.components.AboutWindow;
-	import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
-	import awaybuilder.desktop.view.components.WelcomeWindow;
-	import awaybuilder.desktop.view.mediators.AboutWindowMediator;
-	import awaybuilder.desktop.view.mediators.ApplicationMediator;
-	import awaybuilder.desktop.view.mediators.DocumentLoadProgressWindowMediator;
-	import awaybuilder.desktop.view.mediators.WelcomeWindowMediator;
-	import awaybuilder.controller.events.DocumentEvent;
-	import awaybuilder.controller.events.DocumentLoadEvent;
-	import awaybuilder.controller.events.DocumentRequestEvent;
-	import awaybuilder.controller.events.HelpEvent;
-	import awaybuilder.controller.events.MessageBoxEvent;
-	import awaybuilder.controller.events.SettingsEvent;
-	import awaybuilder.services.IDocumentService;
-	
-	import org.robotlegs.base.ContextEvent;
-	import org.robotlegs.base.MultiWindowFlexMediatorMap;
-	import org.robotlegs.core.IMediatorMap;
+    import awaybuilder.desktop.model.UpdateModel;
+    import awaybuilder.desktop.view.components.AboutWindow;
+    import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
+    import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
+    import awaybuilder.desktop.view.components.WelcomeWindow;
+    import awaybuilder.desktop.view.mediators.AboutWindowMediator;
+    import awaybuilder.desktop.view.mediators.ApplicationMediator;
+    import awaybuilder.desktop.view.mediators.DocumentLoadProgressWindowMediator;
+    import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
+    import awaybuilder.desktop.view.mediators.WelcomeWindowMediator;
+    import awaybuilder.services.IDocumentService;
+    
+    import flash.desktop.NativeApplication;
+    import flash.display.DisplayObjectContainer;
+    
+    import mx.core.FlexGlobals;
+    
+    import org.robotlegs.base.ContextEvent;
+    import org.robotlegs.base.MultiWindowFlexMediatorMap;
+    import org.robotlegs.core.IMediatorMap;
 	
 	public class DesktopAppContext extends CoreContext
 	{

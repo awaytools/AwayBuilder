@@ -4,26 +4,39 @@
     <fx:Declarations>
     </fx:Declarations>
     <fx:Script><![CDATA[
-        import away3d.materials.MaterialBase;
-        import away3d.textures.BitmapTexture;
+		import away3d.materials.MaterialBase;
+		import away3d.materials.utils.DefaultMaterialManager;
+		import away3d.textures.BitmapTexture;
+		
+		import awaybuilder.model.vo.BitmapTextureVO;
+		import awaybuilder.model.vo.MaterialVO;
 
-        import awaybuilder.model.vo.BitmapTextureVO;
-
-        import awaybuilder.model.vo.MaterialVO;
-
-        [Bindable]
-        public var data:BitmapTextureVO;
-
+		private var _data:BitmapTextureVO;
+		[Bindable]
+		public function get data():BitmapTextureVO
+		{
+			return _data;
+		}
+		public function set data( value:BitmapTextureVO ):void
+		{
+			if( !value ) return;
+			_data = value;
+			if( _data.linkedObject == DefaultMaterialManager.getDefaultTexture() )
+			{
+				this.enabled = false;
+			}
+		}
+		
         private function name_changeHandler( event:Event ):void
         {
-            var newValue:BitmapTextureVO = new BitmapTextureVO( data.linkedObject as BitmapTexture );
+//            var newValue:BitmapTextureVO = new BitmapTextureVO( data.linkedObject as BitmapTexture );
 //            newValue.name = nameInput.text;
 //            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
         private function repeatBox_changeHandler( event:Event ):void
         {
-            var newValue:MaterialVO = new MaterialVO( data.linkedObject as MaterialBase );
+//            var newValue:MaterialVO = new MaterialVO( data.linkedObject as MaterialBase );
 //            newValue.repeat = repeatBox.selected;
 //            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }

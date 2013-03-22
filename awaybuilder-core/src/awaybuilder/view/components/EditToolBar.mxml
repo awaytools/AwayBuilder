@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark"
-	xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="awaybuilder.view.components.*">
+	xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*">
 	
 	<fx:Metadata>
 		[Event(name="newDocument",type="awaybuilder.view.components.events.ToolBarEvent")]
@@ -41,9 +41,9 @@
               toolTip="Focus On Object" enabled="false"
               click="focusButton_clickHandler(event)"/>
 
-	<components:SwitchButton id="targetCameraButton" styleName="toolbarButton" toolTip="Target Camera Mode" value="Target" tabFocusEnabled="false" tabEnabled="false" tabChildren="false" focusEnabled="false"
+	<controls:SwitchButton id="targetCameraButton" styleName="toolbarButton" toolTip="Target Camera Mode" value="Target" tabFocusEnabled="false" tabEnabled="false" tabChildren="false" focusEnabled="false"
 		selected="true" group="{cameraModeToolGroup}"/>
-	<components:SwitchButton id="freeCameraButton" styleName="toolbarButton" toolTip="Free Camera Mode" value="Free" tabFocusEnabled="false" tabEnabled="false" tabChildren="false"
+	<controls:SwitchButton id="freeCameraButton" styleName="toolbarButton" toolTip="Free Camera Mode" value="Free" tabFocusEnabled="false" tabEnabled="false" tabChildren="false"
 		group="{cameraModeToolGroup}"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
@@ -77,11 +77,11 @@
 		click="rotateClockwiseButton_clickHandler(event)"/>-->
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	<!-- transform modes -->
-	<components:SwitchButton id="translateButton" styleName="toolbarButton" toolTip="Translate Transform Mode" value="Translate"
+	<controls:SwitchButton id="translateButton" styleName="toolbarButton" toolTip="Translate Transform Mode" value="Translate"
 				   selected="true" group="{transformModeToolGroup}"/>
-	<components:SwitchButton id="rotateButton" styleName="toolbarButton" toolTip="Rotate Transform Mode" value="Rotate"
+	<controls:SwitchButton id="rotateButton" styleName="toolbarButton" toolTip="Rotate Transform Mode" value="Rotate"
 				   group="{transformModeToolGroup}"/>
-	<components:SwitchButton id="scaleButton" styleName="toolbarButton" toolTip="Scale Transform Mode" value="Scale"
+	<controls:SwitchButton id="scaleButton" styleName="toolbarButton" toolTip="Scale Transform Mode" value="Scale"
 				   group="{transformModeToolGroup}"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	

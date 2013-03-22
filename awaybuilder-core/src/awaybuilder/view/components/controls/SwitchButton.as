@@ -1,4 +1,4 @@
-package awaybuilder.view.components
+package awaybuilder.view.components.controls
 {
 	import flash.events.KeyboardEvent;
 	

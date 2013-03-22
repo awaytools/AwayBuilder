@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-                autoDrawBackground="false">
+                autoDrawBackground="false" xmlns:controls="awaybuilder.view.components.controls.*">
 
     <s:layout>
         <s:HorizontalLayout verticalAlign="middle"/>
@@ -10,9 +10,9 @@
 		
 		import awaybuilder.model.vo.MaterialVO;
 		import awaybuilder.model.vo.SubMeshVO;
+		import awaybuilder.model.vo.TextureMaterialVO;
+		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
-		
-		import mx.collections.ArrayCollection;
 		
 		import spark.events.IndexChangeEvent;
 
@@ -22,17 +22,21 @@
         [Bindable]
         private var _selectedMaterial:MaterialVO;
 
-        override public function set data(value:Object):void {
+        override public function set data(value:Object):void 
+		{
             super.data = value;
             _subMesh = value as SubMeshVO;
-            for each(var material:MaterialVO in _subMesh.linkedMaterials) {
-                if (material.linkedObject == _subMesh.material.linkedObject) {
+            for each(var material:MaterialVO in _subMesh.linkedMaterials) 
+			{
+                if (material.linkedObject == _subMesh.material.linkedObject) 
+				{
                     _selectedMaterial = material;
                 }
             }
         }
 
-        private function dropDownList1_changeHandler(event:IndexChangeEvent):void {
+        private function dropDownList1_changeHandler(event:IndexChangeEvent):void 
+		{
             var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject as SubMesh);
             newValue.material = dropDownList.selectedItem as MaterialVO;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, newValue, true));
@@ -40,13 +44,29 @@
 
         private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
         {
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _subMesh.linkedObject.material, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _subMesh.linkedObject.material, true));
         }
-        ]]></fx:Script>
+		
+		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, _subMesh, true));
+		}
+		
+		private function dropDownIconFunction(item:TextureMaterialVO):Object 
+		{
+			return item.texture.bitmapData;
+		}
+		
+	]]></fx:Script>
 
-    <s:DropDownList id="dropDownList" width="100%"
-                    dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}" labelField="name"
-                    change="dropDownList1_changeHandler(event)"/>
+    <controls:ExtendedDropDownList id="dropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+                    dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}"
+                    change="dropDownList1_changeHandler(event)"
+					iconFunction="{dropDownIconFunction}"
+					labelField="name"
+					newItemLabel="Add New Material"
+					height="40"
+					addNewItem="dropDownList_addNewItemHandler(event)"/>
     <s:Button id="editSubmeshMaterialButton" styleName="editSubmeshMaterialButtonStyle"
               width="23" height="23" click="editSubmeshMaterialButton_clickHandler(event)"/>
 </s:ItemRenderer>

@@ -4,13 +4,12 @@ package awaybuilder.view.mediators
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.DocumentRequestEvent;
 	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
-	import awaybuilder.controller.events.EditorStateChangeEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
-import awaybuilder.controller.events.SceneEvent;
-import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.SceneEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.events.WebLinkEvent;
-import awaybuilder.controller.history.UndoRedoEvent;
-import awaybuilder.model.IDocumentModel;
+	import awaybuilder.controller.history.UndoRedoEvent;
+	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.events.ToolBarEvent;

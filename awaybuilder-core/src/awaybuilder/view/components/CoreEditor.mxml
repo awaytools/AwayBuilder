@@ -5,7 +5,7 @@
 	backgroundAlpha="0" 
 	xmlns:components="awaybuilder.view.components.*"
 	xmlns:tree="awaybuilder.view.components.tree.*"
-	tabChildren="false" tabEnabled="false">
+	tabChildren="false" tabEnabled="false" xmlns:controls="awaybuilder.view.components.controls.*">
 	
 	<s:layout>
 		<s:VerticalLayout gap="0" paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0"/>
@@ -21,6 +21,7 @@
 			
 			
 			[Bindable] public var scenegraph:ArrayCollection;
+			[Bindable] public var selectedItems:Vector.<Object>;
 			
 			private function init():void
 			{
@@ -44,7 +45,6 @@
 				expandButton.visible = false;
 			}
 			
-			
 		]]>
 	</fx:Script>
 	<components:EditToolBar id="editToolbar" width="100%"/>
@@ -54,7 +54,7 @@
 			<s:HorizontalLayout gap="0"/>
 		</s:layout>
 		
-		<components:CollapsiblePanel height="100%" styleName="scenePanel" chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
+		<controls:CollapsiblePanel height="100%" styleName="scenePanel" chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
 									 skinClass="awaybuilder.view.skins.CollapsiblePanelSkin"
 									 >
 			<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="2" paddingTop="2" paddingBottom="2" height="23">
@@ -68,17 +68,21 @@
 				<!--<s:ToggleButton id="disclosureButton"
 								skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>-->
 			</s:HGroup>
-			<tree:Tree id="tree" dataProvider="{scenegraph}" borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
+			<tree:Tree id="tree" 
+					   dataProvider="{scenegraph}" 
+					   selectedItems="{selectedItems}"
+					   borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
 					   labelField="label" change="tree_changeHandler(event)"
 					   width="250" height="100%"
 					   dragEnabled="false" dropEnabled="false"
 					   dragMoveEnabled="true">
 			</tree:Tree>
-		</components:CollapsiblePanel>
+		</controls:CollapsiblePanel>
 		
 		<mx:UIComponent id="viewScope" width="100%" height="100%"/>
 		
-		<components:PropertiesPanel id="propertiesPanel" visible="false" height="100%"/>
+		<components:PropertiesPanel id="propertiesPanel" 
+									visible="false" includeInLayout="{propertiesPanel.visible}" height="100%"/>
 	</s:Group>
 		
 	<components:EditStatusBar id="appStatusBar" width="100%"/>

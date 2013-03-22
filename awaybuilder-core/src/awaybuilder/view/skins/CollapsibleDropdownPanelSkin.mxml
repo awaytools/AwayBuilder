@@ -7,7 +7,7 @@
              alpha.disabled="0.5" alpha.disabledWithControlBar="0.5">
 
     <fx:Metadata>
-        [HostComponent("awaybuilder.view.components.CollapsiblePanel")]
+        [HostComponent("awaybuilder.view.components.controls.CollapsiblePanel")]
     </fx:Metadata>
 
     <fx:Script fb:purpose="styling">

@@ -21,7 +21,6 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.SettingsModel;
 	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.utils.logging.AwayBuilderLogger;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.DisplayObject;
@@ -43,7 +42,6 @@ package awaybuilder.desktop.view.mediators
 	import mx.events.DragEvent;
 	import mx.managers.DragManager;
 	import mx.managers.IFocusManagerComponent;
-	import mx.utils.ObjectUtil;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -336,15 +334,15 @@ package awaybuilder.desktop.view.mediators
 		private function awaybuilder_dragEnterHandler(event:DragEvent):void
 		{
 			const dragSource:DragSource = event.dragSource;
-//			trace( ObjectUtil.toString( event.dragSource ) );
 			if(dragSource.hasFormat("air:file list"))
 			{
 				var fileList:Array = dragSource.dataForFormat("air:file list") as Array;
 				if(fileList.length == 1)
 				{
-					const extensions:Vector.<String> = new <String>["awd"];
+					const extensions:Vector.<String> = new <String>["awd","3ds","obj","md2","png","jpg","atf","dae","md5"];
 					for each(var file:File in fileList)
 					{
+						trace( file.extension );
 						if(file.exists && extensions.indexOf(file.extension) >= 0)
 						{
 							DragManager.acceptDragDrop(this.app);

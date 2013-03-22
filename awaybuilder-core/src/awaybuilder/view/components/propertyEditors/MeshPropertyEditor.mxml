@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*">
+         xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*">
 	<fx:Declarations>
 	</fx:Declarations>
     <fx:Script><![CDATA[
@@ -60,7 +60,7 @@
         <s:Label width="100%" text="Mesh Properties" fontWeight="bold"/>
     </s:HGroup>
 
-    <components:CollapsiblePanel width="100%" title="General" collapsed="false">
+    <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
         <s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 
             <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
@@ -88,8 +88,8 @@
             <!--</s:FormItem>-->
 
         </s:Form>
-    </components:CollapsiblePanel>
-    <components:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
+    </controls:CollapsiblePanel>
+    <controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
             <s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="xStepper"
@@ -141,8 +141,8 @@
                                   change="scale_commitHandler(event)"/>
             </s:FormItem>
         </s:Form>
-    </components:CollapsiblePanel>
-    <components:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="true">
+    </controls:CollapsiblePanel>
+    <controls:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="true">
         <s:List dataProvider="{data.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
-    </components:CollapsiblePanel>
+    </controls:CollapsiblePanel>
 </s:VGroup>

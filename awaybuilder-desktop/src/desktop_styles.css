@@ -4,7 +4,8 @@
 
 s|WindowedApplication
 {
-	backgroundColor: #ffffff;
+	backgroundColor: #333333;
+	backgroundAlpha: 0;
 	skinClass: ClassReference("awaybuilder.desktop.view.skins.DesktopAppSkin");
 }
 

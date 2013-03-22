@@ -1,11 +1,12 @@
-package awaybuilder.model.vo {
+package awaybuilder.model.vo 
+{
 
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
     
     import mx.collections.ArrayCollection;
 
-[Bindable]
+	[Bindable]
     public class MeshVO extends DocumentBaseVO
     {
         public function MeshVO( item:Mesh )

@@ -2,6 +2,7 @@ package awaybuilder.view.components.tree
 {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	
 	import mx.collections.IList;
@@ -419,6 +420,20 @@ package awaybuilder.view.components.tree
 		{
 			renderersToRefresh.push(renderer);
 			invalidateDisplayList();
+		}
+		
+		override public function ensureIndexIsVisible(index:int):void
+		{
+			if (!layout)
+				return;
+			
+			var spDelta:Point = dataGroup.layout.getScrollPositionDeltaToElement(index);
+			
+			if (spDelta)
+			{
+				dataGroup.horizontalScrollPosition += spDelta.x;
+				dataGroup.verticalScrollPosition += spDelta.y;
+			}
 		}
 		
 		//--------------------------------------------------------------------------

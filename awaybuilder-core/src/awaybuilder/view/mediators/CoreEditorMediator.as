@@ -1,5 +1,8 @@
 package awaybuilder.view.mediators
 {
+    import away3d.core.base.Object3D;
+    import away3d.entities.Mesh;
+    
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.events.EditingSurfaceRequestEvent;
     import awaybuilder.controller.events.ReadDocumentDataEvent;
@@ -40,6 +43,7 @@ package awaybuilder.view.mediators
 		
 		private var _scenegraphSort:Sort = new Sort();
 		private var _scenegraph:ArrayCollection;
+		private var _scenegraphSelected:Vector.<Object>;
 		
 		override public function onRegister():void
 		{
@@ -263,29 +267,77 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
 		{
+			if( event.items.length )
+			{
+				if( event.items.length == 1 )
+				{
+					if( event.items[0] is Mesh )
+					{
+						selectObjectsScene( event.items[0] as Object3D );
+					}
+					else {
+                        Scene3DManager.unselectAll();
+					}
+				}
+				else
+				{
+                    Scene3DManager.unselectAll();
+				}
+			}
+			else
+			{
+                Scene3DManager.unselectAll();
+			}
 			
-//			if( event.items.length )
-//			{
-//				if( event.items.length == 1 )
-//				{
-//					if( event.items[0] is Mesh )
-//					{
-//						var m:Mesh = event.items[0] as Mesh;
-//						Scene3DManager.selectObjectByName(m.name);
-//					}
-//					else {
-//                        Scene3DManager.unselectAll();
-//					}
-//				}
-//				else
-//				{
-//                    Scene3DManager.unselectAll();
-//				}
-//			}
-//			else
-//			{
-//                Scene3DManager.unselectAll();
-//			}
+		}
+		private function selectObjectsScene( o:Object3D ):void
+		{
+			
+			var isSelected:Boolean = false;
+			for each( var object:Object3D in Scene3DManager.selectedObjects.source )
+			{
+				if( object == o )
+				{
+					isSelected = true;
+					continue;
+				}
+			}
+			if( !isSelected ) 
+			{
+				Scene3DManager.selectObjectByName(o.name);
+			}
+			
+			_scenegraphSelected = new Vector.<Object>();
+			updateAllSelectedItems( _scenegraph );
+			view.selectedItems = _scenegraphSelected;
+			view.callLater( view.tree.ensureIndexIsVisible, [view.tree.selectedIndex] );
+		}
+		private function updateAllSelectedItems( children:ArrayCollection ):void
+		{
+			for each( var item:ScenegraphItemVO in children )
+			{
+				if( item.item )
+				{
+					if( getItemIsSelected( item.item.linkedObject as Object3D ) )
+					{
+						_scenegraphSelected.push( item );
+					}
+				}
+				if(  item.children ) {
+					updateAllSelectedItems( item.children );
+				}
+			} 
+		}
+		private function getItemIsSelected( o:Object3D ):Boolean
+		{
+			for each( var object:Object3D in Scene3DManager.selectedObjects.source )
+			{
+				if( object == o )
+				{
+					return true;
+				}
+			}
+			return false;
 		}
         private function eventDispatcher_itemsFocusHandler(event:EditingSurfaceRequestEvent):void
         {

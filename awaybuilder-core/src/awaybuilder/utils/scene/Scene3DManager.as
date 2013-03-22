@@ -434,7 +434,7 @@ package awaybuilder.utils.scene
 		public static function selectObjectByName(meshName:String):void
 		{			
 			if (!multiSelection) unselectAll();
-			
+			// TODO: Check if object already selected
 			for each(var m:Entity in objects.source)
 			{
 				if (m.name == meshName)

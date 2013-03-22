@@ -121,9 +121,6 @@ public class TreeDataProvider extends EventDispatcher implements IList, ICollect
 		if (allowIncorrectIndexes && index > length)
 			index = length;
 		
-		// this code usually executes when item is dropped into tree
-		// choose correct place for drop, see 
-		// https://github.com/kachurovskiy/Spark-Tree/issues/6
 		var previousItem:Object = getItemAt(index - 1);
 		var previousItemLevel:int = getItemLevel(previousItem);
 		var nextItem:Object = index < length ? getItemAt(index) : null;

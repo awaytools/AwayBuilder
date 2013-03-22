@@ -3,10 +3,9 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	title="" 
 	showStatusBar="false"
-	frameRate="60" backgroundColor="0x333333" backgroundAlpha="0"
-	invoke="invokeHandler(event)" minWidth="1000" minHeight="700" visible="true"
+	frameRate="60"
+	invoke="invokeHandler(event)" minWidth="1000" minHeight="700"
 	preinitialize="preinitializeHandler(event)"  xmlns:components="awaybuilder.view.components.*">
 	
 	<fx:Declarations>

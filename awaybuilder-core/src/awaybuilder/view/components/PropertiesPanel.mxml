@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<components:CollapsiblePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+<controls:CollapsiblePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
                              xmlns:s="library://ns.adobe.com/flex/spark"
                              xmlns:components="awaybuilder.view.components.*"
                              xmlns:propertyEditors="awaybuilder.view.components.propertyEditors.*"
                              styleName="propertiesPanel"
                              chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
                              skinClass="awaybuilder.view.skins.CollapsibleRightPanelSkin"
-                             currentState="empty">
+                             currentState="mesh" xmlns:controls="awaybuilder.view.components.controls.*">
 
-    <components:states>
-        <s:State name="empty"/>
+    <controls:states>
         <s:State name="group"/>
         <s:State name="mesh"/>
         <s:State name="material"/>
@@ -17,7 +16,7 @@
         <s:State name="light"/>
         <s:State name="geometry"/>
         <s:State name="container"/>
-    </components:states>
+    </controls:states>
     <fx:Script><![CDATA[
         import away3d.textures.BitmapTexture;
 
@@ -39,9 +38,9 @@
             return this._data;
         }
         ]]></fx:Script>
-    <s:Scroller width="210" height="100%" excludeFrom="empty">
-        <s:Group>
-            <propertyEditors:MeshPropertyEditor width="100%" includeIn="mesh" data="{data as MeshVO}"/>
+    <s:Scroller width="210" height="100%" hasFocusableChildren="false" minViewportInset="1" >
+        <s:Group width="210" height="100%">
+            <propertyEditors:MeshPropertyEditor width="100%" includeIn="mesh" data="{data as MeshVO}" />
             <s:Group includeIn="group"><s:Label text="Group Options"/></s:Group>
             <propertyEditors:MaterialPropertiesEditor width="100%" includeIn="material" data="{data as TextureMaterialVO}"/>
             <propertyEditors:BitmapTexturePropertiesEditor width="100%" includeIn="texture" data="{data as BitmapTextureVO}"/>
@@ -51,4 +50,4 @@
         </s:Group>
     </s:Scroller>
 
-</components:CollapsiblePanel>
+</controls:CollapsiblePanel>

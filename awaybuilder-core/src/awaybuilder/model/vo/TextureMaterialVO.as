@@ -13,6 +13,7 @@ package awaybuilder.model.vo {
     
     import mx.collections.ArrayCollection;
 
+	[Bindable]
 	public class TextureMaterialVO extends MaterialVO
     {
         public function TextureMaterialVO( item:TextureMaterial )
@@ -71,9 +72,13 @@ package awaybuilder.model.vo {
 
         public var linkedTextures:ArrayCollection;
 
+		public function get material():TextureMaterial
+		{
+			return linkedObject as TextureMaterial;
+		}
         override public function clone():MaterialVO
         {
-            var vo:TextureMaterialVO = new TextureMaterialVO( this.linkedObject as TextureMaterial );
+            var vo:TextureMaterialVO = new TextureMaterialVO( material );
             return vo;
         }
     }
