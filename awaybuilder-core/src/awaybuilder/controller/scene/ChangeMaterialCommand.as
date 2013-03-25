@@ -76,8 +76,14 @@ package awaybuilder.controller.scene
 				{
 					for each( var subMesh:SubMeshVO in mesh.subMeshes )
 					{
-						subMesh.material = vo;
-						SubMesh(subMesh.linkedObject).material = vo.material;
+						var oldMaterial:MaterialVO = event.newValue as MaterialVO;
+						if( subMesh.material ) {
+							if( subMesh.material.linkedObject == oldMaterial.linkedObject ) {
+								subMesh.material = vo;
+								SubMesh(subMesh.linkedObject).material = vo.material;
+							}
+						}
+						
 					}
 				}
 			}
