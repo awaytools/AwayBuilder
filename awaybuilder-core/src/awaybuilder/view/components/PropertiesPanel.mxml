@@ -6,9 +6,10 @@
                              styleName="propertiesPanel"
                              chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
                              skinClass="awaybuilder.view.skins.CollapsibleRightPanelSkin"
-                             currentState="mesh" xmlns:controls="awaybuilder.view.components.controls.*">
+                             currentState="empty" xmlns:controls="awaybuilder.view.components.controls.*">
 
     <controls:states>
+		<s:State name="empty"/>
         <s:State name="group"/>
         <s:State name="mesh"/>
         <s:State name="material"/>
@@ -18,14 +19,9 @@
         <s:State name="container"/>
     </controls:states>
     <fx:Script><![CDATA[
-        import away3d.textures.BitmapTexture;
-
-        import awaybuilder.model.vo.BitmapTextureVO;
-
-        import awaybuilder.model.vo.MaterialVO;
-
-        import awaybuilder.model.vo.MeshVO;
-        import awaybuilder.model.vo.TextureMaterialVO;
+		import awaybuilder.model.vo.BitmapTextureVO;
+		import awaybuilder.model.vo.MaterialVO;
+		import awaybuilder.model.vo.MeshVO;
 
         private var _data:Object;
         [Bindable]
@@ -40,9 +36,10 @@
         ]]></fx:Script>
     <s:Scroller width="210" height="100%" hasFocusableChildren="false" minViewportInset="1" >
         <s:Group width="210" height="100%">
+			<s:VGroup includeIn="empty" paddingLeft="12" paddingRight="12" paddingTop="12" paddingBottom="12"><s:Label text="General Settings"/><s:CheckBox label="Show Grid" enabled="false"/><s:Button label="Select All" enabled="false"/></s:VGroup>
             <propertyEditors:MeshPropertyEditor width="100%" includeIn="mesh" data="{data as MeshVO}" />
             <s:Group includeIn="group"><s:Label text="Group Options"/></s:Group>
-            <propertyEditors:MaterialPropertiesEditor width="100%" includeIn="material" data="{data as TextureMaterialVO}"/>
+            <propertyEditors:MaterialPropertiesEditor width="100%" includeIn="material" data="{data as MaterialVO}"/>
             <propertyEditors:BitmapTexturePropertiesEditor width="100%" includeIn="texture" data="{data as BitmapTextureVO}"/>
             <s:Group includeIn="light"><s:Label text="Light Options"/></s:Group>
             <s:Group includeIn="geometry"><s:Label text="Geometry Options"/></s:Group>

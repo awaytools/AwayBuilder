@@ -5,14 +5,13 @@ package awaybuilder.model.vo
 	import flash.display.BitmapData;
 	
 	[Bindable]
-	public class BitmapTextureVO extends DocumentBaseVO
+	public class BitmapTextureVO extends AssetVO
 	{
 	    public function BitmapTextureVO( item:BitmapTexture )
 	    {
 	        super( item.name, item );
 	
 	        bitmapData = item.bitmapData
-	
 	    }
 	
 	    public var bitmapData:BitmapData;

@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-          xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*">
+          xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
+		  currentState="{data.type}" xmlns:mx="library://ns.adobe.com/flex/mx">
     <fx:Declarations>
+		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{data.type}" change="typeRadioGroup_changeHandler(event)"/>
     </fx:Declarations>
+	<s:states>
+		<s:State name="textureType"/>
+		<s:State name="colorType"/>
+	</s:states>
     <fx:Script><![CDATA[
 		import away3d.materials.utils.DefaultMaterialManager;
+		import away3d.textures.Texture2DBase;
 		
 		import awaybuilder.model.vo.BitmapTextureVO;
-		import awaybuilder.model.vo.TextureMaterialVO;
+		import awaybuilder.model.vo.MaterialVO;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
+		
+		import mx.events.ColorPickerEvent;
 		
 		import spark.events.IndexChangeEvent;
 
-        private var _data:TextureMaterialVO;
+        private var _data:MaterialVO;
 		
 		[Bindable]
 		private var _selectedTexture:BitmapTextureVO;
 		
 		[Bindable]
-        public function get data():TextureMaterialVO
+        public function get data():MaterialVO
         {
             return _data;
         }
-        public function set data( value:TextureMaterialVO ):void
+        public function set data( value:MaterialVO ):void
         {
             if( !value ) return;
             _data = value;
+			this.currentState = _data.type;
 			if( _data.material == DefaultMaterialManager.getDefaultMaterial() )
 			{
 				this.enabled = false;
@@ -41,14 +52,14 @@
 		
         private function name_changeHandler(event:Event):void 
 		{
-            var newValue:TextureMaterialVO = new TextureMaterialVO(data.material);
+            var newValue:MaterialVO = new MaterialVO(data.material);
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
         private function repeatBox_changeHandler(event:Event):void 
 		{
-            var newValue:TextureMaterialVO = new TextureMaterialVO(data.material);
+            var newValue:MaterialVO = new MaterialVO(data.material);
             newValue.repeat = repeatBox.selected;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }
@@ -56,7 +67,7 @@
         private function dropDownList_changeHandler(event:IndexChangeEvent):void 
 		{
 			if( dropDownList.selectedItem ) {
-				var newValue:TextureMaterialVO = new TextureMaterialVO(data.material);
+				var newValue:MaterialVO = new MaterialVO(data.material);
 				newValue.texture = dropDownList.selectedItem as BitmapTextureVO;
 				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
 			}
@@ -64,7 +75,7 @@
 		
         private function editTextureButton_clickHandler(event:MouseEvent):void 
 		{
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, data.texture.linkedObject, true));
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, data.texture, true));
         }
 		
 		private function dropDownIconFunction(item:BitmapTextureVO):Object 
@@ -72,9 +83,35 @@
 			return item.bitmapData;
 		}
 		
+		private function dropDownLabelFunction(item:BitmapTextureVO):Object 
+		{
+			return item.name.split("/").pop();
+		}
+		
 		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, data, true));
+		}
+		
+		protected function typeRadioGroup_changeHandler(event:Event):void
+		{
+			var newValue:MaterialVO = data.clone();
+			newValue.type = typeRadioGroup.selectedValue as String;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
+		}
+		
+		protected function alphaStepper_changeHandler(event:Event):void
+		{
+			var newValue:MaterialVO = data.clone();
+			newValue.alpha = alphaStepper.value/100;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
+		}
+		
+		protected function colorPicker_changeHandler(event:ColorPickerEvent):void
+		{
+			var newValue:MaterialVO = data.clone();
+			newValue.color = colorPicker.selectedColor;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
 		}
 		
 	]]></fx:Script>
@@ -82,32 +119,41 @@
     <s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
         <s:Label width="100%" text="Material Properties" fontWeight="bold"/>
     </s:HGroup>
-
+	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
+		<s:RadioButton label="Texture" width="100%" group="{typeRadioGroup}" value="{MaterialVO.TEXTURE}"/>
+		<s:RadioButton label="Color" width="100%" group="{typeRadioGroup}" value="{MaterialVO.COLOR}"/>
+	</s:HGroup>
+	
     <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
             <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
             </s:FormItem>
-            <s:FormItem label="Repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="alphaStepper" minimum="0" maximum="100" value="{data.alpha*100}" change="alphaStepper_changeHandler(event)"/>
+			</s:FormItem>
+            <s:FormItem label="Repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
                 <s:CheckBox id="repeatBox" change="repeatBox_changeHandler(event)" selected="{data.repeat}"/>
             </s:FormItem>
         </s:Form>
     </controls:CollapsiblePanel>
-    <controls:CollapsiblePanel width="100%" title="Texture" collapsed="false" >
+    <controls:CollapsiblePanel width="100%" title="Main Texture" collapsed="false" includeIn="textureType">
         <s:HGroup width="100%" verticalAlign="middle">
             <controls:ExtendedDropDownList id="dropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
 										   itemRenderer="awaybuilder.view.components.propertyEditors.renderers.TextureItemRenderer"
 				                            dataProvider="{data.linkedTextures}" selectedItem="{_selectedTexture}"
-											labelField="name"
+											labelFunction="{dropDownLabelFunction}"
 											newItemLabel="Add New Texture"
 											iconFunction="{dropDownIconFunction}"
 				                            change="dropDownList_changeHandler(event)"
 											addNewItem="dropDownList_addNewItemHandler(event)"/>
-            <s:Button id="editTextureButton" styleName="editSubmeshMaterialButtonStyle"
-                      width="23" height="23" click="editTextureButton_clickHandler(event)"/>
+			<s:Button id="editTextureButton" styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="editTextureButton_clickHandler(event)"/>
         </s:HGroup>
     </controls:CollapsiblePanel>
-
-
-
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="colorType">
+		<s:FormItem label="Solid Color Fill" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<mx:ColorPicker id="colorPicker" includeIn="colorType" selectedColor="{data.color}" change="colorPicker_changeHandler(event)"/>
+		</s:FormItem>
+	</s:Form>
 </s:VGroup>

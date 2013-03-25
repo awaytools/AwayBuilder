@@ -17,7 +17,6 @@
 		<![CDATA[
 			import awaybuilder.model.vo.BitmapTextureVO;
 			import awaybuilder.model.vo.MaterialVO;
-			import awaybuilder.model.vo.TextureMaterialVO;
 			
 			[Bindable]
 			private var _texture:BitmapTextureVO;
@@ -49,6 +48,5 @@
 		<s:BitmapImage source="{_texture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
 		
 	</s:Group>
-	
-	<s:Label text="{_texture.name}" width="100%" maxDisplayedLines="1"/>
+	<s:Label text="{_texture.name.split('/').pop()}" width="100%" maxDisplayedLines="1"/>
 </s:ItemRenderer>

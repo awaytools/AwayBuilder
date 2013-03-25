@@ -1,4 +1,4 @@
-package awaybuilder.controller
+package awaybuilder.controller.document
 {
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.IDocumentModel;

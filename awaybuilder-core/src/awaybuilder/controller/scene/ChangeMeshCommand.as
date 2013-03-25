@@ -4,7 +4,7 @@ package awaybuilder.controller.scene
     import away3d.entities.Mesh;
     import away3d.materials.MaterialBase;
 
-    import awaybuilder.controller.events.SceneEvent;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.MaterialVO;
@@ -23,7 +23,11 @@ package awaybuilder.controller.scene
         {
             var mesh:MeshVO = event.newValue as MeshVO;
             var vo:MeshVO = document.getSceneObject( mesh.linkedObject ) as MeshVO;
-
+			
+			if( !event.oldValue ) {
+				event.oldValue = vo.clone();
+			}
+			
             vo.name = mesh.name;
             vo.linkedObject.name = mesh.name;
 
@@ -34,7 +38,7 @@ package awaybuilder.controller.scene
             {
                 var updatedSubMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
                 var subMesh:SubMeshVO = vo.subMeshes[i] as SubMeshVO;
-                subMesh.material = new MaterialVO( updatedSubMesh.material.linkedObject as MaterialBase );
+                subMesh.material = updatedSubMesh.material.clone();
                 subMesh.linkedObject.material = updatedSubMesh.material.linkedObject as MaterialBase;
             }
 

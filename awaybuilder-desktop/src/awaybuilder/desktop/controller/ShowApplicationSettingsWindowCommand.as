@@ -1,11 +1,11 @@
 package awaybuilder.desktop.controller
 {
 	
-	import flash.display.Screen;
-	
-	import awaybuilder.desktop.view.components.ApplicationSettingsWindow;
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.desktop.view.components.ApplicationSettingsWindow;
+	
+	import flash.display.Screen;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -17,7 +17,7 @@ package awaybuilder.desktop.controller
 		override public function execute():void
 		{
 			//deselect so that the editor window doesn't interfere.
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SELECT_NONE));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT_NONE));
 			
 			var window:ApplicationSettingsWindow = new ApplicationSettingsWindow();
 			this.mediatorMap.createMediator(window);

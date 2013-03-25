@@ -1,10 +1,10 @@
 package awaybuilder.controller.scene
 {
-    import awaybuilder.controller.events.SceneEvent;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.MeshVO;
-
+    
     import flash.geom.Vector3D;
 
     public class RotateObjectCommand extends HistoryCommandBase
@@ -18,8 +18,12 @@ package awaybuilder.controller.scene
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
-            var vo:MeshVO = document.getSceneObject( event.items[0] ) as MeshVO;
+            var vo:MeshVO = event.items[0] as MeshVO;
 
+			if( !event.oldValue ) {
+				event.oldValue = new Vector3D( vo.rotationX, vo.rotationY, vo.rotationZ );
+			}
+			
             vo.rotationX = vector.x;
             vo.rotationY = vector.y;
             vo.rotationZ = vector.z;

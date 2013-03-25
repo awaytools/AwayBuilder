@@ -1,5 +1,5 @@
     package awaybuilder.controller.scene {
-    import awaybuilder.controller.events.SceneEvent;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.MeshVO;
@@ -17,8 +17,12 @@
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
-            var vo:MeshVO = document.getSceneObject( event.items[0] ) as MeshVO;
+            var vo:MeshVO = event.items[0] as MeshVO;
 
+			if( !event.oldValue ) {
+				event.oldValue = new Vector3D( vo.scaleX, vo.scaleY, vo.scaleZ );
+			}
+			
             vo.scaleX = vector.x;
             vo.scaleY = vector.y;
             vo.scaleZ = vector.z;

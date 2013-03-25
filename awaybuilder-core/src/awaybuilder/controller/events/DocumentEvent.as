@@ -8,7 +8,6 @@ package awaybuilder.controller.events
 		public static const OPEN_DOCUMENT:String = "openDocument";
 		public static const IMPORT_DOCUMENT:String = "importDocument";
 		public static const CLOSE_DOCUMENT:String = "closeDocument";
-		public static const PRINT_DOCUMENT:String = "printDocument";
 		
 		public function DocumentEvent(type:String)
 		{

@@ -7,10 +7,10 @@
     </s:layout>
     <fx:Script><![CDATA[
 		import away3d.core.base.SubMesh;
+		import away3d.materials.utils.DefaultMaterialManager;
 		
 		import awaybuilder.model.vo.MaterialVO;
 		import awaybuilder.model.vo.SubMeshVO;
-		import awaybuilder.model.vo.TextureMaterialVO;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
 		
@@ -44,7 +44,7 @@
 
         private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
         {
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _subMesh.linkedObject.material, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _subMesh.material, true));
         }
 		
 		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
@@ -52,9 +52,13 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, _subMesh, true));
 		}
 		
-		private function dropDownIconFunction(item:TextureMaterialVO):Object 
+		private function dropDownIconFunction(item:MaterialVO):Object 
 		{
-			return item.texture.bitmapData;
+			if( item.type == MaterialVO.TEXTURE )
+			{
+				return item.texture.bitmapData;
+			}
+			return new BitmapData(32, 32, false, 0x0);
 		}
 		
 	]]></fx:Script>
@@ -67,6 +71,6 @@
 					newItemLabel="Add New Material"
 					height="40"
 					addNewItem="dropDownList_addNewItemHandler(event)"/>
-    <s:Button id="editSubmeshMaterialButton" styleName="editSubmeshMaterialButtonStyle"
-              width="23" height="23" click="editSubmeshMaterialButton_clickHandler(event)"/>
+    <s:Button id="editSubmeshMaterialButton" styleName="editSharedObjectButtonStyle"
+              width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>
 </s:ItemRenderer>

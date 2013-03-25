@@ -33,6 +33,7 @@ package awaybuilder.view.components.controls
 		private var _newItemLabel:String = "Add New";
 		
 		[Inspectable(category="String", defaultValue="Add New")]
+		[Bindable]
 		public function get newItemLabel():String
 		{
 			return _newItemLabel;
@@ -78,7 +79,6 @@ package awaybuilder.view.components.controls
 		override protected function dataProvider_collectionChangeHandler(event:Event):void
 		{       
 			super.dataProvider_collectionChangeHandler(event);
-			trace( "dataProvider_collectionChangeHandler" );
 			if (event is CollectionEvent)
 			{
 				iconChanged = true;

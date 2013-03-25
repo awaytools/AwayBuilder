@@ -1,28 +1,20 @@
 package awaybuilder.view.mediators
 {
-    import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
-import away3d.core.base.SubMesh;
-import away3d.entities.Mesh;
-import away3d.materials.MaterialBase;
-import away3d.materials.TextureMaterial;
-import away3d.textures.BitmapTexture;
-
-import awaybuilder.controller.events.DocumentModelEvent;
-    import awaybuilder.controller.events.SceneEvent;
+    import away3d.entities.Mesh;
+    
+    import awaybuilder.controller.document.events.ImportTextureForMaterialEvent;
+    import awaybuilder.controller.events.DocumentModelEvent;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
-import awaybuilder.model.vo.BitmapTextureVO;
-import awaybuilder.model.vo.MaterialVO;
-import awaybuilder.model.vo.MeshVO;
-import awaybuilder.model.vo.ScenegraphGroupItemVO;
-import awaybuilder.model.vo.SubMeshVO;
-import awaybuilder.model.vo.SubMeshVO;
-import awaybuilder.model.vo.TextureMaterialVO;
-import awaybuilder.view.components.PropertiesPanel;
+    import awaybuilder.model.vo.BitmapTextureVO;
+    import awaybuilder.model.vo.ContainerVO;
+    import awaybuilder.model.vo.MaterialVO;
+    import awaybuilder.model.vo.MeshVO;
+    import awaybuilder.model.vo.SubMeshVO;
+    import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
-
-    import flash.geom.Vector3D;
-
+    
     import org.robotlegs.mvcs.Mediator;
 
     public class PropertiesPanelMediator extends Mediator
@@ -36,13 +28,14 @@ import awaybuilder.view.components.PropertiesPanel;
         override public function onRegister():void
         {
             addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler, DocumentModelEvent);
-            addContextListener(SceneEvent.ITEMS_SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
+            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
             addContextListener(SceneEvent.CHANGING, eventDispatcher_changingHandler, SceneEvent);
             addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_changeMeshHandler, SceneEvent);
             addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_changeMeshHandler, SceneEvent);
             addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_changeMeshHandler, SceneEvent);
             addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler, SceneEvent);
             addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler, SceneEvent);
+			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureToMaterialHandler, SceneEvent);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler, PropertyEditorEvent );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler, PropertyEditorEvent );
@@ -54,6 +47,9 @@ import awaybuilder.view.components.PropertiesPanel;
             addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler, PropertyEditorEvent );
             addViewListener( PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, view_showMaterialPropertiesHandler, PropertyEditorEvent );
             addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler, PropertyEditorEvent );
+			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler, PropertyEditorEvent );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, view_materialAddNewTextureHandler, PropertyEditorEvent );
+			
         }
 
         //----------------------------------------------------------------------
@@ -65,38 +61,27 @@ import awaybuilder.view.components.PropertiesPanel;
 
         private function view_translateHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshVO = view.data as MeshVO;
-            var oldValue:Vector3D = new Vector3D( vo.x, vo.y, vo.z );
-            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo.linkedObject],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
         }
         private function view_rotateHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshVO = view.data as MeshVO;
-            var oldValue:Vector3D = new Vector3D( vo.rotationX, vo.rotationY, vo.rotationZ );
-            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo.linkedObject],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[view.data], event.data, true));
         }
         private function view_scaleHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshVO = view.data as MeshVO;
-            var oldValue:Vector3D = new Vector3D( vo.scaleX, vo.scaleY, vo.scaleZ );
-            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo.linkedObject],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[view.data], event.data, true));
         }
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshVO = view.data as MeshVO;
-            var oldValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.linkedObject],oldValue, event.data));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data));
         }
         private function view_meshNameChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshVO = view.data as MeshVO;
-            var oldValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.linkedObject],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data, true));
         }
         private function view_meshSubmeshChangeHandler(event:PropertyEditorEvent):void
         {
             var vo:MeshVO = view.data as MeshVO;
-            var oldValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
             var newValue:MeshVO = new MeshVO( vo.linkedObject as Mesh );
             for each( var subMesh:SubMeshVO in newValue.subMeshes )
             {
@@ -105,31 +90,37 @@ import awaybuilder.view.components.PropertiesPanel;
                     subMesh.material = SubMeshVO(event.data).material;
                 }
             }
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[vo.linkedObject],oldValue, newValue));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], newValue));
         }
         private function view_materialChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MaterialVO = view.data as MaterialVO;
-            var oldValue:MaterialVO = new MaterialVO( vo.linkedObject as MaterialBase );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[vo.linkedObject],oldValue, event.data));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data));
         }
         private function view_materialNameChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MaterialVO = view.data as MaterialVO;
-            var oldValue:MaterialVO = new MaterialVO( vo.linkedObject as MaterialBase );
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[vo.linkedObject],oldValue, event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data, true));
         }
 
         private function view_showMaterialPropertiesHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,[event.data]));
+            this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data]));
 
         }
         private function view_showTexturePropertiesHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,[event.data]));
+            this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data]));
         }
-
+		
+		private function view_materialAddNewTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureForMaterialEvent(ImportTextureForMaterialEvent.IMPORT,[event.data]));
+		}
+		private function view_submeshAddNewMaterialHandler(event:PropertyEditorEvent):void
+		{
+			var vo:SubMeshVO = event.data as SubMeshVO;
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[event.data],vo.material));
+		}
+		
         //----------------------------------------------------------------------
         //
         //	context handlers
@@ -143,7 +134,7 @@ import awaybuilder.view.components.PropertiesPanel;
 
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
-            var mesh:MeshVO = new MeshVO( event.items[0] );
+            var mesh:MeshVO = MeshVO( event.items[0] ).clone();
 
             for each( var subMesh:SubMeshVO in  mesh.subMeshes )
             {
@@ -152,15 +143,22 @@ import awaybuilder.view.components.PropertiesPanel;
 
             view.data = mesh;
         }
+		
+		private function eventDispatcher_addNewTextureToMaterialHandler(event:SceneEvent):void
+		{
+			var material:MaterialVO = MaterialVO(event.items[0]).clone();
+			material.linkedTextures = document.textures;
+			view.data = material;
+		}
         private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
         {
-			var material:TextureMaterialVO = new TextureMaterialVO( event.items[0] );
+			var material:MaterialVO = MaterialVO(event.items[0]).clone();
 			material.linkedTextures = document.textures;
 			view.data = material;
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
-            var mesh:Mesh = event.items[0] as Mesh;
+            var mesh:Mesh = (event.items[0] as MeshVO).mesh;
             var vo:MeshVO = view.data as MeshVO;
             vo.x = mesh.x;
             vo.y = mesh.y;
@@ -186,9 +184,9 @@ import awaybuilder.view.components.PropertiesPanel;
             {
                 if( event.items.length == 1 )
                 {
-                    if( event.items[0] is Mesh )
+                    if( event.items[0] is MeshVO )
                     {
-                        var mesh:MeshVO = new MeshVO( event.items[0] );
+                        var mesh:MeshVO = MeshVO( event.items[0] ).clone();
                         for each( var subMesh:SubMeshVO in  mesh.subMeshes )
                         {
                             subMesh.linkedMaterials = document.materials;
@@ -196,23 +194,22 @@ import awaybuilder.view.components.PropertiesPanel;
                         view.data = mesh;
                         view.currentState = "mesh";
                     }
-                    else if( event.items[0] is ObjectContainer3D )
+                    else if( event.items[0] is ContainerVO )
                     {
                         view.currentState = "container";
                        // view.data = new MeshItemVO( event.items[0] );
                     }
-                    else if( event.items[0] is TextureMaterial )
+                    else if( event.items[0] is MaterialVO )
                     {
-
-                        var material:TextureMaterialVO = new TextureMaterialVO( event.items[0] );
+                        var material:MaterialVO = MaterialVO( event.items[0] ).clone();
 						material.linkedTextures = document.textures;
                         view.data = material;
                         view.currentState = "material";
                     }
-                    else if( event.items[0] is BitmapTexture )
+                    else if( event.items[0] is BitmapTextureVO )
                     {
                         view.currentState = "texture";
-                        view.data = new BitmapTextureVO( event.items[0] );
+                        view.data = BitmapTextureVO( event.items[0] ).clone();
                     }
                     else if( event.items[0] is Geometry )
                     {
@@ -220,19 +217,18 @@ import awaybuilder.view.components.PropertiesPanel;
                     }
                     else
                     {
-                        view.visible = false;
+						view.currentState = "empty";
                     }
                 }
                 else
                 {
-                    view.currentState = "group"
+                    view.currentState = "group";
                 }
-                view.visible = true;
 				view.validateNow();
             }
             else
             {
-                view.visible = false;
+				view.currentState = "empty";
             }
 
         }

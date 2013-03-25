@@ -367,7 +367,7 @@ package awaybuilder.utils.scene
 			
 			for (var i:int=0;i<objects.length;i++)
 			{
-				if (objects[i] == mesh)
+				if (objects.getItemAt(0) == mesh)
 				{
 					objects.removeItemAt(i);
 					//meshes.splice(i, 1);

@@ -7,11 +7,11 @@ package awaybuilder.model.vo
     import mx.collections.ArrayCollection;
 
 	[Bindable]
-    public class MeshVO extends DocumentBaseVO
+    public class MeshVO extends ContainerVO
     {
         public function MeshVO( item:Mesh )
         {
-            super( item.name, item );
+            super( item );
             x = item.x;
             y = item.y;
             z = item.z;
@@ -21,8 +21,6 @@ package awaybuilder.model.vo
             rotationX = item.rotationX;
             rotationY = item.rotationY;
             rotationZ = item.rotationZ;
-
-            name = item.name;
 
             subMeshes = new ArrayCollection();
 

@@ -1,8 +1,8 @@
 package awaybuilder.desktop.controller
 {
-	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
 	import awaybuilder.controller.events.DocumentRequestEvent;
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.WindowModel;
 	
@@ -37,7 +37,7 @@ package awaybuilder.desktop.controller
 			if(this.documentModel.edited)
 			{
 				//deselect all so that the window doesn't interfere
-				this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SELECT_NONE));
+				this.dispatch(new SceneEvent(SceneEvent.SELECT_NONE));
 				
 				this.windowModel.savedNextEvent = this.event.nextEvent;
 				

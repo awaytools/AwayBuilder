@@ -1,6 +1,6 @@
 package awaybuilder.controller.scene
 {
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.utils.scene.modes.GizmoMode;
@@ -11,7 +11,7 @@ package awaybuilder.controller.scene
 	{
 		
 		[Inject]
-		public var event:EditingSurfaceRequestEvent;
+		public var event:SceneEvent;
 		
 		override public function execute():void
 		{

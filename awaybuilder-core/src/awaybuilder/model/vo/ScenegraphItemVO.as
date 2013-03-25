@@ -6,7 +6,7 @@ package awaybuilder.model.vo
 	public class ScenegraphItemVO
 	{
 		
-		public function ScenegraphItemVO( label:String, item:DocumentBaseVO )
+		public function ScenegraphItemVO( label:String, item:AssetVO )
 		{
 			this.label = label;
 			this.item = item;
@@ -14,7 +14,7 @@ package awaybuilder.model.vo
 		
 		public var label:String;
 		
-		public var item:DocumentBaseVO;
+		public var item:AssetVO;
 		
 		public var children:ArrayCollection;
 		

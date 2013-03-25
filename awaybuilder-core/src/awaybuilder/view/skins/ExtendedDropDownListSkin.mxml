@@ -15,7 +15,6 @@
 	
 	<fx:Script fb:purpose="styling">
 		<![CDATA[
-			import awaybuilder.model.vo.TextureMaterialVO;
 			
 			/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
 			static private const contentFill:Array = ["bgFill"];

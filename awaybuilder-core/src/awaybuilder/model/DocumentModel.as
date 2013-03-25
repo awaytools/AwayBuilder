@@ -1,8 +1,8 @@
 package awaybuilder.model
 {
 	import awaybuilder.controller.events.DocumentModelEvent;
-	import awaybuilder.model.vo.DocumentBaseVO;
-	import awaybuilder.model.vo.TextureMaterialVO;
+	import awaybuilder.model.vo.AssetVO;
+	import awaybuilder.model.vo.DocumentVO;
 	
 	import flash.display3D.textures.Texture;
 	
@@ -12,6 +12,7 @@ package awaybuilder.model
 
 	public class DocumentModel extends Actor implements IDocumentModel
 	{
+		public var documentVO:DocumentVO = new DocumentVO();
 		
 		private var _name:String;
 		public function get name():String
@@ -53,186 +54,135 @@ package awaybuilder.model
 			this._savedNativePath = value;
 		}
 		
-//		private var _scenegraphSort:Sort = new Sort();
-//		private var _scenegraph:ArrayCollection = new ArrayCollection();
-//		public function get scenegraph():ArrayCollection
-//		{
-//			return this._scenegraph;
-//		}
-//		public function set scenegraph(value:ArrayCollection):void
-//		{
-//			this._scenegraph = value;
-//			_scenegraphSort.compareFunction = compareGroupItems;
-//			this._scenegraph.sort = _scenegraphSort;
-//			this._scenegraph.refresh();
-//			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
-//		}
-//		private function compareGroupItems( a:Object, b:Object ):int
-//		{
-//			var group1:ScenegraphGroupItemVO = a as ScenegraphGroupItemVO;
-//			var group2:ScenegraphGroupItemVO = b as ScenegraphGroupItemVO;
-//			if (group1 == null && group2 == null) return 0;
-//			if (group1 == null)	return 1;
-//			if (group2 == null)	return -1;
-//			if (group1.weight < group2.weight) return -1;
-//			if (group1.weight > group2.weight) return 1;
-//			return 0;
-//		}
-
-		private var _selectedObjects:Vector.<Object> = new Vector.<Object>();
-		public function get selectedObjects():Vector.<Object>
+		private var _selectedObjects:Vector.<AssetVO> = new Vector.<AssetVO>();
+		public function get selectedObjects():Vector.<AssetVO>
 		{
 			return this._selectedObjects;
 		}
-		public function set selectedObjects(value:Vector.<Object>):void
+		public function set selectedObjects(value:Vector.<AssetVO>):void
 		{
 			this._selectedObjects = value;
-			//this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		
-//		public function getScenegraphGroup( type:String ):ScenegraphGroupItemVO 
-//		{
-//			for each( var item:ScenegraphItemVO in _scenegraph ) 
-//			{
-//				if( item is ScenegraphGroupItemVO ) 
-//				{
-//					var group:ScenegraphGroupItemVO = item as ScenegraphGroupItemVO;
-//					if( group.type == type ) {
-//						return group;
-//					}
-//				}
-//			}
-//			return null;
-//		}
-//
-//        public function getScenegraphItem( value:Object ):ScenegraphItemVO
-//        {
-//            return getItemInCollection( _scenegraph, value );
-//        }
-        
-
-		private var _animations:ArrayCollection;
 		public function get animations():ArrayCollection
 		{
-			return _animations;
+			return documentVO.animations;
 		}
-		
 		public function set animations(value:ArrayCollection):void
 		{
-			this._animations = value;
+			documentVO.animations = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		private var _geometry:ArrayCollection;
 		public function get geometry():ArrayCollection
 		{
-			return _geometry;
+			return documentVO.geometry;
 		}
-		
 		public function set geometry(value:ArrayCollection):void
 		{
-			this._geometry = value;
+			documentVO.geometry = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		private var _materials:ArrayCollection;
 		public function get materials():ArrayCollection
 		{
-			return _materials;
+			return documentVO.materials;
 		}
-		
 		public function set materials(value:ArrayCollection):void
 		{
-			this._materials = value;
+			documentVO.materials = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		private var _scene:ArrayCollection;
 		public function get scene():ArrayCollection
 		{
-			return _scene;
+			return documentVO.scene;
 		}
-		
 		public function set scene(value:ArrayCollection):void
 		{
-			this._scene = value;
+			documentVO.scene = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		private var _skeletons:ArrayCollection;
 		public function get skeletons():ArrayCollection
 		{
-			return _skeletons;
+			return documentVO.skeletons;
 		}
-		
 		public function set skeletons(value:ArrayCollection):void
 		{
-			this._skeletons = value;
+			documentVO.skeletons = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		private var _textures:ArrayCollection;
 		public function get textures():ArrayCollection
 		{
-			return _textures;
+			return documentVO.textures;
 		}
-		
 		public function set textures(value:ArrayCollection):void
 		{
-			this._textures = value;
+			documentVO.textures = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		private var _lights:ArrayCollection;
 		public function get lights():ArrayCollection
 		{
-			return _lights;
+			return documentVO.lights;
 		}
-		
 		public function set lights(value:ArrayCollection):void
 		{
-			this._lights = value;
+			documentVO.lights = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
-		public function getAnimation(value:Object):DocumentBaseVO
+		private var _copiedObjects:Vector.<AssetVO>;
+		public function get copiedObjects():Vector.<AssetVO>
+		{
+			return _copiedObjects;
+		}
+		public function set copiedObjects(value:Vector.<AssetVO>):void
+		{
+			_copiedObjects = value;
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.CLIPBOARD_UPDATED));
+		}
+		
+		public function getAnimation(value:Object):AssetVO
 		{
 			return getItemInCollection( animations, value );
 		}
 		
-		public function getGeometry(value:Object):DocumentBaseVO
+		public function getGeometry(value:Object):AssetVO
 		{
 			return getItemInCollection( geometry, value );
 		}
 		
-		public function getLight(value:Object):DocumentBaseVO
+		public function getLight(value:Object):AssetVO
 		{
 			return getItemInCollection( lights, value );
 		}
 		
-		public function getMaterial(value:Object):DocumentBaseVO
+		public function getMaterial(value:Object):AssetVO
 		{
 			return getItemInCollection( materials, value );
 		}
 		
-		public function getSceneObject(value:Object):DocumentBaseVO
+		public function getSceneObject(value:Object):AssetVO
 		{
 			return getItemInCollection( scene, value );
 		}
 		
-		public function getSkeleton(value:Object):DocumentBaseVO
+		public function getSkeleton(value:Object):AssetVO
 		{
 			return getItemInCollection( skeletons, value );
 		}
 		
-		public function getTexture(value:Object):DocumentBaseVO
+		public function getTexture(value:Object):AssetVO
 		{
 			return getItemInCollection( textures, value );
 		}
 		
-		private function getItemInCollection( children:ArrayCollection, value:Object ):DocumentBaseVO
+		private function getItemInCollection( children:ArrayCollection, value:Object ):AssetVO
 		{
-			for each( var vo:DocumentBaseVO in children )
+			for each( var vo:AssetVO in children )
 			{
 				if( vo.linkedObject == value ) {
 					return vo;

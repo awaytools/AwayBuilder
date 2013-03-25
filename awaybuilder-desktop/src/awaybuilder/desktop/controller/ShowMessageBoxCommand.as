@@ -1,8 +1,8 @@
 package awaybuilder.desktop.controller
 {
-	import awaybuilder.desktop.view.components.MessageBox;
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
 	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.desktop.view.components.MessageBox;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -17,7 +17,7 @@ package awaybuilder.desktop.controller
 		override public function execute():void
 		{
 			//deselect so that the editor window doesn't interfere.
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SELECT_NONE));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT_NONE));
 			
 			var messageBox:MessageBox = new MessageBox();
 			messageBox.title = event.title;

@@ -1,6 +1,6 @@
 package awaybuilder.controller.scene
 {
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.modes.CameraMode;
 	
@@ -10,7 +10,7 @@ package awaybuilder.controller.scene
 	{
 		
 		[Inject]
-		public var event:EditingSurfaceRequestEvent;
+		public var event:SceneEvent;
 		
 		override public function execute():void
 		{

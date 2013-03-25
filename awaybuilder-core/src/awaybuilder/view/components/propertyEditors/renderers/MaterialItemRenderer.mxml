@@ -16,15 +16,14 @@
 	<fx:Script>
 		<![CDATA[
 			import awaybuilder.model.vo.MaterialVO;
-			import awaybuilder.model.vo.TextureMaterialVO;
 			
 			[Bindable]
-			private var _material:TextureMaterialVO;
+			private var _material:MaterialVO;
 			
 			override public function set data(value:Object):void 
 			{
 				super.data = value;
-				_material = value as TextureMaterialVO;
+				_material = value as MaterialVO;
 			}
 		]]>
 	</fx:Script>

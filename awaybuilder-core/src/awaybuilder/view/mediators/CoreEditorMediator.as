@@ -2,13 +2,12 @@ package awaybuilder.view.mediators
 {
     import away3d.core.base.Object3D;
     import away3d.entities.Mesh;
+    import away3d.materials.utils.DefaultMaterialManager;
     
     import awaybuilder.controller.events.DocumentModelEvent;
-    import awaybuilder.controller.events.EditingSurfaceRequestEvent;
-    import awaybuilder.controller.events.ReadDocumentDataEvent;
-    import awaybuilder.controller.events.SceneEvent;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.DocumentBaseVO;
+    import awaybuilder.model.vo.AssetVO;
     import awaybuilder.model.vo.MeshVO;
     import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
@@ -58,10 +57,9 @@ package awaybuilder.view.mediators
             addViewListener(CoreEditorEvent.TREE_CHANGE, view_treeChangeHandler, CoreEditorEvent);
 
             addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler, DocumentModelEvent);
-			addContextListener(ReadDocumentDataEvent.READ_DOCUMENT_DATA_COMPLETE, context_readDocumentDataHandler, ReadDocumentDataEvent);
 			
-            addContextListener(SceneEvent.ITEMS_SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
-            addContextListener(EditingSurfaceRequestEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler, EditingSurfaceRequestEvent);
+            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
+            addContextListener(SceneEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler, SceneEvent);
 
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			view.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);	
@@ -85,10 +83,10 @@ package awaybuilder.view.mediators
                 if( groupItem ) {
                      continue;
                 }
-				items.push(ScenegraphItemVO(selectedItems[i]).item.linkedObject);
+				items.push(ScenegraphItemVO(selectedItems[i]).item);
 			}
 
-			this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,items));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
 		}
 		
 		private function keyDownHandler(e:KeyboardEvent):void
@@ -219,7 +217,7 @@ package awaybuilder.view.mediators
 		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
 		{
 			var children:ArrayCollection = new ArrayCollection();
-			for each( var o:DocumentBaseVO in objects )
+			for each( var o:AssetVO in objects )
 			{
 				children.addItem( new ScenegraphItemVO( o.name, o ) );
 			}
@@ -228,7 +226,7 @@ package awaybuilder.view.mediators
 		private function getTextureBranchCildren( objects:ArrayCollection ):ArrayCollection
 		{
 			var children:ArrayCollection = new ArrayCollection();
-			for each( var o:DocumentBaseVO in objects )
+			for each( var o:AssetVO in objects )
 			{
 				children.addItem( new ScenegraphItemVO( "Texture (" + o.name.split("/").pop() +")", o ) );
 			}
@@ -255,11 +253,6 @@ package awaybuilder.view.mediators
 		
 		
 		
-		private function context_readDocumentDataHandler(event:ReadDocumentDataEvent):void
-		{
-			updateScenegraph();
-		}
-		
 		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
 			updateScenegraph();
@@ -271,9 +264,10 @@ package awaybuilder.view.mediators
 			{
 				if( event.items.length == 1 )
 				{
-					if( event.items[0] is Mesh )
+					if( event.items[0] is MeshVO )
 					{
-						selectObjectsScene( event.items[0] as Object3D );
+						var mesh:MeshVO = event.items[0] as MeshVO;
+						selectObjectsScene( mesh.mesh );
 					}
 					else {
                         Scene3DManager.unselectAll();
@@ -288,58 +282,61 @@ package awaybuilder.view.mediators
 			{
                 Scene3DManager.unselectAll();
 			}
+			_scenegraphSelected = new Vector.<Object>();
+			updateAllSelectedItems( _scenegraph, event.items );
+			view.selectedItems = _scenegraphSelected;
+			view.callLater( view.tree.ensureIndexIsVisible, [view.tree.selectedIndex] );
+			
+			var items:Vector.<AssetVO> = new Vector.<AssetVO>();
+			for each( var selectedAsset:AssetVO in event.items ) 
+			{
+				if( selectedAsset.linkedObject == DefaultMaterialManager.getDefaultMaterial() ) continue;
+				if( selectedAsset.linkedObject == DefaultMaterialManager.getDefaultTexture() ) continue;
+				items.push( selectedAsset );
+			}
+			document.selectedObjects = items;
 			
 		}
 		private function selectObjectsScene( o:Object3D ):void
 		{
-			
-			var isSelected:Boolean = false;
 			for each( var object:Object3D in Scene3DManager.selectedObjects.source )
 			{
 				if( object == o )
 				{
-					isSelected = true;
-					continue;
+					return;
 				}
 			}
-			if( !isSelected ) 
-			{
-				Scene3DManager.selectObjectByName(o.name);
-			}
+			Scene3DManager.selectObjectByName(o.name);
 			
-			_scenegraphSelected = new Vector.<Object>();
-			updateAllSelectedItems( _scenegraph );
-			view.selectedItems = _scenegraphSelected;
-			view.callLater( view.tree.ensureIndexIsVisible, [view.tree.selectedIndex] );
 		}
-		private function updateAllSelectedItems( children:ArrayCollection ):void
+		private function updateAllSelectedItems( children:ArrayCollection, selectedItems:Array ):void
 		{
 			for each( var item:ScenegraphItemVO in children )
 			{
 				if( item.item )
 				{
-					if( getItemIsSelected( item.item.linkedObject as Object3D ) )
+					if( getItemIsSelected( item.item.linkedObject, selectedItems ) )
 					{
 						_scenegraphSelected.push( item );
 					}
 				}
 				if(  item.children ) {
-					updateAllSelectedItems( item.children );
+					updateAllSelectedItems( item.children, selectedItems );
 				}
 			} 
 		}
-		private function getItemIsSelected( o:Object3D ):Boolean
+		private function getItemIsSelected( o:Object, selectedItems:Array ):Boolean
 		{
-			for each( var object:Object3D in Scene3DManager.selectedObjects.source )
+			for each( var object:AssetVO in selectedItems )
 			{
-				if( object == o )
+				if( object.linkedObject == o )
 				{
 					return true;
 				}
 			}
 			return false;
 		}
-        private function eventDispatcher_itemsFocusHandler(event:EditingSurfaceRequestEvent):void
+        private function eventDispatcher_itemsFocusHandler(event:SceneEvent):void
         {
             CameraManager.focusTarget( Scene3DManager.selectedObject );
         }
@@ -358,51 +355,54 @@ package awaybuilder.view.mediators
 		
 		private function scene_meshSelectedHandler(event:Scene3DManagerEvent):void
 		{
-//			var items:Vector.<ScenegraphItemVO> = new Vector.<ScenegraphItemVO>();
-//			for (var i:int=0;i<Scene3DManager.selectedObjects.length;i++)
-//			{
-//				items.push(document.getScenegraphItem(Scene3DManager.selectedObjects.getItemAt(i)));
-//			}
-//			document.selectedObjects = items;
-			this.dispatch(new SceneEvent(SceneEvent.ITEMS_SELECT,Scene3DManager.selectedObjects.source.concat()));
+			var selected:Array = [];
+			for each( var item:Object in Scene3DManager.selectedObjects.source )
+			{
+				var mesh:Mesh = item as Mesh;
+				if( mesh ) {
+					selected.push( document.getSceneObject( mesh ) );
+				}
+			} 
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
 		}
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-            var object:MeshVO = document.getSceneObject( event.object ) as MeshVO;
-            object = object.clone();
+            var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
+			vo = vo.clone();
             switch( event.gizmoMode ) {
                 case GizmoMode.TRANSLATE:
-                    object.x = event.endValue.x;
-                    object.y = event.endValue.y;
-                    object.z = event.endValue.z;
+					vo.x = event.endValue.x;
+					vo.y = event.endValue.y;
+					vo.z = event.endValue.z;
                     break;
                 case GizmoMode.ROTATE:
-                    object.rotationX = event.endValue.x;
-                    object.rotationY = event.endValue.y;
-                    object.rotationZ = event.endValue.z;
+					vo.rotationX = event.endValue.x;
+					vo.rotationY = event.endValue.y;
+					vo.rotationZ = event.endValue.z;
                     break;
                 default:
-                    object.scaleX = event.endValue.x;
-                    object.scaleY = event.endValue.y;
-                    object.scaleZ = event.endValue.z;
+					vo.scaleX = event.endValue.x;
+					vo.scaleY = event.endValue.y;
+					vo.scaleZ = event.endValue.z;
                     break;
             }
 
-            this.dispatch(new SceneEvent(SceneEvent.CHANGING,[event.object]));
+            this.dispatch(new SceneEvent(SceneEvent.CHANGING,[vo]));
         }
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
+			var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
             switch( event.gizmoMode ) {
                 case GizmoMode.TRANSLATE:
-                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[event.object],event.startValue, event.endValue));
+                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], event.endValue));
                     break;
                 case GizmoMode.ROTATE:
-                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[event.object],event.startValue,event.endValue));
+                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo],event.endValue));
                     break;
                 default:
-                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[event.object],event.startValue,event.endValue));
+                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],event.endValue));
                     break;
             }
         }

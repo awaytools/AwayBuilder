@@ -1,6 +1,6 @@
 package awaybuilder.desktop.model
 {
-	import awaybuilder.controller.events.ReadDocumentDataEvent;
+	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.services.IDocumentService;
@@ -21,33 +21,40 @@ package awaybuilder.desktop.model
 	
 	public class FileSystemDocumentService extends Actor implements IDocumentService
 	{
-		private static const INVALID_FORMAT_ERROR:String = "Unable to open file. Cannot parse data.";
 		private static const FILE_EXTENSION : String = 'awd';
 		
 		private var _fileToData:Dictionary = new Dictionary();
 		private var _filesToOpen:Vector.<File> = new Vector.<File>;
 		
-		public function open():void
+		private var _nextEvent:ReadDocumentEvent;
+		
+		public function open( type:String, event:ReadDocumentEvent ):void
 		{
+			_nextEvent = event;
 			var file:File = new File();
 			file.addEventListener(Event.SELECT, file_open_selectHandler);
 			file.addEventListener(Event.CANCEL, file_open_cancelHandler);
 			this._filesToOpen.push(file);
 			var filters:Array = [];
-			filters.push( new FileFilter("Away3D (*.awd)", "*.awd") );
-			file.browseForOpen("Open Away3D Library", filters);
-		}
-		public function importDocument():void
-		{
-			var file:File = new File();
-			file.addEventListener(Event.SELECT, file_import_selectHandler);
-			file.addEventListener(Event.CANCEL, file_import_cancelHandler);
-			this._filesToOpen.push(file);
-			var filters:Array = [];
-			filters.push( new FileFilter("3D and Images", "*.awd;*.3ds;*.obj;*.md2;*.md5;*.png;*.jpg;*.atf;*.dae") );
-			filters.push( new FileFilter("3D (*.awd, *.3ds, *.obj, *.md2, *.md5, *.dae)", "*.awd;*.3ds;*.obj;*.md2;*.md5;*.dae") );
-			filters.push( new FileFilter("Images (*.png, *.jpg, *.atf)", "*.png;*.jpg;*.atf") );
-			file.browseForOpen("Open For Import", filters);
+			var title:String;
+			switch( type ) 
+			{
+				case "open":
+					title = "Open File";
+					filters.push( new FileFilter("Away3D (*.awd)", "*.awd") );
+					break;
+				case "all":
+					title = "Import File";
+					filters.push( new FileFilter("3D and Images", "*.awd;*.3ds;*.obj;*.md2;*.png;*.jpg;*.dae") );
+					filters.push( new FileFilter("3D (*.awd, *.3ds, *.obj, *.md2, *.dae)", "*.awd;*.3ds;*.obj;*.md2;*.dae") );
+					filters.push( new FileFilter("Images (*.png, *.jpg)", "*.png;*.jpg") );
+					break;
+				case "images":
+					title = "Import Texture";
+					filters.push( new FileFilter("Images (*.png, *.jpg)", "*.png;*.jpg") );
+					break;
+			}
+			file.browseForOpen(title, filters);
 		}
 		
 		public function saveAs(data:Object, defaultName:String):void
@@ -138,7 +145,9 @@ package awaybuilder.desktop.model
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
 			
-			this.dispatch(new ReadDocumentDataEvent(ReadDocumentDataEvent.REPLACE_DOCUMENT, file.name, file.url));
+			_nextEvent.name = file.name;
+			_nextEvent.path = file.url;
+			dispatch(_nextEvent);
 		}
 		
 		private function file_open_cancelHandler(event:Event):void
@@ -149,22 +158,5 @@ package awaybuilder.desktop.model
 			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
 		}
 		
-		private function file_import_selectHandler(event:Event):void
-		{
-			var file:File = File(event.currentTarget);
-			file.removeEventListener(Event.SELECT, file_open_selectHandler);
-			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
-			
-			this.dispatch(new ReadDocumentDataEvent(ReadDocumentDataEvent.READ_DOCUMENT_DATA, file.name, file.url));
-		}
-		
-		private function file_import_cancelHandler(event:Event):void
-		{
-			var file:File = File(event.currentTarget);
-			file.removeEventListener(Event.SELECT, file_open_selectHandler);
-			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
-		}
 	}
 }

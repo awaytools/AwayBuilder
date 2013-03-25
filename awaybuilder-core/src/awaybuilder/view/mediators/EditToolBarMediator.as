@@ -1,14 +1,14 @@
 package awaybuilder.view.mediators
 {
-	import awaybuilder.controller.events.ClipboardEvent;
+	import awaybuilder.controller.clipboard.events.ClipboardEvent;
+	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.events.DocumentRequestEvent;
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.controller.events.SceneEvent;
 	import awaybuilder.controller.events.SettingsEvent;
-	import awaybuilder.controller.events.WebLinkEvent;
 	import awaybuilder.controller.history.UndoRedoEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.view.components.EditToolBar;
@@ -29,37 +29,33 @@ package awaybuilder.view.mediators
 		
 		override public function onRegister():void
 		{
-//            addContextListener( EditorStateChangeEvent.SELECTION_CHANGE, eventDispatcher_selectionChangeHandler);
-            addContextListener( EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeHandler);
-            addContextListener( EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetHandler);
+            addContextListener( SceneEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeHandler);
+            addContextListener( SceneEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetHandler);
 
-            addContextListener( EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchToRotateHandler);
-            addContextListener( EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchToTranslateHandler);
-            addContextListener( EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchToScaleHandler);
+            addContextListener( SceneEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchToRotateHandler);
+            addContextListener( SceneEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchToTranslateHandler);
+            addContextListener( SceneEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchToScaleHandler);
 
-            addContextListener( SceneEvent.ITEMS_SELECT, context_itemSelectHandler);
+            addContextListener( SceneEvent.SELECT, context_itemSelectHandler);
             addContextListener( UndoRedoEvent.UNDO_LIST_CHANGE, context_undoListChangeHandler);
-
+			addContextListener( DocumentModelEvent.CLIPBOARD_UPDATED, context_clipboardChangeHandler);
 
             addViewListener( ToolBarEvent.NEW_DOCUMENT, toolBar_newDocumentHandler);
             addViewListener( ToolBarEvent.OPEN_DOCUMENT, toolBar_openDocumentHandler);
+			addViewListener( ToolBarEvent.IMPORT_DOCUMENT, toolBar_importDocumentHandler);
             addViewListener( ToolBarEvent.SAVE_DOCUMENT, toolBar_saveDocumentHandler);
-            addViewListener( ToolBarEvent.PRINT_DOCUMENT, toolBar_printDocumentHandler);
 
             addViewListener( ToolBarEvent.UNDO, toolBar_undoHandler);
             addViewListener( ToolBarEvent.REDO, toolBar_redoHandler);
 
-            addViewListener( ToolBarEvent.HELP, toolBar_helpHandler);
             addViewListener( ToolBarEvent.APPLICATION_SETTINGS, toolBar_applicationSettingsHandler);
             addViewListener( ToolBarEvent.DOCUMENT_SETTINGS, toolBar_documentSettingsHandler);
-            addViewListener( ToolBarEvent.REPORT_BUG, toolBar_reportBugHandler);
 
             addViewListener( ToolBarEvent.CLIPBOARD_CUT, toolBar_clipboardCutHandler);
             addViewListener( ToolBarEvent.CLIPBOARD_COPY, toolBar_clipboardCopyHandler);
             addViewListener( ToolBarEvent.CLIPBOARD_PASTE, toolBar_clipboardPasteHandler);
 
             addViewListener( ToolBarEvent.DELETE_SELECTION, toolBar_deleteSelectionHandler);
-            addViewListener( ToolBarEvent.ROTATE_SELECTION_CLOCKWISE, toolBar_rotateSelectionClockwiseHandler);
 
             addViewListener( ToolBarEvent.FOCUS_OBJECT, toolBar_focusObjectHandler);
 
@@ -76,32 +72,36 @@ package awaybuilder.view.mediators
 
         private function context_undoListChangeHandler(event:UndoRedoEvent):void
         {
-            this.toolBar.undoButton.enabled = undoRedo.canUndo;
-            this.toolBar.redoButton.enabled = undoRedo.canRedo;
+            toolBar.undoButton.enabled = undoRedo.canUndo;
+            toolBar.redoButton.enabled = undoRedo.canRedo;
         }
-
-		private function eventDispatcher_switchToScaleHandler(event:EditingSurfaceRequestEvent):void
+		private function context_clipboardChangeHandler(event:DocumentModelEvent):void
+		{
+			toolBar.pasteButton.enabled = document.selectedObjects?true:false;
+		}
+		
+		private function eventDispatcher_switchToScaleHandler(event:SceneEvent):void
 		{
 			this.toolBar.scaleButton.selected = true;
 		}
 		
-		private function eventDispatcher_switchToRotateHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToRotateHandler(event:SceneEvent):void
 		{
 			this.toolBar.rotateButton.selected = true;
 		}
 		
-		private function eventDispatcher_switchToTranslateHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToTranslateHandler(event:SceneEvent):void
 		{
 			
 			this.toolBar.translateButton.selected = true;
 		}
 		
-		private function eventDispatcher_switchToFreeHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToFreeHandler(event:SceneEvent):void
 		{
 			this.toolBar.freeCameraButton.selected = true;
 		}
 		
-		private function eventDispatcher_switchToTargetHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToTargetHandler(event:SceneEvent):void
 		{
 			this.toolBar.targetCameraButton.selected = true;
 		}
@@ -112,10 +112,14 @@ package awaybuilder.view.mediators
             {
                 this.toolBar.deleteButton.enabled = true;
                 this.toolBar.focusButton.enabled = true;
+				this.toolBar.copyButton.enabled = true;
+				this.toolBar.cutButton.enabled = true;
             }
             else {
                 this.toolBar.deleteButton.enabled = false;
                 this.toolBar.focusButton.enabled = false;
+				this.toolBar.copyButton.enabled = false;
+				this.toolBar.cutButton.enabled = false;
             }
 		}
 		
@@ -131,53 +135,54 @@ package awaybuilder.view.mediators
 		
 		private function toolBar_clipboardPasteHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new ClipboardEvent(ClipboardEvent.CLIPBOARD_PASTE));
+			this.dispatch(new PasteEvent(PasteEvent.CLIPBOARD_PASTE));
 		}
 		
 		private function toolBar_deleteSelectionHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.DELETE_SELECTION, null, true));
-		}
-		
-		private function toolBar_rotateSelectionClockwiseHandler(event:ToolBarEvent):void
-		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.ROTATE_SELECTION_CLOCKWISE));
+			this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, document.selectedObjects));
 		}
 		
 		private function toolBar_focusObjectHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.FOCUS_SELECTION));
+			this.dispatch(new SceneEvent(SceneEvent.FOCUS_SELECTION));
 		}
 		
 		private function toolBar_switchMouseToFreeHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE));
+			this.dispatch(new SceneEvent(SceneEvent.SWITCH_CAMERA_TO_FREE));
 		}
 		
 		private function toolBar_switchMouseToTargetHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET));
+			this.dispatch(new SceneEvent(SceneEvent.SWITCH_CAMERA_TO_TARGET));
 		}
 		
 		
 		private function toolBar_switchTranslateHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE));
+			this.dispatch(new SceneEvent(SceneEvent.SWITCH_TRANSFORM_TRANSLATE));
 		}
 		
 		private function toolBar_switchScaleHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE));
+			this.dispatch(new SceneEvent(SceneEvent.SWITCH_TRANSFORM_SCALE));
 		}
 		
 		private function toolBar_switchRotateHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE));
+			this.dispatch(new SceneEvent(SceneEvent.SWITCH_TRANSFORM_ROTATE));
 		}
 		
 		private function toolBar_newDocumentHandler(event:ToolBarEvent):void
 		{
 			this.dispatch(new DocumentRequestEvent(DocumentRequestEvent.REQUEST_NEW_DOCUMENT));
+		}
+		
+		
+		private function toolBar_importDocumentHandler(event:ToolBarEvent):void
+		{
+			this.dispatch(new DocumentEvent(DocumentEvent.IMPORT_DOCUMENT));
 		}
 		
 		private function toolBar_openDocumentHandler(event:ToolBarEvent):void
@@ -190,11 +195,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT));
 		}
 		
-		private function toolBar_printDocumentHandler(event:ToolBarEvent):void
-		{
-			this.dispatch(new DocumentEvent(DocumentEvent.PRINT_DOCUMENT));
-		}
-		
 		private function toolBar_undoHandler(event:ToolBarEvent):void
 		{
             this.dispatch(new UndoRedoEvent(UndoRedoEvent.UNDO));
@@ -203,11 +203,6 @@ package awaybuilder.view.mediators
 		private function toolBar_redoHandler(event:ToolBarEvent):void
 		{
             this.dispatch(new UndoRedoEvent(UndoRedoEvent.REDO));
-		}
-		
-		private function toolBar_helpHandler(event:ToolBarEvent):void
-		{
-			this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_ONLINE_HELP));
 		}
 		
 		private function toolBar_applicationSettingsHandler(event:ToolBarEvent):void
@@ -220,9 +215,5 @@ package awaybuilder.view.mediators
 			this.dispatch(new SettingsEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS));
 		}
 		
-		private function toolBar_reportBugHandler(event:ToolBarEvent):void
-		{
-			this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_BUG_REPORTS));
-		}
 	}
 }

@@ -6,7 +6,7 @@ package awaybuilder.utils.encoders
 	import away3d.entities.Mesh;
 	
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.DocumentBaseVO;
+	import awaybuilder.model.vo.AssetVO;
 	import awaybuilder.model.vo.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
@@ -54,7 +54,7 @@ package awaybuilder.utils.encoders
 			_blockId = 0;
 			
 			scene = document.scene.source;
-			for each ( var vo:DocumentBaseVO in scene ) 
+			for each ( var vo:AssetVO in scene ) 
 			{
 				if( vo is MeshVO ) // also can be ContainerVO
 				{

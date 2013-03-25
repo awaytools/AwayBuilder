@@ -1,9 +1,9 @@
 package awaybuilder.model.vo
 {
 	[Bindable]
-	public class DocumentBaseVO
+	public class AssetVO
 	{
-		public function DocumentBaseVO( name:String, object:Object )
+		public function AssetVO( name:String, object:Object )
 		{
 			this.name = name;
 			this.linkedObject = object;

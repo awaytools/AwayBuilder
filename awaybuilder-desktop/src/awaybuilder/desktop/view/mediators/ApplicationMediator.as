@@ -1,18 +1,17 @@
 package awaybuilder.desktop.view.mediators
 {
 
-	import awaybuilder.controller.events.ClipboardEvent;
+	import awaybuilder.controller.clipboard.events.ClipboardEvent;
+	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.events.DocumentRequestEvent;
-	import awaybuilder.controller.events.EditingSurfaceRequestEvent;
 	import awaybuilder.controller.events.HelpEvent;
 	import awaybuilder.controller.events.MessageBoxEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.controller.events.SceneEvent;
 	import awaybuilder.controller.events.SettingsEvent;
-	import awaybuilder.controller.events.WebLinkEvent;
 	import awaybuilder.controller.history.UndoRedoEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.desktop.controller.events.AboutEvent;
 	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
 	import awaybuilder.desktop.model.UpdateModel;
@@ -89,9 +88,7 @@ package awaybuilder.desktop.view.mediators
 		private static const MENU_SNAP_TO_GRID:String = "snapToGrid";
 		
 		//help
-		private static const MENU_HELP_CONTENTS:String = "helpContents";
 		private static const MENU_SAMPLES:String = "helpSamples";
-		private static const MENU_REPORT_BUG:String = "reportBug";
 		private static const MENU_CHECK_UPDATE:String = "checkUpdate";
 		private static const MENU_ABOUT:String = "about";
 		
@@ -159,18 +156,18 @@ package awaybuilder.desktop.view.mediators
 			addContextListener( DocumentModelEvent.DOCUMENT_NAME_CHANGED, eventDispatcher_documentNameChangedHandler);
 			addContextListener( DocumentModelEvent.DOCUMENT_EDITED, eventDispatcher_documentEditedHandler);
 			
-            addContextListener( SceneEvent.ITEMS_SELECT, context_itemSelectHandler);
+            addContextListener( SceneEvent.SELECT, context_itemSelectHandler);
 
 			addContextListener( SettingsEvent.SHOW_GRID_CHANGE, eventDispatcher_showGridChangeHandler);
 			addContextListener( SettingsEvent.SNAP_TO_GRID_CHANGE, eventDispatcher_snapToGridChangeHandler);
 			addContextListener( SettingsEvent.SHOW_OBJECT_PICKER_CHANGE, eventDispatcher_showObjectPickerChangeHandler);
 			
-			addContextListener( EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeCameraHandler);
-			addContextListener( EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetCameraHandler);
+			addContextListener( SceneEvent.SWITCH_CAMERA_TO_FREE, eventDispatcher_switchToFreeCameraHandler);
+			addContextListener( SceneEvent.SWITCH_CAMERA_TO_TARGET, eventDispatcher_switchToTargetCameraHandler);
 			
-			addContextListener( EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchTranslateHandler);
-			addContextListener( EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchRotateHandler);
-			addContextListener( EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchScaleCameraHandler);
+			addContextListener( SceneEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchTranslateHandler);
+			addContextListener( SceneEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchRotateHandler);
+			addContextListener( SceneEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchScaleCameraHandler);
 
             addContextListener( UndoRedoEvent.UNDO_LIST_CHANGE, context_undoListChangeHandler);
             
@@ -298,33 +295,33 @@ package awaybuilder.desktop.view.mediators
 			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
 		}
 		
-		private function eventDispatcher_switchToFreeCameraHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToFreeCameraHandler(event:SceneEvent):void
 		{
 			this._selectionToolItem.checked = false;
 			this._panToolItem.checked = true;
 		}
 		
-		private function eventDispatcher_switchToTargetCameraHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchToTargetCameraHandler(event:SceneEvent):void
 		{
 			this._panToolItem.checked = false;
 			this._selectionToolItem.checked = true;
 		}
 		
-		private function eventDispatcher_switchTranslateHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchTranslateHandler(event:SceneEvent):void
 		{
 			this._translateItem.checked = true;
 			this._rotateItem.checked = false;
 			this._scaleItem.checked = false;
 		}
 		
-		private function eventDispatcher_switchRotateHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchRotateHandler(event:SceneEvent):void
 		{
 			this._translateItem.checked = false;
 			this._rotateItem.checked = true;
 			this._scaleItem.checked = false;
 		}
 		
-		private function eventDispatcher_switchScaleCameraHandler(event:EditingSurfaceRequestEvent):void
+		private function eventDispatcher_switchScaleCameraHandler(event:SceneEvent):void
 		{
 			this._translateItem.checked = false;
 			this._rotateItem.checked = false;
@@ -450,11 +447,6 @@ package awaybuilder.desktop.view.mediators
 					this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_AS));
 					break;
 				}
-				case MENU_PRINT:
-				{
-					this.dispatch(new DocumentEvent(DocumentEvent.PRINT_DOCUMENT));
-					break;
-				}
 				case MENU_EXIT:
 				{
 					this.app.close();
@@ -483,7 +475,7 @@ package awaybuilder.desktop.view.mediators
 				}
 				case MENU_PASTE:
 				{
-					this.dispatch(new ClipboardEvent(ClipboardEvent.CLIPBOARD_PASTE));
+					this.dispatch(new PasteEvent(PasteEvent.CLIPBOARD_PASTE));
 					break;
 				}
 				case MENU_SELECT_ALL:
@@ -494,37 +486,21 @@ package awaybuilder.desktop.view.mediators
 						SkinnableTextBase(focus).selectAll();
 						break;
 					}
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SELECT_ALL));
+					this.dispatch(new SceneEvent(SceneEvent.SELECT_ALL, null));
 					break;
 				}
 				case MENU_SELECT_NONE:
 				{
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SELECT_NONE));
+					this.dispatch(new SceneEvent(SceneEvent.SELECT_NONE, null));
 					break;
 				}
 				case MENU_DELETE:
 				{
-//					if(this.editorModel.selectedObjects.length > 0)
-//					{
-//						this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.DELETE_SELECTION, null, true));
-//					}
-//					break;
-				}
-				case MENU_ROTATE_CLOCKWISE:
-				{
-//					if(this.editorModel.selectedObjects.length > 0)
-//					{
-//						this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.ROTATE_SELECTION_CLOCKWISE));
-//					}
-//					break;
-				}
-				case MENU_ROTATE_COUNTER_CLOCKWISE:
-				{
-//					if(this.editorModel.selectedObjects.length > 0)
-//					{
-//						this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.ROTATE_SELECTION_COUNTER_CLOCKWISE));
-//					}
-//					break;
+					if(this.documentModel.selectedObjects.length > 0)
+					{
+						this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, documentModel.selectedObjects));
+					}
+					break;
 				}
 				case MENU_APPLICATION_SETTINGS:
 				{
@@ -538,19 +514,19 @@ package awaybuilder.desktop.view.mediators
 				}
 				//tools
 				case MENU_FREE_CAMERA:
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_FREE));
+					this.dispatch(new SceneEvent(SceneEvent.SWITCH_CAMERA_TO_FREE, null));
 					break;
 				case MENU_TARGET_CAMERA:
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_CAMERA_TO_TARGET));
+					this.dispatch(new SceneEvent(SceneEvent.SWITCH_CAMERA_TO_TARGET, null));
 					break;
 				case TRANSLATE_MODE:
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_TRANSLATE));
+					this.dispatch(new SceneEvent(SceneEvent.SWITCH_TRANSFORM_TRANSLATE, null));
 					break;
 				case ROTATE_MODE:
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_ROTATE));
+					this.dispatch(new SceneEvent(SceneEvent.SWITCH_TRANSFORM_ROTATE, null));
 					break;
 				case SCALE_MODE:
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.SWITCH_TRANSFORM_SCALE));
+					this.dispatch(new SceneEvent(SceneEvent.SWITCH_TRANSFORM_SCALE, null));
 					break;
 				//view
 				case MENU_ZOOM_OUT:
@@ -565,7 +541,7 @@ package awaybuilder.desktop.view.mediators
 				}
 				case FOCUS_SELECTED:
 				{
-					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.FOCUS_SELECTED));
+					this.dispatch(new SceneEvent(SceneEvent.FOCUS_SELECTION));
                     break;
 				}
 				case MENU_SNAP_TO_GRID:
@@ -581,19 +557,9 @@ package awaybuilder.desktop.view.mediators
 					break;
 				}
 				//help
-				case MENU_HELP_CONTENTS:
-				{
-					this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_ONLINE_HELP));
-					break;
-				}
 				case MENU_ABOUT:
 				{
 					this.dispatch(new AboutEvent(AboutEvent.SHOW_ABOUT));
-					break;
-				}
-				case MENU_REPORT_BUG:
-				{
-					this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_BUG_REPORTS));
 					break;
 				}
 				case MENU_CHECK_UPDATE:
@@ -627,7 +593,7 @@ package awaybuilder.desktop.view.mediators
 			
 			if(event.keyCode == Keyboard.F1)
 			{
-				this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_ONLINE_HELP));
+//				this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_ONLINE_HELP));
 			}
 			else if(event.ctrlKey && String.fromCharCode(event.charCode) == "=")
 			{
@@ -813,10 +779,10 @@ package awaybuilder.desktop.view.mediators
 			
 			this._helpMenuItem = new NativeMenuItem("Help");
 			var helpMenu:NativeMenu = new NativeMenu();
-			this.createMenuItem("Contents...", MENU_HELP_CONTENTS, helpMenu);
+//			this.createMenuItem("Contents...", MENU_HELP_CONTENTS, helpMenu);
 			this.createMenuItem("Samples...", MENU_SAMPLES, helpMenu);
 			helpMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Report a Bug...", MENU_REPORT_BUG, helpMenu);
+//			this.createMenuItem("Report a Bug...", MENU_REPORT_BUG, helpMenu);
 			helpMenu.addItem(new NativeMenuItem("", true));
 			this.createMenuItem("Check for Updates...", MENU_CHECK_UPDATE, helpMenu);
 			

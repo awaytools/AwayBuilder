@@ -1,6 +1,6 @@
 package awaybuilder.model
 {
-import awaybuilder.model.vo.DocumentBaseVO;
+import awaybuilder.model.vo.AssetVO;
 import awaybuilder.model.vo.ScenegraphGroupItemVO;
 import awaybuilder.model.vo.ScenegraphItemVO;
 
@@ -38,16 +38,19 @@ import mx.collections.ArrayCollection;
 		function get lights():ArrayCollection; 
 		function set lights(value:ArrayCollection):void;
 		
-		function get selectedObjects():Vector.<Object>;
-		function set selectedObjects(value:Vector.<Object>):void;
+		function get selectedObjects():Vector.<AssetVO>;
+		function set selectedObjects(value:Vector.<AssetVO>):void;
 		
-		function getSceneObject( value:Object ):DocumentBaseVO;
-		function getMaterial( value:Object ):DocumentBaseVO;
-		function getAnimation( value:Object ):DocumentBaseVO;
-		function getGeometry( value:Object ):DocumentBaseVO;
-		function getTexture( value:Object ):DocumentBaseVO;
-		function getSkeleton( value:Object ):DocumentBaseVO;
-		function getLight( value:Object ):DocumentBaseVO;
+		function get copiedObjects():Vector.<AssetVO>;
+		function set copiedObjects(value:Vector.<AssetVO>):void;
+		
+		function getSceneObject( value:Object ):AssetVO;
+		function getMaterial( value:Object ):AssetVO;
+		function getAnimation( value:Object ):AssetVO;
+		function getGeometry( value:Object ):AssetVO;
+		function getTexture( value:Object ):AssetVO;
+		function getSkeleton( value:Object ):AssetVO;
+		function getLight( value:Object ):AssetVO;
 		
 	}
 }

@@ -1,20 +1,21 @@
-package awaybuilder.controller
+package awaybuilder.controller.document
 {
-import away3d.materials.TextureMaterial;
-import away3d.materials.utils.DefaultMaterialManager;
-import away3d.textures.BitmapTexture;
-
-import awaybuilder.model.IDocumentModel;
-import awaybuilder.model.ISettingsModel;
-import awaybuilder.model.UndoRedoModel;
-import awaybuilder.model.vo.BitmapTextureVO;
-import awaybuilder.model.vo.ScenegraphGroupItemVO;
-import awaybuilder.model.vo.TextureMaterialVO;
-import awaybuilder.utils.scene.Scene3DManager;
-
-import mx.collections.ArrayCollection;
-
-import org.robotlegs.mvcs.Command;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.utils.DefaultMaterialManager;
+	import away3d.textures.BitmapTexture;
+	
+	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.ISettingsModel;
+	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.model.vo.AssetVO;
+	import awaybuilder.model.vo.BitmapTextureVO;
+	import awaybuilder.model.vo.MaterialVO;
+	import awaybuilder.model.vo.ScenegraphGroupItemVO;
+	import awaybuilder.utils.scene.Scene3DManager;
+	
+	import mx.collections.ArrayCollection;
+	
+	import org.robotlegs.mvcs.Command;
 
 	public class NewDocumentCommand extends Command
 	{	
@@ -26,7 +27,6 @@ import org.robotlegs.mvcs.Command;
 
 		[Inject]
 		public var settings:ISettingsModel;
-
 		
 		override public function execute():void
 		{
@@ -38,7 +38,7 @@ import org.robotlegs.mvcs.Command;
 
 			document.scene = new ArrayCollection();
 			
-			var material:TextureMaterialVO = new TextureMaterialVO( DefaultMaterialManager.getDefaultMaterial() );
+			var material:MaterialVO = new MaterialVO( DefaultMaterialManager.getDefaultMaterial() );
 			material.name = "Away3D Default";
 			document.materials = new ArrayCollection([material]);
 			
@@ -52,9 +52,7 @@ import org.robotlegs.mvcs.Command;
 			document.skeletons = new ArrayCollection();
 			document.lights = new ArrayCollection();
 			
-			
-			
-			document.selectedObjects = new Vector.<Object>();
+			document.selectedObjects = new Vector.<AssetVO>();
 			
 			Scene3DManager.clear();
 		}

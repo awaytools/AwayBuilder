@@ -23,6 +23,8 @@
 		click="newDocumentButton_clickHandler(event)"/>
 	<s:Button id="openDocumentButton" styleName="toolbarButton" toolTip="Open Document..."
 		click="openDocumentButton_clickHandler(event)"/>
+	<s:Button id="importDocumentButton" styleName="toolbarButton" toolTip="Import..."
+			  click="importDocumentButton_clickHandler(event)"/>
 	<s:Button id="saveDocumentButton" styleName="toolbarButton" toolTip="Save Document"
 		click="saveDocumentButton_clickHandler(event)"/>
 	
@@ -58,7 +60,7 @@
 		click="copyButton_clickHandler(event)"/>
 	<s:Button id="pasteButton" styleName="toolbarButton"
 		toolTip="Paste"
-		enabled="{Capabilities.playerType == 'Desktop'}"
+		enabled="false"
 		click="pasteButton_clickHandler(event)"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
@@ -90,11 +92,11 @@
 		click="documentSettingsButton_clickHandler(event)"/>
 	<s:Button id="applicationSettingsButton" styleName="toolbarButton" toolTip="Application Settings..."
 		click="applicationSettingsButton_clickHandler(event)"/>
-	<s:Button id="helpButton" styleName="toolbarButton" toolTip="Help"
+<!--	<s:Button id="helpButton" styleName="toolbarButton" toolTip="Help"
 		click="helpButton_clickHandler(event)"/>
 	<s:Button id="reportBugButton" styleName="toolbarButton" toolTip="Report a Bug..."
 		visible="{showBugReportButton}" includeInLayout="{showBugReportButton}"
-		click="reportBugButton_clickHandler(event)"/>
+		click="reportBugButton_clickHandler(event)"/>-->
 	
 	<fx:Script>
 	<![CDATA[
@@ -223,16 +225,16 @@
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.FOCUS_OBJECT));
 		}
 		
-		protected function rotateClockwiseButton_clickHandler(event:MouseEvent):void
-		{
-			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.ROTATE_SELECTION_CLOCKWISE));
-		}
-		
 		protected function newDocumentButton_clickHandler(event:MouseEvent):void
 		{
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.NEW_DOCUMENT));
 		}
 
+		protected function importDocumentButton_clickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.IMPORT_DOCUMENT));
+		}
+		
 		protected function openDocumentButton_clickHandler(event:MouseEvent):void
 		{
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.OPEN_DOCUMENT));
@@ -241,11 +243,6 @@
 		protected function saveDocumentButton_clickHandler(event:MouseEvent):void
 		{
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SAVE_DOCUMENT));
-		}
-		
-		protected function printDocumentButton_clickHandler(event:MouseEvent):void
-		{
-			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.PRINT_DOCUMENT));
 		}
 		
 		protected function undoButton_clickHandler(event:MouseEvent):void
@@ -258,19 +255,9 @@
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.REDO));
 		}
 
-		protected function helpButton_clickHandler(event:MouseEvent):void
-		{
-			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.HELP));
-		}
-		
 		protected function applicationSettingsButton_clickHandler(event:MouseEvent):void
 		{
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.APPLICATION_SETTINGS));
-		}
-		
-		protected function reportBugButton_clickHandler(event:MouseEvent):void
-		{
-			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.REPORT_BUG));
 		}
 		
 		protected function documentSettingsButton_clickHandler(event:MouseEvent):void

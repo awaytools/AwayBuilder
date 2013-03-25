@@ -81,8 +81,8 @@
 		
 		<mx:UIComponent id="viewScope" width="100%" height="100%"/>
 		
-		<components:PropertiesPanel id="propertiesPanel" 
-									visible="false" includeInLayout="{propertiesPanel.visible}" height="100%"/>
+		<components:PropertiesPanel id="propertiesPanel" collapsed="true"
+									height="100%"/>
 	</s:Group>
 		
 	<components:EditStatusBar id="appStatusBar" width="100%"/>

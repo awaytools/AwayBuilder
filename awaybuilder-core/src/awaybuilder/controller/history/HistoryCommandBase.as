@@ -1,16 +1,16 @@
 package awaybuilder.controller.history
 {
     import awaybuilder.model.UndoRedoModel;
-
+    
     import org.robotlegs.mvcs.Command;
 
     public class HistoryCommandBase extends Command
     {
         [Inject]
         public var undoRedoModel:UndoRedoModel;
-
+		
         protected function addToHistory(event:HistoryEvent):void {
-            if (!event.isHistoryAction)
+            if (!event.isUndoAction&&!event.isRedoAction)
             {
                 if( event.canBeCombined )
                 {

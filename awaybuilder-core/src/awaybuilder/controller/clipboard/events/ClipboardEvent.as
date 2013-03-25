@@ -1,4 +1,4 @@
-package awaybuilder.controller.events
+package awaybuilder.controller.clipboard.events
 {
 	import flash.events.Event;
 	
@@ -6,7 +6,6 @@ package awaybuilder.controller.events
 	{
 		public static const CLIPBOARD_CUT:String = "clipboardCut";
 		public static const CLIPBOARD_COPY:String = "clipboardCopy";
-		public static const CLIPBOARD_PASTE:String = "clipboardPaste";
 		
 		public function ClipboardEvent(type:String)
 		{
