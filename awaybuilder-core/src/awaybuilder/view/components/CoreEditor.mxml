@@ -5,48 +5,12 @@
 	backgroundAlpha="0" 
 	xmlns:components="awaybuilder.view.components.*"
 	xmlns:tree="awaybuilder.view.components.tree.*"
-	tabChildren="false" tabEnabled="false" xmlns:controls="awaybuilder.view.components.controls.*">
+	xmlns:controls="awaybuilder.view.components.controls.*">
 	
 	<s:layout>
 		<s:VerticalLayout gap="0" paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0"/>
 	</s:layout>
 	
-	<fx:Script>
-		<![CDATA[
-			import mx.collections.ArrayCollection;
-			
-			import spark.events.IndexChangeEvent;
-			
-			import awaybuilder.view.components.events.CoreEditorEvent;
-			
-			
-			[Bindable] public var scenegraph:ArrayCollection;
-			[Bindable] public var selectedItems:Vector.<Object>;
-			
-			private function init():void
-			{
-			}
-			
-			protected function tree_changeHandler(event:IndexChangeEvent):void
-			{
-				this.dispatchEvent( new CoreEditorEvent( CoreEditorEvent.TREE_CHANGE, tree.selectedItems ) );
-			}
-			
-			protected function collapseButton_clickHandler(event:MouseEvent):void
-			{
-				tree.collapseAll();
-				collapseButton.visible = false;
-				expandButton.visible = true;
-			}
-			protected function expandButton_clickHandler(event:MouseEvent):void
-			{
-				tree.expandAll();
-				collapseButton.visible = true;
-				expandButton.visible = false;
-			}
-			
-		]]>
-	</fx:Script>
 	<components:EditToolBar id="editToolbar" width="100%"/>
 	
 	<s:Group width="100%" height="100%">
@@ -54,35 +18,12 @@
 			<s:HorizontalLayout gap="0"/>
 		</s:layout>
 		
-		<controls:CollapsiblePanel height="100%" styleName="scenePanel" chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
-									 skinClass="awaybuilder.view.skins.CollapsiblePanelSkin"
-									 >
-			<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="2" paddingTop="2" paddingBottom="2" height="23">
-				<s:Label width="100%" text="Library" fontWeight="bold"/>
-				<s:Button id="collapseButton" label="collapse all" height="19" visible="false" includeInLayout="{collapseButton.visible}"
-                          skinClass="awaybuilder.view.skins.ButtonSkin"
-						  click="collapseButton_clickHandler(event)"/>
-				<s:Button id="expandButton" label="expand all" height="19" visible="false" includeInLayout="{expandButton.visible}"
-                          skinClass="awaybuilder.view.skins.ButtonSkin"
-						  click="expandButton_clickHandler(event)"/>
-				<!--<s:ToggleButton id="disclosureButton"
-								skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>-->
-			</s:HGroup>
-			<tree:Tree id="tree" 
-					   dataProvider="{scenegraph}" 
-					   selectedItems="{selectedItems}"
-					   borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
-					   labelField="label" change="tree_changeHandler(event)"
-					   width="250" height="100%"
-					   dragEnabled="false" dropEnabled="false"
-					   dragMoveEnabled="true">
-			</tree:Tree>
-		</controls:CollapsiblePanel>
-		
+		<components:LibraryPanel id="libraryPanel" height="100%"/>
+			
 		<mx:UIComponent id="viewScope" width="100%" height="100%"/>
 		
-		<components:PropertiesPanel id="propertiesPanel" collapsed="true"
-									height="100%"/>
+		<components:PropertiesPanel id="propertiesPanel" collapsed="true" height="100%"/>
+		
 	</s:Group>
 		
 	<components:EditStatusBar id="appStatusBar" width="100%"/>

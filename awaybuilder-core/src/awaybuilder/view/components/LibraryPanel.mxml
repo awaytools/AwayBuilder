@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<controls:CollapsiblePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark" 
+						   xmlns:mx="library://ns.adobe.com/flex/mx" 
+						   xmlns:controls="awaybuilder.view.components.controls.*" 
+						   xmlns:tree="awaybuilder.view.components.tree.*"
+						   chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
+						   skinClass="awaybuilder.view.skins.CollapsiblePanelSkin">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import awaybuilder.view.components.events.CoreEditorEvent;
+			import awaybuilder.view.components.events.LibraryPanelEvent;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable] public var scenegraph:ArrayCollection;
+			[Bindable] public var selectedItems:Vector.<Object>;
+			
+			protected function collapseTreeButton_clickHandler(event:MouseEvent):void
+			{
+				tree.collapseAll();
+				collapseTreeButton.visible = false;
+				expandTreeButton.visible = true;
+			}
+			protected function expandTreeButton_clickHandler(event:MouseEvent):void
+			{
+				tree.expandAll();
+				collapseTreeButton.visible = true;
+				expandTreeButton.visible = false;
+			}
+			protected function tree_changeHandler(event:IndexChangeEvent):void
+			{
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, tree.selectedItems ) );
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="2" paddingTop="2" paddingBottom="2" height="23">
+		<s:Label width="100%" text="Library" fontWeight="bold"/>
+		<s:Button id="collapseTreeButton" label="collapse all" height="19" visible="false" includeInLayout="{collapseTreeButton.visible}"
+				  skinClass="awaybuilder.view.skins.ButtonSkin"
+				  click="collapseTreeButton_clickHandler(event)"/>
+		<s:Button id="expandTreeButton" label="expand all" height="19" visible="false" includeInLayout="{expandTreeButton.visible}"
+				  skinClass="awaybuilder.view.skins.ButtonSkin"
+				  click="expandTreeButton_clickHandler(event)"/>
+		<!--<s:ToggleButton id="disclosureButton"
+		skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>-->
+	</s:HGroup>
+	<tree:Tree id="tree" 
+			   dataProvider="{scenegraph}" 
+			   selectedItems="{selectedItems}"
+			   borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
+			   labelField="label" change="tree_changeHandler(event)"
+			   width="250" height="100%"
+			   dragEnabled="false" dropEnabled="false"
+			   dragMoveEnabled="true">
+	</tree:Tree>
+</controls:CollapsiblePanel>

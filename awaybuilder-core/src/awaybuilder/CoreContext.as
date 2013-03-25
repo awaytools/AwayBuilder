@@ -35,6 +35,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.DeleteObjectCommand;
 	import awaybuilder.controller.scene.RotateObjectCommand;
 	import awaybuilder.controller.scene.ScaleObjectCommand;
+	import awaybuilder.controller.scene.SelectCommand;
 	import awaybuilder.controller.scene.SwitchFreeCameraModeCommand;
 	import awaybuilder.controller.scene.SwitchTargetCameraModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformRotateModeCommand;
@@ -57,6 +58,7 @@ package awaybuilder
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.EditingSurfaceSettingsForm;
+	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.PropertiesPanel;
 	import awaybuilder.view.components.SamplePicker;
 	import awaybuilder.view.mediators.ApplicationSettingsFormMediator;
@@ -66,6 +68,7 @@ package awaybuilder
 	import awaybuilder.view.mediators.EditStatusBarMediator;
 	import awaybuilder.view.mediators.EditToolBarMediator;
 	import awaybuilder.view.mediators.EditingSurfaceSettingsFormMediator;
+	import awaybuilder.view.mediators.LibraryPanelMediator;
 	import awaybuilder.view.mediators.PropertiesPanelMediator;
 	import awaybuilder.view.mediators.SamplePickerMediator;
 	
@@ -115,6 +118,7 @@ package awaybuilder
             this.commandMap.mapEvent(SceneEvent.SCALE_OBJECT, ScaleObjectCommand);
 			
 			this.commandMap.mapEvent(SceneEvent.DELETE_OBJECTS, DeleteObjectCommand);
+			this.commandMap.mapEvent(SceneEvent.SELECT, SelectCommand);
 
 			this.commandMap.mapEvent(ImportTextureForMaterialEvent.IMPORT, ImportTextureForMaterialCommand);
 			this.commandMap.mapEvent(ImportTextureForMaterialEvent.LOAD, LoadTextureForMaterialCommand);
@@ -144,7 +148,7 @@ package awaybuilder
 			
 			this.mediatorMap.mapView(CoreEditor, CoreEditorMediator);
             this.mediatorMap.mapView(PropertiesPanel, PropertiesPanelMediator);
-//			this.mediatorMap.mapView(ObjectPickerItemRenderer, ObjectPickerItemRendererMediator);
+			this.mediatorMap.mapView(LibraryPanel, LibraryPanelMediator);
 			this.mediatorMap.mapView(EditToolBar, EditToolBarMediator);
 			this.mediatorMap.mapView(EditStatusBar, EditStatusBarMediator);
 			this.mediatorMap.mapView(ApplicationSettingsForm, ApplicationSettingsFormMediator);

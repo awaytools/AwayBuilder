@@ -54,17 +54,12 @@ package awaybuilder.view.mediators
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM_RELEASE, scene_transformReleaseHandler);
 			Scene3DManager.init( view.viewScope );
 			
-            addViewListener(CoreEditorEvent.TREE_CHANGE, view_treeChangeHandler, CoreEditorEvent);
-
-            addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler, DocumentModelEvent);
-			
             addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
             addContextListener(SceneEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler, SceneEvent);
 
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			view.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);	
 			
-			updateScenegraph();
 		}
 		
 		//----------------------------------------------------------------------
@@ -155,65 +150,6 @@ package awaybuilder.view.mediators
 			
 		}	
 		
-		private function updateScenegraph():void
-		{
-			_scenegraph = new ArrayCollection();
-			var branch:ScenegraphGroupItemVO;
-			if( document.scene && document.scene.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Scene", ScenegraphGroupItemVO.SCENE_GROUP );
-				branch.children = getBranchCildren( document.scene );
-				_scenegraph.addItem( branch );
-			}
-			if( document.materials && document.materials.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Materials", ScenegraphGroupItemVO.MATERIAL_GROUP );
-				branch.children = getBranchCildren( document.materials );
-				_scenegraph.addItem( branch );
-			}
-			if( document.animations && document.animations.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Animations", ScenegraphGroupItemVO.ANIMATION_GROUP );
-				branch.children = getBranchCildren( document.animations );
-				_scenegraph.addItem( branch );
-			}
-			if( document.geometry && document.geometry.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Geometry", ScenegraphGroupItemVO.GEOMETRY_GROUP );
-				branch.children = getBranchCildren( document.geometry );
-				_scenegraph.addItem( branch );
-			}
-			if( document.textures && document.textures.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Textures", ScenegraphGroupItemVO.TEXTURE_GROUP );
-				branch.children = getTextureBranchCildren( document.textures );
-				_scenegraph.addItem( branch );
-			}
-			if( document.skeletons && document.skeletons.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Skeletons", ScenegraphGroupItemVO.SKELETON_GROUP );
-				branch.children = getBranchCildren( document.skeletons );
-				_scenegraph.addItem( branch );
-			}
-			if( document.lights && document.lights.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Lights", ScenegraphGroupItemVO.LIGHT_GROUP );
-				branch.children = getBranchCildren( document.lights );
-				_scenegraph.addItem( branch );
-			}
-			
-			
-			_scenegraphSort.compareFunction = compareGroupItems;
-			_scenegraph.sort = _scenegraphSort;
-			_scenegraph.refresh();
-			
-			view.scenegraph = _scenegraph;
-			
-			view.tree.expandAll();
-			view.expandButton.visible = false;
-			view.collapseButton.visible = true;
-		}
-		
 		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
 		{
 			var children:ArrayCollection = new ArrayCollection();
@@ -251,13 +187,6 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
-		
-		
-		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
-		{
-			updateScenegraph();
-		}
-		
 		private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
 		{
 			if( event.items.length )
@@ -282,19 +211,6 @@ package awaybuilder.view.mediators
 			{
                 Scene3DManager.unselectAll();
 			}
-			_scenegraphSelected = new Vector.<Object>();
-			updateAllSelectedItems( _scenegraph, event.items );
-			view.selectedItems = _scenegraphSelected;
-			view.callLater( view.tree.ensureIndexIsVisible, [view.tree.selectedIndex] );
-			
-			var items:Vector.<AssetVO> = new Vector.<AssetVO>();
-			for each( var selectedAsset:AssetVO in event.items ) 
-			{
-				if( selectedAsset.linkedObject == DefaultMaterialManager.getDefaultMaterial() ) continue;
-				if( selectedAsset.linkedObject == DefaultMaterialManager.getDefaultTexture() ) continue;
-				items.push( selectedAsset );
-			}
-			document.selectedObjects = items;
 			
 		}
 		private function selectObjectsScene( o:Object3D ):void
@@ -308,33 +224,6 @@ package awaybuilder.view.mediators
 			}
 			Scene3DManager.selectObjectByName(o.name);
 			
-		}
-		private function updateAllSelectedItems( children:ArrayCollection, selectedItems:Array ):void
-		{
-			for each( var item:ScenegraphItemVO in children )
-			{
-				if( item.item )
-				{
-					if( getItemIsSelected( item.item.linkedObject, selectedItems ) )
-					{
-						_scenegraphSelected.push( item );
-					}
-				}
-				if(  item.children ) {
-					updateAllSelectedItems( item.children, selectedItems );
-				}
-			} 
-		}
-		private function getItemIsSelected( o:Object, selectedItems:Array ):Boolean
-		{
-			for each( var object:AssetVO in selectedItems )
-			{
-				if( object.linkedObject == o )
-				{
-					return true;
-				}
-			}
-			return false;
 		}
         private function eventDispatcher_itemsFocusHandler(event:SceneEvent):void
         {

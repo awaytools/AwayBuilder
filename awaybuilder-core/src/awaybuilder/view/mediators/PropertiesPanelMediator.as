@@ -177,7 +177,7 @@ package awaybuilder.view.mediators
         {
             if( !event.items || event.items.length == 0)
             {
-                view.visible = false;
+				view.currentState = "empty";
                 return;
             }
             if( event.items.length )
@@ -193,6 +193,7 @@ package awaybuilder.view.mediators
                         }
                         view.data = mesh;
                         view.currentState = "mesh";
+						view.collapsed = false;
                     }
                     else if( event.items[0] is ContainerVO )
                     {
@@ -205,11 +206,13 @@ package awaybuilder.view.mediators
 						material.linkedTextures = document.textures;
                         view.data = material;
                         view.currentState = "material";
+						view.collapsed = false;
                     }
                     else if( event.items[0] is BitmapTextureVO )
                     {
                         view.currentState = "texture";
                         view.data = BitmapTextureVO( event.items[0] ).clone();
+						view.collapsed = false;
                     }
                     else if( event.items[0] is Geometry )
                     {
