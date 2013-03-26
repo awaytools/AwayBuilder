@@ -14,6 +14,8 @@ package awaybuilder.view.components.propertyEditors
 		
 		public static const MESH_SUBMESH_ADD_NEW_MATERIAL:String = "submeshAddNewMaterial";
 		public static const MATERIAL_ADD_NEW_TEXTURE:String = "materialAddNewTexture";
+		
+		public static const REPLACE_TEXTURE:String = "replaceTexture";
 
         public static const MESH_SUBMESH_CHANGE:String = "meshSubmeshChange";
 

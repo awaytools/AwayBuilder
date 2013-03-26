@@ -1,13 +1,11 @@
 package awaybuilder.controller.document
 {
 	import awaybuilder.controller.document.events.ImportTextureEvent;
-	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.services.IDocumentService;
 	
 	import org.robotlegs.mvcs.Command;
 
-	public class ImportTextureForMaterialCommand extends Command
+	public class ImportTextureAndReplaceCommand extends Command
 	{
 		[Inject]
 		public var event:ImportTextureEvent;
@@ -15,10 +13,9 @@ package awaybuilder.controller.document
 		[Inject]
 		public var fileService:IDocumentService;
 		
-		
 		override public function execute():void
 		{
-			var nextEvent:ImportTextureEvent = new ImportTextureEvent(ImportTextureEvent.LOAD_AND_ADD, event.items);
+			var nextEvent:ImportTextureEvent = new ImportTextureEvent(ImportTextureEvent.LOAD_AND_REPLACE, event.items);
 			this.fileService.open( "images", nextEvent );
 		}
 	}

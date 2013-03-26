@@ -7,7 +7,7 @@ package awaybuilder.controller.document
 	
 	import org.robotlegs.mvcs.Command;
 
-	public class LoadTextureForMaterialCommand extends Command
+	public class LoadTextureAndRepalceCommand extends Command
 	{
 		public var document:IDocumentModel;
 		
@@ -19,7 +19,7 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			var e:SceneEvent = new SceneEvent(SceneEvent.ADD_NEW_TEXTURE, event.items  );
+			var e:SceneEvent = new SceneEvent(SceneEvent.REPLACE_TEXTURE, event.items  );
 			dataService.load( this.event.path, e );
 		}
 	}

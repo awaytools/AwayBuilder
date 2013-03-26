@@ -3,7 +3,7 @@ package awaybuilder.view.mediators
     import away3d.core.base.Geometry;
     import away3d.entities.Mesh;
     
-    import awaybuilder.controller.document.events.ImportTextureForMaterialEvent;
+    import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
@@ -49,6 +49,7 @@ package awaybuilder.view.mediators
             addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler, PropertyEditorEvent );
 			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler, PropertyEditorEvent );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, view_materialAddNewTextureHandler, PropertyEditorEvent );
+			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			
         }
 
@@ -113,14 +114,17 @@ package awaybuilder.view.mediators
 		
 		private function view_materialAddNewTextureHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new ImportTextureForMaterialEvent(ImportTextureForMaterialEvent.IMPORT,[event.data]));
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[event.data]));
 		}
 		private function view_submeshAddNewMaterialHandler(event:PropertyEditorEvent):void
 		{
 			var vo:SubMeshVO = event.data as SubMeshVO;
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[event.data],vo.material));
 		}
-		
+		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_REPLACE,[event.data]));
+		}
         //----------------------------------------------------------------------
         //
         //	context handlers

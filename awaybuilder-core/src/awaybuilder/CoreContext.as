@@ -10,7 +10,9 @@ package awaybuilder
 	import awaybuilder.controller.document.AppendDocumentCommand;
 	import awaybuilder.controller.document.ConcatenateDocumentDataCommand;
 	import awaybuilder.controller.document.ImportDocumentCommand;
+	import awaybuilder.controller.document.ImportTextureAndReplaceCommand;
 	import awaybuilder.controller.document.ImportTextureForMaterialCommand;
+	import awaybuilder.controller.document.LoadTextureAndRepalceCommand;
 	import awaybuilder.controller.document.LoadTextureForMaterialCommand;
 	import awaybuilder.controller.document.NewDocumentCommand;
 	import awaybuilder.controller.document.OpenDocumentCommand;
@@ -18,7 +20,7 @@ package awaybuilder
 	import awaybuilder.controller.document.SaveDocumentCommand;
 	import awaybuilder.controller.document.SaveDocumentFailCommand;
 	import awaybuilder.controller.document.SaveDocumentSuccessCommand;
-	import awaybuilder.controller.document.events.ImportTextureForMaterialEvent;
+	import awaybuilder.controller.document.events.ImportTextureEvent;
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
@@ -33,6 +35,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
 	import awaybuilder.controller.scene.ChangeMeshCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
+	import awaybuilder.controller.scene.ReplaceTextureCommand;
 	import awaybuilder.controller.scene.RotateObjectCommand;
 	import awaybuilder.controller.scene.ScaleObjectCommand;
 	import awaybuilder.controller.scene.SelectCommand;
@@ -119,14 +122,18 @@ package awaybuilder
 			
 			this.commandMap.mapEvent(SceneEvent.DELETE_OBJECTS, DeleteObjectCommand);
 			this.commandMap.mapEvent(SceneEvent.SELECT, SelectCommand);
-
-			this.commandMap.mapEvent(ImportTextureForMaterialEvent.IMPORT, ImportTextureForMaterialCommand);
-			this.commandMap.mapEvent(ImportTextureForMaterialEvent.LOAD, LoadTextureForMaterialCommand);
+			
+			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_ADD, ImportTextureForMaterialCommand);
+			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_ADD, LoadTextureForMaterialCommand);
+			
+			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_REPLACE, ImportTextureAndReplaceCommand);
+			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_REPLACE, LoadTextureAndRepalceCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
             commandMap.mapEvent(SceneEvent.CHANGE_MATERIAL, ChangeMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
+			commandMap.mapEvent(SceneEvent.REPLACE_TEXTURE, ReplaceTextureCommand);
 
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_COPY, CopyCommand);

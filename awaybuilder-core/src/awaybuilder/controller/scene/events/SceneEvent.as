@@ -19,6 +19,7 @@ import flash.events.Event;
 		
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";
 		public static const ADD_NEW_TEXTURE:String = "addNewTexture";
+		public static const REPLACE_TEXTURE:String = "replaceTexture";
 		
 		public static const SWITCH_CAMERA_TO_FREE:String = "switchCameraToFree";
 		public static const SWITCH_CAMERA_TO_TARGET:String = "switchCameraToTarget";

@@ -7,12 +7,13 @@
     </s:layout>
     <fx:Script><![CDATA[
 		import away3d.core.base.SubMesh;
-		import away3d.materials.utils.DefaultMaterialManager;
 		
 		import awaybuilder.model.vo.MaterialVO;
 		import awaybuilder.model.vo.SubMeshVO;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
+		
+		import mx.controls.Alert;
 		
 		import spark.events.IndexChangeEvent;
 
@@ -26,6 +27,12 @@
 		{
             super.data = value;
             _subMesh = value as SubMeshVO;
+			if( !_subMesh.material )
+			{
+				trace( SubMesh(_subMesh.linkedObject).sourceEntity.name );
+				Alert.show( "material is lost" );
+				return;
+			}
             for each(var material:MaterialVO in _subMesh.linkedMaterials) 
 			{
                 if (material.linkedObject == _subMesh.material.linkedObject) 

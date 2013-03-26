@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark" paddingLeft="6" paddingRight="6" paddingBottom="6" paddingTop="6">
+         xmlns:s="library://ns.adobe.com/flex/spark" paddingLeft="6" paddingRight="6" paddingBottom="6" paddingTop="6"
+		  horizontalAlign="center" height="100%">
     <fx:Declarations>
     </fx:Declarations>
     <fx:Script><![CDATA[
@@ -41,7 +42,12 @@
 //            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }
 
-        ]]></fx:Script>
+		protected function replaceButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, data, true));
+		}
+		
+	]]></fx:Script>
 
 
     <s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
@@ -51,7 +57,21 @@
         <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
             <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
         </s:FormItem>
+		<s:FormItem label="Bitmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:Button label="Replace ..." click="replaceButton_clickHandler(event)" width="100%"/>
+		</s:FormItem>
     </s:Form>
-    <s:BitmapImage width="100%" source="{data.bitmapData}" scaleMode="letterbox"/>
+	<s:Spacer height="6"/>
+    <s:Group width="100%">
+		<s:Rect top="-1" bottom="-1" right="-1" left="-1">
+			<s:fill>
+				<s:SolidColor color="0x000000"/>
+			</s:fill>
+		</s:Rect>
+		<s:BitmapImage width="100%" source="{data.bitmapData}" scaleMode="letterbox"/>
+		<s:filters>
+			<s:DropShadowFilter distance="1"/>
+		</s:filters>
+	</s:Group>
 
 </s:VGroup>

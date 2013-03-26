@@ -239,6 +239,12 @@ s|Button.editSharedObjectButtonStyle
 	icon: Embed("assets/images/arrow-transition.png");
 }
 
+s|Button.replaceBitmapButton
+{
+/*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
+	icon: Embed("assets/images/scale_image.png");*/
+}
+
 
 awaybuilder|ApplicationSettingsForm s|List
 {
