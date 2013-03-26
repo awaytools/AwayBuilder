@@ -2,7 +2,7 @@ package awaybuilder.model.vo
 {
 	import mx.collections.ArrayCollection;
 
-	[Binable]
+	[Bindable]
 	public class DocumentVO
 	{
 		

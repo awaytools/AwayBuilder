@@ -6,6 +6,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.AssetVO;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
@@ -27,8 +28,7 @@ package awaybuilder.view.mediators
 		[Inject]
 		public var document:IDocumentModel;
 		
-		private var _scenegraphSort:Sort = new Sort();
-		private var _scenegraph:ArrayCollection;
+		private var _model:DocumentVO;
 		private var _scenegraphSelected:Vector.<Object>;
 		
 		override public function onRegister():void
@@ -67,61 +67,18 @@ package awaybuilder.view.mediators
 		
 		private function updateScenegraph():void
 		{
-			_scenegraph = new ArrayCollection();
-			var branch:ScenegraphGroupItemVO;
-			if( document.scene && document.scene.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Scene", ScenegraphGroupItemVO.SCENE_GROUP );
-				branch.children = getBranchCildren( document.scene );
-				_scenegraph.addItem( branch );
-			}
-			if( document.materials && document.materials.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Materials", ScenegraphGroupItemVO.MATERIAL_GROUP );
-				branch.children = getBranchCildren( document.materials );
-				_scenegraph.addItem( branch );
-			}
-			if( document.animations && document.animations.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Animations", ScenegraphGroupItemVO.ANIMATION_GROUP );
-				branch.children = getBranchCildren( document.animations );
-				_scenegraph.addItem( branch );
-			}
-			if( document.geometry && document.geometry.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Geometry", ScenegraphGroupItemVO.GEOMETRY_GROUP );
-				branch.children = getBranchCildren( document.geometry );
-				_scenegraph.addItem( branch );
-			}
-			if( document.textures && document.textures.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Textures", ScenegraphGroupItemVO.TEXTURE_GROUP );
-				branch.children = getTextureBranchCildren( document.textures );
-				_scenegraph.addItem( branch );
-			}
-			if( document.skeletons && document.skeletons.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Skeletons", ScenegraphGroupItemVO.SKELETON_GROUP );
-				branch.children = getBranchCildren( document.skeletons );
-				_scenegraph.addItem( branch );
-			}
-			if( document.lights && document.lights.length ) 
-			{
-				branch = new ScenegraphGroupItemVO( "Lights", ScenegraphGroupItemVO.LIGHT_GROUP );
-				branch.children = getBranchCildren( document.lights );
-				_scenegraph.addItem( branch );
-			}
+			_model = new DocumentVO();
 			
+			_model.scene = getBranchCildren( document.scene );
+			_model.materials = getBranchCildren( document.materials );
+			_model.animations = getBranchCildren( document.animations );
+			_model.textures = getBranchCildren( document.textures );
+			_model.skeletons = getBranchCildren( document.skeletons );
+			_model.geometry = getBranchCildren( document.geometry );
+			_model.lights = getBranchCildren( document.lights );
 			
-			_scenegraphSort.compareFunction = compareGroupItems;
-			_scenegraph.sort = _scenegraphSort;
-			_scenegraph.refresh();
+			view.model = _model;
 			
-			view.scenegraph = _scenegraph;
-			
-			view.tree.expandAll();
-			view.expandTreeButton.visible = false;
-			view.collapseTreeButton.visible = true;
 		}
 		
 		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
@@ -143,18 +100,6 @@ package awaybuilder.view.mediators
 			return children;
 		}
 		
-		private function compareGroupItems( a:Object, b:Object, fields:Array=null ):int
-		{
-			var group1:ScenegraphGroupItemVO = a as ScenegraphGroupItemVO;
-			var group2:ScenegraphGroupItemVO = b as ScenegraphGroupItemVO;
-			if (group1 == null && group2 == null) return 0;
-			if (group1 == null)	return 1;
-			if (group2 == null)	return -1;
-			if (group1.weight < group2.weight) return -1;
-			if (group1.weight > group2.weight) return 1;
-			return 0;
-		}
-		
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
@@ -171,9 +116,32 @@ package awaybuilder.view.mediators
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
 			_scenegraphSelected = new Vector.<Object>();
-			updateAllSelectedItems( _scenegraph, event.items );
+			updateAllSelectedItems( _model.scene, event.items );
+			updateAllSelectedItems( _model.materials, event.items );
+			updateAllSelectedItems( _model.textures, event.items );
+			updateAllSelectedItems( _model.geometry, event.items );
+			updateAllSelectedItems( _model.animations, event.items );
+			updateAllSelectedItems( _model.skeletons, event.items );
+			updateAllSelectedItems( _model.lights, event.items );
 			view.selectedItems = _scenegraphSelected;
-			view.callLater( view.tree.ensureIndexIsVisible, [view.tree.selectedIndex] );
+			
+			view.callLater( ensureIndexIsVisible );
+			
+		}
+		private function ensureIndexIsVisible():void 
+		{
+			if( view.sceneTree.selectedIndex )
+			{
+				view.callLater( view.sceneTree.ensureIndexIsVisible, [view.sceneTree.selectedIndex] );	
+			}
+			if( view.materialTree.selectedIndex )
+			{
+				view.callLater( view.materialTree.ensureIndexIsVisible, [view.materialTree.selectedIndex] );	
+			}
+			if( view.texturesTree.selectedIndex )
+			{
+				view.callLater( view.texturesTree.ensureIndexIsVisible, [view.texturesTree.selectedIndex] );	
+			}
 			
 		}
 		private function updateAllSelectedItems( children:ArrayCollection, selectedItems:Array ):void

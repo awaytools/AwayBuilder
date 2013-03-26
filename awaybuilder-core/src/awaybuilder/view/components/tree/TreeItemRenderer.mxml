@@ -12,7 +12,7 @@
 	</tree:states>
 
     <tree:layout>
-        <s:HorizontalLayout paddingLeft="{indentation + 4}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1"/>
+        <s:HorizontalLayout paddingLeft="{indentation +2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="6"/>
     </tree:layout>
 	<fx:Script>
 		<![CDATA[
@@ -40,7 +40,7 @@
 	
     <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
                     selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
-
+	<s:BitmapImage source="@Embed('assets/images/origami.png')"/>
     <s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
 
 	

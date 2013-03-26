@@ -8,6 +8,7 @@ package awaybuilder.view.components.tree
 	import mx.collections.IList;
 	import mx.controls.treeClasses.DefaultDataDescriptor;
 	import mx.controls.treeClasses.ITreeDataDescriptor2;
+	import mx.controls.treeClasses.TreeItemRenderer;
 	import mx.core.ClassFactory;
 	import mx.core.IVisualElement;
 	import mx.core.mx_internal;
@@ -64,9 +65,7 @@ package awaybuilder.view.components.tree
 			super();
 			
 			// Handle styles when getStyle() will return corrent values.
-			addEventListener(FlexEvent.PREINITIALIZE, preinitializeHandler);
-			
-			itemRenderer = new ClassFactory(TreeItemRenderer);
+//			itemRenderer = new ClassFactory(TreeItemRenderer);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -461,10 +460,6 @@ package awaybuilder.view.components.tree
 		//  Event handlers
 		//
 		//--------------------------------------------------------------------------
-		
-		protected function preinitializeHandler(event:FlexEvent):void
-		{
-		}
 		
 		private function dataProvider_someHandler(event:TreeEvent):void
 		{

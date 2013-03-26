@@ -5,6 +5,7 @@
 @namespace renderers "awaybuilder.view.components.renderers.*";
 @namespace propertyEditors "awaybuilder.view.components.propertyEditors.*";
 @namespace controls "awaybuilder.view.components.controls.*";
+@namespace tree "awaybuilder.view.components.tree.*";
 
 global {
 	modalTransparency: 0.5;
@@ -17,6 +18,10 @@ awaybuilder|CoreEditor
 	backgroundColor: #dbdbdb; 
 	color: #1d1d1c;
 	chromeColor: #dbdbdb;
+}
+tree|Tree
+{
+	skinClass: ClassReference("awaybuilder.view.skins.TreeSkin")
 }
 
 s|NumericStepper 

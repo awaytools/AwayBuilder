@@ -14,9 +14,17 @@ package awaybuilder.controller.document
 	import awaybuilder.services.ProcessDataService;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
+	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
+	import flash.events.Event;
+	
 	import mx.collections.ArrayCollection;
+	import mx.core.FlexGlobals;
+	import mx.managers.CursorManager;
 	
 	import org.robotlegs.mvcs.Command;
+	
+	import spark.components.Application;
 
 	public class ConcatenateDocumentDataCommand extends HistoryCommandBase
 	{
@@ -26,6 +34,8 @@ package awaybuilder.controller.document
 		[Inject]
 		public var event:DocumentDataOperationEvent;
 		
+		private var _sceneObjects:Array;
+		
 		override public function execute():void
 		{
 			if( event.isUndoAction )
@@ -34,11 +44,7 @@ package awaybuilder.controller.document
 				return;
 			}
 			var data:DocumentVO = event.newValue as DocumentVO;
-			for each( var vo:AssetVO in data.scene ) {
-				if( vo is MeshVO ) {
-					Scene3DManager.addMesh( vo.linkedObject as Mesh );
-				}
-			}
+			addObjects( data.scene.source );
 			document.animations = new ArrayCollection(document.animations.source.concat( data.animations.source ));
 			document.geometry = new ArrayCollection(document.geometry.source.concat( data.geometry.source ));
 			document.materials = new ArrayCollection(document.materials.source.concat( data.materials.source ));
@@ -51,6 +57,9 @@ package awaybuilder.controller.document
 			{
 				addToHistory( event );
 			}
+			
+			CursorManager.setBusyCursor();
+			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
@@ -87,6 +96,41 @@ package awaybuilder.controller.document
 						i--;
 					}
 				}
+			}
+		}
+		
+		private function addObjects( objects:Array ):void 
+		{
+			_sceneObjects = objects.concat();
+			DisplayObject(FlexGlobals.topLevelApplication).addEventListener( Event.ENTER_FRAME, addNextObject_enterFrameHandler );
+		}
+		private function addNextObject_enterFrameHandler( event:Event ):void 
+		{
+			if( _sceneObjects.length == 0 )
+			{
+				DisplayObject(FlexGlobals.topLevelApplication).removeEventListener( Event.ENTER_FRAME, addNextObject_enterFrameHandler );
+				
+				CursorManager.removeBusyCursor();
+				Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
+				return;
+			}
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+			addObject( _sceneObjects.shift() );
+		}
+		private function addObject( value:Object ):void
+		{
+			var mesh:MeshVO = value as MeshVO;
+			if( mesh ) 
+			{
+				Scene3DManager.addMesh( mesh.linkedObject as Mesh );
 			}
 		}
 		

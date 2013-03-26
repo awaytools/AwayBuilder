@@ -4,59 +4,123 @@
 						   xmlns:mx="library://ns.adobe.com/flex/mx" 
 						   xmlns:controls="awaybuilder.view.components.controls.*" 
 						   xmlns:tree="awaybuilder.view.components.tree.*"
-						   chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
-						   skinClass="awaybuilder.view.skins.CollapsiblePanelSkin">
+						   skinClass="awaybuilder.view.skins.CollapsiblePanelSkin" width="250" creationComplete="collapsiblepanel_creationCompleteHandler(event)">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Power id="collapseEaser" exponent="2" easeInFraction="0.1" />
+		<s:Resize id="collapseEffect" duration="150" easer="{collapseEaser}" heightTo="24" />
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import awaybuilder.model.vo.DocumentVO;
 			import awaybuilder.view.components.events.CoreEditorEvent;
 			import awaybuilder.view.components.events.LibraryPanelEvent;
 			
 			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
 			
 			import spark.events.IndexChangeEvent;
 			
-			[Bindable] public var scenegraph:ArrayCollection;
-			[Bindable] public var selectedItems:Vector.<Object>;
+			[Bindable] 
+			public var model:DocumentVO;
 			
-			protected function collapseTreeButton_clickHandler(event:MouseEvent):void
+			[Bindable] 
+			public var selectedItems:Vector.<Object>;
+			
+			private var _expandedPanel:CollapsiblePanel;
+			private var _panels:Array;
+			
+			protected function panel_collapsedChangeHandler(event:Event):void
 			{
-				tree.collapseAll();
-				collapseTreeButton.visible = false;
-				expandTreeButton.visible = true;
+				var panel:CollapsiblePanel = event.target as CollapsiblePanel;
+				if( panel.collapsed ) 
+				{
+					collapseEffect.play( [panel] );
+					
+					if( _expandedPanel == panel ) 
+					{
+						getNextPanel(panel).collapsed = false;
+					}
+				}
+				else 
+				{
+					_expandedPanel = panel;
+					panel.percentHeight = 100;
+					collapseAllExcept( panel );
+				}
 			}
-			protected function expandTreeButton_clickHandler(event:MouseEvent):void
+			private function collapseAllExcept( panel:CollapsiblePanel ):void
 			{
-				tree.expandAll();
-				collapseTreeButton.visible = true;
-				expandTreeButton.visible = false;
+				for each( var p:CollapsiblePanel in _panels )
+				{
+					if( p != panel ) p.collapsed = true;
+				}
 			}
+			private function getNextPanel( panel:CollapsiblePanel ):CollapsiblePanel
+			{
+				var result:int = 0;
+				for (var i:int = 0; i < _panels.length; i++) 
+				{
+					if( _panels[i] == panel ) 
+					{
+						if( i+1 < _panels.length ) return _panels[i+1]
+					}
+						
+				}
+				return _panels[0];
+			}
+			
+			protected function collapsiblepanel_creationCompleteHandler(event:FlexEvent):void
+			{
+				_expandedPanel = scenePanel;
+				_panels = [scenePanel,materialsPanel,texturesPanel,geometryPanel,skeletonsPanel,animationsPanel,lightsPanel];
+			}
+			
 			protected function tree_changeHandler(event:IndexChangeEvent):void
 			{
-				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, tree.selectedItems ) );
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, sceneTree.selectedItems ) );
 			}
 		]]>
 	</fx:Script>
-	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="2" paddingTop="2" paddingBottom="2" height="23">
-		<s:Label width="100%" text="Library" fontWeight="bold"/>
-		<s:Button id="collapseTreeButton" label="collapse all" height="19" visible="false" includeInLayout="{collapseTreeButton.visible}"
-				  skinClass="awaybuilder.view.skins.ButtonSkin"
-				  click="collapseTreeButton_clickHandler(event)"/>
-		<s:Button id="expandTreeButton" label="expand all" height="19" visible="false" includeInLayout="{expandTreeButton.visible}"
-				  skinClass="awaybuilder.view.skins.ButtonSkin"
-				  click="expandTreeButton_clickHandler(event)"/>
-		<!--<s:ToggleButton id="disclosureButton"
-		skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>-->
-	</s:HGroup>
-	<tree:Tree id="tree" 
-			   dataProvider="{scenegraph}" 
-			   selectedItems="{selectedItems}"
-			   borderVisible="false" skinClass="awaybuilder.view.skins.TreeSkin"
-			   labelField="label" change="tree_changeHandler(event)"
-			   width="250" height="100%"
-			   dragEnabled="false" dropEnabled="false"
-			   dragMoveEnabled="true">
-	</tree:Tree>
+	<controls:CollapsiblePanel id="scenePanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+		title="Scene Objects" width="100%" collapsed="false" height="100%" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel  id="materialsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+								title="Materials" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel id="texturesPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+							   title="Textures" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel id="geometryPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+							   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel id="skeletonsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+							   title="Skeletons" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="skeletonsTree" dataProvider="{model.skeletons}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel id="animationsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+							   title="Animations" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel id="lightsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+							   title="Lights" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+		<tree:Tree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedItems}"
+				   change="tree_changeHandler(event)"
+				   width="100%" height="100%"/>
+	</controls:CollapsiblePanel>
 </controls:CollapsiblePanel>
