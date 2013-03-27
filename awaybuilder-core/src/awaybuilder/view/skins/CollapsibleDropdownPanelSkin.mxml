@@ -4,7 +4,7 @@
              xmlns:fb="http://ns.adobe.com/flashbuilder/2009" xmlns:spark="spark.skins.spark.*"
              blendMode="normal" mouseEnabled="false"
              minWidth="131" minHeight="{topGroup.height}"
-             alpha.disabled="0.5" alpha.disabledWithControlBar="0.5">
+             alpha.disabled="0.5" alpha.disabledWithControlBar="0.5" xmlns:fxg="awaybuilder.view.skins.fxg.*">
 
     <fx:Metadata>
         [HostComponent("awaybuilder.view.components.controls.CollapsiblePanel")]
@@ -13,7 +13,7 @@
     <fx:Script fb:purpose="styling">
         /* Define the skin elements that should not be colorized. 
          For panel, border and title background are skinned, but the content area and title text are not. */
-        static private const exclusions:Array = ["background", "titleDisplay", "contentGroup", "controlBarGroup", "collapseButton"];
+        static private const exclusions:Array = ["background", "titleDisplay", "contentGroup", "controlBarGroup", "collapseButton", "icon"];
 
         /**
          * @private
@@ -103,13 +103,17 @@
             <s:Parallel>
                 <s:Fade target="{contentGroup}" duration="150" />
                 <s:Resize target="{this}" duration="150" easer="{collapseEaser}" />
+				<s:Rotate target="{icon}" duration="150"/>
             </s:Parallel>
         </s:Transition>
         <s:Transition fromState="collapsed" toState="*">
-            <s:Sequence>
-                <s:Resize target="{this}" duration="125" easer="{restoreEaser}" />
-                <s:Fade target="{contentGroup}" duration="75" />
-            </s:Sequence>
+			<s:Parallel>
+				<s:Sequence>
+					<s:Resize target="{this}" duration="125" easer="{restoreEaser}" />
+					<s:Fade target="{contentGroup}" duration="75" />
+				</s:Sequence>
+				<s:Rotate target="{icon}" duration="150"/>
+			</s:Parallel>
         </s:Transition>
     </s:transitions>
 
@@ -200,17 +204,26 @@
                 </s:Rect>
 
                 <!-- layer 3: text -->
-                <s:Group left="9" right="7" minHeight="30" verticalCenter="0">
-                    <s:layout>
-                        <s:HorizontalLayout verticalAlign="middle"/>
-                    </s:layout>
-                    <!--- @copy spark.components.Panel#titleDisplay -->
-                    <s:Button id="collapseButton" label="" width="20" height="20"/>
-                    <s:Label id="titleDisplay" maxDisplayedLines="1" color="0xEEEEEE"
-                             verticalAlign="middle" textAlign="start" fontWeight="bold"
-                             width="100%"/>
-
-                </s:Group>
+				<s:Group left="9" right="7" minHeight="24" verticalCenter="0">
+					<s:layout>
+						<s:HorizontalLayout verticalAlign="middle"/>
+					</s:layout>
+					<!--- @copy spark.components.Panel#titleDisplay -->
+					<s:Group>
+						<fxg:CollapseArrowDownSkin scaleX="2" scaleY="2" id="icon" verticalCenter="0" horizontalCenter="0" rotation="0" rotation.collapsed="-90" alpha="0.8">
+							<fxg:filters>
+								<s:DropShadowFilter blurX="1" blurY="1" distance="1" angle="-140"/>
+							</fxg:filters>
+						</fxg:CollapseArrowDownSkin>
+						<s:Button id="collapseButton" label="" width="20" height="20" alpha="0"/>
+					</s:Group>
+					
+					
+					<s:Label id="titleDisplay" maxDisplayedLines="1" color="0xEEEEEE" paddingTop="1"
+							 verticalAlign="middle" textAlign="start" fontWeight="bold"
+							 width="100%"/>
+					
+				</s:Group>
             </s:Group>
 
             <!--

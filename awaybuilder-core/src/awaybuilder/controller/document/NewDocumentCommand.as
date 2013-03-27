@@ -4,6 +4,7 @@ package awaybuilder.controller.document
 	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.textures.BitmapTexture;
 	
+	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.ISettingsModel;
 	import awaybuilder.model.UndoRedoModel;
@@ -31,30 +32,22 @@ package awaybuilder.controller.document
 		override public function execute():void
 		{
 			undoRedo.clear();
+			Scene3DManager.clear();
+			document.clear();
 			
 			document.name = "Untitled Library 1";
 			document.edited = false;
 			document.path = null;
 
-			document.scene = new ArrayCollection();
-			
 			var material:MaterialVO = new MaterialVO( DefaultMaterialManager.getDefaultMaterial() );
 			material.name = "Away3D Default";
-			document.materials = new ArrayCollection([material]);
-			
-			document.animations = new ArrayCollection();
-			document.geometry = new ArrayCollection();
+			document.materials.addItem(material);
 			
 			var texture:BitmapTextureVO = new BitmapTextureVO( DefaultMaterialManager.getDefaultTexture() );
 			texture.name = "Away3D Default";
-			document.textures = new ArrayCollection([texture]);
+			document.textures.addItem(texture);
 			
-			document.skeletons = new ArrayCollection();
-			document.lights = new ArrayCollection();
-			
-			document.selectedObjects = new Vector.<AssetVO>();
-			
-			Scene3DManager.clear();
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 	}
 }

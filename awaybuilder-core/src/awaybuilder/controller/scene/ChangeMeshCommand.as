@@ -39,7 +39,7 @@ package awaybuilder.controller.scene
                 var updatedSubMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
                 var subMesh:SubMeshVO = vo.subMeshes[i] as SubMeshVO;
                 subMesh.material = updatedSubMesh.material.clone();
-                subMesh.linkedObject.material = updatedSubMesh.material.linkedObject as MaterialBase;
+				subMesh.apply();
             }
 
             addToHistory( event );

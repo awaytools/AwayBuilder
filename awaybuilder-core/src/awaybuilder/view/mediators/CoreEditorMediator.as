@@ -2,9 +2,7 @@ package awaybuilder.view.mediators
 {
     import away3d.core.base.Object3D;
     import away3d.entities.Mesh;
-    import away3d.materials.utils.DefaultMaterialManager;
     
-    import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.AssetVO;
@@ -59,7 +57,6 @@ package awaybuilder.view.mediators
 
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			view.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);	
-			
 		}
 		
 		//----------------------------------------------------------------------
@@ -94,31 +91,39 @@ package awaybuilder.view.mediators
                 case Keyboard.W:
                 case Keyboard.UP:
 					CameraManager.moveForward(CameraManager.speed);
+					e.stopImmediatePropagation();
 					break;
                 case Keyboard.S:
 				case Keyboard.DOWN: 
 					CameraManager.moveBackward(CameraManager.speed);
+					e.stopImmediatePropagation();
 					break;
                 case Keyboard.A:
 				case Keyboard.LEFT: 
 					CameraManager.moveLeft(CameraManager.speed);
+					e.stopImmediatePropagation();
 					break;
                 case Keyboard.D:
 				case Keyboard.RIGHT: 
 					CameraManager.moveRight(CameraManager.speed);
+					e.stopImmediatePropagation();
 					break;
 				case Keyboard.SHIFT: 
 					CameraManager.running = true;
+					e.stopImmediatePropagation();
 					break;
 				case Keyboard.F: 
 					if (Scene3DManager.selectedObject != null) 
 					{
 						CameraManager.focusTarget(Scene3DManager.selectedObject);
 					}
+					e.stopImmediatePropagation();
 					break;
 				case Keyboard.CONTROL:
 					Scene3DManager.multiSelection = true;
+					e.stopImmediatePropagation();
 					break;	
+				
 			}				
 		}
 		
@@ -133,18 +138,22 @@ package awaybuilder.view.mediators
 				case Keyboard.UP: 
 				case Keyboard.DOWN: 
 					CameraManager.moveForward(0);
+					e.stopImmediatePropagation();
 					break;
                 case Keyboard.A:
                 case Keyboard.D:
 				case Keyboard.LEFT: 
 				case Keyboard.RIGHT: 
 					CameraManager.moveLeft(0);
+					e.stopImmediatePropagation();
 					break;
 				case Keyboard.SHIFT: 
 					CameraManager.running = false;
+					e.stopImmediatePropagation();
 					break;
 				case Keyboard.CONTROL:
 					Scene3DManager.multiSelection = false;
+					e.stopImmediatePropagation();
 					break;
 			}				
 			
@@ -196,7 +205,7 @@ package awaybuilder.view.mediators
 					if( event.items[0] is MeshVO )
 					{
 						var mesh:MeshVO = event.items[0] as MeshVO;
-						selectObjectsScene( mesh.mesh );
+						selectObjectsScene( mesh.linkedObject as Object3D );
 					}
 					else {
                         Scene3DManager.unselectAll();
@@ -294,11 +303,6 @@ package awaybuilder.view.mediators
                     this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],event.endValue));
                     break;
             }
-        }
-
-        private function updateObjectOnChange( gizmoMode:String, endValue:Vector3D, object:Object ):void
-        {
-
         }
 
         //----------------------------------------------------------------------

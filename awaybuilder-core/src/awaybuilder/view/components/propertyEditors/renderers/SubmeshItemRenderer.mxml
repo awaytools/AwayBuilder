@@ -30,21 +30,27 @@
 			if( !_subMesh.material )
 			{
 				trace( SubMesh(_subMesh.linkedObject).sourceEntity.name );
-				Alert.show( "material is lost" );
+				Alert.show( "material is lost", "Bug" );
 				return;
 			}
+			var materialPresent:Boolean = false;
             for each(var material:MaterialVO in _subMesh.linkedMaterials) 
 			{
                 if (material.linkedObject == _subMesh.material.linkedObject) 
 				{
                     _selectedMaterial = material;
+					materialPresent = true;
                 }
             }
+			if( !materialPresent )
+			{
+				_selectedMaterial = null;
+			}
         }
 
         private function dropDownList1_changeHandler(event:IndexChangeEvent):void 
 		{
-            var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject as SubMesh);
+            var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject as SubMesh,_subMesh.parentMesh);
             newValue.material = dropDownList.selectedItem as MaterialVO;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, newValue, true));
         }
@@ -56,7 +62,8 @@
 		
 		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, _subMesh, true));
+			var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject as SubMesh,_subMesh.parentMesh);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, newValue, true));
 		}
 		
 		private function dropDownIconFunction(item:MaterialVO):Object 

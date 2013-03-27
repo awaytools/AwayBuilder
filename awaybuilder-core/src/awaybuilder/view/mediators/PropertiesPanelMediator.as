@@ -12,6 +12,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.MaterialVO;
     import awaybuilder.model.vo.MeshVO;
     import awaybuilder.model.vo.SubMeshVO;
+    import awaybuilder.utils.scene.SceneUtils;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
     
@@ -27,28 +28,29 @@ package awaybuilder.view.mediators
 
         override public function onRegister():void
         {
-            addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler, DocumentModelEvent);
-            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
-            addContextListener(SceneEvent.CHANGING, eventDispatcher_changingHandler, SceneEvent);
-            addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_changeMeshHandler, SceneEvent);
-            addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_changeMeshHandler, SceneEvent);
-            addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_changeMeshHandler, SceneEvent);
-            addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler, SceneEvent);
-            addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler, SceneEvent);
-			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureToMaterialHandler, SceneEvent);
+            addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
+            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
+            addContextListener(SceneEvent.CHANGING, eventDispatcher_changingHandler);
+            addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_changeMeshHandler);
+            addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_changeMeshHandler);
+            addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_changeMeshHandler);
+            addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
+			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_changeMeshHandler);
+            addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
+			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureToMaterialHandler);
 
-            addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.SCALE, view_scaleHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.MESH_CHANGE, view_meshChangeHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.MESH_NAME_CHANGE, view_meshNameChangeHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.MESH_SUBMESH_CHANGE, view_meshSubmeshChangeHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, view_showMaterialPropertiesHandler, PropertyEditorEvent );
-            addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler, PropertyEditorEvent );
-			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler, PropertyEditorEvent );
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, view_materialAddNewTextureHandler, PropertyEditorEvent );
+            addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
+            addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
+            addViewListener( PropertyEditorEvent.SCALE, view_scaleHandler );
+            addViewListener( PropertyEditorEvent.MESH_CHANGE, view_meshChangeHandler );
+            addViewListener( PropertyEditorEvent.MESH_NAME_CHANGE, view_meshNameChangeHandler );
+            addViewListener( PropertyEditorEvent.MESH_SUBMESH_CHANGE, view_meshSubmeshChangeHandler );
+			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler );
+            addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
+            addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler );
+            addViewListener( PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, view_showMaterialPropertiesHandler );
+            addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			
         }
@@ -118,8 +120,13 @@ package awaybuilder.view.mediators
 		}
 		private function view_submeshAddNewMaterialHandler(event:PropertyEditorEvent):void
 		{
-			var vo:SubMeshVO = event.data as SubMeshVO;
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[event.data],vo.material));
+			var vo:MeshVO = view.data as MeshVO;
+			var newValue:SubMeshVO =  SubMeshVO(event.data);
+			
+			newValue.material = SceneUtils.GetMaterialCopy( newValue.material );
+			
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[view.data], newValue));
+//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[event.data],vo.material));
 		}
 		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
 		{
@@ -162,7 +169,7 @@ package awaybuilder.view.mediators
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
-            var mesh:Mesh = (event.items[0] as MeshVO).mesh;
+            var mesh:Mesh = MeshVO(event.items[0]).linkedObject as Mesh;
             var vo:MeshVO = view.data as MeshVO;
             vo.x = mesh.x;
             vo.y = mesh.y;

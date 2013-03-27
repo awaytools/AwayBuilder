@@ -71,7 +71,7 @@ package awaybuilder.model.vo
 			{
 				type = COLOR;
 				var colorMaterial:ColorMaterial = item as ColorMaterial;
-				this.color = colorMaterial.color;
+				color = colorMaterial.color;
 				alpha = colorMaterial.alpha;
 			}
 			
@@ -120,14 +120,64 @@ package awaybuilder.model.vo
         public var smooth:Boolean;
 
 		
-		public function get material():MaterialBase
+		public function apply():void
 		{
-			return linkedObject as MaterialBase;
+			
+			if( type == COLOR )
+			{
+				var cm:ColorMaterial = linkedObject as ColorMaterial;
+				cm.color = color;
+				cm.alpha = alpha;
+				cm.name = name;
+			}
+			else if( type == TEXTURE )
+			{
+				var tm:TextureMaterial = linkedObject as TextureMaterial;
+				tm.texture = texture.linkedObject as Texture2DBase;
+				tm.alpha = alpha;
+				tm.repeat = repeat;
+				tm.name = name;
+
+			}
 		}
 		
         public function clone():MaterialVO
         {
             var vo:MaterialVO = new MaterialVO( this.linkedObject as MaterialBase );
+			vo.repeat = this.repeat;
+			
+			vo.alphaPremultiplied = this.alphaPremultiplied;
+			
+			vo.bothSides = this.bothSides;
+			vo.extra = this.extra;
+			vo.lightPicker = this.lightPicker;
+			vo.mipmap = this.mipmap;
+			vo.smooth = this.smooth;
+			
+			if( this.texture ) {
+				vo.texture =  this.texture.clone();
+			}
+				
+			vo.alphaBlending = this.alphaBlending;
+			vo.alphaThreshold = this.alphaThreshold;
+			vo.colorTransform = this.colorTransform;
+			vo.gloss = this.gloss;
+			vo.normalMethod = this.normalMethod;
+			vo.normalTexture = this.normalTexture;
+			
+			vo.shadowMethod = this.shadowMethod;
+			vo.ambient = this.ambient;
+			vo.ambientColor = this.ambientColor;
+			vo.ambientMethod = this.ambientMethod;
+			vo.ambientTexture = this.ambientTexture;
+			vo.diffuseMethod = this.diffuseMethod;
+			vo.specular = this.specular;
+			vo.specularColor = this.specularColor;
+			vo.specularMethod = this.specularMethod;
+			vo.specularTexture = this.specularTexture;
+			vo.color = this.color;
+			vo.alpha = this.alpha;
+			
             return vo;
         }
     }

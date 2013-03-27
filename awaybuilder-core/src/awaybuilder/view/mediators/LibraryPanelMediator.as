@@ -10,6 +10,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
@@ -33,14 +34,13 @@ package awaybuilder.view.mediators
 		
 		override public function onRegister():void
 		{
-			
 			addViewListener(LibraryPanelEvent.TREE_CHANGE, view_treeChangeHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
 			
 			addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			
-			updateScenegraph();
 		}
 		
 		//----------------------------------------------------------------------
@@ -76,26 +76,45 @@ package awaybuilder.view.mediators
 			_model.skeletons = getBranchCildren( document.skeletons );
 			_model.geometry = getBranchCildren( document.geometry );
 			_model.lights = getBranchCildren( document.lights );
-			
-			view.model = _model;
+
+			if( view.model ) 
+			{
+				DataMerger.syncArrays( view.model.scene, _model.scene, "item" );
+				DataMerger.syncArrays( view.model.materials, _model.materials, "item" );
+				DataMerger.syncArrays( view.model.animations, _model.animations, "item" );
+				DataMerger.syncArrays( view.model.textures, _model.textures, "item" );
+				DataMerger.syncArrays( view.model.skeletons, _model.skeletons, "item" );
+				DataMerger.syncArrays( view.model.geometry, _model.geometry, "item" );
+				DataMerger.syncArrays( view.model.lights, _model.lights, "item" );
+			}
+			else
+			{
+				view.model = _model;
+			}
 			
 		}
-		
+		private function syncItems( originalList:ArrayCollection, newList:ArrayCollection ):void
+		{
+			
+		}
+		private function removeNonExistingItems( originalList:ArrayCollection, newList:ArrayCollection ):void
+		{
+		}
 		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
 		{
 			var children:ArrayCollection = new ArrayCollection();
-			for each( var o:AssetVO in objects )
+			for each( var asste:AssetVO in objects )
 			{
-				children.addItem( new ScenegraphItemVO( o.name, o ) );
+				children.addItem( new ScenegraphItemVO( asste.name, asste ) );
 			}
 			return children;
 		}
 		private function getTextureBranchCildren( objects:ArrayCollection ):ArrayCollection
 		{
 			var children:ArrayCollection = new ArrayCollection();
-			for each( var o:AssetVO in objects )
+			for each( var asste:AssetVO in objects )
 			{
-				children.addItem( new ScenegraphItemVO( "Texture (" + o.name.split("/").pop() +")", o ) );
+				children.addItem( new ScenegraphItemVO( "Texture (" + asste.name.split("/").pop() +")", asste ) );
 			}
 			return children;
 		}
@@ -116,13 +135,13 @@ package awaybuilder.view.mediators
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
 			_scenegraphSelected = new Vector.<Object>();
-			updateAllSelectedItems( _model.scene, event.items );
-			updateAllSelectedItems( _model.materials, event.items );
-			updateAllSelectedItems( _model.textures, event.items );
-			updateAllSelectedItems( _model.geometry, event.items );
-			updateAllSelectedItems( _model.animations, event.items );
-			updateAllSelectedItems( _model.skeletons, event.items );
-			updateAllSelectedItems( _model.lights, event.items );
+			updateAllSelectedItems( view.model.scene, event.items );
+			updateAllSelectedItems( view.model.materials, event.items );
+			updateAllSelectedItems( view.model.textures, event.items );
+			updateAllSelectedItems( view.model.geometry, event.items );
+			updateAllSelectedItems( view.model.animations, event.items );
+			updateAllSelectedItems( view.model.skeletons, event.items );
+			updateAllSelectedItems( view.model.lights, event.items );
 			view.selectedItems = _scenegraphSelected;
 			
 			view.callLater( ensureIndexIsVisible );
@@ -158,7 +177,7 @@ package awaybuilder.view.mediators
 				if(  item.children ) {
 					updateAllSelectedItems( item.children, selectedItems );
 				}
-			} 
+			}
 		}
 		private function getItemIsSelected( o:Object, selectedItems:Array ):Boolean
 		{

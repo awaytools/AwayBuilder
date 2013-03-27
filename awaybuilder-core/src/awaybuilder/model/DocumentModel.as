@@ -71,7 +71,6 @@ package awaybuilder.model
 		public function set animations(value:ArrayCollection):void
 		{
 			documentVO.animations = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		public function get geometry():ArrayCollection
@@ -81,7 +80,6 @@ package awaybuilder.model
 		public function set geometry(value:ArrayCollection):void
 		{
 			documentVO.geometry = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		public function get materials():ArrayCollection
@@ -91,7 +89,6 @@ package awaybuilder.model
 		public function set materials(value:ArrayCollection):void
 		{
 			documentVO.materials = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		public function get scene():ArrayCollection
@@ -101,7 +98,6 @@ package awaybuilder.model
 		public function set scene(value:ArrayCollection):void
 		{
 			documentVO.scene = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		public function get skeletons():ArrayCollection
@@ -111,7 +107,6 @@ package awaybuilder.model
 		public function set skeletons(value:ArrayCollection):void
 		{
 			documentVO.skeletons = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		public function get textures():ArrayCollection
@@ -121,7 +116,6 @@ package awaybuilder.model
 		public function set textures(value:ArrayCollection):void
 		{
 			documentVO.textures = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		public function get lights():ArrayCollection
@@ -131,7 +125,6 @@ package awaybuilder.model
 		public function set lights(value:ArrayCollection):void
 		{
 			documentVO.lights = value;
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		private var _copiedObjects:Vector.<AssetVO>;
@@ -178,6 +171,12 @@ package awaybuilder.model
 		public function getTexture(value:Object):AssetVO
 		{
 			return getItemInCollection( textures, value );
+		}
+		
+		public function clear():void
+		{
+			documentVO = new DocumentVO();
+			_selectedObjects = new Vector.<AssetVO>();
 		}
 		
 		private function getItemInCollection( children:ArrayCollection, value:Object ):AssetVO

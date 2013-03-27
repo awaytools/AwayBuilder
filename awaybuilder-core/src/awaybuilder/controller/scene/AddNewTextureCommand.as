@@ -48,7 +48,7 @@ package awaybuilder.controller.scene
 			
 			
 			material.texture = newTexture;
-			TextureMaterial(material.material).texture = newTexture.linkedObject as Texture2DBase;
+			material.apply();
 			
 			addToHistory( event );
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
@@ -62,7 +62,8 @@ package awaybuilder.controller.scene
 			removeItems( document.textures, oldValue.textures );
 			var texture:BitmapTextureVO = newValue.textures.getItemAt( 0 ) as BitmapTextureVO;
 			material.texture = texture;
-			TextureMaterial(material.material).texture = texture.linkedObject as Texture2DBase;
+			material.apply();
+			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		

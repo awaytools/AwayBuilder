@@ -22,6 +22,7 @@
 		{
 			if( !value ) return;
 			_data = value;
+			this.enabled = true;
 			if( _data.linkedObject == DefaultMaterialManager.getDefaultTexture() )
 			{
 				this.enabled = false;

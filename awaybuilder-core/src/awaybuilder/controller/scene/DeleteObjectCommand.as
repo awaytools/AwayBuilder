@@ -35,8 +35,6 @@ package awaybuilder.controller.scene
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-					trace( vo.name );
-					trace( "vo.linkedObject= " + vo.linkedObject );
 					Scene3DManager.removeMesh( vo.linkedObject as Mesh );
 				}
 			}
@@ -44,8 +42,7 @@ package awaybuilder.controller.scene
 			
 			addToHistory( event );
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
-			
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		private function undo():void
@@ -82,7 +79,7 @@ package awaybuilder.controller.scene
 //				}
 			}
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		private function removeItemsFromDocument( items:Vector.<AssetVO> ):void
 		{

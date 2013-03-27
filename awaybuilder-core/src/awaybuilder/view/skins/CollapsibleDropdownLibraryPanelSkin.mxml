@@ -198,7 +198,7 @@
 								<s:DropShadowFilter blurX="1" blurY="1" distance="1" angle="-140"/>
 							</fxg:filters>
 						</fxg:CollapseArrowDownSkin>
-						<s:Button id="collapseButton" label="" width="20" height="20" alpha="0.1"/>
+						<s:Button id="collapseButton" label="" width="20" height="20" alpha="0"/>
 					</s:Group>
                     
 					

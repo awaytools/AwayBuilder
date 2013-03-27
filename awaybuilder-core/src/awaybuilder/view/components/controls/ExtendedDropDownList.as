@@ -106,6 +106,10 @@ package awaybuilder.view.components.controls
 				{
 					iconDisplay.source = itemToImage(displayItem, iconField, iconFunction);
 				}
+				else 
+				{
+					iconDisplay.source = null;
+				}
 					
 			}   
 		}
@@ -151,6 +155,12 @@ package awaybuilder.view.components.controls
 			iconChanged = true;
 			invalidateProperties(); 
 		}
+		
+//		override public function set selectedItem(value:*):void
+//		{
+//			iconChanged = true;
+//			super.selectedItem = value;
+//		}
 		
 		override protected function commitSelection(dispatchChangedEvents:Boolean = true):Boolean
 		{

@@ -2,6 +2,7 @@ package awaybuilder.controller.scene
 {
 	import away3d.core.base.SubMesh;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.textures.BitmapTexture;
@@ -28,7 +29,9 @@ package awaybuilder.controller.scene
 	    {
 	        var newMaterial:MaterialVO = event.newValue as MaterialVO;
 	        var vo:MaterialVO = document.getMaterial( newMaterial.linkedObject ) as MaterialVO;
-	
+			
+			var prevMaterial:MaterialBase = newMaterial.linkedObject as MaterialBase;
+			
 			if( !event.oldValue ) {
 				event.oldValue = vo.clone();
 			}
@@ -38,56 +41,49 @@ package awaybuilder.controller.scene
 			vo.color = newMaterial.color;
 			vo.alpha = newMaterial.alpha;
 			vo.type = newMaterial.type;
-	
-			if( newMaterial.type == MaterialVO.TEXTURE )
+			vo.texture = newMaterial.texture;
+			
+			var linkedObjectChanged:Boolean = false;
+			if( newMaterial.type == MaterialVO.TEXTURE && vo.linkedObject is ColorMaterial )
 			{
-				//vo.texture = new BitmapTextureVO( material.texture.linkedObject as BitmapTexture );
-				if( newMaterial.texture ) 
-				{
-					vo.texture = newMaterial.texture;
-				}
-				if( !vo.texture ) 
-				{
-					vo.texture = document.getTexture(DefaultMaterialManager.getDefaultTexture()) as BitmapTextureVO;
-				}
-				if( vo.linkedObject is ColorMaterial )
-				{
-					vo.linkedObject = new TextureMaterial( vo.texture.linkedObject as Texture2DBase, newMaterial.smooth, newMaterial.repeat, newMaterial.mipmap );
-				}
-				vo.linkedObject.alpha = vo.alpha;
-				vo.linkedObject.repeat = vo.repeat;
+				vo.linkedObject = new TextureMaterial( vo.texture.linkedObject as Texture2DBase, newMaterial.smooth, newMaterial.repeat, newMaterial.mipmap );
+				linkedObjectChanged = true;
 			}
-			if( newMaterial.type == MaterialVO.COLOR )
+			if( newMaterial.type == MaterialVO.COLOR && vo.linkedObject is TextureMaterial )
 			{
-				
-				//vo.texture = new BitmapTextureVO( material.texture.linkedObject as BitmapTexture );
-				if( vo.linkedObject is TextureMaterial )
-				{
-					vo.linkedObject = new ColorMaterial( newMaterial.color, newMaterial.alpha );
-				}
-				vo.linkedObject.color = vo.color;
-				vo.linkedObject.alpha = vo.alpha;
+				vo.linkedObject = new ColorMaterial( newMaterial.color, newMaterial.alpha );
+				linkedObjectChanged = true;
 			}
 			
-			for each( var asset:ContainerVO in document.scene )
+			if( newMaterial.texture ) 
 			{
-				var mesh:MeshVO = asset as MeshVO;
-				if( mesh )
+				vo.texture = newMaterial.texture;
+			}
+			if( !vo.texture ) 
+			{
+				vo.texture = document.getTexture(DefaultMaterialManager.getDefaultTexture()) as BitmapTextureVO;
+			}
+			
+			vo.apply();
+			
+			if( linkedObjectChanged ) // update all meshes that use current material
+			{
+				for each( var asset:ContainerVO in document.scene )
 				{
-					for each( var subMesh:SubMeshVO in mesh.subMeshes )
+					var mesh:MeshVO = asset as MeshVO;
+					if( mesh )
 					{
-						var oldMaterial:MaterialVO = event.newValue as MaterialVO;
-						if( subMesh.material ) {
-							if( subMesh.material.linkedObject == oldMaterial.linkedObject ) {
-								subMesh.material = vo;
-								SubMesh(subMesh.linkedObject).material = vo.material;
+						for each( var subMesh:SubMeshVO in mesh.subMeshes )
+						{
+							if( subMesh.material.linkedObject == prevMaterial ) 
+							{
+								subMesh.material = vo.clone();
+								subMesh.apply();
 							}
 						}
-						
 					}
 				}
 			}
-			
 			
 			event.items = [vo];
 	        addToHistory( event );

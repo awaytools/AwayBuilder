@@ -11,6 +11,7 @@
 		<s:State name="colorType"/>
 	</s:states>
     <fx:Script><![CDATA[
+		import away3d.materials.MaterialBase;
 		import away3d.materials.utils.DefaultMaterialManager;
 		import away3d.textures.Texture2DBase;
 		
@@ -37,7 +38,8 @@
             if( !value ) return;
             _data = value;
 			this.currentState = _data.type;
-			if( _data.material == DefaultMaterialManager.getDefaultMaterial() )
+			this.enabled = true;
+			if( _data.linkedObject == DefaultMaterialManager.getDefaultMaterial() )
 			{
 				this.enabled = false;
 			}
@@ -52,14 +54,14 @@
 		
         private function name_changeHandler(event:Event):void 
 		{
-            var newValue:MaterialVO = new MaterialVO(data.material);
+            var newValue:MaterialVO = data.clone();
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
         private function repeatBox_changeHandler(event:Event):void 
 		{
-            var newValue:MaterialVO = new MaterialVO(data.material);
+            var newValue:MaterialVO = data.clone();
             newValue.repeat = repeatBox.selected;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
         }
@@ -67,7 +69,7 @@
         private function dropDownList_changeHandler(event:IndexChangeEvent):void 
 		{
 			if( dropDownList.selectedItem ) {
-				var newValue:MaterialVO = new MaterialVO(data.material);
+				var newValue:MaterialVO = data.clone();
 				newValue.texture = dropDownList.selectedItem as BitmapTextureVO;
 				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
 			}

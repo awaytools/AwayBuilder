@@ -52,5 +52,6 @@ import mx.collections.ArrayCollection;
 		function getSkeleton( value:Object ):AssetVO;
 		function getLight( value:Object ):AssetVO;
 		
+		function clear():void;
 	}
 }

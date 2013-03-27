@@ -77,7 +77,8 @@
 			
 			protected function tree_changeHandler(event:IndexChangeEvent):void
 			{
-				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, sceneTree.selectedItems ) );
+				var tree:Tree = event.target as Tree;
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, tree.selectedItems ) );
 			}
 		]]>
 	</fx:Script>

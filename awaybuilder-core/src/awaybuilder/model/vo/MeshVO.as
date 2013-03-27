@@ -26,7 +26,7 @@ package awaybuilder.model.vo
 
             for each( var subMesh:SubMesh in item.subMeshes )
             {
-                subMeshes.addItem(new SubMeshVO(subMesh));
+                subMeshes.addItem(new SubMeshVO(subMesh, this));
             }
         }
 
@@ -46,10 +46,10 @@ package awaybuilder.model.vo
 
         public var subMeshes:ArrayCollection;
 
-		public function get mesh():Mesh
-		{
-			return linkedObject as Mesh;
-		}
+//		public function get mesh():Mesh
+//		{
+//			return linkedObject as Mesh;
+//		}
 		
         public function clone():MeshVO
         {
