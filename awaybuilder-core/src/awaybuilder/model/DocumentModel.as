@@ -1,8 +1,8 @@
 package awaybuilder.model
 {
 	import awaybuilder.controller.events.DocumentModelEvent;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.DocumentVO;
 	
 	import flash.display3D.textures.Texture;
 	

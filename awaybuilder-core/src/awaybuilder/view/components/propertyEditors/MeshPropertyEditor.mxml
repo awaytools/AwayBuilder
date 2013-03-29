@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*">
+         xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
+		 gap="0">
 	<fx:Declarations>
 	</fx:Declarations>
     <fx:Script><![CDATA[
         import away3d.entities.Mesh;
 
-        import awaybuilder.model.vo.MeshVO;
-        import awaybuilder.model.vo.SubMeshVO;
+        import awaybuilder.model.vo.scene.MeshVO;
+        import awaybuilder.model.vo.scene.SubMeshVO;
 
 
         private var _data:MeshVO;
@@ -56,9 +57,19 @@
 
         ]]></fx:Script>
 
-    <s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
-        <s:Label width="100%" text="Mesh Properties" fontWeight="bold"/>
-    </s:HGroup>
+	
+	<s:Group width="100%" top="0">
+		<s:Rect left="0" right="0" top="3" bottom="3">
+			<s:fill>
+				<s:SolidColor color="0x111111" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="false" width="32" height="32"/>
+			<s:Label width="100%" text="Mesh Properties" fontWeight="bold" fontSize="14"/>
+		</s:HGroup>
+	</s:Group>
+	
 
     <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
         <s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">

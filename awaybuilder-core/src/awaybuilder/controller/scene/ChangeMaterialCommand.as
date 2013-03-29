@@ -11,11 +11,11 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.BitmapTextureVO;
-	import awaybuilder.model.vo.ContainerVO;
-	import awaybuilder.model.vo.MaterialVO;
-	import awaybuilder.model.vo.MeshVO;
-	import awaybuilder.model.vo.SubMeshVO;
+	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.SubMeshVO;
 	
 	public class ChangeMaterialCommand extends HistoryCommandBase
 	{

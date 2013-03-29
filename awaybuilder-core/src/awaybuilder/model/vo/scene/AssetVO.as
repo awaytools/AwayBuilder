@@ -1,4 +1,4 @@
-package awaybuilder.model.vo
+package awaybuilder.model.vo.scene
 {
 	[Bindable]
 	public class AssetVO

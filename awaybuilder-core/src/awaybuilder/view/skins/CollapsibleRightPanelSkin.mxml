@@ -109,7 +109,7 @@
 			-->
 			<!--- @copy spark.components.SkinnableContainer#contentGroup -->
 			<s:Group id="contentGroup" width="100%" height="100%" minWidth="0" minHeight="0"
-					 includeInLayout.collapsed="false">
+					 includeInLayout.collapsed="false" x.collapsed="10">
 			</s:Group>
 			
 		</s:Group>

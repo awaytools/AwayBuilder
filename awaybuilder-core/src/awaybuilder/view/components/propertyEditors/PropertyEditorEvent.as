@@ -24,6 +24,9 @@ package awaybuilder.view.components.propertyEditors
 
         public static const SHOW_MATERIAL_PROPERTIES:String = "showMaterialProperties";
         public static const SHOW_TEXTURE_PROPERTIES:String = "showTextureProperties";
+		
+		public static const SHOW_PARENT_MESH_PROPERTIES:String = "showParentMeshProperties";
+		public static const SHOW_PARENT_MATERIAL_PROPERTIES:String = "showParentTextureProperties";
 
         public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=false ) {
             super( type, bubbles, cancelable );

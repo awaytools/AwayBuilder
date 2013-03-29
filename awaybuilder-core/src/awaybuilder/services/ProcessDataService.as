@@ -20,12 +20,12 @@ package awaybuilder.services
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.BitmapTextureVO;
-	import awaybuilder.model.vo.ContainerVO;
-	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.MaterialVO;
-	import awaybuilder.model.vo.MeshVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.events.Event;

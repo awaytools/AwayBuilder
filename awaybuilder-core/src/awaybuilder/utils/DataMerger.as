@@ -3,13 +3,14 @@ package awaybuilder.utils
 	import awaybuilder.utils.interfaces.IMergeable;
 	
 	import flash.utils.Dictionary;
+	import flash.utils.getTimer;
 	
+	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 
 	public final class DataMerger
 	{
 		// TODO: make comparePropertyName not required, so items themselves will be compared
-		// TODO: write tests for IList collections
 		/**
 		 * Syncs given arrays.
 		 * Rules:
@@ -24,27 +25,23 @@ package awaybuilder.utils
 		 * it must accept 2 arguments: function(originalItem:*, newItem:*)
 		 * 
 		 */
-		public static function syncArrays(originalList:*, newList:*, comparePropertyName:String, mergeFunction:Function = null, allowRemove:Boolean = true):void
+		public static function syncArrays(originalList:*, newList:*, comparePropertyName:String, mergeFunction:Function = null, allowRemove:Boolean = true):*
 		{
+			
 			if(allowRemove)
 				removeNonExistingItems(originalList, newList, comparePropertyName);
-
 			var item:*;
 			var oldItem:*;
-			var itemsMap:Object = {};
-			
-
+			var itemsMap:Dictionary = new Dictionary();
+			for each(item in originalList)
+			{
+				itemsMap[ item[comparePropertyName] ] = item;
+			}
 			for each(item in newList)
 			{
-				oldItem = null;
+				oldItem = itemsMap[ item[comparePropertyName] ];
 				
-				for each(var originalItem:Object in originalList)
-				{
-					if( item[comparePropertyName] == originalItem[comparePropertyName] )
-					oldItem = originalItem;
-				}
-				
-				if(oldItem )
+				if(oldItem)
 				{
 					if(oldItem != item)
 					{
@@ -67,8 +64,17 @@ package awaybuilder.utils
 					}
 				}
 			}
+			return originalList;
 		}
-
+		public static function syncArrayCollections(originalList:ArrayCollection, newList:ArrayCollection, comparePropertyName:String, mergeFunction:Function = null, allowRemove:Boolean = true):ArrayCollection
+		{
+			if( originalList.length == 0 )
+			{
+				originalList = new ArrayCollection( newList.source );
+				return originalList;
+			}
+			return syncArrays( originalList, newList, comparePropertyName, mergeFunction, allowRemove );
+		}
 		/**
 		 * Will remove all items from originalList which are not exist in referenceList.
 		 * Comparing will be performed by comparePropertyName
@@ -80,26 +86,20 @@ package awaybuilder.utils
 		private static function removeNonExistingItems(originalList:*, referenceList:*, comparePropertyName:String):void
 		{
 			var item:*;
-
+			var itemsMap:Dictionary = new Dictionary();
+			
 			var itemsToRemove:Array = [];
 			
-			var itemExist:Boolean = false;
-			for each(var originalItem:* in originalList)
+			for each(item in referenceList)
 			{
-				itemExist = false;
-				for each(var referenceItem:* in referenceList)
+				itemsMap[ item[comparePropertyName] ] = item;
+			}
+			
+			for each(item in originalList)
+			{
+				if(!itemsMap[item[comparePropertyName]])
 				{
-					
-					if( originalItem[comparePropertyName] == referenceItem[comparePropertyName] )
-					{
-						itemExist = true;
-						break;
-					}
-				}
-				
-				if( !itemExist )
-				{
-					itemsToRemove.push( originalItem );
+					itemsToRemove.push(item);
 				}
 			}
 			
@@ -108,20 +108,20 @@ package awaybuilder.utils
 			{
 				case originalList is IList:
 					for each(item in itemsToRemove)
-					{
-						i = originalList.getItemIndex(item);
-						if(i > -1)
-							originalList.removeItemAt(i);
-					}
+				{
+					i = originalList.getItemIndex(item);
+					if(i > -1)
+						originalList.removeItemAt(i);
+				}
 					break;
-
+				
 				default:
 					for each(item in itemsToRemove)
-					{
-						i = originalList.indexOf(item);
-						if(i > -1)
-							originalList.splice(i, 1);
-					}
+				{
+					i = originalList.indexOf(item);
+					if(i > -1)
+						originalList.splice(i, 1);
+				}
 			}
 		}
 	}

@@ -4,7 +4,7 @@ package awaybuilder.utils.scene
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	
-	import awaybuilder.model.vo.MaterialVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
 
 	public class SceneUtils
 	{

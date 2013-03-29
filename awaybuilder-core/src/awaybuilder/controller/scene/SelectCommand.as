@@ -4,7 +4,7 @@ package awaybuilder.controller.scene
 	
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.AssetVO;
+	import awaybuilder.model.vo.scene.AssetVO;
 	
 	import org.robotlegs.mvcs.Command;
 

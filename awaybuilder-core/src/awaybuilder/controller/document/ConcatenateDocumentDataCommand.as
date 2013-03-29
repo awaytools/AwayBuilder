@@ -8,9 +8,9 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.MeshVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.services.ProcessDataService;
 	import awaybuilder.utils.scene.Scene3DManager;
 	

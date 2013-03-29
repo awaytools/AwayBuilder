@@ -15,8 +15,8 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.BitmapTextureVO;
-			import awaybuilder.model.vo.MaterialVO;
+			import awaybuilder.model.vo.scene.BitmapTextureVO;
+			import awaybuilder.model.vo.scene.MaterialVO;
 			
 			[Bindable]
 			private var _texture:BitmapTextureVO;

@@ -1,6 +1,6 @@
 package awaybuilder.model
 {
-import awaybuilder.model.vo.AssetVO;
+import awaybuilder.model.vo.scene.AssetVO;
 import awaybuilder.model.vo.ScenegraphGroupItemVO;
 import awaybuilder.model.vo.ScenegraphItemVO;
 

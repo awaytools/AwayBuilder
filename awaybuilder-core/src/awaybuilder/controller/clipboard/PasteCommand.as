@@ -6,10 +6,10 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.BitmapTextureVO;
-	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.MeshVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import mx.collections.ArrayCollection;
@@ -31,15 +31,28 @@ package awaybuilder.controller.clipboard
 				undo(); 
 				return;
 			}
+			var newObjects:Vector.<AssetVO>;
 			if( !event.newValue )
 			{
-				event.newValue = document.copiedObjects.concat();
+				newObjects = new Vector.<AssetVO>();
+				for each( var vo:AssetVO in document.copiedObjects ) 
+				{
+					if( vo is MeshVO ) 
+					{
+						var newMesh:MeshVO = new MeshVO( Mesh(vo.linkedObject).clone() as Mesh );
+						newObjects.push( newMesh );
+					}
+				}
+				event.newValue = newObjects;
+				
 			}
-			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
-			for each( var vo:AssetVO in objects ) {
-				if( vo is MeshVO ) {
-					Scene3DManager.addMesh( vo.linkedObject as Mesh );
-					document.scene.addItemAt( vo, 0 );
+			newObjects = event.newValue as Vector.<AssetVO>;
+			for each( var asset:AssetVO in newObjects ) 
+			{
+				if( asset is MeshVO ) 
+				{
+					Scene3DManager.addMesh( asset.linkedObject as Mesh );
+					document.scene.addItemAt( asset, 0 );
 				}
 			}
 			

@@ -1,4 +1,4 @@
-package awaybuilder.model.vo 
+package awaybuilder.model.vo.scene 
 {
 	import away3d.core.base.SubMesh;
 	import away3d.materials.MaterialBase;

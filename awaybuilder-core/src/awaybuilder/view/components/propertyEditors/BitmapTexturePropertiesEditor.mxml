@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark" paddingLeft="6" paddingRight="6" paddingBottom="6" paddingTop="6"
+         xmlns:s="library://ns.adobe.com/flex/spark" gap="0"
 		  horizontalAlign="center" height="100%">
     <fx:Declarations>
     </fx:Declarations>
     <fx:Script><![CDATA[
-		import away3d.materials.MaterialBase;
 		import away3d.materials.utils.DefaultMaterialManager;
-		import away3d.textures.BitmapTexture;
 		
-		import awaybuilder.model.vo.BitmapTextureVO;
-		import awaybuilder.model.vo.MaterialVO;
+		import awaybuilder.model.vo.scene.BitmapTextureVO;
+		
+		import mx.collections.ArrayCollection;
 
+		[Bindable]
+		private var _isDefault:Boolean = false;
+		
+		private var _prevSelected:ArrayCollection = new ArrayCollection(); 
+		[Bindable]
+		public function set prevSelected( value:ArrayCollection ): void
+		{
+			this._prevSelected = value;
+		}
+		public function get prevSelected():ArrayCollection
+		{
+			return this._prevSelected;
+		}
+		
 		private var _data:BitmapTextureVO;
 		[Bindable]
 		public function get data():BitmapTextureVO
@@ -22,11 +35,7 @@
 		{
 			if( !value ) return;
 			_data = value;
-			this.enabled = true;
-			if( _data.linkedObject == DefaultMaterialManager.getDefaultTexture() )
-			{
-				this.enabled = false;
-			}
+			_isDefault =  _data.linkedObject == DefaultMaterialManager.getDefaultTexture();
 		}
 		
         private function name_changeHandler( event:Event ):void
@@ -47,23 +56,36 @@
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, data, true));
 		}
+		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
+		}
 		
 	]]></fx:Script>
 
-
+	<s:Group width="100%" top="0">
+		<s:Rect left="0" right="0" top="3" bottom="3">
+			<s:fill>
+				<s:SolidColor color="0x111111" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
+					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
+			<s:Label width="100%" text="Texture Properties" fontWeight="bold" fontSize="14"/>
+		</s:HGroup>
+	</s:Group>
+	
     <s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-        <s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" height="31">
-            <s:Label width="100%" text="Texture Properties" fontWeight="bold"/>
-        </s:HGroup>
         <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-            <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
+            <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)" enabled="{!_isDefault}"/>
         </s:FormItem>
 		<s:FormItem label="Bitmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="replaceButton_clickHandler(event)" width="100%"/>
+			<s:Button label="Replace ..." click="replaceButton_clickHandler(event)" width="100%" enabled="{!_isDefault}"/>
 		</s:FormItem>
     </s:Form>
-	<s:Spacer height="6"/>
-    <s:Group width="100%">
+	<s:Spacer height="10"/>
+    <s:Group width="90%">
 		<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 			<s:fill>
 				<s:SolidColor color="0x000000"/>

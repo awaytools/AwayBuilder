@@ -6,8 +6,8 @@ package awaybuilder.utils.encoders
 	import away3d.entities.Mesh;
 	
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.MeshVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	

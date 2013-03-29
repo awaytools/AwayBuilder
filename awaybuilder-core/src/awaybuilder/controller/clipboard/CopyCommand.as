@@ -6,8 +6,8 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.MeshVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	
 	import mx.collections.ArrayCollection;
 	

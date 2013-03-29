@@ -239,6 +239,12 @@ s|Button.editSharedObjectButtonStyle
 	icon: Embed("assets/images/arrow-transition.png");
 }
 
+s|Button.editParentObjectButtonStyle
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarToggleButtonSkin");
+	icon: Embed("assets/images/arrow-transition-180.png");
+}
+
 s|Button.replaceBitmapButton
 {
 /*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");

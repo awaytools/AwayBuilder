@@ -1,6 +1,7 @@
 package awaybuilder.model.vo
 {
 	import mx.collections.ArrayCollection;
+	import awaybuilder.model.vo.scene.AssetVO;
 	
 	[Bindable]
 	public class ScenegraphItemVO

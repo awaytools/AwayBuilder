@@ -8,9 +8,9 @@ package awaybuilder.controller.document
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.ISettingsModel;
 	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.BitmapTextureVO;
-	import awaybuilder.model.vo.MaterialVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.utils.scene.Scene3DManager;
 	

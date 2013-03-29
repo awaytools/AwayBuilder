@@ -3,7 +3,7 @@ package awaybuilder.controller.scene
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.MeshVO;
+    import awaybuilder.model.vo.scene.MeshVO;
     
     import flash.geom.Vector3D;
 

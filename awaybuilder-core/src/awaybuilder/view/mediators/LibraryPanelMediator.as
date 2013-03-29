@@ -5,15 +5,17 @@ package awaybuilder.view.mediators
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.AssetVO;
-	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
+	
+	import flash.utils.getTimer;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -53,6 +55,7 @@ package awaybuilder.view.mediators
 		{
 			var items:Array = [];
 			var selectedItems:Vector.<Object> = event.data as Vector.<Object>;
+			
 			for (var i:int=0;i<selectedItems.length;i++)
 			{
 				var groupItem:ScenegraphGroupItemVO = selectedItems[i] as ScenegraphGroupItemVO;
@@ -62,45 +65,42 @@ package awaybuilder.view.mediators
 				items.push(ScenegraphItemVO(selectedItems[i]).item);
 			}
 			
+			if( items.length == view.selectedItems.length ) // fix: preventing second change event after selectedItems update
+			{
+				var isSame:Boolean = true;
+				for( var i:int=0; i<items.length; i++ )
+				{
+					if( items[i] != view.selectedItems[i].item )
+					{
+						isSame = false;
+					}
+				}
+				if( isSame )
+				{
+					return;
+				}
+			}
+			
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
+			
 		}
 		
 		private function updateScenegraph():void
 		{
-			_model = new DocumentVO();
-			
-			_model.scene = getBranchCildren( document.scene );
-			_model.materials = getBranchCildren( document.materials );
-			_model.animations = getBranchCildren( document.animations );
-			_model.textures = getBranchCildren( document.textures );
-			_model.skeletons = getBranchCildren( document.skeletons );
-			_model.geometry = getBranchCildren( document.geometry );
-			_model.lights = getBranchCildren( document.lights );
-
-			if( view.model ) 
+			if( !view.model ) 
 			{
-				DataMerger.syncArrays( view.model.scene, _model.scene, "item" );
-				DataMerger.syncArrays( view.model.materials, _model.materials, "item" );
-				DataMerger.syncArrays( view.model.animations, _model.animations, "item" );
-				DataMerger.syncArrays( view.model.textures, _model.textures, "item" );
-				DataMerger.syncArrays( view.model.skeletons, _model.skeletons, "item" );
-				DataMerger.syncArrays( view.model.geometry, _model.geometry, "item" );
-				DataMerger.syncArrays( view.model.lights, _model.lights, "item" );
-			}
-			else
-			{
-				view.model = _model;
+				view.model = new DocumentVO();
 			}
 			
+			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, getBranch( document.scene ), "item" );
+			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, getBranch( document.materials ), "item" );
+			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, getBranch( document.animations ), "item" );
+			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  getBranch( document.textures ), "item" );
+			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, getBranch( document.skeletons ), "item" );
+			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, getBranch( document.geometry ), "item" );
+			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, getBranch( document.lights ), "item" );
 		}
-		private function syncItems( originalList:ArrayCollection, newList:ArrayCollection ):void
-		{
-			
-		}
-		private function removeNonExistingItems( originalList:ArrayCollection, newList:ArrayCollection ):void
-		{
-		}
-		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
+		private function getBranch( objects:ArrayCollection ):ArrayCollection
 		{
 			var children:ArrayCollection = new ArrayCollection();
 			for each( var asste:AssetVO in objects )

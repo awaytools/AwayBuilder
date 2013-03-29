@@ -55,12 +55,12 @@ package awaybuilder.utils.scene
 		public static var scene:Scene3D;
 		public static var camera:Camera3D;
 		
-		public static var selectedObjects:ArrayList = new ArrayList();
+		public static var selectedObjects:ArrayList = new ArrayList();// TODO: Use vector
 		public static var selectedObject:Entity;
 		public static var multiSelection:Boolean = false;
 		
-		public static var objects:ArrayList = new ArrayList();
-		public static var lights:ArrayList = new ArrayList();
+		public static var objects:ArrayList = new ArrayList(); // TODO: Use vector
+		public static var lights:ArrayList = new ArrayList();// TODO: Use vector
 		
 		public static var grid:WireframePlane;
 		public static var orientationTool:OrientationTool;
@@ -70,7 +70,7 @@ package awaybuilder.utils.scene
 		public static var rotateGizmo:RotateGizmo3D;
 		public static var scaleGizmo:ScaleGizmo3D;
 		
-		private static var lightGizmos:ArrayList = new ArrayList();
+		private static var lightGizmos:ArrayList = new ArrayList();// TODO: Use vector
 		
 		public static function init(scope:UIComponent):void
 		{
@@ -351,7 +351,12 @@ package awaybuilder.utils.scene
 		}
 		
 		public static function addMesh(mesh:Mesh):void
-		{			
+		{		
+			
+//			if( mesh.extra ) {
+//				trace( "mesh.name = " + mesh.name );
+				mesh.name += "1";
+//			}
 			mesh.mouseEnabled = true;
 			mesh.pickingCollider = PickingColliderType.PB_BEST_HIT;
 			mesh.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
@@ -367,7 +372,7 @@ package awaybuilder.utils.scene
 			
 			for (var i:int=0;i<objects.length;i++)
 			{
-				if (objects.getItemAt(0) == mesh)
+				if (objects.getItemAt(i) == mesh)
 				{
 					objects.removeItemAt(i);
 					//meshes.splice(i, 1);
@@ -376,21 +381,21 @@ package awaybuilder.utils.scene
 			}
 		}
 		
-		public static function getObjectByName(mName:String):Entity
-		{
-			var mesh:Mesh;
-			
-			for each(var m:Mesh in objects.source)
-			{
-				if (m.name == mName)
-				{
-					mesh = m;
-					break;
-				}
-			}
-			
-			return mesh;
-		}		
+//		public static function getObjectByName(mName:String):Entity
+//		{
+//			var mesh:Mesh;
+//			
+//			for each(var m:Mesh in objects.source)
+//			{
+//				if (m.name == mName)
+//				{
+//					mesh = m;
+//					break;
+//				}
+//			}
+//			
+//			return mesh;
+//		}		
 		
 		private function handleMouseEvent3D(e:Event):void 
 		{
@@ -431,7 +436,14 @@ package awaybuilder.utils.scene
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}		
 		
-		public static function selectObjectByName(meshName:String):void
+		// TODO: Use mesh link instead of name
+		private static function selectObjectByName(meshName:String):void // Must be used internally only, otherwise use "selectObject", event must not be dispatched
+		{		
+			selectObject( meshName );
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
+		}
+		
+		public static function selectObject(meshName:String):void 
 		{			
 			if (!multiSelection) unselectAll();
 			// TODO: Check if object already selected
@@ -446,12 +458,10 @@ package awaybuilder.utils.scene
 						selectedObject = m;
 						currentGizmo.show(selectedObject);
 					}
-
-					break;
+					
+//					break;
 				}
 			}
-			
-			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}
 		
 	}

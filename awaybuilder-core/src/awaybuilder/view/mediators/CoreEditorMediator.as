@@ -5,8 +5,8 @@ package awaybuilder.view.mediators
     
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.AssetVO;
-    import awaybuilder.model.vo.MeshVO;
+    import awaybuilder.model.vo.scene.AssetVO;
+    import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.utils.scene.CameraManager;
@@ -231,7 +231,7 @@ package awaybuilder.view.mediators
 					return;
 				}
 			}
-			Scene3DManager.selectObjectByName(o.name);
+			Scene3DManager.selectObject(o.name);
 			
 		}
         private function eventDispatcher_itemsFocusHandler(event:SceneEvent):void
@@ -257,7 +257,8 @@ package awaybuilder.view.mediators
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
 				var mesh:Mesh = item as Mesh;
-				if( mesh ) {
+				if( mesh ) 
+				{
 					selected.push( document.getSceneObject( mesh ) );
 				}
 			} 
@@ -268,7 +269,8 @@ package awaybuilder.view.mediators
         {
             var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
 			vo = vo.clone();
-            switch( event.gizmoMode ) {
+            switch( event.gizmoMode ) 
+			{
                 case GizmoMode.TRANSLATE:
 					vo.x = event.endValue.x;
 					vo.y = event.endValue.y;
@@ -292,7 +294,8 @@ package awaybuilder.view.mediators
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
 			var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
-            switch( event.gizmoMode ) {
+            switch( event.gizmoMode ) 
+			{
                 case GizmoMode.TRANSLATE:
                     this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], event.endValue));
                     break;

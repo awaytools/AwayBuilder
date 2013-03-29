@@ -8,8 +8,8 @@
     <fx:Script><![CDATA[
 		import away3d.core.base.SubMesh;
 		
-		import awaybuilder.model.vo.MaterialVO;
-		import awaybuilder.model.vo.SubMeshVO;
+		import awaybuilder.model.vo.scene.MaterialVO;
+		import awaybuilder.model.vo.scene.SubMeshVO;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
 		
@@ -27,12 +27,6 @@
 		{
             super.data = value;
             _subMesh = value as SubMeshVO;
-			if( !_subMesh.material )
-			{
-				trace( SubMesh(_subMesh.linkedObject).sourceEntity.name );
-				Alert.show( "material is lost", "Bug" );
-				return;
-			}
 			var materialPresent:Boolean = false;
             for each(var material:MaterialVO in _subMesh.linkedMaterials) 
 			{
