@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
+		  gap="0" xmlns:mx="library://ns.adobe.com/flex/mx"
+		  currentState="{data.type}" >
+	<fx:Declarations>
+		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{data.type}" change="typeRadioGroup_changeHandler(event)"/>
+	</fx:Declarations>
+	<s:states>
+		<s:State name="directionalType"/>
+		<s:State name="pointType"/>
+	</s:states>
+	<fx:Script><![CDATA[
+		import awaybuilder.model.vo.scene.LightVO;
+		import awaybuilder.model.vo.scene.MaterialVO;
+		import awaybuilder.model.vo.scene.MeshVO;
+		
+		import mx.collections.ArrayCollection;
+		import mx.events.ColorPickerEvent;
+		
+		private var _prevSelected:ArrayCollection = new ArrayCollection; 
+		[Bindable]
+		public function set prevSelected( value:ArrayCollection ): void
+		{
+			this._prevSelected = value;
+		}
+		public function get prevSelected():ArrayCollection
+		{
+			return this._prevSelected;
+		}
+		
+		private var _data:LightVO;
+		[Bindable]
+		public function get data():LightVO
+		{
+			return _data;
+		}
+		public function set data(value:LightVO):void
+		{
+			if( value ) {
+				_data = value;
+			}
+		}
+		
+		private function name_changeHandler(event:Event):void {
+			_data.name = nameInput.text;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		
+		private function position_commitHandler(event:Event):void {
+			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_POSITION_CHANGE, newValue, true));
+		}
+		protected function typeRadioGroup_changeHandler(event:Event):void
+		{
+			_data.type = typeRadioGroup.selectedValue as String;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _data, true));
+		}
+		protected function colorPicker_changeHandler(event:ColorPickerEvent):void
+		{
+			_data.color = colorPicker.selectedColor;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _data, true));
+		}
+		protected function ambientColorPicker_changeHandler(event:ColorPickerEvent):void
+		{
+			_data.ambientColor = ambientColorPicker.selectedColor;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _data, true));
+		}
+		
+		protected function ambientStepper_changeHandler(event:Event):void
+		{
+			_data.ambient = ambientStepper.value/100;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		
+		protected function specularStepper_changeHandler(event:Event):void
+		{
+			_data.specular = specularStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		
+		protected function diffuseStepper_changeHandler(event:Event):void
+		{
+			_data.diffuse = diffuseStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		
+		protected function radiusStepper_changeHandler(event:Event):void
+		{
+			_data.radius = radiusStepper.value;
+			if (_data.radius > _data.fallOff) {
+				_data.fallOff = _data.radius;
+			}
+			trace( "_data.radius = " + _data.radius );
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		protected function falloffStepper_changeHandler(event:Event):void
+		{
+			_data.fallOff = falloffStepper.value;
+			if (_data.fallOff < _data.radius) _data.radius = _data.fallOff;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		
+		protected function directionStepper_changeHandler(event:Event):void
+		{
+			_data.directionX = directionxStepper.value;
+			_data.directionY = directionyStepper.value;
+			_data.directionZ = directionzStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _data, true));
+		}
+		
+	]]></fx:Script>
+	
+	
+	<s:Group width="100%" top="0">
+		<s:Rect left="0" right="0" top="3" bottom="3">
+			<s:fill>
+				<s:SolidColor color="0x111111" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="false" width="32" height="32"/>
+			<s:Label width="100%" text="Light Properties" fontWeight="bold" fontSize="14"/>
+		</s:HGroup>
+	</s:Group>
+	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" horizontalAlign="center">
+		<s:RadioButton label="Directional" width="100%" group="{typeRadioGroup}" value="{LightVO.DIRECTIONAL}"/>
+		<s:RadioButton label="Point" width="100%" group="{typeRadioGroup}" value="{LightVO.POINT}"/>
+	</s:HGroup>
+	
+	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			
+			<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="xStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.x}"
+								  change="position_commitHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="yStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.y}"
+								  change="position_commitHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="zStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.z}"
+								  change="position_commitHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Light Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<mx:ColorPicker id="colorPicker" selectedColor="{data.color}" change="colorPicker_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Ambient Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<mx:ColorPicker id="ambientColorPicker" selectedColor="{data.ambientColor}" change="ambientColorPicker_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Ambient" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="ambientStepper"
+								  minimum="0" maximum="100" width="100%" value="{data.ambient*100}"
+								  change="ambientStepper_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Specular" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="specularStepper"
+								  minimum="0" maximum="999" width="100%" value="{data.specular}"
+								  change="specularStepper_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Diffuse" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="diffuseStepper"
+								  minimum="0" maximum="999" width="100%" value="{data.diffuse}"
+								  change="diffuseStepper_changeHandler(event)"/>
+			</s:FormItem>
+		</s:Form>
+		
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Direction" collapsed="false" includeIn="directionalType">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			
+			<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="directionxStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.directionX}"
+								  change="directionStepper_changeHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="directionyStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.directionY}"
+								  change="directionStepper_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="directionzStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.directionZ}"
+								  change="directionStepper_changeHandler(event)"/>
+			</s:FormItem>
+		</s:Form>
+		
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Glow" collapsed="false" includeIn="pointType">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			
+			<s:FormItem label="Radius" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="radiusStepper"
+								  minimum="0" maximum="{99999}" width="100%" value="{data.radius}" 
+								  change="radiusStepper_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Fall Off" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="falloffStepper"
+								  minimum="0" maximum="999999" width="100%" value="{data.fallOff}"
+								  change="falloffStepper_changeHandler(event)"/>
+			</s:FormItem>
+		</s:Form>
+		
+	</controls:CollapsiblePanel>
+	
+	<!--
+	public var ambientColor:uint = 0xffffff;
+	public var ambient:Number = 0;
+	
+	public var specular:Number = 1;
+	public var diffuse:Number = 1;
+	
+	public var radius:Number;
+	
+	public var position:Vector3D;
+	public var direction:Vector3D;
+	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="xStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.x}"
+								  change="position_commitHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="yStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.y}"
+								  change="position_commitHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="zStepper"
+								  minimum="-999999" maximum="999999" width="100%" value="{data.z}"
+								  change="position_commitHandler(event)"/>
+			</s:FormItem>
+		</s:Form>
+	</controls:CollapsiblePanel>-->
+</s:VGroup>

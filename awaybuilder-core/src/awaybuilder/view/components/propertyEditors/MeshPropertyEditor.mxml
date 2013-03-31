@@ -41,7 +41,7 @@
         }
 
         private function name_changeHandler(event:Event):void {
-            var newValue:MeshVO = data.clone();
+            var newValue:MeshVO = data.clone() as MeshVO;
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, newValue, true));
         }

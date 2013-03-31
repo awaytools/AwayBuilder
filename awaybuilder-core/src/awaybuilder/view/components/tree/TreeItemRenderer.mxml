@@ -2,7 +2,9 @@
 <tree:TreeItemRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
                             xmlns:s="library://ns.adobe.com/flex/spark"
                             xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
-                            doubleClick="treeitemrendererbase1_doubleClickHandler(event)" doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*"
+                            doubleClick="treeitemrendererbase1_doubleClickHandler(event)" 
+							doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*"
+							styleName="{data.type}"
                             height="24">
 	
 	<tree:states>
@@ -12,10 +14,22 @@
 	</tree:states>
 
     <tree:layout>
-        <s:HorizontalLayout paddingLeft="{indentation +2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="6"/>
+        <s:HorizontalLayout paddingLeft="{indentation + 2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="4"/>
     </tree:layout>
 	<fx:Script>
 		<![CDATA[
+			import awaybuilder.model.vo.ScenegraphItemVO;
+			
+			private var rLum:Number = 0.2225;
+			private var gLum:Number = 0.7169;
+			private var bLum:Number = 0.0606;
+			
+			[Bindable]
+			private var bwMatrix:Array = [rLum, gLum, bLum, 0, 0,
+				rLum, gLum, bLum, 0, 0,
+				rLum, gLum, bLum, 0, 0,
+				0, 0, 0, 1, 0];
+			
 			protected function disclosureButton_clickHandler(event:MouseEvent):void
 			{
 				toggle();
@@ -40,8 +54,11 @@
 	
     <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
                     selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
-	<s:BitmapImage source="@Embed('assets/images/origami.png')"/>
+	<s:BitmapImage id="iconButton" source="{getStyle('icon')}">
+		<s:filters>
+			<s:ColorMatrixFilter matrix="{ScenegraphItemVO(data).item.isDefault?bwMatrix:null}"  /> 
+		</s:filters>
+	</s:BitmapImage>
     <s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
-
 	
 </tree:TreeItemRendererBase>

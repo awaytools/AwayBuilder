@@ -1,6 +1,7 @@
 package awaybuilder.controller.history
 {
     import flash.events.Event;
+    import flash.utils.getTimer;
 
     public class HistoryEvent extends Event
     {
@@ -15,6 +16,8 @@ package awaybuilder.controller.history
 		
         public var isUndoAction:Boolean = false;
 		public var isRedoAction:Boolean = false;
+		
+		public var timeStamp:int = getTimer();
 
         public var canBeCombined:Boolean = false;
 

@@ -2,7 +2,7 @@
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				   xmlns:s="library://ns.adobe.com/flex/spark" 
 				   xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
-				   minWidth="21" minHeight="21"
+				   minWidth="24" minHeight="24"
 				   alpha.disabled="0.5">
 	
 	<fx:Metadata>
@@ -160,7 +160,7 @@
 			 textAlign="left"
 			 maxDisplayedLines="1" fontWeight="bold"
 			 horizontalCenter="0" verticalCenter="1" verticalAlign="middle"
-			 left="44" right="10" top="2" bottom="2">
+			 left="48" right="10" top="2" bottom="2">
 	</s:Label>
 	
 	<s:BitmapImage id="iconDisplay" width="16" height="16" 

@@ -43,8 +43,6 @@ package awaybuilder.model.vo
 			}
 		}
 		
-		public var type:String;
-		
 		public var weight:int = 100;
 	}
 }

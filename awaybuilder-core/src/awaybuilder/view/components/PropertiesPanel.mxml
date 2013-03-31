@@ -52,6 +52,7 @@
     <fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.BitmapTextureVO;
+		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.MeshVO;
 		
@@ -96,7 +97,8 @@
 													  width="210" includeIn="material"/>
 			<propertyEditors:BitmapTexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{data as BitmapTextureVO}"
 														   width="210" includeIn="texture" />
-			<s:Group includeIn="light"><s:Label text="Light Options"/></s:Group>
+			<propertyEditors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{data as LightVO}"
+														   width="210" includeIn="light" />
 			<s:Group includeIn="geometry"><s:Label text="Geometry Options"/></s:Group>
 			<s:Group includeIn="container"><s:Label text="Container Options"/></s:Group>
 			

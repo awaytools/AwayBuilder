@@ -1,9 +1,10 @@
 package awaybuilder.controller.scene
 {
-    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.scene.MeshVO;
+    import awaybuilder.model.vo.scene.ObjectVO;
     
     import flash.geom.Vector3D;
 
@@ -18,7 +19,7 @@ package awaybuilder.controller.scene
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
-            var vo:MeshVO = event.items[0] as MeshVO;
+            var vo:ObjectVO = event.items[0] as ObjectVO;
 
 			if( !event.oldValue ) {
 				event.oldValue = new Vector3D( vo.rotationX, vo.rotationY, vo.rotationZ );
@@ -28,9 +29,7 @@ package awaybuilder.controller.scene
             vo.rotationY = vector.y;
             vo.rotationZ = vector.z;
 
-            vo.linkedObject.rotationX = vector.x;
-            vo.linkedObject.rotationY = vector.y;
-            vo.linkedObject.rotationZ = vector.z;
+			vo.apply();
 
             addToHistory( event );
         }

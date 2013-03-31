@@ -25,7 +25,7 @@ package awaybuilder.model.vo.scene
 		
 	    public var linkedMaterials:ArrayCollection;
 	
-		public function apply():void
+		override public function apply():void
 		{
 			var subMesh:SubMesh = linkedObject as SubMesh;
 			subMesh.material = material.linkedObject as MaterialBase;

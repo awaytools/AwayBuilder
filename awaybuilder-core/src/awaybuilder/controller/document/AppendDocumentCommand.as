@@ -3,7 +3,7 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.services.ProcessDataService;
+	import awaybuilder.model.ProcessDataService;
 	
 	import org.robotlegs.mvcs.Command;
 

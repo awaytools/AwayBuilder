@@ -262,7 +262,7 @@ package awaybuilder.utils.scene
 			
 			for (var i:int=0;i<lights.length;i++)
 			{
-				if (lights[i] == light)
+				if (lights.getItemAt(i) == light)
 				{
 					lights.removeItemAt(i);
 					lightGizmos.removeItemAt(i);

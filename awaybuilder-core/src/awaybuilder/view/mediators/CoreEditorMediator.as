@@ -5,10 +5,10 @@ package awaybuilder.view.mediators
     
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.scene.AssetVO;
-    import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
+    import awaybuilder.model.vo.scene.AssetVO;
+    import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
     import awaybuilder.utils.scene.modes.GizmoMode;
@@ -268,7 +268,7 @@ package awaybuilder.view.mediators
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
             var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
-			vo = vo.clone();
+			vo = vo.clone() as MeshVO;
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:

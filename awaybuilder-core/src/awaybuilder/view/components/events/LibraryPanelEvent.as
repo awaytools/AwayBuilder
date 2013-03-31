@@ -6,7 +6,11 @@ package awaybuilder.view.components.events
 	{
 		public static const TREE_CHANGE:String = "treeChange";
 		
-		public function LibraryPanelEvent(type:String, data:Object )
+		public static const ADD_TEXTURE:String = "addTexture";
+		
+		public static const ADD_LIGHT:String = "addLight";
+		
+		public function LibraryPanelEvent(type:String, data:Object=null )
 		{
 			super(type, false, false);
 			this.data = data;

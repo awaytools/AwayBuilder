@@ -2,7 +2,7 @@ package awaybuilder.controller.document
 {
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.services.IDocumentService;
+	import awaybuilder.model.IDocumentService;
 	
 	import org.robotlegs.mvcs.Command;
 

@@ -29,7 +29,7 @@ package awaybuilder.desktop
     import awaybuilder.desktop.view.mediators.DocumentLoadProgressWindowMediator;
     import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
     import awaybuilder.desktop.view.mediators.WelcomeWindowMediator;
-    import awaybuilder.services.IDocumentService;
+    import awaybuilder.model.IDocumentService;
     
     import flash.desktop.NativeApplication;
     import flash.display.DisplayObjectContainer;

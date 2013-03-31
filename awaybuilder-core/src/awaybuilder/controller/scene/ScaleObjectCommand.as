@@ -1,9 +1,10 @@
     package awaybuilder.controller.scene {
-    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.controller.history.HistoryCommandBase;
+    import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.scene.MeshVO;
-
+    import awaybuilder.model.vo.scene.ObjectVO;
+    
     import flash.geom.Vector3D;
 
     public class ScaleObjectCommand extends HistoryCommandBase
@@ -17,7 +18,7 @@
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
-            var vo:MeshVO = event.items[0] as MeshVO;
+            var vo:ObjectVO = event.items[0] as ObjectVO;
 
 			if( !event.oldValue ) {
 				event.oldValue = new Vector3D( vo.scaleX, vo.scaleY, vo.scaleZ );
@@ -27,9 +28,7 @@
             vo.scaleY = vector.y;
             vo.scaleZ = vector.z;
 
-            vo.linkedObject.scaleX = vector.x;
-            vo.linkedObject.scaleY = vector.y;
-            vo.linkedObject.scaleZ = vector.z;
+			vo.apply();
 
             addToHistory( event );
         }

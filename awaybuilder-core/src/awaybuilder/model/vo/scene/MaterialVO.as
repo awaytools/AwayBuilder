@@ -9,6 +9,7 @@ package awaybuilder.model.vo.scene
     import away3d.materials.methods.BasicNormalMethod;
     import away3d.materials.methods.BasicSpecularMethod;
     import away3d.materials.methods.ShadowMapMethodBase;
+    import away3d.materials.utils.DefaultMaterialManager;
     import away3d.textures.BitmapTexture;
     import away3d.textures.Texture2DBase;
     
@@ -27,7 +28,12 @@ package awaybuilder.model.vo.scene
         public function MaterialVO( item:MaterialBase )
         {
             super( item.name, item );
-
+			if( item == DefaultMaterialManager.getDefaultMaterial() )
+			{
+				isDefault = true;
+				name =	item.name = "Away3D Default";
+			}
+			
             repeat = item.repeat;
 
             alphaPremultiplied = item.alphaPremultiplied;
@@ -120,15 +126,14 @@ package awaybuilder.model.vo.scene
         public var smooth:Boolean;
 
 		
-		public function apply():void
+		override public function apply():void
 		{
-			
+			super.apply();
 			if( type == COLOR )
 			{
 				var cm:ColorMaterial = linkedObject as ColorMaterial;
 				cm.color = color;
 				cm.alpha = alpha;
-				cm.name = name;
 			}
 			else if( type == TEXTURE )
 			{
@@ -136,8 +141,6 @@ package awaybuilder.model.vo.scene
 				tm.texture = texture.linkedObject as Texture2DBase;
 				tm.alpha = alpha;
 				tm.repeat = repeat;
-				tm.name = name;
-
 			}
 		}
 		
@@ -177,6 +180,8 @@ package awaybuilder.model.vo.scene
 			vo.specularTexture = this.specularTexture;
 			vo.color = this.color;
 			vo.alpha = this.alpha;
+			
+			vo.id = this.id;
 			
             return vo;
         }

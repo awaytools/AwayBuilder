@@ -11,7 +11,7 @@ package awaybuilder.controller.document
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
-	import awaybuilder.services.ProcessDataService;
+	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;

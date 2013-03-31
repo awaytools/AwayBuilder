@@ -39,13 +39,8 @@ package awaybuilder.controller.document
 			document.edited = false;
 			document.path = null;
 
-			var material:MaterialVO = new MaterialVO( DefaultMaterialManager.getDefaultMaterial() );
-			material.name = "Away3D Default";
-			document.materials.addItem(material);
-			
-			var texture:BitmapTextureVO = new BitmapTextureVO( DefaultMaterialManager.getDefaultTexture() );
-			texture.name = "Away3D Default";
-			document.textures.addItem(texture);
+			document.materials.addItem(new MaterialVO( DefaultMaterialManager.getDefaultMaterial() ));
+			document.textures.addItem(new BitmapTextureVO( DefaultMaterialManager.getDefaultTexture() ));
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}

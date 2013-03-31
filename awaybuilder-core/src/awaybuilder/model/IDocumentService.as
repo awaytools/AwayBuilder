@@ -1,4 +1,4 @@
-package awaybuilder.services
+package awaybuilder.model
 {
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	

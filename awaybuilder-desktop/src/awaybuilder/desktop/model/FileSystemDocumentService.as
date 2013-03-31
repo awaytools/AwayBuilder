@@ -3,7 +3,7 @@ package awaybuilder.desktop.model
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.services.IDocumentService;
+	import awaybuilder.model.IDocumentService;
 	import awaybuilder.utils.encoders.AWDEncoder;
 	import awaybuilder.utils.encoders.ISceneGraphEncoder;
 	

@@ -7,6 +7,7 @@ package awaybuilder.model
 	import flash.display3D.textures.Texture;
 	
 	import mx.collections.ArrayCollection;
+	import mx.utils.UIDUtil;
 	
 	import org.robotlegs.mvcs.Actor;
 
@@ -183,7 +184,15 @@ package awaybuilder.model
 		{
 			for each( var vo:AssetVO in children )
 			{
-				if( vo.linkedObject == value ) {
+				if( UIDUtil.isUID( value as String ) )
+				{
+					if( vo.id == value ) 
+					{
+						return vo;
+					}
+				}
+				else if( vo.linkedObject == value ) 
+				{
 					return vo;
 				}
 			}

@@ -1,7 +1,7 @@
 package awaybuilder.controller.document
 {
 	import awaybuilder.controller.document.events.ImportTextureEvent;
-	import awaybuilder.services.IDocumentService;
+	import awaybuilder.model.IDocumentService;
 	
 	import org.robotlegs.mvcs.Command;
 

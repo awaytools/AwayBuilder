@@ -1,11 +1,11 @@
-@namespace s "library://ns.adobe.com/flex/spark";
-@namespace mx "library://ns.adobe.com/flex/mx";
 @namespace skins "awaybuilder.view.skins.*";
 @namespace awaybuilder "awaybuilder.view.components.*";
 @namespace renderers "awaybuilder.view.components.renderers.*";
 @namespace propertyEditors "awaybuilder.view.components.propertyEditors.*";
 @namespace controls "awaybuilder.view.components.controls.*";
 @namespace tree "awaybuilder.view.components.tree.*";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace s "library://ns.adobe.com/flex/spark";
 
 global {
 	modalTransparency: 0.5;
@@ -23,8 +23,49 @@ tree|Tree
 {
 	skinClass: ClassReference("awaybuilder.view.skins.TreeSkin")
 }
+tree|TreeItemRenderer.light
+{
+	icon: Embed("assets/images/weather_sun.png");
+}
+tree|TreeItemRenderer.default
+{
+	icon: Embed("assets/images/plugin.png");
+}
+tree|TreeItemRenderer.texture
+{
+	icon: Embed("assets/images/map.png");
+}
+tree|TreeItemRenderer.material
+{
+	icon: Embed("assets/images/block.png");
+}
+tree|TreeItemRenderer.geometry
+{
+	icon: Embed("assets/images/layer_shape_polyline.png");
+}
+tree|TreeItemRenderer.skeleton
+{
+	icon: Embed("assets/images/layer-shape-polyline.png");
+}
+tree|TreeItemRenderer.mesh
+{
+	icon: Embed("assets/images/box_closed.png");
+}
+tree|TreeItemRenderer.container
+{
+	icon: Embed("assets/images/box_open.png");
+}
+tree|TreeItemRenderer.animation
+{
+	icon: Embed("assets/images/film.png");
+}
+tree|TreeItemRenderer.bear
+{
+	icon: Embed("assets/images/teddy_bear.png");
+}
 
-s|NumericStepper 
+
+s|NumericStepper
 {
 	color: #000000;
 }
@@ -245,12 +286,11 @@ s|Button.editParentObjectButtonStyle
 	icon: Embed("assets/images/arrow-transition-180.png");
 }
 
-s|Button.replaceBitmapButton
+s|Button.addButton
 {
-/*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
-	icon: Embed("assets/images/scale_image.png");*/
+	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
+	icon: Embed("assets/images/add.png");
 }
-
 
 awaybuilder|ApplicationSettingsForm s|List
 {

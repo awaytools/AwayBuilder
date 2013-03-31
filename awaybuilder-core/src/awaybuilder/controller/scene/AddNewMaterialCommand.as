@@ -31,10 +31,10 @@ package awaybuilder.controller.scene
 		{
 			var tempMesh:MeshVO = event.items[0] as MeshVO;
 			var newSubMesh:SubMeshVO = event.newValue as SubMeshVO;
-			var mesh:MeshVO = document.getSceneObject( tempMesh.linkedObject ) as MeshVO;
+			var mesh:MeshVO = document.getSceneObject( tempMesh.id ) as MeshVO;
 			
 			if( !event.oldValue ) {
-				event.oldValue = getSubmesh( mesh, newSubMesh.linkedObject as SubMesh ).clone();
+				event.oldValue = getSubmesh( mesh, newSubMesh.id as SubMesh ).clone();
 			}
 			
 			var subMeshes:Vector.<SubMesh> = new Vector.<SubMesh>();
@@ -43,7 +43,7 @@ package awaybuilder.controller.scene
 			for( var i:int = 0; i < mesh.subMeshes.length; i++ )
 			{
 				var subMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
-				if( subMesh.linkedObject == newSubMesh.linkedObject )
+				if( subMesh.id == newSubMesh.id )
 				{
 					subMesh.material = newSubMesh.material.clone(); 
 					subMesh.apply();
@@ -55,7 +55,7 @@ package awaybuilder.controller.scene
 				var oldSubMesh:SubMeshVO = event.oldValue as SubMeshVO;
 				for (var j:int = 0; j < document.materials.length; j++) 
 				{
-					if( document.materials[j].linkedObject == oldSubMesh.material.linkedObject )
+					if( document.materials[j].id == oldSubMesh.material.id )
 					{
 						document.materials.removeItemAt( j );
 						break;

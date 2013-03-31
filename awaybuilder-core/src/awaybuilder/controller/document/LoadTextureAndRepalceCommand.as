@@ -3,7 +3,7 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.document.events.ImportTextureEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.services.ProcessDataService;
+	import awaybuilder.model.ProcessDataService;
 	
 	import org.robotlegs.mvcs.Command;
 

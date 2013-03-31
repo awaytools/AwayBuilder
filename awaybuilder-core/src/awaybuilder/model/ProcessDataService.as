@@ -1,4 +1,4 @@
-package awaybuilder.services
+package awaybuilder.model
 {
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.data.Skeleton;

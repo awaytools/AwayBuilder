@@ -1,6 +1,8 @@
 package awaybuilder.view.mediators
 {
 	import away3d.core.base.Object3D;
+	import away3d.lights.DirectionalLight;
+	import away3d.materials.lightpickers.StaticLightPicker;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
@@ -9,8 +11,10 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.DataMerger;
+	import awaybuilder.utils.ScenegraphFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
@@ -37,12 +41,15 @@ package awaybuilder.view.mediators
 		override public function onRegister():void
 		{
 			addViewListener(LibraryPanelEvent.TREE_CHANGE, view_treeChangeHandler);
+			addViewListener(LibraryPanelEvent.ADD_LIGHT, view_addLightHandler);
+			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
 			
 			addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			
+			updateScenegraph();
 		}
 		
 		//----------------------------------------------------------------------
@@ -50,6 +57,18 @@ package awaybuilder.view.mediators
 		//	view handlers
 		//
 		//----------------------------------------------------------------------
+		
+		private function view_addTextureHandler(event:LibraryPanelEvent):void
+		{
+//			this.dispatch(new SceneEvent(SceneEvent.,items));
+		}
+		
+		private function view_addLightHandler(event:LibraryPanelEvent):void
+		{
+			var light:LightVO = new LightVO( new DirectionalLight(-1, -1, 1) );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,light));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[light]));
+		}
 		
 		private function view_treeChangeHandler(event:LibraryPanelEvent):void
 		{
@@ -68,9 +87,9 @@ package awaybuilder.view.mediators
 			if( items.length == view.selectedItems.length ) // fix: preventing second change event after selectedItems update
 			{
 				var isSame:Boolean = true;
-				for( var i:int=0; i<items.length; i++ )
+				for( var j:int=0; j<items.length; j++ )
 				{
-					if( items[i] != view.selectedItems[i].item )
+					if( items[j] != view.selectedItems[j].item )
 					{
 						isSame = false;
 					}
@@ -85,46 +104,11 @@ package awaybuilder.view.mediators
 			
 		}
 		
-		private function updateScenegraph():void
-		{
-			if( !view.model ) 
-			{
-				view.model = new DocumentVO();
-			}
-			
-			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, getBranch( document.scene ), "item" );
-			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, getBranch( document.materials ), "item" );
-			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, getBranch( document.animations ), "item" );
-			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  getBranch( document.textures ), "item" );
-			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, getBranch( document.skeletons ), "item" );
-			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, getBranch( document.geometry ), "item" );
-			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, getBranch( document.lights ), "item" );
-		}
-		private function getBranch( objects:ArrayCollection ):ArrayCollection
-		{
-			var children:ArrayCollection = new ArrayCollection();
-			for each( var asste:AssetVO in objects )
-			{
-				children.addItem( new ScenegraphItemVO( asste.name, asste ) );
-			}
-			return children;
-		}
-		private function getTextureBranchCildren( objects:ArrayCollection ):ArrayCollection
-		{
-			var children:ArrayCollection = new ArrayCollection();
-			for each( var asste:AssetVO in objects )
-			{
-				children.addItem( new ScenegraphItemVO( "Texture (" + asste.name.split("/").pop() +")", asste ) );
-			}
-			return children;
-		}
-		
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
 		//
 		//----------------------------------------------------------------------
-		
 		
 		
 		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
@@ -147,6 +131,13 @@ package awaybuilder.view.mediators
 			view.callLater( ensureIndexIsVisible );
 			
 		}
+		
+		//----------------------------------------------------------------------
+		//
+		//	private methods
+		//
+		//----------------------------------------------------------------------
+		
 		private function ensureIndexIsVisible():void 
 		{
 			if( view.sceneTree.selectedIndex )
@@ -189,6 +180,21 @@ package awaybuilder.view.mediators
 				}
 			}
 			return false;
+		}
+		private function updateScenegraph():void
+		{
+			if( !view.model ) 
+			{
+				view.model = new DocumentVO();
+			}
+			
+			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, ScenegraphFactory.CreateBranch( document.scene ), "item" );
+			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, ScenegraphFactory.CreateBranch( document.materials ), "item" );
+			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, ScenegraphFactory.CreateBranch( document.animations ), "item" );
+			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  ScenegraphFactory.CreateBranch( document.textures ), "item" );
+			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, ScenegraphFactory.CreateBranch( document.skeletons ), "item" );
+			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry ), "item" );
+			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateBranch( document.lights ), "item" );
 		}
 		
 	}

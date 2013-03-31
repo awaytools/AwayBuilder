@@ -9,14 +9,22 @@ package awaybuilder.controller.history
         [Inject]
         public var undoRedoModel:UndoRedoModel;
 		
+		
+		protected function saveOldValue( event:HistoryEvent, oldValue:Object ):void {
+			if( !event.oldValue ) 
+			{
+				event.oldValue = oldValue;
+			}
+		}
         protected function addToHistory(event:HistoryEvent):void {
             if (!event.isUndoAction&&!event.isRedoAction)
             {
                 if( event.canBeCombined )
                 {
                     var lastEvent:HistoryEvent = undoRedoModel.getLastActon();
-                    if( lastEvent && lastEvent.canBeCombined && lastEvent.type==event.type )
+                    if( lastEvent && lastEvent.canBeCombined && (lastEvent.type==event.type) && (event.timeStamp-lastEvent.timeStamp<500) )
                     {
+						lastEvent.timeStamp = event.timeStamp;
                         lastEvent.newValue = event.newValue;
                         return;
                     }

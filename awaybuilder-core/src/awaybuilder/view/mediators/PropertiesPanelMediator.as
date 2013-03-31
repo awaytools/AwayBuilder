@@ -10,8 +10,10 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.BitmapTextureVO;
     import awaybuilder.model.vo.scene.ContainerVO;
+    import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
+    import awaybuilder.model.vo.scene.ObjectVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.utils.scene.SceneUtils;
     import awaybuilder.view.components.PropertiesPanel;
@@ -35,13 +37,15 @@ package awaybuilder.view.mediators
         {
             addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
             addContextListener(SceneEvent.CHANGING, eventDispatcher_changingHandler);
-            addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_changeMeshHandler);
-            addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_changeMeshHandler);
-            addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_changeMeshHandler);
+            addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_translateHandler);
+            addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
+            addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
             addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
-			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_changeMeshHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
             addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
+			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureToMaterialHandler);
+			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_changeMeshHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
@@ -54,6 +58,11 @@ package awaybuilder.view.mediators
             addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
+			
+			addViewListener( PropertyEditorEvent.LIGHT_POSITION_CHANGE, view_lightPositionChangeHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_STEPPER_CHANGE, view_lightStepperChangeHandler );
+			
+			addViewListener( PropertyEditorEvent.LIGHT_CHANGE, view_lightChangeHandler );
 			
 			addViewListener( PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, view_showMaterialPropertiesHandler );
 			addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler );
@@ -73,15 +82,15 @@ package awaybuilder.view.mediators
 
         private function view_translateHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[document.getSceneObject(view.data.linkedObject)], event.data, true));
         }
         private function view_rotateHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[view.data], event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[document.getSceneObject(view.data.linkedObject)], event.data, true));
         }
         private function view_scaleHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[view.data], event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[document.getSceneObject(view.data.linkedObject)], event.data, true));
         }
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
@@ -147,21 +156,45 @@ package awaybuilder.view.mediators
 			newValue.material = SceneUtils.GetMaterialCopy( newValue.material );
 			
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[view.data], newValue));
-//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[event.data],vo.material));
 		}
 		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_REPLACE,[event.data]));
 		}
+		
+		private function view_lightPositionChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
+		}
+		private function view_lightChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], event.data));
+		}
+		private function view_lightStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT, [view.data], event.data, true));
+		}
+		
         //----------------------------------------------------------------------
         //
         //	context handlers
         //
         //----------------------------------------------------------------------
 
+		
+		private function eventDispatcher_translateHandler(event:SceneEvent):void
+		{
+			var o:ObjectVO = ObjectVO( event.items[0] ).clone();
+			view.data = o;
+		}
+		
+		private function eventDispatcher_changeLightHandler(event:SceneEvent):void
+		{
+			view.data = LightVO( event.items[0] ).clone() as LightVO;
+		}
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
-            var mesh:MeshVO = MeshVO( event.items[0] ).clone();
+            var mesh:MeshVO = MeshVO( event.items[0] ).clone() as MeshVO;
 
             for each( var subMesh:SubMeshVO in  mesh.subMeshes )
             {
@@ -217,7 +250,7 @@ package awaybuilder.view.mediators
                     if( event.items[0] is MeshVO )
                     {
 						var t:Number = getTimer();
-                        var mesh:MeshVO = MeshVO( event.items[0] ).clone();
+                        var mesh:MeshVO = MeshVO( event.items[0] ).clone() as MeshVO;
                         for each( var subMesh:SubMeshVO in  mesh.subMeshes )
                         {
                             subMesh.linkedMaterials = document.materials;
@@ -247,10 +280,16 @@ package awaybuilder.view.mediators
                         view.data = BitmapTextureVO( event.items[0] ).clone();
 						view.collapsed = false;
                     }
-                    else if( event.items[0] is Geometry )
-                    {
-                        view.currentState = "geometry";
-                    }
+					else if( event.items[0] is LightVO )
+					{
+						view.currentState = "light";
+						view.data = LightVO( event.items[0] ).clone();
+						view.collapsed = false;
+					}
+//                    else if( event.items[0] is Geometry )
+//                    {
+//                        view.currentState = "geometry";
+//                    }
                     else
                     {
 						view.currentState = "empty";

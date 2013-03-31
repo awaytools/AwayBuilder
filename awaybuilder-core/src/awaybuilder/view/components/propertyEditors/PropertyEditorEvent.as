@@ -22,6 +22,10 @@ package awaybuilder.view.components.propertyEditors
         public static const MATERIAL_CHANGE:String = "materialChange";
         public static const MATERIAL_NAME_CHANGE:String = "materialNameChange";
 
+		public static const LIGHT_CHANGE:String = "lightChange";
+		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";
+		public static const LIGHT_POSITION_CHANGE:String = "lightPositionChange";
+		
         public static const SHOW_MATERIAL_PROPERTIES:String = "showMaterialProperties";
         public static const SHOW_TEXTURE_PROPERTIES:String = "showTextureProperties";
 		

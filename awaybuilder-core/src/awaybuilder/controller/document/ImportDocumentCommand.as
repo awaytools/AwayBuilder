@@ -1,7 +1,7 @@
 package awaybuilder.controller.document
 {
 	import awaybuilder.controller.events.ReadDocumentEvent;
-	import awaybuilder.services.IDocumentService;
+	import awaybuilder.model.IDocumentService;
 	
 	import flash.utils.setTimeout;
 	
