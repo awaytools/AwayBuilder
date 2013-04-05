@@ -67,6 +67,7 @@ package awaybuilder.utils.scene
 		private var _pause:Boolean = false;
 		private var tm:Number;
 		private var ispanning:Boolean = false;
+		private var _mouseOutDetected:Boolean = false;
 		
 		private var poi:ObjectContainer3D;
 		
@@ -97,6 +98,8 @@ package awaybuilder.utils.scene
 			
 			instance.stage.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
 			instance.stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
+			instance.scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);	
+			instance.scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);	
 			instance.stage.addEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
 			instance.stage.addEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
 			instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
@@ -110,19 +113,19 @@ package awaybuilder.utils.scene
 			instance.scope.removeEventListener(Event.ENTER_FRAME, instance.loop);
 			instance.stage.removeEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);			
 			instance.stage.removeEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);	
+			instance.scope.removeEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);	
+			instance.scope.removeEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);	
 			instance.stage.removeEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
 			instance.stage.removeEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
 			instance.stage.removeEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
 			instance.stage.removeEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
 		}			
 		
-		static public function get active():Boolean { return _active; }		
-		static public function set active(value:Boolean):void 
-		{
+		public static function get active():Boolean { return _active; }		
+		public static function set active(value:Boolean):void { 
 			_active = value;
 			
-			if (!_active)
-			{
+			if (!_active) {
 				dragging = false;
 			}
 		}			
@@ -160,6 +163,12 @@ package awaybuilder.utils.scene
 		{
 			if (!_pause)
 			{
+				if (_mouseOutDetected) {
+					dragging = false;
+					ispanning = false;
+				}
+				_mouseOutDetected = false;
+				
 				switch(mode)
 				{
 					case CameraMode.FREE: processFreeMode();
@@ -343,6 +352,16 @@ package awaybuilder.utils.scene
 			}
 		}
 		
+		private function onMouseOver(event : MouseEvent) : void
+		{
+			_mouseOutDetected = false;
+		}
+		
+		private function onMouseOut(event : MouseEvent) : void
+		{
+			_mouseOutDetected = true;
+		}
+
 		private function onMouseUp(event : MouseEvent) : void
 		{
 			dragging = false;
@@ -365,6 +384,7 @@ package awaybuilder.utils.scene
 		
 		private function onMouseLeave(event:Event) : void
 		{
+			dragging = false;
 			ispanning = false;			
 		}					
 		

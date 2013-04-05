@@ -28,12 +28,9 @@ package awaybuilder.utils.scene
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
-	import flash.ui.Keyboard;
-	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayList;
 	import mx.core.UIComponent;
@@ -122,6 +119,9 @@ package awaybuilder.utils.scene
 			//Create OrientationTool			
 			orientationTool = new OrientationTool();
 			scope.addChild(orientationTool);
+			scope.name = "scope";
+			orientationTool.name = "orientationTool";
+			view.name = "view";
 			
 			
 			//Create Grid
@@ -137,8 +137,8 @@ package awaybuilder.utils.scene
 			//handle stage events
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
 			stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
-			scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);
-			scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
+			//scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);
+			//scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
 			
 			scope.addEventListener(Event.RESIZE, instance.handleScreenSize);
 			instance.resize();
@@ -202,7 +202,7 @@ package awaybuilder.utils.scene
 		private function onMouseOver(e:MouseEvent):void
 		{
 			CameraManager.active = true;
-			Scene3DManager.active = true;				
+			Scene3DManager.active = true;	
 		}			
 		
 		private function onMouseDown(e:MouseEvent):void
