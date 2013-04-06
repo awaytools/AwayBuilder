@@ -11,11 +11,13 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
+	import awaybuilder.model.vo.scene.TextureVO;
+	
+	import mx.collections.ArrayCollection;
 	
 	public class ChangeMaterialCommand extends HistoryCommandBase
 	{
@@ -38,55 +40,72 @@ package awaybuilder.controller.scene
 			
 	        vo.name = newMaterial.name;
 	        vo.repeat = newMaterial.repeat;
-			vo.color = newMaterial.color;
-			vo.alpha = newMaterial.alpha;
+			vo.smooth = newMaterial.smooth;
+			vo.bothSides = newMaterial.bothSides;
+			vo.mipmap = newMaterial.mipmap;
+			vo.alphaPremultiplied = newMaterial.alphaPremultiplied;
+			vo.blendMode = newMaterial.blendMode;
+			
+			
+			vo.diffuseColor = newMaterial.diffuseColor;
+			vo.diffuseAlpha = newMaterial.diffuseAlpha;
 			vo.type = newMaterial.type;
-			vo.texture = newMaterial.texture;
+			
+			vo.diffuseTexture = newMaterial.diffuseTexture;
+			
+			vo.ambientTexture = newMaterial.ambientTexture;
+			
+			vo.normalMap = newMaterial.normalMap;
+			
+			vo.specularMap = newMaterial.specularMap;
+			
+			vo.effectMethods = new ArrayCollection( newMaterial.effectMethods.source );
 			
 			var linkedObjectChanged:Boolean = false;
 			if( newMaterial.type == MaterialVO.TEXTURE && vo.linkedObject is ColorMaterial )
 			{
-				vo.linkedObject = new TextureMaterial( vo.texture.linkedObject as Texture2DBase, newMaterial.smooth, newMaterial.repeat, newMaterial.mipmap );
+				vo.linkedObject = new TextureMaterial( vo.diffuseTexture.linkedObject as Texture2DBase, newMaterial.smooth, newMaterial.repeat, newMaterial.mipmap );
 				linkedObjectChanged = true;
 			}
 			if( newMaterial.type == MaterialVO.COLOR && vo.linkedObject is TextureMaterial )
 			{
-				vo.linkedObject = new ColorMaterial( newMaterial.color, newMaterial.alpha );
+				vo.linkedObject = new ColorMaterial( newMaterial.diffuseColor, 1 );
 				linkedObjectChanged = true;
 			}
 			
-			if( newMaterial.texture ) 
+			if( !vo.diffuseTexture ) 
 			{
-				vo.texture = newMaterial.texture;
-			}
-			if( !vo.texture ) 
-			{
-				vo.texture = document.getTexture(DefaultMaterialManager.getDefaultTexture()) as BitmapTextureVO;
+				vo.diffuseTexture = document.getTexture(DefaultMaterialManager.getDefaultTexture()) as TextureVO;
 			}
 			
 			vo.apply();
 			
 			if( linkedObjectChanged ) // update all meshes that use current material
 			{
-				for each( var asset:ContainerVO in document.scene )
-				{
-					var mesh:MeshVO = asset as MeshVO;
-					if( mesh )
-					{
-						for each( var subMesh:SubMeshVO in mesh.subMeshes )
-						{
-							if( subMesh.material.linkedObject == prevMaterial ) 
-							{
-								subMesh.material = vo.clone();
-								subMesh.apply();
-							}
-						}
-					}
-				}
+				update( document.scene, prevMaterial, vo );
 			}
 			
 			event.items = [vo];
 	        addToHistory( event );
 	    }
+		private function update( children:ArrayCollection, prevMaterial:MaterialBase, newMaterial:MaterialVO ):void 
+		{
+			for each( var asset:ContainerVO in children )
+			{
+				var mesh:MeshVO = asset as MeshVO;
+				if( mesh )
+				{
+					for each( var subMesh:SubMeshVO in mesh.subMeshes )
+					{
+						if( subMesh.material.linkedObject == prevMaterial ) 
+						{
+							subMesh.material = newMaterial.clone();
+							subMesh.apply();
+						}
+					}
+				}
+				update( asset.children, prevMaterial, newMaterial );
+			}
+		}
 	}
 }

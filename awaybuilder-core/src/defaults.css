@@ -7,10 +7,80 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace s "library://ns.adobe.com/flex/spark";
 
-global {
+/*@font-face 
+{
+	src:                    url("assets/arial.ttf");
+	font-family:            mainFont;
+	font-style:             normal;
+	font-weight:            normal;
+	embed-as-cff:           true;
+	advanced-anti-aliasing: true;
+}
+@font-face 
+{
+	src:                    url("assets/arialbd.ttf");
+	font-family:            mainFont;
+	font-style:             normal;
+	font-weight:            bold;
+	embed-as-cff:           true;
+	advanced-anti-aliasing: true;
+}
+@font-face 
+{
+	src:                    url("assets/ariali.ttf");
+	font-family:            mainFont;
+	font-style:             italic;
+	font-weight:            normal;
+	embed-as-cff:           true;
+	advanced-anti-aliasing: true;
+}
+@font-face 
+{
+	src:                    url("assets/arialbi.ttf");
+	font-family:            mainFont;
+	font-style:             italic;
+	font-weight:            bold;
+	embed-as-cff:           true;
+	advanced-anti-aliasing: true;
+}
+@font-face 
+{
+	src:                    url("assets/arial.ttf");
+	font-family:            mxmainFont;
+	embed-as-cff:           false;
+}
+@font-face 
+{
+	src:                    url("assets/arialbd.ttf");
+	font-family:            mxmainFont;
+	font-weight:            bold;
+	embed-as-cff:           false;
+}
+mx|ToolTip 
+{
+	font-family: mxmainFont;
+}
+mx|Button 
+{
+	font-family: mxmainFont;
+}
+mx|TextInput 
+{
+	font-family: mxmainFont;
+}
+mx|Alert 
+{
+	font-family: mxmainFont;
+}*/
+
+global 
+{
 	modalTransparency: 0.5;
 	modalTransparencyColor: #000003;
 	modalTransparencyDuration: 200;
+	/*fontFamily: mainFont;
+	fontWeight: normal;
+	fontSize: 12;*/
 }
 
 awaybuilder|CoreEditor
@@ -41,21 +111,21 @@ tree|TreeItemRenderer.material
 }
 tree|TreeItemRenderer.geometry
 {
-	icon: Embed("assets/images/layer_shape_polyline.png");
+	icon: Embed("assets/images/origami.png");
 }
 tree|TreeItemRenderer.skeleton
 {
-	icon: Embed("assets/images/layer-shape-polyline.png");
+	icon: Embed("assets/images/chart_line.png");
 }
 tree|TreeItemRenderer.mesh
 {
-	icon: Embed("assets/images/box_closed.png");
+	icon: Embed("assets/images/mesh_box_closed.png");
 }
 tree|TreeItemRenderer.container
 {
-	icon: Embed("assets/images/box_open.png");
+	icon: Embed("assets/images/box_closed.png");
 }
-tree|TreeItemRenderer.animation
+tree|TreeItemRenderer.animationNode
 {
 	icon: Embed("assets/images/film.png");
 }
@@ -63,7 +133,6 @@ tree|TreeItemRenderer.bear
 {
 	icon: Embed("assets/images/teddy_bear.png");
 }
-
 
 s|NumericStepper
 {
@@ -290,6 +359,11 @@ s|Button.addButton
 {
 	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
 	icon: Embed("assets/images/add.png");
+}
+s|Button.removeButton
+{
+	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
+	icon: Embed("assets/images/delete.png");
 }
 
 awaybuilder|ApplicationSettingsForm s|List

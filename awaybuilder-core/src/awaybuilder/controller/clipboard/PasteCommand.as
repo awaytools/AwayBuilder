@@ -7,7 +7,7 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.scene.Scene3DManager;
@@ -51,7 +51,7 @@ package awaybuilder.controller.clipboard
 			{
 				if( asset is MeshVO ) 
 				{
-					Scene3DManager.addMesh( asset.linkedObject as Mesh );
+//					Scene3DManager.addMesh( asset.linkedObject as Mesh );
 					document.scene.addItemAt( asset, 0 );
 				}
 			}

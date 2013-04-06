@@ -1,6 +1,7 @@
 package awaybuilder.utils.scene
 {
 	import away3d.cameras.Camera3D;
+	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
 	import away3d.core.managers.Stage3DManager;
@@ -332,7 +333,7 @@ package awaybuilder.utils.scene
 		
 		public static function clear(disposeMaterials:Boolean=false):void
 		{
-			for each(var o:Entity in objects.source)
+			for each(var o:ObjectContainer3D in objects.source)
 			{
 				if (o is Mesh)
 				{
@@ -350,20 +351,15 @@ package awaybuilder.utils.scene
 			objects.removeAll();
 		}
 		
-		public static function addMesh(mesh:Mesh):void
+		public static function addObject(o:ObjectContainer3D):void
 		{		
+			o.mouseEnabled = true;
+//			mesh.pickingCollider = PickingColliderType.PB_BEST_HIT;
+			o.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
 			
-//			if( mesh.extra ) {
-//				trace( "mesh.name = " + mesh.name );
-				mesh.name += "1";
-//			}
-			mesh.mouseEnabled = true;
-			mesh.pickingCollider = PickingColliderType.PB_BEST_HIT;
-			mesh.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
+			scene.addChild(o);
 			
-			scene.addChild(mesh);
-			
-			objects.addItem(mesh);
+			objects.addItem(o);
 		}		
 		
 		public static function removeMesh(mesh:Mesh):void
@@ -408,14 +404,14 @@ package awaybuilder.utils.scene
 		
 		public static function unselectAll():void
 		{
-			for each(var m:Entity in objects.source)
-			{
-				m.showBounds = false;
-			}
-			
-			selectedObjects = new ArrayList();
-			selectedObject = null;
-			currentGizmo.hide();
+//			for each(var m:Entity in objects.source)
+//			{
+//				m.showBounds = false;
+//			}
+//			
+//			selectedObjects = new ArrayList();
+//			selectedObject = null;
+//			currentGizmo.hide();
 		}
 		
 		public static function unSelectObjectByName(meshName:String):void
@@ -447,17 +443,17 @@ package awaybuilder.utils.scene
 		{			
 			if (!multiSelection) unselectAll();
 			// TODO: Check if object already selected
-			for each(var m:Entity in objects.source)
+			for each(var m:ObjectContainer3D in objects.source)
 			{
 				if (m.name == meshName)
 				{
-					if (!m.showBounds)
-					{
-						if (m is Mesh) m.showBounds = true;
-						selectedObjects.addItem(m);						
-						selectedObject = m;
-						currentGizmo.show(selectedObject);
-					}
+//					if (!m.showBounds)
+//					{
+//						if (m is Mesh) m.showBounds = true;
+//						selectedObjects.addItem(m);						
+//						selectedObject = m;
+//						currentGizmo.show(selectedObject);
+//					}
 					
 //					break;
 				}

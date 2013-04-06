@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
+		  currentState="{_asset.type}" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" >
+    <fx:Declarations>
+		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
+    </fx:Declarations>
+	<editors:states>
+		<s:State name="textureType"/>
+		<s:State name="colorType"/>
+	</editors:states>
+    <fx:Script><![CDATA[
+		import away3d.materials.MaterialBase;
+		import away3d.materials.utils.DefaultMaterialManager;
+		import away3d.textures.Texture2DBase;
+		
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.MaterialVO;
+		import awaybuilder.model.vo.scene.TextureVO;
+		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		
+		import mx.collections.ArrayCollection;
+		import mx.collections.ArrayList;
+		import mx.events.ColorPickerEvent;
+		
+		import spark.events.IndexChangeEvent;
+
+		[Bindable]
+		private var _isDefault:Boolean = false;
+		
+		[Bindable]
+		private var _selectedDiffuseTexture:TextureVO;
+		[Bindable]
+		private var _selectedSpecularTexture:TextureVO;
+		[Bindable]
+		private var _selectedAmbientTexture:TextureVO;
+		[Bindable]
+		private var _selectedNormalMapTexture:TextureVO;
+		
+		[Bindable]
+		private var _asset:MaterialVO;
+		
+		override protected function validate(asset:AssetVO):void
+		{
+			if( !(asset is MaterialVO) ) return;
+			_asset = asset as MaterialVO;
+			_isDefault = false;
+			if( _asset.linkedObject == DefaultMaterialManager.getDefaultMaterial() )
+			{
+				_isDefault = true;
+			}
+			for each(var texture:TextureVO in _asset.linkedTextures) 
+			{
+				if (texture.linkedObject == _asset.diffuseTexture.linkedObject) 
+				{
+					_selectedDiffuseTexture = texture;
+				}
+				if (texture.linkedObject == _asset.specularMap.linkedObject) 
+				{
+					_selectedSpecularTexture = texture;
+				}
+				if (texture.linkedObject == _asset.ambientTexture.linkedObject) 
+				{
+					_selectedAmbientTexture = texture;
+				}
+				if (texture.linkedObject == _asset.normalMap.linkedObject) 
+				{
+					_selectedNormalMapTexture = texture;
+				}
+			}
+		}
+		
+        private function name_changeHandler(event:Event):void 
+		{
+			_asset.name = nameInput.text;
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, _asset, true));
+        }
+
+        private function basicProperties_changeHandler(event:Event):void 
+		{
+			_asset.repeat = repeatBox.selected;
+			_asset.smooth = smoothBox.selected;
+			_asset.bothSides = bothSidesBox.selected;
+			_asset.mipmap = mipmapBox.selected;
+			_asset.alphaPremultiplied = alphaPremultipliedBox.selected;
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+        }
+
+        private function normalDropDownList_changeHandler(event:IndexChangeEvent):void 
+		{
+			_asset.normalMap = normalDropDownList.selectedItem as TextureVO;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+        }
+		private function ambientDropDownList_changeHandler(event:IndexChangeEvent):void 
+		{
+			_asset.ambientTexture = ambientDropDownList.selectedItem as TextureVO;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		private function diffuseDropDownList_changeHandler(event:IndexChangeEvent):void 
+		{
+			_asset.diffuseTexture = diffuseDropDownList.selectedItem as TextureVO;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		private function specularDropDownList_changeHandler(event:IndexChangeEvent):void 
+		{
+			_asset.specularMap = specularDropDownList.selectedItem as TextureVO;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		
+        private function editTextureButton_clickHandler(event:MouseEvent):void 
+		{
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, _asset.diffuseTexture, true));
+        }
+		
+		private function dropDownIconFunction(item:TextureVO):Object 
+		{
+			return item.bitmapData;
+		}
+		
+		private function dropDownLabelFunction(item:TextureVO):Object 
+		{
+			return item.name.split("/").pop();
+		}
+		
+		protected function diffuseDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_DIFFUSE_TEXTURE, _asset, true));
+		}
+		protected function normalDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_NORMAL_TEXTURE, _asset, true));
+		}
+		protected function specularDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_SPECULAR_TEXTURE, _asset, true));
+		}
+		protected function ambientDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_AMBIENT_TEXTURE, _asset, true));
+		}
+		
+		protected function typeRadioGroup_changeHandler(event:Event):void
+		{
+			_asset.type = typeRadioGroup.selectedValue as String;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		
+		protected function alphaStepper_changeHandler(event:Event):void
+		{
+//			_asset.alpha = alphaStepper.value/100;
+//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		
+		protected function diffuseColorPicker_changeHandler(event:ColorPickerEvent):void
+		{
+			_asset.diffuseColor = diffuseColorPicker.selectedColor;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		
+		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES, prevSelected.removeItemAt(prevSelected.length-1), true));
+		}
+		
+		
+		protected function blendModeList_changeHandler(event:IndexChangeEvent):void
+		{
+			_asset.blendMode = blendModeList.selectedItem;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		
+		protected function addEffectMethodButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, _asset, true));
+		}
+		
+		protected function deleteEffectMethodButton_clickHandler(event:MouseEvent):void
+		{
+			if( effectMethodsList.selectedItem )
+			{
+				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, effectMethodsList.selectedItem, true));
+			}
+			
+		}
+		
+	]]></fx:Script>
+
+	<s:Group width="100%" top="0">
+		<s:Rect left="0" right="0" top="3" bottom="3">
+			<s:fill>
+				<s:SolidColor color="0x111111" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
+					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
+			<s:Label width="100%" text="Material Properties" fontWeight="bold" fontSize="14"/>
+		</s:HGroup>
+	</s:Group>
+	
+	<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+		<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_isDefault}"/>
+	</s:FormItem>
+	
+	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" enabled="{!_isDefault}" horizontalAlign="center">
+		<s:RadioButton label="Texture" width="100%" group="{typeRadioGroup}" value="{MaterialVO.TEXTURE}"/>
+		<s:RadioButton label="Color" width="100%" group="{typeRadioGroup}" value="{MaterialVO.COLOR}"/>
+	</s:HGroup>
+	
+    <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
+        <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			<!--<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="alphaStepper" minimum="0" maximum="100" value="{_asset.diffuseAlpha*100}" width="100%"
+								  change="alphaStepper_changeHandler(event)" enabled="{!_isDefault}"/>
+			</s:FormItem>-->
+			<s:FormItem label="repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+				<s:CheckBox id="repeatBox" change="basicProperties_changeHandler(event)" selected="{_asset.repeat}" enabled="{!_isDefault}"/>
+			</s:FormItem>
+			<s:FormItem label="smooth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+				<s:CheckBox id="smoothBox" change="basicProperties_changeHandler(event)" selected="{_asset.smooth}" enabled="{!_isDefault}"/>
+			</s:FormItem>
+			<s:FormItem label="mipmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+				<s:CheckBox id="mipmapBox" change="basicProperties_changeHandler(event)" selected="{_asset.mipmap}" enabled="{!_isDefault}"/>
+			</s:FormItem>
+			<s:FormItem label="both sides" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+				<s:CheckBox id="bothSidesBox" change="basicProperties_changeHandler(event)" selected="{_asset.bothSides}" enabled="{!_isDefault}"/>
+			</s:FormItem>
+			<s:FormItem label="alpha premultiplied" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+				<s:CheckBox id="alphaPremultipliedBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaPremultiplied}" enabled="{!_isDefault}"/>
+			</s:FormItem>
+			<s:FormItem label="blend mode" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+				<s:DropDownList id="blendModeList" selectedItem="{_asset.blendMode}" change="blendModeList_changeHandler(event)" width="100%" enabled="{!_isDefault}"
+								dataProvider="{new ArrayCollection([BlendMode.NORMAL,BlendMode.MULTIPLY,BlendMode.ADD,BlendMode.ALPHA])}"
+								/>
+			</s:FormItem>
+        </s:Form>
+    </controls:CollapsiblePanel>
+	
+	<controls:CollapsiblePanel width="100%" title="Diffuse" collapsed="true" enabled="{!_isDefault}">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" >
+			<s:FormItem label="alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="diffuseAlphaStepper"
+								  minimum="0" maximum="100" width="100%" value="{_asset.diffuseAlpha}"
+								  />
+			</s:FormItem>
+			<s:FormItem label="alpha threshold" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="diffuseThresholdStepper"
+								  minimum="0" maximum="100" width="100%" value="{_asset.diffuseAlphaThreshold}"
+								  />
+			</s:FormItem>
+			<s:FormItem label="color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<mx:ColorPicker id="diffuseColorPicker" selectedColor="{_asset.diffuseColor}" change="diffuseColorPicker_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="method" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:DropDownList selectedItem="{_asset.diffuseMethod}" enabled="false" width="100%"/>
+			</s:FormItem>
+		</s:Form>
+		<controls:HorizontalFormSeparator/>
+		<s:Label text="Texture:"  includeIn="textureType" />
+		<s:HGroup width="100%" verticalAlign="middle"  includeIn="textureType" >
+			<controls:ExtendedDropDownList id="diffuseDropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{_asset.linkedTextures}" selectedItem="{_selectedDiffuseTexture}"
+										   labelFunction="{dropDownLabelFunction}"
+										   newItemLabel="Add New Texture"
+										   iconFunction="{dropDownIconFunction}"
+										   change="diffuseDropDownList_changeHandler(event)"
+										   addNewItem="diffuseDropDownList_addNewItemHandler(event)"
+										   enabled="{!_isDefault}"/>
+			<s:Button id="editTextureButton" styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="editTextureButton_clickHandler(event)"/>
+		</s:HGroup>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Ambient" collapsed="true" includeIn="textureType">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" >
+			<s:FormItem label="method" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:DropDownList selectedItem="{_asset.ambientMethod}" enabled="false" width="100%"/>
+			</s:FormItem>
+			<s:FormItem label="value" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="ambientStepper"
+								  minimum="0" maximum="100" width="100%" value="{_asset.ambient}"
+								  />
+			</s:FormItem>
+			<s:FormItem label="color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<mx:ColorPicker id="ambientColorPicker" selectedColor="{_asset.specularColor}"/>
+			</s:FormItem>
+		</s:Form>
+		<controls:HorizontalFormSeparator/>
+		<s:Label text="Texture"/>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="ambientDropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{_asset.linkedTextures}" selectedItem="{_selectedAmbientTexture}"
+										   labelFunction="{dropDownLabelFunction}"
+										   newItemLabel="Add New Texture"
+										   iconFunction="{dropDownIconFunction}"
+										   change="ambientDropDownList_changeHandler(event)"
+										   addNewItem="ambientDropDownList_addNewItemHandler(event)"
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="editTextureButton_clickHandler(event)"/>
+		</s:HGroup>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Specular" collapsed="true" includeIn="textureType">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" >
+			<s:FormItem label="method" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:DropDownList selectedItem="{_asset.specularMethod}" enabled="false" width="100%"/>
+			</s:FormItem>
+			<s:FormItem label="value" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="specularStepper"
+								  minimum="0" maximum="100" width="100%" value="{_asset.specular}"
+								  />
+			</s:FormItem>
+			<s:FormItem label="color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<mx:ColorPicker id="specularColorPicker" selectedColor="{_asset.specularColor}"/>
+			</s:FormItem>
+			<s:FormItem label="gloss" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="glossStepper"
+								  minimum="0" width="100%" value="{_asset.gloss}"
+								  />
+			</s:FormItem>
+			
+		</s:Form>
+		<controls:HorizontalFormSeparator/>
+		<s:Label text="Texture:"/>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="specularDropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{_asset.linkedTextures}" selectedItem="{_selectedSpecularTexture}"
+										   labelFunction="{dropDownLabelFunction}"
+										   newItemLabel="Add New Texture"
+										   iconFunction="{dropDownIconFunction}"
+										   change="specularDropDownList_changeHandler(event)"
+										   addNewItem="specularDropDownList_addNewItemHandler(event)"
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="editTextureButton_clickHandler(event)"/>
+		</s:HGroup>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Normal" collapsed="true" includeIn="textureType">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" >
+			<s:FormItem label="method" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:DropDownList selectedItem="{_asset.specularMethod}" enabled="false" width="100%"/>
+			</s:FormItem>
+		</s:Form>
+		<controls:HorizontalFormSeparator/>
+		<s:Label text="Texture:"/>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="normalDropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{_asset.linkedTextures}" selectedItem="{_selectedNormalMapTexture}"
+										   labelFunction="{dropDownLabelFunction}"
+										   newItemLabel="Add New Texture"
+										   iconFunction="{dropDownIconFunction}"
+										   change="normalDropDownList_changeHandler(event)"
+										   addNewItem="normalDropDownList_addNewItemHandler(event)"
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="editTextureButton_clickHandler(event)"/>
+		</s:HGroup>
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Effect Methods" collapsed="true">
+		<s:List id="effectMethodsList" dataProvider="{_asset.effectMethods}" width="100%" skinClass="awaybuilder.view.skins.EffectMethodsListSkin" />
+		<!--<s:Button id="addEffectMethod" styleName/>-->
+		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+			<s:Button id="addEffectMethodButton" width="100%" label="Add New" styleName="addButton" click="addEffectMethodButton_clickHandler(event)"/>
+			<s:Button id="deleteEffectMethodButton" enabled="{effectMethodsList.selectedItem}" label="Delete" styleName="removeButton" click="deleteEffectMethodButton_clickHandler(event)" />
+		</s:HGroup>
+	</controls:CollapsiblePanel>
+</editors:EditorBase>

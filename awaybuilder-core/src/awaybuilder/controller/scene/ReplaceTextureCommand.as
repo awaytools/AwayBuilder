@@ -5,7 +5,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 
 	public class ReplaceTextureCommand extends HistoryCommandBase
@@ -19,9 +19,9 @@ package awaybuilder.controller.scene
 		override public function execute():void
 		{
 			var newDoc:DocumentVO = event.newValue as DocumentVO;
-			var newTexture:BitmapTextureVO = newDoc.textures.getItemAt(0) as BitmapTextureVO;
+			var newTexture:TextureVO = newDoc.textures.getItemAt(0) as TextureVO;
 			
-			var vo:BitmapTextureVO = event.items[0] as BitmapTextureVO;
+			var vo:TextureVO = event.items[0] as TextureVO;
 
 			if( !event.oldValue ) 
 			{

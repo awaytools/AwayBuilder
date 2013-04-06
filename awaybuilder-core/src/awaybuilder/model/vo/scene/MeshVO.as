@@ -3,6 +3,7 @@ package awaybuilder.model.vo.scene
 
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
+    import away3d.materials.MaterialBase;
     
     import mx.collections.ArrayCollection;
 
@@ -25,7 +26,7 @@ package awaybuilder.model.vo.scene
         public var castsShadows:Boolean;
 
         public var subMeshes:ArrayCollection;
-
+		
 		override public function apply():void
 		{
 			super.apply();
@@ -43,6 +44,12 @@ package awaybuilder.model.vo.scene
 			mesh.rotationZ = rotationZ;
 			
 			mesh.castsShadows = castsShadows;
+			
+//			for (var i:int = 0; i < subMeshes.length; i++) 
+//			{
+//				var subMesh:SubMeshVO = subMeshes.getItemAt(i) as SubMeshVO;
+//				mesh.subMeshes[i].material = subMesh.material.linkedObject as MaterialBase;
+//			}
 			
 		}
 		

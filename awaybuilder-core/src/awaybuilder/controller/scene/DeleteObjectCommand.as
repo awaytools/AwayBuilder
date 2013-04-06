@@ -7,7 +7,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
@@ -53,11 +53,11 @@ package awaybuilder.controller.scene
 				{
 					if( vo is MeshVO ) 
 					{
-						Scene3DManager.addMesh( vo.linkedObject as Mesh );
+						Scene3DManager.addObject( vo.linkedObject as Mesh );
 					}
 					document.scene.addItemAt( vo, 0 );
 				}
-				else if( vo is BitmapTextureVO ) 
+				else if( vo is TextureVO ) 
 				{
 					document.textures.addItemAt( vo, 0 );
 				}

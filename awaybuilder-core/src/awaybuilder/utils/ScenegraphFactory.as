@@ -1,20 +1,20 @@
 package awaybuilder.utils
 {
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
 	
 	import mx.collections.ArrayCollection;
 
 	public class ScenegraphFactory
 	{
-		public function ScenegraphFactory()
-		{
-		}
 		
 		public static function CreateBranch( objects:ArrayCollection):ArrayCollection 
 		{
@@ -26,27 +26,34 @@ package awaybuilder.utils
 			return children;
 		}
 		
-		private static function createScenegraphCild( item:AssetVO ):ScenegraphItemVO{
+		private static function createScenegraphCild( asset:AssetVO ):ScenegraphItemVO
+		{
+			var item:ScenegraphItemVO;
 			switch( true )
 			{
-				case( item is MeshVO ):
-					if(item.name.toUpperCase().indexOf("BEAR")>=0)
-					{
-						return new ScenegraphItemVO( item.name, item, ScenegraphItemVO.BEAR );
-					}
-					return new ScenegraphItemVO( item.name, item, ScenegraphItemVO.MESH );
-				case( item is MaterialVO ):
-					return new ScenegraphItemVO( item.name, item, ScenegraphItemVO.MATERIAL );
-				case( item is ContainerVO ):
-					return new ScenegraphItemVO( item.name, item, ScenegraphItemVO.CONTAINER );
-				case( item is BitmapTextureVO ):
-					return new ScenegraphItemVO( "Texture (" + item.name.split("/").pop() +")", item, ScenegraphItemVO.TEXTURE );
-				case( item is LightVO ):
-					return new ScenegraphItemVO( item.name, item, ScenegraphItemVO.LIGHT );
-				case( item is MeshVO ):
-					return new ScenegraphItemVO( item.name, item );
+				case( asset is MeshVO ):
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MESH );
+					item.children = CreateBranch( MeshVO(asset).children );
+					return item;
+				case( asset is ContainerVO ):
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.CONTAINER );
+					item.children = CreateBranch( ContainerVO(asset).children );
+					return item;
+				case( asset is MaterialVO ):
+					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MATERIAL );
+				case( asset is TextureVO ):
+					return new ScenegraphItemVO( "Texture (" + asset.name.split("/").pop() +")", asset, ScenegraphItemVO.TEXTURE );
+				case( asset is LightVO ):
+					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
+				case( asset is AnimationNodeVO ):
+					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_NODE );
+				case( asset is SkeletonVO ):
+					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SKELETON );
+				case( asset is GeometryVO ):
+					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.GEOMETRY );
+					
 				default:
-					return new ScenegraphItemVO( item.name, item );
+					return new ScenegraphItemVO( asset.name, asset );
 			}
 		}
 		

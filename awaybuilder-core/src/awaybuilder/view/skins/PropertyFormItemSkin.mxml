@@ -98,7 +98,7 @@
     <!--- @copy spark.components.FormItem#sequenceLabelDisplay -->
     <s:Label id="sequenceLabelDisplay" 
              fontWeight="bold"
-             left="sequenceCol:6" right="sequenceCol:5"
+             left="sequenceCol:5" right="sequenceCol:5"
              bottom="row1:0" baseline="row1:0"/>
     <!--- @copy spark.components.FormItem#labelDisplay -->
     <s:Label id="labelDisplay"

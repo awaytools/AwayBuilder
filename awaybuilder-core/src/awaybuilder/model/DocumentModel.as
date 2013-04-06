@@ -2,6 +2,7 @@ package awaybuilder.model
 {
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	
 	import flash.display3D.textures.Texture;
@@ -14,6 +15,16 @@ package awaybuilder.model
 	public class DocumentModel extends Actor implements IDocumentModel
 	{
 		public var documentVO:DocumentVO = new DocumentVO();
+		
+		private var _empty:Boolean = true;
+		public function get empty():Boolean
+		{
+			return this._empty;
+		}
+		public function set empty(value:Boolean):void
+		{
+			this._empty = value;
+		}
 		
 		private var _name:String;
 		public function get name():String
@@ -159,9 +170,9 @@ package awaybuilder.model
 			return getItemInCollection( materials, value );
 		}
 		
-		public function getSceneObject(value:Object):AssetVO
+		public function getSceneObject(value:Object):ContainerVO
 		{
-			return getItemInCollection( scene, value );
+			return getContainerInCollection( scene, value );
 		}
 		
 		public function getSkeleton(value:Object):AssetVO
@@ -178,6 +189,7 @@ package awaybuilder.model
 		{
 			documentVO = new DocumentVO();
 			_selectedObjects = new Vector.<AssetVO>();
+			empty = true;
 		}
 		
 		private function getItemInCollection( children:ArrayCollection, value:Object ):AssetVO
@@ -194,6 +206,28 @@ package awaybuilder.model
 				else if( vo.linkedObject == value ) 
 				{
 					return vo;
+				}
+			}
+			return null;
+		}
+		private function getContainerInCollection( children:ArrayCollection, value:Object ):ContainerVO
+		{
+			for each( var vo:ContainerVO in children )
+			{
+				if( UIDUtil.isUID( value as String ) )
+				{
+					if( vo.id == value ) 
+					{
+						return vo;
+					}
+				}
+				else if( vo.linkedObject == value ) 
+				{
+					return vo;
+				}
+				if( vo.children && vo.children.length>0 ) 
+				{
+					return getContainerInCollection( vo.children, value );
 				}
 			}
 			return null;

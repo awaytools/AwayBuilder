@@ -50,6 +50,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			
 			updateScenegraph();
+			
 		}
 		
 		//----------------------------------------------------------------------
@@ -118,6 +119,7 @@ package awaybuilder.view.mediators
 		
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
+			
 			_scenegraphSelected = new Vector.<Object>();
 			updateAllSelectedItems( view.model.scene, event.items );
 			updateAllSelectedItems( view.model.materials, event.items );
@@ -195,6 +197,8 @@ package awaybuilder.view.mediators
 			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, ScenegraphFactory.CreateBranch( document.skeletons ), "item" );
 			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry ), "item" );
 			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateBranch( document.lights ), "item" );
+			
+			view.sceneTree.expandAll();
 		}
 		
 	}

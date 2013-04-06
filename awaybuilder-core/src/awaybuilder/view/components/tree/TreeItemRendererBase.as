@@ -195,7 +195,7 @@ package awaybuilder.view.components.tree
 		//  indentation
 		//----------------------------------
 		
-		private var _treeIndentation:Number = 17; // default MX Tree indentation
+		private var _treeIndentation:Number = 2; 
 		
 		[Bindable("levelChange")]
 		public function get indentation():Number

@@ -104,8 +104,8 @@ package awaybuilder.desktop.view.mediators
 		[Inject]
 		public var settingsModel:SettingsModel;
 		
-		[Inject]
-		public var updateModel:UpdateModel;
+//		[Inject]
+//		public var updateModel:UpdateModel;
 		
 		[Inject(name="version")]
 		public var version:String;
@@ -205,14 +205,14 @@ package awaybuilder.desktop.view.mediators
 			}
 			this._propertiesWindow.nativeWindow.y = this.app.nativeWindow.y + (this.app.nativeWindow.height - this._propertiesWindow.nativeWindow.height) / 2;
 			
-			if(this.updateModel.isReadyToCheckForUpdate)
-			{
-				this.updateModel.updateLastCheckTime();
-				this.dispatch(new MessageBoxEvent(MessageBoxEvent.SHOW_MESSAGE_BOX,
-					"Update", "Would you like to check for an update?",
-					"Check for Update", updateMessageBox_onCheckForUpdate, "Don't Check"));
-			}
-			else if(this.settingsModel.showSamplesAtStartup)
+//			if(this.updateModel.isReadyToCheckForUpdate)
+//			{
+//				this.updateModel.updateLastCheckTime();
+//				this.dispatch(new MessageBoxEvent(MessageBoxEvent.SHOW_MESSAGE_BOX,
+//					"Update", "Would you like to check for an update?",
+//					"Check for Update", updateMessageBox_onCheckForUpdate, "Don't Check"));
+//			}
+			if(this.settingsModel.showSamplesAtStartup)
 			{
 				this.dispatch(new HelpEvent(HelpEvent.SHOW_WELCOME));
 			}
@@ -241,16 +241,16 @@ package awaybuilder.desktop.view.mediators
 			this.eventMap.mapListener(this.app.stage, KeyboardEvent.KEY_DOWN, stage_keyDownHandler);
 		}
 		
-		private function checkForUpdate():void
-		{
-			this.updateModel.updateLastCheckTime();
-			navigateToURL(new URLRequest("http://sample.com/download/?update_from=" + this.version), "_blank");
-		}
+//		private function checkForUpdate():void
+//		{
+//			this.updateModel.updateLastCheckTime();
+//			navigateToURL(new URLRequest("http://sample.com/download/?update_from=" + this.version), "_blank");
+//		}
 		
-		private function updateMessageBox_onCheckForUpdate():void
-		{
-			this.checkForUpdate();
-		}
+//		private function updateMessageBox_onCheckForUpdate():void
+//		{
+//			this.checkForUpdate();
+//		}
 		
 		private function eventDispatcher_documentEditedHandler(event:DocumentModelEvent):void
 		{
@@ -353,7 +353,6 @@ package awaybuilder.desktop.view.mediators
 		private function awaybuilder_dragDropHandler(event:DragEvent):void
 		{
 			var file:File = event.dragSource.dataForFormat("air:file list")[0];
-			trace( " event.dragSource = " + event.dragSource );
 			this.dispatch(new OpenFromInvokeEvent(OpenFromInvokeEvent.OPEN_FROM_INVOKE, file));
 		}
 		
@@ -564,7 +563,7 @@ package awaybuilder.desktop.view.mediators
 				}
 				case MENU_CHECK_UPDATE:
 				{
-					this.checkForUpdate();
+//					this.checkForUpdate();
 					break;
 				}
 				case MENU_SAMPLES:

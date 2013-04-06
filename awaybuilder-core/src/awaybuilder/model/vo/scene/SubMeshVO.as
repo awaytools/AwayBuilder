@@ -4,6 +4,8 @@ package awaybuilder.model.vo.scene
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	
+	import awaybuilder.utils.AssetFactory;
+	
 	import flash.display3D.textures.Texture;
 	
 	import mx.collections.ArrayCollection;
@@ -15,11 +17,16 @@ package awaybuilder.model.vo.scene
 	    {
 			super( "subMesh", object );
 			
-			material = new MaterialVO( object.material );
+			material = AssetFactory.CreateAsset( object.material ) as MaterialVO;
+			trace( object.subGeometry );
+			
+//			this.subGeometry = AssetFactory.CreateAsset( object.subGeometry ) as SubGeometryVO;
 			this.parentMesh = parentMesh;
 	    }
 	
 	    public var material:MaterialVO;
+		
+		public var subGeometry:SubGeometryVO;
 		
 		public var parentMesh:MeshVO;
 		
@@ -33,6 +40,7 @@ package awaybuilder.model.vo.scene
 	    public function clone():SubMeshVO
 	    {
 	        var vo:SubMeshVO = new SubMeshVO( this.linkedObject as SubMesh, parentMesh );
+			vo.id = this.id;
 	        return vo;
 	    }
 	}

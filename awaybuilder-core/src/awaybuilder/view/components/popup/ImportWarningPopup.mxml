@@ -15,7 +15,6 @@
 			
 			protected function titlewindow_closeHandler(event:CloseEvent):void
 			{
-				//dispatchEvent( new CloseEvent( CloseEvent.CLOSE ) );
 				PopUpManager.removePopUp( this );
 			}
 			

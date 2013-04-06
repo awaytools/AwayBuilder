@@ -6,9 +6,9 @@ package awaybuilder.model.vo.scene
 	import flash.display.BitmapData;
 	
 	[Bindable]
-	public class BitmapTextureVO extends AssetVO
+	public class TextureVO extends AssetVO
 	{
-	    public function BitmapTextureVO( item:BitmapTexture )
+	    public function TextureVO( item:BitmapTexture )
 	    {
 	        super( item.name, item );
 			if( item == DefaultMaterialManager.getDefaultTexture() )
@@ -23,9 +23,9 @@ package awaybuilder.model.vo.scene
 	
 	    public var bitmapData:BitmapData;
 	
-	    public function clone():BitmapTextureVO
+	    public function clone():TextureVO
 	    {
-	        var vo:BitmapTextureVO = new BitmapTextureVO( this.linkedObject as BitmapTexture );
+	        var vo:TextureVO = new TextureVO( this.linkedObject as BitmapTexture );
 			vo.id = this.id;
 	        return vo;
 	    }

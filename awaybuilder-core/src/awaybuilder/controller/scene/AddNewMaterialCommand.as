@@ -11,12 +11,14 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
-
+	import awaybuilder.model.vo.scene.TextureVO;
+	
+	import mx.collections.ArrayCollection;
+	
 	use namespace arcane;
 	
 	public class AddNewMaterialCommand extends HistoryCommandBase
@@ -29,33 +31,23 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var tempMesh:MeshVO = event.items[0] as MeshVO;
-			var newSubMesh:SubMeshVO = event.newValue as SubMeshVO;
-			var mesh:MeshVO = document.getSceneObject( tempMesh.id ) as MeshVO;
+			var subMesh:SubMeshVO = getSubmesh( document.scene, event.items[0] as SubMeshVO );
+			
+			var newMaterial:MaterialVO = event.newValue as MaterialVO;
 			
 			if( !event.oldValue ) {
-				event.oldValue = getSubmesh( mesh, newSubMesh.id as SubMesh ).clone();
+				event.oldValue = subMesh.material.clone();
 			}
 			
-			var subMeshes:Vector.<SubMesh> = new Vector.<SubMesh>();
-			var newSubMeshes:Array = new Array();
-			
-			for( var i:int = 0; i < mesh.subMeshes.length; i++ )
-			{
-				var subMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
-				if( subMesh.id == newSubMesh.id )
-				{
-					subMesh.material = newSubMesh.material.clone(); 
-					subMesh.apply();
-				}
-			}
+			subMesh.material = newMaterial.clone();
+			subMesh.apply();
 			
 			if( event.isUndoAction )
 			{
-				var oldSubMesh:SubMeshVO = event.oldValue as SubMeshVO;
+				var oldMaterial:MaterialVO = event.oldValue as MaterialVO;
 				for (var j:int = 0; j < document.materials.length; j++) 
 				{
-					if( document.materials[j].id == oldSubMesh.material.id )
+					if( document.materials[j].id == oldMaterial.id )
 					{
 						document.materials.removeItemAt( j );
 						break;
@@ -64,20 +56,30 @@ package awaybuilder.controller.scene
 			}
 			else 
 			{
-				document.materials.addItemAt( newSubMesh.material.clone(), 0 );
+				document.materials.addItemAt( newMaterial, 0 );
 			}
 			
 			addToHistory( event );
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
-			
 		}
 		
-		private function getSubmesh( mesh:MeshVO, linked:SubMesh ):SubMeshVO
+		private function getSubmesh( children:ArrayCollection, vo:SubMeshVO ):SubMeshVO 
 		{
-			for each( var sub:SubMeshVO in mesh.subMeshes )
+			for each( var asset:ContainerVO in children )
 			{
-				if( sub.linkedObject == linked ) return sub;
+				var mesh:MeshVO = asset as MeshVO;
+				if( mesh )
+				{
+					for each( var subMesh:SubMeshVO in mesh.subMeshes )
+					{
+						if( subMesh.linkedObject == vo.linkedObject )
+						{
+							return subMesh;
+						}
+					}
+				}
+				return getSubmesh( asset.children, vo );
 			}
 			return null;
 		}

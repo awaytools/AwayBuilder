@@ -1,5 +1,6 @@
 package awaybuilder.controller.document
 {
+	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
 	
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
@@ -8,10 +9,11 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
-	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;
@@ -52,6 +54,8 @@ package awaybuilder.controller.document
 			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
 			document.textures = new ArrayCollection(document.textures.source.concat( data.textures.source ));
 			document.lights = new ArrayCollection(document.lights.source.concat( data.lights.source ));
+			
+			document.empty = false;
 			
 			if( event.canUndo ) 
 			{
@@ -114,23 +118,17 @@ package awaybuilder.controller.document
 				Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
 				return;
 			}
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
-			addObject( _sceneObjects.shift() );
+			for (var i:int = 0; i < 10; i++) 
+			{
+				addObject( _sceneObjects.shift() );
+			}
 		}
 		private function addObject( value:Object ):void
 		{
-			var mesh:MeshVO = value as MeshVO;
-			if( mesh ) 
+			var o:ContainerVO = value as ContainerVO;
+			if( o ) 
 			{
-				Scene3DManager.addMesh( mesh.linkedObject as Mesh );
+				Scene3DManager.addObject( o.linkedObject as ObjectContainer3D );
 			}
 		}
 		

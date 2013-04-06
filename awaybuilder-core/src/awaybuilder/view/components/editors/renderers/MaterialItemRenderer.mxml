@@ -15,16 +15,15 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.scene.BitmapTextureVO;
 			import awaybuilder.model.vo.scene.MaterialVO;
 			
 			[Bindable]
-			private var _texture:BitmapTextureVO;
+			private var _material:MaterialVO;
 			
 			override public function set data(value:Object):void 
 			{
 				super.data = value;
-				_texture = value as BitmapTextureVO;
+				_material = value as MaterialVO;
 			}
 		]]>
 	</fx:Script>
@@ -45,8 +44,9 @@
 				<s:SolidColorStroke color="0xAAAAAA"/>
 			</s:stroke>
 		</s:Rect>
-		<s:BitmapImage source="{_texture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
+		<s:BitmapImage source="{_material.diffuseTexture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
 		
 	</s:Group>
-	<s:Label text="{_texture.name.split('/').pop()}" width="100%" maxDisplayedLines="1"/>
+	
+	<s:Label text="{_material.name}" width="100%" maxDisplayedLines="1"/>
 </s:ItemRenderer>

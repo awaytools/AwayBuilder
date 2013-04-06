@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+<editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
-		 gap="0">
+		 xmlns:editors="awaybuilder.view.components.editors.*">
 	<fx:Declarations>
 	</fx:Declarations>
     <fx:Script><![CDATA[
-        import away3d.entities.Mesh;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		import away3d.entities.Mesh;
+		
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.MeshVO;
+		import awaybuilder.model.vo.scene.SubMeshVO;
 
-        import awaybuilder.model.vo.scene.MeshVO;
-        import awaybuilder.model.vo.scene.SubMeshVO;
+		[Bindable]
+		private var _asset:MeshVO;
+		
+		override protected function validate(asset:AssetVO):void
+		{
+			if( asset is MeshVO ) _asset = asset as MeshVO;
+		}
 
-
-        private var _data:MeshVO;
-        [Bindable]
-        public function get data():MeshVO
-        {
-            return _data;
-        }
-        public function set data(value:MeshVO):void
-        {
-            if( value ) {
-                _data = value;
-            }
-
-        }
-
-        private function position_commitHandler(event:Event):void {
+        private function position_commitHandler(event:Event):void 
+		{
             var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue, true));
         }
 
-        private function rotation_commitHandler(event:Event):void {
+        private function rotation_commitHandler(event:Event):void 
+		{
             var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
         }
 
-        private function scale_commitHandler(event:Event):void {
+        private function scale_commitHandler(event:Event):void 
+		{
             var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
         }
 
-        private function name_changeHandler(event:Event):void {
-            var newValue:MeshVO = data.clone() as MeshVO;
+        private function name_changeHandler(event:Event):void 
+		{
+            var newValue:MeshVO = _asset.clone() as MeshVO;
             newValue.name = nameInput.text;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, newValue, true));
         }
 
-        private function castShadowBox_changeHandler(event:Event):void {
-            //data.castShadows = castShadowBox.selected;
+        private function castShadowBox_changeHandler(event:Event):void 
+		{
+            _asset.castsShadows = castShadowBox.selected;
         }
 
-        private function materialButton_clickHandler(event:MouseEvent):void {
-//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, data.material, true));
+        private function materialButton_clickHandler(event:MouseEvent):void 
+		{
+//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _asset.material, true));
         }
 
-
+		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
+		}
         ]]></fx:Script>
 
 	
@@ -65,7 +69,8 @@
 			</s:fill>
 		</s:Rect>
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
-			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="false" width="32" height="32"/>
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
+					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
 			<s:Label width="100%" text="Mesh Properties" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
@@ -75,7 +80,7 @@
         <s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 
             <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)"/>
+                <s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
             </s:FormItem>
 
             <!--<s:FormItem label="Children" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
@@ -85,7 +90,7 @@
                 <!--<s:Button label="Select..." width="100%"/>-->
             <!--</s:FormItem>-->
             <!--<s:FormItem label="Material" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">-->
-                <!--<s:Button id="materialButton" width="100%" label="{data.item.material.name}" click="materialButton_clickHandler(event)"/>-->
+                <!--<s:Button id="materialButton" width="100%" label="{_asset.item.material.name}" click="materialButton_clickHandler(event)"/>-->
                 <!--&lt;!&ndash;<s:Button label="..." width="22"/>&ndash;&gt;-->
             <!--</s:FormItem>-->
             <!--<s:FormItem label="Geometry" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
@@ -94,9 +99,9 @@
             <!--<s:FormItem label="Animator" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
                 <!--<s:DropDownList width="100%"/>-->
             <!--</s:FormItem>-->
-            <!--<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
-                <!--<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{data.castShadows}"/>-->
-            <!--</s:FormItem>-->
+            <s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
+                <s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>
+            </s:FormItem>
 
         </s:Form>
     </controls:CollapsiblePanel>
@@ -104,56 +109,62 @@
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
             <s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="xStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{data.x}"
+                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.x}"
                                   change="position_commitHandler(event)" />
             </s:FormItem>
             <s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="yStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{data.y}"
+                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.y}"
                                   change="position_commitHandler(event)"/>
             </s:FormItem>
             <s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="zStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{data.z}"
+                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.z}"
                                   change="position_commitHandler(event)"/>
             </s:FormItem>
+			<controls:HorizontalFormSeparator/>
             <s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
                 <s:Button label="Select..." width="100%"/>
             </s:FormItem>
-
+			<controls:HorizontalFormSeparator/>
             <s:FormItem label="Rotation X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="rotationXStepper"
-                                  minimum="-360" maximum="360" width="100%" value="{data.rotationX}"
+                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}"
                                   change="rotation_commitHandler(event)"/>
             </s:FormItem>
             <s:FormItem label="Rotation Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="rotationYStepper"
-                                  minimum="-360" maximum="360" width="100%" value="{data.rotationY}"
+                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
                                   change="rotation_commitHandler(event)"/>
             </s:FormItem>
             <s:FormItem label="Rotation Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="rotationZStepper"
-                                  minimum="-360" maximum="360" width="100%" value="{data.rotationZ}"
+                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}"
                                   change="rotation_commitHandler(event)"/>
             </s:FormItem>
+			<controls:HorizontalFormSeparator/>
             <s:FormItem label="Scale X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="scaleXStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{data.scaleX}"
+                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleX}"
                                   change="scale_commitHandler(event)" />
             </s:FormItem>
             <s:FormItem label="Scale Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="scaleYStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{data.scaleY}"
+                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleY}"
                                   change="scale_commitHandler(event)"/>
             </s:FormItem>
             <s:FormItem label="Scale Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:NumericStepper id="scaleZStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{data.scaleZ}"
+                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleZ}"
                                   change="scale_commitHandler(event)"/>
             </s:FormItem>
         </s:Form>
     </controls:CollapsiblePanel>
     <controls:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="true">
-        <s:List dataProvider="{data.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
+        <s:List dataProvider="{_asset.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
     </controls:CollapsiblePanel>
-</s:VGroup>
+	<controls:CollapsiblePanel width="100%" title="Children" collapsed="true">
+		<s:List dataProvider="{_asset.children}" width="100%" labelField="name" skinClass="awaybuilder.view.skins.ChildrenListSkin" />
+	</controls:CollapsiblePanel>
+	
+</editors:EditorBase>

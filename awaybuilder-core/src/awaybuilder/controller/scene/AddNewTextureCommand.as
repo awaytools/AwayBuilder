@@ -8,7 +8,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	
@@ -37,21 +37,22 @@ package awaybuilder.controller.scene
 			if( !event.oldValue ) 
 			{
 				var oldValue:DocumentVO = new DocumentVO();
-				oldValue.textures.addItem( material.texture.clone() );
+				oldValue.textures.addItem( material.diffuseTexture.clone() );
 				event.oldValue = oldValue;
 			}
 				
 			var data:DocumentVO = event.newValue as DocumentVO;
-			var newTexture:BitmapTextureVO = data.textures.getItemAt( 0 ) as BitmapTextureVO;
+			var newTexture:TextureVO = data.textures.getItemAt( 0 ) as TextureVO;
 			
 			document.textures.addItemAt( newTexture, 0 );
 			
 			
-			material.texture = newTexture;
+			material.diffuseTexture = newTexture;
 			material.apply();
 			
 			addToHistory( event );
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			document.empty = false;
 		}
 		
 		private function undo():void
@@ -60,8 +61,8 @@ package awaybuilder.controller.scene
 			var oldValue:DocumentVO = event.oldValue as DocumentVO;
 			var newValue:DocumentVO = event.newValue as DocumentVO;
 			removeItems( document.textures, oldValue.textures );
-			var texture:BitmapTextureVO = newValue.textures.getItemAt( 0 ) as BitmapTextureVO;
-			material.texture = texture;
+			var texture:TextureVO = newValue.textures.getItemAt( 0 ) as TextureVO;
+			material.diffuseTexture = texture;
 			material.apply();
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));

@@ -72,7 +72,7 @@
 			protected function collapsiblepanel_creationCompleteHandler(event:FlexEvent):void
 			{
 				_expandedPanel = scenePanel;
-				_panels = [scenePanel,materialsPanel,texturesPanel,geometryPanel,skeletonsPanel,animationsPanel,lightsPanel];
+				_panels = [scenePanel,materialsPanel,texturesPanel,geometryPanel,animationsPanel,lightsPanel];
 			}
 			
 			protected function tree_changeHandler(event:IndexChangeEvent):void
@@ -93,10 +93,10 @@
 			
 		]]>
 	</fx:Script>
-	<s:VGroup width="210" height="100%" gap="0">
+	<s:VGroup width="225" height="100%" gap="0">
 		<controls:CollapsiblePanel id="scenePanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Scene Objects" width="100%" collapsed="false" height="100%" collapsedChange="panel_collapsedChangeHandler(event)">
-			<tree:Tree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedItems}"
+			<tree:Tree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:CollapsiblePanel>
@@ -121,12 +121,12 @@
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:CollapsiblePanel>
-		<controls:CollapsiblePanel id="skeletonsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+		<!--<controls:CollapsiblePanel id="skeletonsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Skeletons" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
 			<tree:Tree id="skeletonsTree" dataProvider="{model.skeletons}" selectedItems="{selectedItems}"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
-		</controls:CollapsiblePanel>
+		</controls:CollapsiblePanel>-->
 		<controls:CollapsiblePanel id="animationsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Animations" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
 			<tree:Tree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedItems}"

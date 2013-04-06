@@ -196,7 +196,7 @@
 						</fxg:CollapseArrowDownSkin>
 					</s:Group>
 					
-                    <s:Label id="titleDisplay" maxDisplayedLines="1" color="0xEEEEEE" paddingTop="1"
+                    <s:Label id="titleDisplay" maxDisplayedLines="1" color="0xEEEEEE" paddingTop="1" fontLookup="embeddedCFF"
                              verticalAlign="middle" textAlign="start" fontWeight="bold"
                              width="100%"/>
 

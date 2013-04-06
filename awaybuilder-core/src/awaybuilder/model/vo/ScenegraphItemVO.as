@@ -13,9 +13,10 @@ package awaybuilder.model.vo
 		public static const MATERIAL:String = "material";
 		public static const GEOMETRY:String = "geometry";
 		public static const SKELETON:String = "skeleton";
+		public static const SKELETON_POSE:String = "skeletonPose";
 		public static const CONTAINER:String = "container";
 		public static const BEAR:String = "bear";
-		public static const ANIMATION:String = "animation";
+		public static const ANIMATION_NODE:String = "animationNode";
 		public static const TEXTURE:String = "texture";
 		
 		public function ScenegraphItemVO( label:String, item:AssetVO, type:String="default" )

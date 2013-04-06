@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-                autoDrawBackground="false" xmlns:controls="awaybuilder.view.components.controls.*">
+                xmlns:controls="awaybuilder.view.components.controls.*" autoDrawBackground="false">
 
     <s:layout>
-        <s:HorizontalLayout verticalAlign="middle"/>
+        <s:VerticalLayout verticalAlign="middle"/>
     </s:layout>
     <fx:Script><![CDATA[
 		import away3d.core.base.SubMesh;
@@ -11,7 +11,7 @@
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.SubMeshVO;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
-		import awaybuilder.view.components.propertyEditors.PropertyEditorEvent;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.controls.Alert;
 		
@@ -26,6 +26,7 @@
         override public function set data(value:Object):void 
 		{
             super.data = value;
+			if( !value ) return;
             _subMesh = value as SubMeshVO;
 			var materialPresent:Boolean = false;
             for each(var material:MaterialVO in _subMesh.linkedMaterials) 
@@ -44,9 +45,8 @@
 
         private function dropDownList1_changeHandler(event:IndexChangeEvent):void 
 		{
-            var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject as SubMesh,_subMesh.parentMesh);
-            newValue.material = dropDownList.selectedItem as MaterialVO;
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, newValue, true));
+			_subMesh.material = dropDownList.selectedItem as MaterialVO;
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, _subMesh, true));
         }
 
         private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
@@ -56,29 +56,38 @@
 		
 		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
-			var newValue:SubMeshVO = new SubMeshVO(_subMesh.linkedObject as SubMesh,_subMesh.parentMesh);
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, newValue, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, _subMesh, true));
 		}
 		
 		private function dropDownIconFunction(item:MaterialVO):Object 
 		{
 			if( item.type == MaterialVO.TEXTURE )
 			{
-				return item.texture.bitmapData;
+				return item.diffuseTexture.bitmapData;
 			}
 			return new BitmapData(32, 32, false, 0x0);
 		}
 		
 	]]></fx:Script>
-
-    <controls:ExtendedDropDownList id="dropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-                    dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}"
-                    change="dropDownList1_changeHandler(event)"
-					iconFunction="{dropDownIconFunction}"
-					labelField="name"
-					newItemLabel="Add New Material"
-					height="40"
-					addNewItem="dropDownList_addNewItemHandler(event)"/>
-    <s:Button id="editSubmeshMaterialButton" styleName="editSharedObjectButtonStyle"
-              width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>
+	<s:Label text="{'sub mesh ' + (this.itemIndex+1)}" fontWeight="bold"/>
+	<!--<s:HGroup width="100%" paddingLeft="4">
+		<s:Label text="sub geometry:" fontWeight="bold"/>
+		<s:Label text="{_subMesh.subGeometry.name}"/>
+		<s:Button id="editSubGeometryButton" styleName="editSharedObjectButtonStyle"
+				  width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>
+	</s:HGroup>-->
+	
+	<s:HGroup width="100%">
+		<controls:ExtendedDropDownList id="dropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+									   dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}"
+									   change="dropDownList1_changeHandler(event)"
+									   iconFunction="{dropDownIconFunction}"
+									   labelField="name"
+									   newItemLabel="Add New Material"
+									   height="40"
+									   addNewItem="dropDownList_addNewItemHandler(event)"/>
+		<s:Button id="editSubmeshMaterialButton" styleName="editSharedObjectButtonStyle"
+				  width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>
+	</s:HGroup>
+	<controls:HorizontalFormSeparator/>
 </s:ItemRenderer>

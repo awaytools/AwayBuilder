@@ -1,60 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark" gap="0"
-		  horizontalAlign="center" height="100%">
+<editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:editors="awaybuilder.view.components.editors.*">
     <fx:Declarations>
     </fx:Declarations>
     <fx:Script><![CDATA[
 		import away3d.materials.utils.DefaultMaterialManager;
 		
-		import awaybuilder.model.vo.scene.BitmapTextureVO;
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.TextureVO;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.collections.ArrayCollection;
 
 		[Bindable]
 		private var _isDefault:Boolean = false;
 		
-		private var _prevSelected:ArrayCollection = new ArrayCollection(); 
 		[Bindable]
-		public function set prevSelected( value:ArrayCollection ): void
-		{
-			this._prevSelected = value;
-		}
-		public function get prevSelected():ArrayCollection
-		{
-			return this._prevSelected;
-		}
+		private var _asset:TextureVO;
 		
-		private var _data:BitmapTextureVO;
-		[Bindable]
-		public function get data():BitmapTextureVO
+		override protected function validate(asset:AssetVO):void
 		{
-			return _data;
-		}
-		public function set data( value:BitmapTextureVO ):void
-		{
-			if( !value ) return;
-			_data = value;
-			_isDefault =  _data.linkedObject == DefaultMaterialManager.getDefaultTexture();
+			if( !(asset is TextureVO) ) return;
+			_asset = asset as TextureVO;
+			_isDefault = false;
+			if( _asset.linkedObject == DefaultMaterialManager.getDefaultTexture() )
+			{
+				_isDefault = true;
+			}
 		}
 		
         private function name_changeHandler( event:Event ):void
         {
-//            var newValue:BitmapTextureVO = new BitmapTextureVO( data.linkedObject as BitmapTexture );
+//            var newValue:BitmapTextureVO = new BitmapTextureVO( _asset.linkedObject as BitmapTexture );
 //            newValue.name = nameInput.text;
 //            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
         }
 
-        private function repeatBox_changeHandler( event:Event ):void
-        {
-//            var newValue:MaterialVO = new MaterialVO( data.linkedObject as MaterialBase );
-//            newValue.repeat = repeatBox.selected;
-//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, newValue, true));
-        }
-
 		protected function replaceButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, data, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, _asset, true));
 		}
 		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
 		{
@@ -78,7 +63,7 @@
 	
     <s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
         <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-            <s:TextInput id="nameInput" width="100%" text="{data.name}" change="name_changeHandler(event)" enabled="{!_isDefault}"/>
+            <s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_isDefault}"/>
         </s:FormItem>
 		<s:FormItem label="Bitmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:Button label="Replace ..." click="replaceButton_clickHandler(event)" width="100%" enabled="{!_isDefault}"/>
@@ -91,10 +76,10 @@
 				<s:SolidColor color="0x000000"/>
 			</s:fill>
 		</s:Rect>
-		<s:BitmapImage width="100%" source="{data.bitmapData}" scaleMode="letterbox"/>
+		<s:BitmapImage width="100%" source="{_asset.bitmapData}" scaleMode="letterbox"/>
 		<s:filters>
 			<s:DropShadowFilter distance="1"/>
 		</s:filters>
 	</s:Group>
 
-</s:VGroup>
+</editors:EditorBase>

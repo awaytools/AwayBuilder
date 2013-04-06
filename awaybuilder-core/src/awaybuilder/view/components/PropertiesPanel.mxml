@@ -2,13 +2,14 @@
 <controls:CollapsiblePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
                              xmlns:s="library://ns.adobe.com/flex/spark"
                              xmlns:components="awaybuilder.view.components.*"
-                             xmlns:propertyEditors="awaybuilder.view.components.propertyEditors.*"
+                             xmlns:editors="awaybuilder.view.components.editors.*"
                              styleName="propertiesPanel"
                              chromeColor="0x1d1d1c" color="0xdbdbdb" fontSize="11"
                              skinClass="awaybuilder.view.skins.CollapsibleRightPanelSkin"
-                             currentState="mesh" xmlns:controls="awaybuilder.view.components.controls.*">
+                             currentState="initAll" xmlns:controls="awaybuilder.view.components.controls.*">
 
     <controls:states>
+		<s:State name="initAll"/>
 		<s:State name="empty"/>
         <s:State name="group"/>
         <s:State name="mesh"/>
@@ -18,45 +19,26 @@
         <s:State name="geometry"/>
         <s:State name="container"/>
     </controls:states>
-	
-	<controls:transitions>
-		<s:Transition fromState="mesh" toState="material">
-			<s:Parallel>
-				<s:Fade target="{meshProperties}" duration="400" alphaTo="0.9"/>
-				<s:Move target="{meshProperties}" duration="400" xBy="-210" />
-				<s:Move target="{materialProperties}" duration="400" xBy="-210" xTo="0" />
-			</s:Parallel>
-		</s:Transition>
-		<s:Transition fromState="material" toState="mesh">
-			<s:Parallel>
-				<s:Fade target="{materialProperties}" duration="400" alphaTo="0.9"/>
-				<s:Move target="{materialProperties}" duration="400" xBy="210" />
-				<s:Move target="{meshProperties}" duration="400" xBy="210" xTo="0" />
-			</s:Parallel>
-		</s:Transition>
-		<s:Transition fromState="material" toState="texture">
-			<s:Parallel>
-				<s:Fade target="{materialProperties}" duration="400" alphaTo="0.9"/>
-				<s:Move target="{materialProperties}" duration="400" xBy="-210" />
-				<s:Move target="{textureProperties}" duration="400" xBy="-210" xTo="0" />
-			</s:Parallel>
-		</s:Transition>
-		<s:Transition fromState="texture" toState="material">
-			<s:Parallel>
-				<s:Fade target="{textureProperties}" duration="400" alphaTo="0.9"/>
-				<s:Move target="{textureProperties}" duration="400" xBy="210" />
-				<s:Move target="{materialProperties}" duration="400" xBy="210" xTo="0" />
-			</s:Parallel>
-		</s:Transition>
-	</controls:transitions>
+	<fx:Declarations>
+		<s:Parallel id="nextTransitionEffect">
+			<s:Move target="{panelImage}" duration="400" xBy="-225" xTo="-225" />
+			<s:Move target="{panelsContainer}" duration="400" xBy="-225" xTo="0" />
+		</s:Parallel>
+		<s:Parallel id="prevTransitionEffect" >
+			<s:Move target="{panelImage}" duration="400" xBy="225" xTo="225" />
+			<s:Move target="{panelsContainer}" duration="400" xBy="225" xTo="0" />
+		</s:Parallel>
+	</fx:Declarations>
     <fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
-		import awaybuilder.model.vo.scene.BitmapTextureVO;
+		import awaybuilder.model.vo.scene.ContainerVO;
 		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.MeshVO;
+		import awaybuilder.model.vo.scene.TextureVO;
 		
 		import mx.collections.ArrayCollection;
+		import mx.events.FlexEvent;
 
 		private var _prevSelected:ArrayCollection = new ArrayCollection(); 
 		[Bindable]
@@ -79,31 +61,60 @@
         {
             return this._data;
         }
-        ]]></fx:Script>
-   <!-- <s:Scroller width="210" height="100%" hasFocusableChildren="false" >
-        <s:Group width="210" height="100%">-->
-		<s:Group width="210" clipAndEnableScrolling="true">
-			<s:VGroup includeIn="empty" paddingLeft="12" paddingRight="12" paddingTop="12" paddingBottom="12">
+		
+//		protected function collapsiblepanel1_stateChangeCompleteHandler(event:FlexEvent):void
+//		{
+//			trace( "collapsiblepanel1_stateChangeCompleteHandler" );
+//			if( meshProperties ) 
+//			{
+//				panelImage.drawPanel( panelsContainer );
+//			}
+//			
+//		}
+		
+		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean ):void
+		{
+			panelImage.drawPanel( panelsContainer );
+			
+			currentState = value;
+			if( showNext )
+			{
+				nextTransitionEffect.play();
+				panelImage.visible = true;
+			}
+			else if( showPrev )
+			{
+				prevTransitionEffect.play();
+				panelImage.visible = true;
+			}
+			else 
+			{
+				panelImage.visible = false;
+			}
+			
+		}
+		
+	]]></fx:Script>
+	
+	<controls:PanelImage id="panelImage" includeInLayout="false" width="0"/>
+	
+	<s:Scroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
+		<s:Group width="225">
+			
+			<s:VGroup includeIn="empty,initAll" paddingLeft="12" paddingRight="12" paddingTop="12" paddingBottom="12">
 				<s:Label text="General Settings"/><s:CheckBox label="Show Grid" enabled="false"/>
 				<s:Button label="Select All" enabled="false"/>
 			</s:VGroup>
 			
-			<propertyEditors:MeshPropertyEditor id="meshProperties" data="{data as MeshVO}"
-												width="210" includeIn="mesh" />
+			<editors:MeshPropertyEditor id="meshProperties" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
 			
-			<s:Group includeIn="group"><s:Label text="Group Options"/></s:Group>
+			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
-			<propertyEditors:MaterialPropertiesEditor id="materialProperties" prevSelected="{prevSelected}" data="{data as MaterialVO}"
-													  width="210" includeIn="material"/>
-			<propertyEditors:BitmapTexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{data as BitmapTextureVO}"
-														   width="210" includeIn="texture" />
-			<propertyEditors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{data as LightVO}"
-														   width="210" includeIn="light" />
-			<s:Group includeIn="geometry"><s:Label text="Geometry Options"/></s:Group>
-			<s:Group includeIn="container"><s:Label text="Container Options"/></s:Group>
-			
+			<editors:MaterialPropertiesEditor id="materialProperties" prevSelected="{prevSelected}" data="{data}" includeIn="material,initAll"/>
+			<editors:BitmapTexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{data}" includeIn="texture,initAll" />
+			<editors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{data}" includeIn="light,initAll" />
+			<s:Group includeIn="geometry,initAll"><s:Label text="Geometry Options"/></s:Group>
+			<editors:ContainerPropertiesEditor id="containerProperties" prevSelected="{prevSelected}" data="{data}" includeIn="container,initAll" />
 		</s:Group>
-	<!-- </s:Group>
-    </s:Scroller>-->
-
+	</s:Scroller>
 </controls:CollapsiblePanel>

@@ -20,12 +20,16 @@ package awaybuilder.model
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.BitmapTextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.events.Event;
@@ -44,6 +48,8 @@ package awaybuilder.model
 	{
 		
 		private var _document:DocumentVO;
+		
+		private var _objects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
 		
 		private var _nextEvent:HistoryEvent;
 		
@@ -72,6 +78,14 @@ package awaybuilder.model
 			AssetLibrary.removeEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.removeEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
 			
+			for each( var o:ObjectContainer3D in _objects )
+			{
+				if( !o.parent )
+				{
+					_document.scene.addItem( AssetFactory.CreateAsset( o ) );
+				}
+			}
+			
 			_nextEvent.newValue = _document;
 			dispatch( _nextEvent );
 			
@@ -80,6 +94,7 @@ package awaybuilder.model
 		}
 		private function assetCompleteHandler( event:AssetEvent ):void
 		{		
+//			trace( event.asset.assetType + " " + event.asset );
 			switch( event.asset.assetType )
 			{
 				case AssetType.MESH:
@@ -88,51 +103,36 @@ package awaybuilder.model
 					{
 						mesh.material = DefaultMaterialManager.getDefaultMaterial();
 					}
-					
-					_document.scene.addItem( new MeshVO( mesh ) );
+					_objects.push( mesh  );
 					break;
 				case AssetType.CONTAINER:
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
-					_document.scene.addItem( new ContainerVO( c ) );
+					_objects.push( c );
 					break;
 				case AssetType.MATERIAL:
-					var material:TextureMaterial = event.asset as TextureMaterial;
-					if( material )
-					{
-						_document.materials.addItem( new MaterialVO( material ) );
-					}
-					else
-					{
-						trace( "MATERIAL is " + event.asset );
-					}
+					_document.materials.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.TEXTURE:
-					var texture:BitmapTexture = event.asset as BitmapTexture;
-					_document.textures.addItem( new BitmapTextureVO( texture ) );
+					_document.textures.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
-					var geometry:Geometry = event.asset as Geometry;
-					_document.geometry.addItem( new AssetVO( geometry.name, geometry )  );
+					_document.geometry.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_SET:
-					var animationSet:AnimationSetBase = event.asset as AnimationSetBase;
-					_document.animations.addItem( new AssetVO( "Animation Set (" + animationSet.name +")",animationSet )  );
+					_document.animations.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_STATE:
-					var animationState:AnimationStateBase = event.asset as AnimationStateBase;
-					_document.animations.addItem( new AssetVO( "Animation State" ,animationState )  );
+					_document.animations.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_NODE:
-					var animationNode:AnimationNodeBase = event.asset as AnimationNodeBase;
-					_document.animations.addItem( new AssetVO( "Animation Node (" + animationNode.name +")",animationNode )  );
+					_document.animations.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.SKELETON:
-					var s:Skeleton = event.asset as Skeleton;
-					_document.skeletons.addItem( new AssetVO( "Skeleton (" + s.name +")",s )  );
+					_document.skeletons.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 				case AssetType.SKELETON_POSE:
 					var sp:SkeletonPose = event.asset as SkeletonPose;
-					_document.skeletons.addItem( new AssetVO( "Skeleton Pose (" + sp.name +")", sp )  );
+					_document.skeletons.addItem( AssetFactory.CreateAsset( event.asset ) );
 					break;
 			}
 		}
