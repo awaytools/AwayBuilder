@@ -59,7 +59,10 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler );
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
             addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler );
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NEW_TEXTURE, view_materialAddNewTextureHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_DIFFUSE_TEXTURE, view_materialAddNewTextureHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NORMAL_TEXTURE, view_materialAddNewTextureHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_AMBIENT_TEXTURE, view_materialAddNewTextureHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_SPECULAR_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, view_materialAddEffectMetodHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, view_materialRemoveEffectMetodHandler );
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );

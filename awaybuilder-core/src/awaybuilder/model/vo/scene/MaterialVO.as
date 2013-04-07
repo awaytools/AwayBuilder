@@ -31,6 +31,7 @@ package awaybuilder.model.vo.scene
 		
         public function MaterialVO( item:MaterialBase )
         {
+			
             super( item );
 			
 			if( item is TextureMaterial )

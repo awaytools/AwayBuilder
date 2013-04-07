@@ -71,7 +71,7 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="Mesh Properties" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="Mesh" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	

@@ -80,7 +80,6 @@
 			if (_asset.radius > _asset.fallOff) {
 				_asset.fallOff = _asset.radius;
 			}
-			trace( "_asset.radius = " + _asset.radius );
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset, true));
 		}
 		protected function falloffStepper_changeHandler(event:Event):void
