@@ -164,8 +164,8 @@ package awaybuilder.utils.scene
 			if (!_pause)
 			{
 				if (_mouseOutDetected) {
-					dragging = false;
-					ispanning = false;
+					CameraManager.active = false;
+					Scene3DManager.active = false;
 				}
 				_mouseOutDetected = false;
 				
@@ -354,6 +354,8 @@ package awaybuilder.utils.scene
 		
 		private function onMouseOver(event : MouseEvent) : void
 		{
+			CameraManager.active = true;
+			Scene3DManager.active = true;
 			_mouseOutDetected = false;
 		}
 		
