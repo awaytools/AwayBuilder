@@ -193,19 +193,7 @@ package awaybuilder.utils.scene
 		}
 		
 		// Mouse Events *************************************************************************************************************************************************
-		
-		private function onMouseOut(e:MouseEvent):void
-		{		
-			CameraManager.active = false;
-			Scene3DManager.active = false;			
-		}
-		
-		private function onMouseOver(e:MouseEvent):void
-		{
-			CameraManager.active = true;
-			Scene3DManager.active = true;	
-		}			
-		
+				
 		private function onMouseDown(e:MouseEvent):void
 		{
 			
@@ -344,7 +332,7 @@ package awaybuilder.utils.scene
 			
 			for each(var l:LightBase in lights.source)
 			{
-				l.dispose()
+				l.dispose();
 			}			
 			
 			lights.removeAll();
@@ -353,14 +341,12 @@ package awaybuilder.utils.scene
 		
 		public static function addObject(o:ObjectContainer3D):void
 		{		
-			o.mouseEnabled = true;
-//			mesh.pickingCollider = PickingColliderType.PB_BEST_HIT;
-			o.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
+			addMousePicker(o);
 			
 			scene.addChild(o);
 			
 			objects.addItem(o);
-		}		
+		}
 		
 		public static function removeMesh(mesh:Mesh):void
 		{
@@ -393,37 +379,68 @@ package awaybuilder.utils.scene
 //			return mesh;
 //		}		
 		
+
+		private static function addMousePicker(o : ObjectContainer3D) : void
+		{
+			o.mouseEnabled = true;
+
+			var m:Mesh = o as Mesh;
+			if (m) 
+				m.pickingCollider = PickingColliderType.PB_BEST_HIT;
+			
+			var container:ObjectContainer3D;
+			for (var c:int = 0; c<o.numChildren; c++) {
+				container = o.getChildAt(c) as ObjectContainer3D;
+				if (container) addMousePicker(container);
+			}
+			o.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
+		}
+		
 		private function handleMouseEvent3D(e:Event):void 
 		{
 			if (!CameraManager.hasMoved && !currentGizmo.hasMoved && active)
 			{
-				if (Mesh(e.target).showBounds) unSelectObjectByName(e.target.name);
-				else selectObjectByName(e.target.name);					
+				var mesh:Mesh = toggleMeshBounds(e.target as ObjectContainer3D);
+				if (mesh.showBounds) unSelectObjectByName(mesh.name);
+				else selectObjectByName(mesh.name);					
 			}
-		}					
+		}
+
+		private function toggleMeshBounds(o : ObjectContainer3D) : Mesh {
+			var m:Mesh = o as Mesh;
+			if (m) return m;
+
+			var container:ObjectContainer3D;
+			for (var c:int = 0; c<o.numChildren; c++) {
+				container = o.getChildAt(c) as ObjectContainer3D;
+				return toggleMeshBounds(container);
+			}
+			
+			return m;
+		}
 		
 		public static function unselectAll():void
 		{
-//			for each(var m:Entity in objects.source)
-//			{
-//				m.showBounds = false;
-//			}
-//			
-//			selectedObjects = new ArrayList();
-//			selectedObject = null;
-//			currentGizmo.hide();
+			for(var i:int=0;i<selectedObjects.length;i++)
+			{
+				var m:Entity = selectedObjects.getItemAt(i) as Entity;
+				m.showBounds = false;
+			}
+			
+			selectedObjects = new ArrayList();
+			selectedObject = null;
+			currentGizmo.hide();
 		}
 		
 		public static function unSelectObjectByName(meshName:String):void
 		{
 			for(var i:int=0;i<selectedObjects.length;i++)
 			{
-				var m:Entity = selectedObjects[i];
+				var m:Entity = selectedObjects.getItemAt(i) as Entity;
 				if (m.name == meshName)
 				{
-					if (m is Mesh) m.showBounds = false;
-					selectedObjects.removeItemAt(i);			
-					selectedObject = selectedObjects[selectedObjects.length-1];
+					if (m is Mesh) m.showBounds = false;			
+					selectedObject = selectedObjects.getItemAt(selectedObjects.length-1) as Entity;
 					
 					break;
 				}
@@ -442,20 +459,30 @@ package awaybuilder.utils.scene
 		public static function selectObject(meshName:String):void 
 		{			
 			if (!multiSelection) unselectAll();
+			
 			// TODO: Check if object already selected
 			for each(var m:ObjectContainer3D in objects.source)
 			{
-				if (m.name == meshName)
+				selectObjectInContainer(m, meshName);
+			}
+		}
+
+		private static function selectObjectInContainer(o : ObjectContainer3D, meshName : String) : void {
+
+			var m:Mesh = o as Mesh;
+			if (m && m.name == meshName)
+			{
+				if (!m.showBounds)
 				{
-//					if (!m.showBounds)
-//					{
-//						if (m is Mesh) m.showBounds = true;
-//						selectedObjects.addItem(m);						
-//						selectedObject = m;
-//						currentGizmo.show(selectedObject);
-//					}
-					
-//					break;
+					if (m is Mesh) m.showBounds = true;
+					selectedObjects.addItem(m);						
+					selectedObject = m;
+					currentGizmo.show(selectedObject);
+				}
+			} else {
+				for (var c:int = 0; c<o.numChildren; c++) {
+					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
+					selectObjectInContainer(container, meshName);
 				}
 			}
 		}
