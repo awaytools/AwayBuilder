@@ -184,6 +184,12 @@
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
+		<controls:LibraryCollapsiblePanel id="methodsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
+										  title="Material Methods" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+			<tree:Tree id="methodsTree"
+					   change="tree_changeHandler(event)"
+					   width="100%" height="100%"/>
+		</controls:LibraryCollapsiblePanel>
 		<!--<controls:CollapsiblePanel id="skeletonsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Skeletons" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
 			<tree:Tree id="skeletonsTree" dataProvider="{model.skeletons}" selectedItems="{selectedItems}"
