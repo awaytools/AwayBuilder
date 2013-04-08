@@ -192,6 +192,27 @@ package awaybuilder.model
 			empty = true;
 		}
 		
+		public function removeAssets( source:ArrayCollection, items:ArrayCollection ):void
+		{
+			for each( var oddItem:AssetVO in items ) 
+			{
+				removeAsset( source, oddItem );
+			}
+		}
+		public function removeAsset( source:ArrayCollection, oddItem:AssetVO ):void
+		{
+			for (var i:int = 0; i < source.length; i++) 
+			{
+				if( source[i].linkedObject == oddItem.linkedObject )
+				{
+					source.removeItemAt( i );
+					i--;
+				}
+			}
+		}
+		
+		// private 
+		
 		private function getItemInCollection( children:ArrayCollection, value:Object ):AssetVO
 		{
 			for each( var vo:AssetVO in children )

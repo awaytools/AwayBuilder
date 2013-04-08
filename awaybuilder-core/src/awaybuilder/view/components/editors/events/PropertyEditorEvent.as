@@ -13,6 +13,7 @@ package awaybuilder.view.components.editors.events
         public static const MESH_NAME_CHANGE:String = "meshNameChange";
 		
 		public static const MESH_SUBMESH_ADD_NEW_MATERIAL:String = "submeshAddNewMaterial";
+		public static const MATERIAL_ADD_LIGHTPICKER:String = "materialAddLightPicker";
 		public static const MATERIAL_ADD_DIFFUSE_TEXTURE:String = "materialAddDiffuseTexture";
 		public static const MATERIAL_ADD_NORMAL_TEXTURE:String = "materialAddNurmalTexture";
 		public static const MATERIAL_ADD_SPECULAR_TEXTURE:String = "materialAddSpecularTexture";
@@ -28,13 +29,15 @@ package awaybuilder.view.components.editors.events
         public static const MATERIAL_NAME_CHANGE:String = "materialNameChange";
 
 		public static const CONTAINER_CHANGE:String = "containerChange";
+		
 		public static const LIGHT_CHANGE:String = "lightChange";
 		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";
 		public static const LIGHT_POSITION_CHANGE:String = "lightPositionChange";
 		
-		public static const SHOW_OBJECT_PROPERTIES:String = "showObjectProperties";
-        public static const SHOW_MATERIAL_PROPERTIES:String = "showMaterialProperties";
-        public static const SHOW_TEXTURE_PROPERTIES:String = "showTextureProperties";
+		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";
+		public static const LIGHTPICKER_STEPPER_CHANGE:String = "lightPickerStepperChange";
+		
+		public static const SHOW_CHILD_PROPERTIES:String = "showChildProperties";
 		
 		public static const SHOW_PARENT_MESH_PROPERTIES:String = "showParentMeshProperties";
 		public static const SHOW_PARENT_MATERIAL_PROPERTIES:String = "showParentTextureProperties";

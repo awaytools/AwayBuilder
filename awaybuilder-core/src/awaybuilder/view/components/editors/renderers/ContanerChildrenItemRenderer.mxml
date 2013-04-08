@@ -19,7 +19,7 @@
 			
 			private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
 			{
-				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_OBJECT_PROPERTIES, data, true));
+				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, data, true));
 			}
 			
 		]]>

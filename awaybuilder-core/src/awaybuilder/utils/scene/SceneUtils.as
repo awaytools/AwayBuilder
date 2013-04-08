@@ -4,7 +4,9 @@ package awaybuilder.utils.scene
 	import away3d.materials.MaterialBase;
 	import away3d.materials.SinglePassMaterialBase;
 	import away3d.materials.TextureMaterial;
+	import away3d.materials.lightpickers.StaticLightPicker;
 	
+	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 
 	public class SceneUtils

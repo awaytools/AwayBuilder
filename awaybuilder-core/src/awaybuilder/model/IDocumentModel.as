@@ -57,5 +57,8 @@ import mx.collections.ArrayCollection;
 		function getLight( value:Object ):AssetVO;
 		
 		function clear():void;
+		
+		function removeAssets( source:ArrayCollection, items:ArrayCollection ):void
+		function removeAsset( source:ArrayCollection, oddItem:AssetVO ):void
 	}
 }

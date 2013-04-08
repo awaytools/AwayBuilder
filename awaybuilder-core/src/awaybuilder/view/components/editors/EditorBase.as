@@ -1,6 +1,7 @@
 package awaybuilder.view.components.editors
 {
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -39,8 +40,30 @@ package awaybuilder.view.components.editors
 		{
 			if( value ) {
 				_data = value;
-				validate( _data );
 			}
+			validate( _data );
+		}
+		
+		private var _textures:ArrayCollection;
+		[Bindable]
+		public function get textures():ArrayCollection
+		{
+			return _textures;
+		}
+		public function set textures(value:ArrayCollection):void
+		{
+			_textures = value;
+		}
+		
+		private var _lightPickers:ArrayCollection;
+		[Bindable]
+		public function get lightPickers():ArrayCollection
+		{
+			return _lightPickers;
+		}
+		public function set lightPickers(value:ArrayCollection):void
+		{
+			_lightPickers = value;
 		}
 		
 		protected function validate( asset:AssetVO ):void 

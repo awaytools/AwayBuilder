@@ -10,11 +10,11 @@ package awaybuilder.controller.history
         public var undoRedoModel:UndoRedoModel;
 		
 		
-		protected function saveOldValue( event:HistoryEvent, oldValue:Object ):void 
+		protected function saveOldValue( event:HistoryEvent, prevValue:Object ):void 
 		{
 			if( !event.oldValue ) 
 			{
-				event.oldValue = oldValue;
+				event.oldValue = prevValue;
 			}
 		}
         protected function addToHistory(event:HistoryEvent):void 

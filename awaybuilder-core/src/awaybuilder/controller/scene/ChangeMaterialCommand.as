@@ -45,7 +45,7 @@ package awaybuilder.controller.scene
 			vo.mipmap = newMaterial.mipmap;
 			vo.alphaPremultiplied = newMaterial.alphaPremultiplied;
 			vo.blendMode = newMaterial.blendMode;
-			
+			vo.lightPicker = newMaterial.lightPicker.clone();
 			
 			vo.diffuseColor = newMaterial.diffuseColor;
 			vo.diffuseAlpha = newMaterial.diffuseAlpha;

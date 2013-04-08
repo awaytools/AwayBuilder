@@ -25,7 +25,7 @@ package awaybuilder.view.components.controls
 		[SkinPart(required="true")]
 		public var addNewButton:Button;
 		
-		[SkinPart(required="true")]
+		[SkinPart(required="false")]
 		public var iconDisplay:BitmapImage;
 		
 		private var iconChanged:Boolean;

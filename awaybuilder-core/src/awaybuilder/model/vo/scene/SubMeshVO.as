@@ -18,7 +18,6 @@ package awaybuilder.model.vo.scene
 			super( "subMesh", object );
 			
 			material = AssetFactory.CreateAsset( object.material ) as MaterialVO;
-			trace( object.subGeometry );
 			
 //			this.subGeometry = AssetFactory.CreateAsset( object.subGeometry ) as SubGeometryVO;
 			this.parentMesh = parentMesh;

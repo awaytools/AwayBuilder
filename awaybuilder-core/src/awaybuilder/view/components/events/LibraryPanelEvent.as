@@ -9,6 +9,7 @@ package awaybuilder.view.components.events
 		public static const ADD_TEXTURE:String = "addTexture";
 		
 		public static const ADD_LIGHT:String = "addLight";
+		public static const ADD_LIGHTPICKER:String = "addLightPicker";
 		
 		public function LibraryPanelEvent(type:String, data:Object=null )
 		{

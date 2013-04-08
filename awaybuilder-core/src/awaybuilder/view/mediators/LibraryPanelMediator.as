@@ -2,15 +2,20 @@ package awaybuilder.view.mediators
 {
 	import away3d.core.base.Object3D;
 	import away3d.lights.DirectionalLight;
+	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	
+	import awaybuilder.controller.document.events.ImportTextureEvent;
+	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.controller.events.DocumentRequestEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.DataMerger;
@@ -42,6 +47,7 @@ package awaybuilder.view.mediators
 		{
 			addViewListener(LibraryPanelEvent.TREE_CHANGE, view_treeChangeHandler);
 			addViewListener(LibraryPanelEvent.ADD_LIGHT, view_addLightHandler);
+			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
@@ -61,15 +67,23 @@ package awaybuilder.view.mediators
 		
 		private function view_addTextureHandler(event:LibraryPanelEvent):void
 		{
-//			this.dispatch(new SceneEvent(SceneEvent.,items));
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));
 		}
 		
 		private function view_addLightHandler(event:LibraryPanelEvent):void
 		{
-			var light:LightVO = new LightVO( new DirectionalLight(-1, -1, 1) );
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,light));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[light]));
+			var asset:LightVO = new LightVO( new DirectionalLight(-1, -1, 1) );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
+		
+		private function view_addLightPickerHandler(event:LibraryPanelEvent):void
+		{
+			var asset:LightPickerVO = new LightPickerVO( new StaticLightPicker([]) );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHTPICKER,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		
 		
 		private function view_treeChangeHandler(event:LibraryPanelEvent):void
 		{

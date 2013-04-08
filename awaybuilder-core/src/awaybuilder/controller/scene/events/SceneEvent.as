@@ -17,9 +17,11 @@ import flash.events.Event;
         public static const CHANGE_MESH:String = "changeMesh";
         public static const CHANGE_MATERIAL:String = "changeMaterial";
 		public static const CHANGE_LIGHT:String = "changeLight";
+		public static const CHANGE_LIGHTPICKER:String = "changeLightPicker";
 		
 		public static const ADD_NEW_LIGHT:String = "addNewLight";
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";
+		public static const ADD_NEW_LIGHTPICKER:String = "addNewLightPicker";
 		public static const ADD_NEW_TEXTURE:String = "addNewTexture";
 		public static const REPLACE_TEXTURE:String = "replaceTexture";
 		

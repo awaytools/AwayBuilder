@@ -96,6 +96,10 @@
 			_asset.directionZ = directionzStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset, true));
 		}
+		private function editParentObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
+		}
 		
 	]]></fx:Script>
 	
@@ -107,8 +111,9 @@
 			</s:fill>
 		</s:Rect>
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
-			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="false" width="32" height="32"/>
-			<s:Label width="100%" text="Light Properties" fontWeight="bold" fontSize="14"/>
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
+					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
+			<s:Label width="100%" text="Light" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" horizontalAlign="center">
@@ -116,7 +121,7 @@
 		<s:RadioButton label="Point" width="100%" group="{typeRadioGroup}" value="{LightVO.POINT}"/>
 	</s:HGroup>
 	
-	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
+	<controls:CollapsiblePanel width="100%" title="General" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			
 			<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
@@ -161,7 +166,7 @@
 		</s:Form>
 		
 	</controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Direction" collapsed="false" includeIn="directionalType">
+	<controls:CollapsiblePanel width="100%" title="Direction" collapsed="true" includeIn="directionalType">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			
 			<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
@@ -182,7 +187,7 @@
 		</s:Form>
 		
 	</controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Glow" collapsed="false" includeIn="pointType">
+	<controls:CollapsiblePanel width="100%" title="Glow" collapsed="true" includeIn="pointType">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			
 			<s:FormItem label="Radius" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">

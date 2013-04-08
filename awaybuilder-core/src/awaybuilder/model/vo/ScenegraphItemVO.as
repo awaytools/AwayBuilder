@@ -9,6 +9,7 @@ package awaybuilder.model.vo
 	{
 		
 		public static const LIGHT:String = "light";
+		public static const LIGHTPICKER:String = "lightPicker";
 		public static const MESH:String = "mesh";
 		public static const MATERIAL:String = "material";
 		public static const GEOMETRY:String = "geometry";

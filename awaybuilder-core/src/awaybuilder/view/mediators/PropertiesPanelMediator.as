@@ -3,13 +3,16 @@ package awaybuilder.view.mediators
     import away3d.core.base.Geometry;
     import away3d.entities.Mesh;
     import away3d.materials.SinglePassMaterialBase;
+    import away3d.materials.lightpickers.StaticLightPicker;
     
     import awaybuilder.controller.document.events.ImportTextureEvent;
+    import awaybuilder.controller.events.DocumentEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
+    import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
@@ -46,9 +49,13 @@ package awaybuilder.view.mediators
             addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
             addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureToMaterialHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
+			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
+			
+			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
@@ -64,6 +71,7 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_AMBIENT_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_SPECULAR_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, view_materialAddEffectMetodHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_LIGHTPICKER, view_materialAddLightpickerHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, view_materialRemoveEffectMetodHandler );
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			
@@ -72,9 +80,10 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.LIGHT_CHANGE, view_lightChangeHandler );
 			
-			addViewListener( PropertyEditorEvent.SHOW_OBJECT_PROPERTIES, view_showObjectPropertiesHandler );
-			addViewListener( PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, view_showMaterialPropertiesHandler );
-			addViewListener( PropertyEditorEvent.SHOW_TEXTURE_PROPERTIES, view_showTexturePropertiesHandler );
+			addViewListener( PropertyEditorEvent.LIGHTPICKER_CHANGE, view_lightPickerChangeHandler );
+			addViewListener( PropertyEditorEvent.LIGHTPICKER_STEPPER_CHANGE, view_lightPickerStepperChangeHandler );
+			
+			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
 			addViewListener( PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES, view_showParentMeshHandler );
 			addViewListener( PropertyEditorEvent.SHOW_PARENT_MATERIAL_PROPERTIES, view_showParentMaterialHandler );
@@ -120,7 +129,6 @@ package awaybuilder.view.mediators
                     subMesh.material = SubMeshVO(event.data).material;
                 }
             }
-			trace( "view_meshSubmeshChangeHandler" );
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], newValue));
         }
         private function view_materialChangeHandler(event:PropertyEditorEvent):void
@@ -132,18 +140,12 @@ package awaybuilder.view.mediators
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data, true));
         }
 		
-		private function view_showObjectPropertiesHandler(event:PropertyEditorEvent):void
+		private function view_showChildObjectPropertiesHandler(event:PropertyEditorEvent):void
 		{
 			view.prevSelected.addItem(view.data);
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],true));
-			
 		}
-        private function view_showMaterialPropertiesHandler(event:PropertyEditorEvent):void
-        {
-			view.prevSelected.addItem(view.data);
-            this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],true));
-
-        }
+		
 		private function view_showParentMeshHandler(event:PropertyEditorEvent):void
 		{
 			
@@ -155,16 +157,17 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],false,false,true));
 		}
 		
-        private function view_showTexturePropertiesHandler(event:PropertyEditorEvent):void
-        {
-			view.prevSelected.addItem(view.data);
-            this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],true));
-        }
 		
 		private function view_materialAddNewTextureHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[event.data]));
 		}
+		private function view_materialAddLightpickerHandler(event:PropertyEditorEvent):void
+		{
+			var newValue:MaterialVO = MaterialVO(event.data);
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHTPICKER,[newValue], new LightPickerVO( new StaticLightPicker([]) )));
+		}
+		
 		private function view_materialAddEffectMetodHandler(event:PropertyEditorEvent):void
 		{
 			AddEffectMethodPopup.show( addEffectMethodPopup_closeHandler );
@@ -218,6 +221,17 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT, [view.data], event.data, true));
 		}
 		
+		private function view_lightPickerChangeHandler(event:PropertyEditorEvent):void
+		{
+			trace( "view_lightPickerChangeHandler" );
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER,[view.data], event.data));
+		}
+		private function view_lightPickerStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER, [view.data], event.data, true));
+		}
+		
+		
         //----------------------------------------------------------------------
         //
         //	context handlers
@@ -233,8 +247,13 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_changeLightHandler(event:SceneEvent):void
 		{
-			view.data = LightVO( event.items[0] ).clone() as LightVO;
+			view.data = LightVO( event.items[0] ).clone();
 		}
+		private function eventDispatcher_changeLightPickerHandler(event:SceneEvent):void
+		{
+			view.data = LightPickerVO( event.items[0] ).clone();
+		}
+		
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
             var mesh:MeshVO = MeshVO( event.items[0] ).clone() as MeshVO;
@@ -246,6 +265,16 @@ package awaybuilder.view.mediators
 
             view.data = mesh;
         }
+		
+		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
+		{
+			if( event.items && event.items.length )
+			{
+				var material:MaterialVO = MaterialVO(document.getMaterial(event.items[0].linkedObject)).clone();
+				view.textures = document.textures;
+				view.data = material;
+			}
+		}
 		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
 		{
 			var subMesh:SubMeshVO = SubMeshVO( event.items[0] );
@@ -261,14 +290,17 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_addNewTextureToMaterialHandler(event:SceneEvent):void
 		{
-			var material:MaterialVO = MaterialVO(event.items[0]).clone();
-			material.linkedTextures = document.textures;
-			view.data = material;
+			if( event.items && event.items.length && view.currentState=="material" )
+			{
+				var material:MaterialVO = MaterialVO(event.items[0]).clone();
+				view.textures = document.textures;
+				view.data = material;
+			}
 		}
         private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
         {
 			var material:MaterialVO = MaterialVO(event.items[0]).clone();
-			material.linkedTextures = document.textures;
+			view.textures = document.textures;
 			view.data = material;
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
@@ -294,6 +326,7 @@ package awaybuilder.view.mediators
             if( !event.items || event.items.length == 0)
             {
 				view.showEditor( "empty", event.newValue, event.oldValue );
+				view.collapsed = true;
                 return;
             }
             if( event.items.length )
@@ -310,35 +343,34 @@ package awaybuilder.view.mediators
                         }
                         view.data = mesh;
 						view.showEditor( "mesh", event.newValue, event.oldValue );
-						view.collapsed = false;
                     }
                     else if( event.items[0] is ContainerVO )
                     {
 						view.showEditor( "container", event.newValue, event.oldValue );
                         view.data = ContainerVO( event.items[0] ).clone();
-						view.collapsed = false;
                     }
                     else if( event.items[0] is MaterialVO )
                     {
                         var material:MaterialVO = MaterialVO( event.items[0] ).clone();
-						material.linkedTextures = document.textures;
-						
+						view.textures = document.textures;
                         view.data = material;
 						view.showEditor( "material", event.newValue, event.oldValue );
-						view.collapsed = false;
 						
                     }
                     else if( event.items[0] is TextureVO )
                     {
 						view.showEditor( "texture", event.newValue, event.oldValue );
                         view.data = TextureVO( event.items[0] ).clone();
-						view.collapsed = false;
                     }
 					else if( event.items[0] is LightVO )
 					{
 						view.showEditor( "light", event.newValue, event.oldValue );
 						view.data = LightVO( event.items[0] ).clone();
-						view.collapsed = false;
+					}
+					else if( event.items[0] is LightPickerVO )
+					{
+						view.showEditor( "lightPicker", event.newValue, event.oldValue );
+						view.data = LightPickerVO( event.items[0] ).clone();
 					}
 //                    else if( event.items[0] is Geometry )
 //                    {
@@ -366,5 +398,15 @@ package awaybuilder.view.mediators
 			}
         }
 
+		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
+		{
+			var pickers:ArrayCollection = new ArrayCollection();
+			for each( var asset:AssetVO in document.lights )
+			{
+				if( asset is LightPickerVO ) pickers.addItem( asset );
+			}
+			view.lightPickers = pickers;
+			trace( "view.lightPickers = " + view.lightPickers );
+		}
     }
 }

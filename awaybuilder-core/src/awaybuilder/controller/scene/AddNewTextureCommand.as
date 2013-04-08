@@ -5,12 +5,13 @@ package awaybuilder.controller.scene
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
+	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import flash.display3D.textures.Texture;
 	
@@ -26,63 +27,62 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			if( event.isUndoAction )
+			var material:MaterialVO;
+			if( event.items && event.items.length )
 			{
-				undo(); 
-				return;
+				material = document.getMaterial(event.items[0].linkedObject) as MaterialVO;
 			}
 			
-			var material:MaterialVO = event.items[0] as MaterialVO;
+			var oldValue:DocumentVO = event.oldValue as DocumentVO;
+			var newValue:DocumentVO = event.newValue as DocumentVO;
 			
-			if( !event.oldValue ) 
+			saveOldValue( event, material );
+			
+			var newTexture:TextureVO;
+			if( newValue.textures && newValue.textures.length )
 			{
-				var oldValue:DocumentVO = new DocumentVO();
-				oldValue.textures.addItem( material.diffuseTexture.clone() );
-				event.oldValue = oldValue;
+				newTexture = newValue.textures.getItemAt( 0 ) as TextureVO;
 			}
+			
+			if( event.isUndoAction ) //handle undo-redo specific execution
+			{
+				document.removeAssets( document.textures, oldValue.textures );
+			}
+			else 
+			{
+				document.textures.addItemAt( newTexture, 0 ); // add new texture to library
 				
-			var data:DocumentVO = event.newValue as DocumentVO;
-			var newTexture:TextureVO = data.textures.getItemAt( 0 ) as TextureVO;
+			}
 			
-			document.textures.addItemAt( newTexture, 0 );
-			
-			
-			material.diffuseTexture = newTexture;
-			material.apply();
+			if( material )
+			{
+				material.diffuseTexture = newTexture;
+				material.apply();
+			}
+			else if( newTexture )
+			{
+				this.dispatch(new SceneEvent(SceneEvent.SELECT,[newTexture]));
+			}
 			
 			addToHistory( event );
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 			document.empty = false;
-		}
-		
-		private function undo():void
-		{
-			var material:MaterialVO = event.items[0] as MaterialVO;
-			var oldValue:DocumentVO = event.oldValue as DocumentVO;
-			var newValue:DocumentVO = event.newValue as DocumentVO;
-			removeItems( document.textures, oldValue.textures );
-			var texture:TextureVO = newValue.textures.getItemAt( 0 ) as TextureVO;
-			material.diffuseTexture = texture;
-			material.apply();
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			
+			
 		}
-		
-		private function removeItems( source:ArrayCollection, items:ArrayCollection ):void
+		override protected function saveOldValue( event:HistoryEvent, prevValue:Object ):void 
 		{
-			for (var i:int = 0; i < source.length; i++) 
+			if( !event.oldValue )
 			{
-				var item:AssetVO = source[i] as AssetVO;
-				for each( var oddItem:AssetVO in items ) 
-				{
-					if( item.linkedObject == oddItem.linkedObject )
-					{
-						source.removeItemAt( i );
-						i--;
-					}
+				var oldDocument:DocumentVO = new DocumentVO();
+				if( prevValue ) {
+					oldDocument.textures.addItem( MaterialVO(prevValue).diffuseTexture.clone() );
 				}
+				event.oldValue = oldDocument;
 			}
 		}
+		
 		
 	}
 }

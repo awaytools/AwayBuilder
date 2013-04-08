@@ -17,19 +17,20 @@
 		<![CDATA[
 			import away3d.materials.methods.EffectMethodBase;
 			
+			import awaybuilder.model.vo.scene.LightVO;
 			import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 			
 			[Bindable]
-			private var _effectMethod:EffectMethodBase
+			private var _light:LightVO
 			
 			override public function set data(value:Object):void
 			{
 				super.data = value;
-				_effectMethod = value as EffectMethodBase;
+				_light = value as LightVO;
 			}
 			private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
 			{
-//				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_OBJECT_PROPERTIES, data, true));
+				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, data, true));
 			}
 			
 		]]>
@@ -43,8 +44,8 @@
 		</s:fill>
 	</s:Rect>
 	
-	<!--<s:BitmapImage id="iconButton" source="@Embed('assets/images/box_closed.png')"/>-->
-	<s:Label id="labelDisplay" text="{_effectMethod.toString()}" color.hovered="0xEEEEEE" paddingTop="1" width="100%"/>
+	<s:BitmapImage id="iconButton" source="@Embed('assets/images/weather_sun.png')"/>
+	<s:Label id="labelDisplay" text="{_light.name}" color.hovered="0xEEEEEE" paddingTop="1" width="100%"/>
 	<s:Button id="editSubmeshMaterialButton" styleName="editSharedObjectButtonStyle"
 			  width="22" height="22" click="editSubmeshMaterialButton_clickHandler(event)"/>
 	

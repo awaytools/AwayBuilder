@@ -31,9 +31,11 @@ package awaybuilder
 	import awaybuilder.controller.history.UndoCommand;
 	import awaybuilder.controller.history.UndoRedoEvent;
 	import awaybuilder.controller.scene.AddNewLightCommand;
+	import awaybuilder.controller.scene.AddNewLightPickerCommand;
 	import awaybuilder.controller.scene.AddNewMaterialCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.ChangeLightCommand;
+	import awaybuilder.controller.scene.ChangeLightPickerCommand;
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
 	import awaybuilder.controller.scene.ChangeMeshCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
@@ -51,11 +53,11 @@ package awaybuilder
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.ISettingsModel;
+	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.model.SamplesModel;
 	import awaybuilder.model.SettingsModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.model.WindowModel;
-	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.view.components.ApplicationSettingsForm;
 	import awaybuilder.view.components.CoreEditor;
 	import awaybuilder.view.components.DocumentDefaultsSettingsForm;
@@ -134,10 +136,12 @@ package awaybuilder
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
             commandMap.mapEvent(SceneEvent.CHANGE_MATERIAL, ChangeMaterialCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHT, ChangeLightCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_LIGHTPICKER, ChangeLightPickerCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHT, AddNewLightCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHTPICKER, AddNewLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.REPLACE_TEXTURE, ReplaceTextureCommand);
 
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);
@@ -146,7 +150,6 @@ package awaybuilder
 			
 			this.commandMap.mapEvent(SettingsEvent.RESET_DEFAULT_SETTINGS, ResetDefaultSettingsCommand);
 			
-
             commandMap.mapEvent( UndoRedoEvent.REDO, RedoCommand );
             commandMap.mapEvent( UndoRedoEvent.UNDO, UndoCommand );
 

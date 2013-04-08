@@ -117,8 +117,6 @@ package awaybuilder.model.vo.scene
 		public var specularMethod:BasicSpecularMethod;
 		public var specularMap:TextureVO;
 		
-		public var linkedTextures:ArrayCollection; //hepler
-		
 		public var effectMethods:ArrayCollection;
 		
 		override public function apply():void

@@ -2,6 +2,7 @@ package awaybuilder.model.vo.scene
 {
 	import away3d.materials.MaterialBase;
 	import away3d.materials.lightpickers.LightPickerBase;
+	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.utils.DefaultMaterialManager;
 
 	[Bindable]
@@ -26,7 +27,10 @@ package awaybuilder.model.vo.scene
 			
 			bothSides = item.bothSides;
 			extra = item.extra;
-			lightPicker = item.lightPicker;
+			if( item.lightPicker ) 
+			{
+				lightPicker = new LightPickerVO(item.lightPicker as StaticLightPicker);
+			}
 			mipmap = item.mipmap;
 			smooth = item.smooth;
 			blendMode = item.blendMode;
@@ -39,7 +43,7 @@ package awaybuilder.model.vo.scene
 		public var repeat:Boolean;
 		public var bothSides:Boolean;
 		public var extra:Object;
-		public var lightPicker:LightPickerBase;
+		public var lightPicker:LightPickerVO;
 		public var mipmap:Boolean;
 		public var smooth:Boolean;
 		
@@ -58,8 +62,13 @@ package awaybuilder.model.vo.scene
 			
 			m.bothSides = bothSides;
 			m.extra = extra;
+			
 			// TODO: check why we cannot set null
-//			m.lightPicker = lightPicker;
+			if( lightPicker )
+			{
+				m.lightPicker = lightPicker.linkedObject as LightPickerBase;
+			}
+			
 			m.mipmap = mipmap;
 			m.smooth = smooth;
 			m.blendMode = blendMode;

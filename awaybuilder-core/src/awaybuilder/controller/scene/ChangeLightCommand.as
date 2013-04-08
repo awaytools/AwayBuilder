@@ -23,16 +23,15 @@ package awaybuilder.controller.scene
 			
 			var newAsset:LightVO = event.newValue as LightVO;
 			
-			var vo:LightVO = document.getLight( newAsset.id ) as LightVO;
+			var vo:LightVO = document.getLight( newAsset.linkedObject ) as LightVO;
+			
 			var oldLight:LightBase = vo.linkedObject as LightBase;
 			saveOldValue( event, vo.clone() );
 			
 			vo.name = newAsset.name;
 			vo.color = newAsset.color;
 			vo.type = newAsset.type;
-			trace( "newAsset.radius = " + newAsset.radius );
 			vo.radius = newAsset.radius;
-			trace( "vo.radius = " + vo.radius );
 			vo.fallOff = newAsset.fallOff;
 			
 			vo.ambientColor = newAsset.ambientColor;

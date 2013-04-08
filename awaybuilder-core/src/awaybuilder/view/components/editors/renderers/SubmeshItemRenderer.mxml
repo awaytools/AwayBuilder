@@ -51,7 +51,7 @@
 
         private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
         {
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _subMesh.material, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _subMesh.material, true));
         }
 		
 		protected function dropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void

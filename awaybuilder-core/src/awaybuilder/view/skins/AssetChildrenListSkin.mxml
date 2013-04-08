@@ -40,12 +40,12 @@
         }
 
         /* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
-        static private const contentFill:Array = ["bgFill"];
+//        static private const contentFill:Array = ["bgFill"];
 
         /**
          * @private
          */
-        override public function get contentItems():Array {return contentFill};
+//        override public function get contentItems():Array {return contentFill};
 
         /**
          * @private
@@ -126,15 +126,15 @@
 
     <!-- fill -->
     <!--- Defines the background appearance of the list-based component. -->
-    <s:Rect id="background" left="1" right="1" top="1" bottom="1" visible="false">
+    <s:Rect id="background" left="1" right="1" top="1" bottom="1">
         <s:fill>
             <!--- Defines the color of the background. The default color is 0xFFFFFF. -->
-            <s:SolidColor id="bgFill" color="0xFFFFFF" alpha="0" />
+            <s:SolidColor id="bgFill" color="0x333333" />
         </s:fill>
     </s:Rect>
 
     <!--- The Scroller component to add scroll bars to the list. -->
-    <s:Scroller left="0" top="0" right="0" bottom="0" id="scroller" minViewportInset="1" hasFocusableChildren="false">
+    <s:Scroller left="0" top="0" right="0" bottom="0" id="scroller" minViewportInset="0" hasFocusableChildren="false">
         <!--- @copy spark.components.SkinnableDataContainer#dataGroup -->
         <s:DataGroup id="dataGroup" itemRenderer="awaybuilder.view.components.editors.renderers.EffectMethodItemRenderer" >
             <s:layout>

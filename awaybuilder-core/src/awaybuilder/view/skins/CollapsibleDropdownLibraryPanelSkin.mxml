@@ -7,7 +7,7 @@
              alpha.disabled="0.5" alpha.disabledWithControlBar="0.5" xmlns:fxg="awaybuilder.view.skins.fxg.*">
 
     <fx:Metadata>
-        [HostComponent("awaybuilder.view.components.controls.CollapsiblePanel")]
+        [HostComponent("awaybuilder.view.components.controls.LibraryCollapsiblePanel")]
     </fx:Metadata>
 
     <fx:Declarations>
@@ -38,7 +38,7 @@
 	<fx:Script fb:purpose="styling">
 		/* Define the skin elements that should not be colorized. 
 		For panel, border and title background are skinned, but the content area and title text are not. */
-		static private const exclusions:Array = ["background", "titleDisplay", "contentGroup", "controlBarGroup", "collapseButton", "icon"];
+		static private const exclusions:Array = ["background", "titleDisplay", "contentGroup", "controlBarGroup", "collapseButton", "icon", "addButton"];
 		
 		/**
 		 * @private
@@ -201,7 +201,10 @@
                              width="100%"/>
 
                 </s:HGroup>
-				<s:Button id="collapseButton" label="" left="0" right="0" top="0" bottom="0" alpha="0"/>
+				<s:Button id="collapseButton" label="" left="0" right="30" top="0" bottom="0" alpha="0"/>
+				<s:Button id="addButton"  height="20" width="20" alpha="0.9"
+						  styleName="addButton" verticalCenter="0" right="4" skinClass="awaybuilder.view.skins.ToolbarButtonSkin"
+						 />
             </s:Group>
 
             <!--

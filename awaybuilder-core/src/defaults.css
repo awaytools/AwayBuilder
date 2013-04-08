@@ -409,3 +409,10 @@ controls|CollapsiblePanel {
     backgroundColor: #1d1d1c;
     skinClass: ClassReference("awaybuilder.view.skins.CollapsibleDropdownPanelSkin");
 }
+controls|LibraryCollapsiblePanel {
+	chromeColor: #1d1d1c;
+	color: #dbdbdb;
+	fontSize: 11;
+	backgroundColor: #1d1d1c;
+	skinClass: ClassReference("awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin");
+}

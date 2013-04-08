@@ -3,13 +3,14 @@ package awaybuilder.utils
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import mx.collections.ArrayCollection;
 
@@ -51,6 +52,8 @@ package awaybuilder.utils
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SKELETON );
 				case( asset is GeometryVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.GEOMETRY );
+				case( asset is LightPickerVO ):
+					return new ScenegraphItemVO( asset.name, asset );
 					
 				default:
 					return new ScenegraphItemVO( asset.name, asset );

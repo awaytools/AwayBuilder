@@ -80,10 +80,8 @@ package awaybuilder.model.vo.scene
 			else if( type == POINT )
 			{
 				var pl:PointLight = PointLight(linkedObject);
-				trace( "radius = " + radius );
 				pl.radius = radius;
 				pl.fallOff = fallOff;
-				trace( "pl.radius = " + pl.radius );
 			}
 		}
 		override public function clone():ObjectVO
@@ -117,11 +115,11 @@ package awaybuilder.model.vo.scene
 		public static const DIRECTIONAL:String = "directionalType";
 		public static const POINT:String = "pointType";
 		
-		private static var lightsCount:int = 0;
+		private static var count:int = 0;
 		private static function GetUniqueName():String
 		{
-			lightsCount++;
-			return "Light " + lightsCount;
+			count++;
+			return "Light " + count;
 		}
 	}
 }
