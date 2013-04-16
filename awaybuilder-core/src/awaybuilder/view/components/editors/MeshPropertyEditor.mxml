@@ -5,19 +5,20 @@
 	<fx:Declarations>
 	</fx:Declarations>
     <fx:Script><![CDATA[
-		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		import away3d.entities.Mesh;
 		
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.model.vo.scene.SubMeshVO;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 
 		[Bindable]
 		private var _asset:MeshVO;
 		
 		override protected function validate(asset:AssetVO):void
 		{
-			if( asset is MeshVO ) _asset = asset as MeshVO;
+			if( !(asset is MeshVO) ) return;
+			if( asset is MeshVO ) _asset = MeshVO(asset).clone() as MeshVO;
 		}
 
         private function position_commitHandler(event:Event):void 
@@ -48,6 +49,7 @@
         private function castShadowBox_changeHandler(event:Event):void 
 		{
             _asset.castsShadows = castShadowBox.selected;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset, true));
         }
 
         private function materialButton_clickHandler(event:MouseEvent):void 
@@ -160,7 +162,7 @@
             </s:FormItem>
         </s:Form>
     </controls:CollapsiblePanel>
-    <controls:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="true">
+    <controls:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="false">
         <s:List dataProvider="{_asset.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
     </controls:CollapsiblePanel>
 	<controls:CollapsiblePanel width="100%" title="Children" collapsed="true">

@@ -18,7 +18,7 @@ package awaybuilder.model.vo.scene
 			children = new ArrayCollection();
 			for (var i:int = 0; i < item.numChildren; i++) 
 			{
-				children.addItem(AssetFactory.CreateAsset( item.getChildAt(i) ) );
+				children.addItem(AssetFactory.GetAsset( item.getChildAt(i) ) );
 			}
 		}
 		

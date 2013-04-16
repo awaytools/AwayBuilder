@@ -13,7 +13,10 @@ package awaybuilder.controller.document
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
+	
+	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -33,22 +36,26 @@ package awaybuilder.controller.document
 		override public function execute():void
 		{
 			AssetLibrary.removeAllAssets(true);
+			
+			AssetFactory.assets = new Dictionary();
+			AssetFactory.clear();
 			undoRedo.clear();
 			Scene3DManager.clear();
 			document.clear();
 			
-			document.name = "Untitled Library " + nextLibrary;
-			nextLibrary++;
+			document.name = "Untitled Library " + AssetFactory.GetNextId("document");
 			document.edited = false;
 			document.path = null;
 
-			document.materials.addItem(new MaterialVO( DefaultMaterialManager.getDefaultMaterial() ));
-			document.textures.addItem(new TextureVO( DefaultMaterialManager.getDefaultTexture() ));
+			document.materials.addItem( AssetFactory.GetDefaultMaterial() );
+			document.textures.addItem( AssetFactory.GetDefaultTexture() );
+			document.methods.addItem( AssetFactory.GetDefaultDiffuseMethod() );
+			document.methods.addItem( AssetFactory.GetDefaultAmbientMethod() );
+			document.methods.addItem( AssetFactory.GetDefaultSpecularMethod() );
+			document.methods.addItem( AssetFactory.GetDefaultNormalMethod() );
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		
-		
-		private static var nextLibrary:int = 1;
 	}
 }

@@ -8,30 +8,70 @@
 						    >
 	<fx:Declarations>
 		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
+		<s:ArrayCollection id="directionalMappersList">
+			<fx:Object label="Directional" value="{DirectionalShadowMapper}"/>
+			<fx:Object label="Cascade" value="{CascadeShadowMapper}"/>
+			<fx:Object label="Near Directional" value="{NearDirectionalShadowMapper}"/>
+		</s:ArrayCollection>
+		<s:ArrayCollection id="pointMappersList">
+			<fx:Object label="Cube Map" value="{CubeMapShadowMapper}"/>
+		</s:ArrayCollection>
 	</fx:Declarations>
 	<editors:states>
 		<s:State name="directionalType"/>
 		<s:State name="pointType"/>
 	</editors:states>
 	<fx:Script><![CDATA[
-		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		import away3d.lights.shadowmaps.CascadeShadowMapper;
+		import away3d.lights.shadowmaps.CubeMapShadowMapper;
+		import away3d.lights.shadowmaps.DirectionalShadowMapper;
+		import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
+		
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.MeshVO;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.collections.ArrayCollection;
 		import mx.events.ColorPickerEvent;
 		
+		import spark.events.IndexChangeEvent;
+		
 		[Bindable]
 		private var _asset:LightVO;
 		
+		[Bindable]
+		private var _directionalMappersSelectedItem:Object;
+		
+		[Bindable]
+		private var _pointMappersSelectedItem:Object;
+		
+		
 		override protected function validate(asset:AssetVO):void
 		{
-			_asset = asset as LightVO;
+			if( !(asset is LightVO) ) return;
+			_asset = LightVO(asset).clone() as LightVO;
+			
+			var o:Object;
+			for each( o in directionalMappersList )
+			{
+				if( _asset.shadowMapper is o.value )
+				{
+					_directionalMappersSelectedItem = o;
+				}
+			}
+			for each( o in pointMappersList )
+			{
+				if( _asset.shadowMapper is o.value )
+				{
+					_pointMappersSelectedItem = o;
+				}
+			}
 		}
 		
-		private function name_changeHandler(event:Event):void {
+		private function name_changeHandler(event:Event):void 
+		{
 			_asset.name = nameInput.text;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset, true));
 		}
@@ -101,6 +141,21 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
 		
+		protected function directionalShadowMapperList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_MAPPER_CHANGE, directionalShadowMapperList.selectedItem.value, true));
+		}
+		
+		protected function pointShadowMapperList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_MAPPER_CHANGE, pointShadowMapperList.selectedItem.value, true));
+		}
+		private function castShadowBox_changeHandler(event:Event):void 
+		{
+			_asset.castsShadows = castShadowBox.selected;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _asset, true));
+		}
+		
 	]]></fx:Script>
 	
 	
@@ -163,7 +218,20 @@
 								  minimum="0" maximum="999" width="100%" value="{_asset.diffuse}"
 								  change="diffuseStepper_changeHandler(event)"/>
 			</s:FormItem>
+			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>
+			</s:FormItem>
 		</s:Form>
+		
+	</controls:CollapsiblePanel>
+	<controls:CollapsiblePanel width="100%" title="Shadow Mapper" collapsed="true" 
+							   visible="{_asset.castsShadows}" includeInLayout="{_asset.castsShadows}">
+		<s:DropDownList id="directionalShadowMapperList" includeIn="directionalType" width="100%" requireSelection="true"
+						dataProvider="{directionalMappersList}" selectedItem="{_directionalMappersSelectedItem}"
+						change="directionalShadowMapperList_changeHandler(event)"/>
+		<s:DropDownList id="pointShadowMapperList" includeIn="pointType" width="100%" requireSelection="true"
+						dataProvider="{pointMappersList}" selectedItem="{_pointMappersSelectedItem}"
+						change="pointShadowMapperList_changeHandler(event)"/>
 		
 	</controls:CollapsiblePanel>
 	<controls:CollapsiblePanel width="100%" title="Direction" collapsed="true" includeIn="directionalType">

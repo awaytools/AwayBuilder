@@ -2,6 +2,7 @@ package awaybuilder.controller.scene
 {
 	import away3d.arcane;
 	import away3d.core.base.SubMesh;
+	import away3d.entities.Mesh;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
@@ -16,6 +17,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.AssetFactory;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -31,15 +33,13 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var subMesh:SubMeshVO = getSubmesh( document.scene, event.items[0] as SubMeshVO );
+			var subMesh:SubMeshVO = event.items[0] as SubMeshVO;
 			
 			var newMaterial:MaterialVO = event.newValue as MaterialVO;
 			
-			if( !event.oldValue ) {
-				event.oldValue = subMesh.material.clone();
-			}
+			saveOldValue( event, subMesh.material.clone() );
 			
-			subMesh.material = newMaterial.clone();
+			subMesh.material = AssetFactory.GetAsset(newMaterial.linkedObject) as MaterialVO;
 			subMesh.apply();
 			
 			if( event.isUndoAction )
@@ -64,24 +64,5 @@ package awaybuilder.controller.scene
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		
-		private function getSubmesh( children:ArrayCollection, vo:SubMeshVO ):SubMeshVO 
-		{
-			for each( var asset:ContainerVO in children )
-			{
-				var mesh:MeshVO = asset as MeshVO;
-				if( mesh )
-				{
-					for each( var subMesh:SubMeshVO in mesh.subMeshes )
-					{
-						if( subMesh.linkedObject == vo.linkedObject )
-						{
-							return subMesh;
-						}
-					}
-				}
-				return getSubmesh( asset.children, vo );
-			}
-			return null;
-		}
 	}
 }

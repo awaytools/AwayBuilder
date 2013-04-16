@@ -19,6 +19,12 @@ package awaybuilder.model.vo
 		public static const BEAR:String = "bear";
 		public static const ANIMATION_NODE:String = "animationNode";
 		public static const TEXTURE:String = "texture";
+		public static const AMBIENT:String = "ambient";
+		public static const NORMAL:String = "normal";
+		public static const DIFFUSE:String = "diffuse";
+		public static const SHADOW:String = "shadow";
+		public static const EFFECT:String = "effect";
+		public static const SPECULAR:String = "specular";
 		
 		public function ScenegraphItemVO( label:String, item:AssetVO, type:String="default" )
 		{

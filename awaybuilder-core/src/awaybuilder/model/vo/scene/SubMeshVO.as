@@ -13,14 +13,12 @@ package awaybuilder.model.vo.scene
 	[Bindable]
 	public class SubMeshVO extends AssetVO
 	{
-	    public function SubMeshVO( object:SubMesh, parentMesh:MeshVO )
+	    public function SubMeshVO( object:SubMesh )
 	    {
 			super( "subMesh", object );
 			
-			material = AssetFactory.CreateAsset( object.material ) as MaterialVO;
-			
-//			this.subGeometry = AssetFactory.CreateAsset( object.subGeometry ) as SubGeometryVO;
-			this.parentMesh = parentMesh;
+			material = AssetFactory.GetAsset( object.material ) as MaterialVO;
+//			this.subGeometry = AssetFactory.GetAsset( object.subGeometry ) as SubGeometryVO;
 	    }
 	
 	    public var material:MaterialVO;
@@ -36,11 +34,5 @@ package awaybuilder.model.vo.scene
 			var subMesh:SubMesh = linkedObject as SubMesh;
 			subMesh.material = material.linkedObject as MaterialBase;
 		}
-	    public function clone():SubMeshVO
-	    {
-	        var vo:SubMeshVO = new SubMeshVO( this.linkedObject as SubMesh, parentMesh );
-			vo.id = this.id;
-	        return vo;
-	    }
 	}
 }

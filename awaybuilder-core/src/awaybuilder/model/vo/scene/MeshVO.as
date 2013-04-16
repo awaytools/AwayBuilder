@@ -5,6 +5,8 @@ package awaybuilder.model.vo.scene
     import away3d.entities.Mesh;
     import away3d.materials.MaterialBase;
     
+    import awaybuilder.utils.AssetFactory;
+    
     import mx.collections.ArrayCollection;
 
 	[Bindable]
@@ -19,7 +21,9 @@ package awaybuilder.model.vo.scene
 
             for each( var subMesh:SubMesh in item.subMeshes )
             {
-                subMeshes.addItem(new SubMeshVO(subMesh, this));
+				var sm:SubMeshVO = AssetFactory.GetAsset(subMesh) as SubMeshVO;
+				sm.parentMesh = this;
+                subMeshes.addItem( sm );
             }
         }
 

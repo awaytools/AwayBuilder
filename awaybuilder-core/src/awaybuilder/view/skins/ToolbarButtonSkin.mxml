@@ -32,19 +32,19 @@
              */
             override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
             {
-                var cr:Number = getStyle("cornerRadius");
-                
-                if (cornerRadius != cr)
-                {
-                    cornerRadius = cr;
-                    shadow.radiusX = cornerRadius;
-                    fill.radiusX = cornerRadius;
-                    border.radiusX = cornerRadius;
-                }
-                
-                if (highlightStroke) highlightStroke.radiusX = cornerRadius;
-                if (hldownstroke1) hldownstroke1.radiusX = cornerRadius;
-                if (hldownstroke2) hldownstroke2.radiusX = cornerRadius;
+//                var cr:Number = getStyle("cornerRadius");
+//                
+//                if (cornerRadius != cr)
+//                {
+//                    cornerRadius = cr;
+//                    shadow.radiusX = cornerRadius;
+//                    fill.radiusX = cornerRadius;
+//                    border.radiusX = cornerRadius;
+//                }
+//                
+//                if (highlightStroke) highlightStroke.radiusX = cornerRadius;
+//                if (hldownstroke1) hldownstroke1.radiusX = cornerRadius;
+//                if (hldownstroke2) hldownstroke2.radiusX = cornerRadius;
                 
                 super.updateDisplayList(unscaledWidth, unscaledHeight);
             }

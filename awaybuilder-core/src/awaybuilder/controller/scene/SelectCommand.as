@@ -21,15 +21,11 @@ package awaybuilder.controller.scene
 			var items:Vector.<AssetVO> = new Vector.<AssetVO>();
 			for each( var selectedAsset:AssetVO in event.items ) 
 			{
-				if( selectedAsset.linkedObject == DefaultMaterialManager.getDefaultMaterial() ) continue;
-				if( selectedAsset.linkedObject == DefaultMaterialManager.getDefaultTexture() ) continue;
+				if( selectedAsset.isDefault ) continue;
 				items.push( selectedAsset );
 			}
 			document.selectedObjects = items;
 			
 		}
-		
-		
-		
 	}
 }

@@ -133,6 +133,31 @@ tree|TreeItemRenderer.bear
 {
 	icon: Embed("assets/images/teddy_bear.png");
 }
+tree|TreeItemRenderer.ambient
+{
+	icon: Embed("assets/images/blue-document-attribute.png");
+}
+tree|TreeItemRenderer.diffuse
+{
+	icon: Embed("assets/images/blue-document-attribute-d.png");
+}
+tree|TreeItemRenderer.normal
+{
+	icon: Embed("assets/images/blue-document-attribute-n.png");
+}
+tree|TreeItemRenderer.shadow
+{
+	icon: Embed("assets/images/blue-document-attribute-s.png");
+}
+tree|TreeItemRenderer.effect
+{
+	icon: Embed("assets/images/blue-document-attribute-e.png");
+}
+tree|TreeItemRenderer.specular
+{
+	icon: Embed("assets/images/blue-document-attribute-p.png");
+}
+
 
 s|NumericStepper
 {
@@ -355,14 +380,24 @@ s|Button.editParentObjectButtonStyle
 	icon: Embed("assets/images/arrow-transition-180.png");
 }
 
-s|Button.addButton
+s|Button.addItemButton
 {
 	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
 	icon: Embed("assets/images/add.png");
 }
+
+s|Button.addButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+/*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");*/
+	icon: Embed("assets/images/add.png");
+}
 s|Button.removeButton
 {
-	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+/*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");*/
 	icon: Embed("assets/images/delete.png");
 }
 

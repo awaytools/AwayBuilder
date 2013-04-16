@@ -52,8 +52,8 @@ package awaybuilder.view.mediators
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM_RELEASE, scene_transformReleaseHandler);
 			Scene3DManager.init( view.viewScope );
 			
-            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler, SceneEvent);
-            addContextListener(SceneEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler, SceneEvent);
+            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
+            addContextListener(SceneEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler);
 
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			view.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);	
@@ -259,7 +259,15 @@ package awaybuilder.view.mediators
 				var mesh:Mesh = item as Mesh;
 				if( mesh ) 
 				{
-					selected.push( document.getSceneObject( mesh ) );
+					if( document.getSceneObject( item ) ) 
+					{
+						selected.push( document.getSceneObject( item ) );
+					}
+					else 
+					{
+						trace( "NOT SCENE OBJECT, BUT MESH!!!!!! (possible it is light)" );
+					}
+					
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));

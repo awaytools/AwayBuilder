@@ -35,7 +35,6 @@ package awaybuilder.model.vo.scene
 			smooth = item.smooth;
 			blendMode = item.blendMode;
 			
-			trace( item.lightPicker );
 		}
 		
 		public var blendMode:String;

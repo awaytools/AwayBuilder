@@ -3,21 +3,16 @@ package awaybuilder.model.vo.scene
 	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.textures.BitmapTexture;
 	
+	import awaybuilder.model.vo.scene.interfaces.IDefaultable;
+	
 	import flash.display.BitmapData;
 	
 	[Bindable]
-	public class TextureVO extends AssetVO
+	public class TextureVO extends AssetVO implements IDefaultable
 	{
 	    public function TextureVO( item:BitmapTexture )
 	    {
 	        super( item.name, item );
-			if( item == DefaultMaterialManager.getDefaultTexture() )
-			{
-				isDefault = true;
-				name = item.name = "Away3D Default";
-			}
-			
-			
 	        bitmapData = item.bitmapData
 	    }
 	

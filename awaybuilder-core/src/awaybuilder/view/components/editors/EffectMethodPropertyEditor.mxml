@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:components="awaybuilder.view.components.*" 
+					xmlns:controls="awaybuilder.view.components.controls.*"
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					xmlns:editors="awaybuilder.view.components.editors.*" 
+					currentState="ColorMatrix">
+	<editors:states>
+		<s:State name="AlphaMask"/>
+		<s:State name="ColorMatrix"/>
+		<s:State name="ColorTransform"/>
+		<s:State name="EnvMap"/>
+		<s:State name="Fog"/>
+		<s:State name="FresnelEnvMap"/>
+		<s:State name="FresnelPlanarReflection"/>
+		<s:State name="LightMap"/>
+		<s:State name="Outline"/>
+		<s:State name="PlanarReflection"/>
+		<s:State name="ProjectiveTexture"/>
+		<s:State name="RefractionEnvMap"/>
+		<s:State name="RimLight"/>
+	</editors:states>
+	<fx:Declarations>
+		<s:ArrayList id="typeList">
+			<!--<fx:Object label="Alpha Mask" value="AlphaMask"/>-->
+			<fx:Object label="Color Matrix" value="ColorMatrix"/>
+			<fx:Object label="Color Transform" value="ColorTransform"/>
+			<!--<fx:Object label="Environment Map" value="EnvMap"/>-->
+			<fx:Object label="Fog" value="Fog"/>
+			<!--<fx:Object label="Fresnel Environment Map" value="FresnelEnvMap"/>
+			<fx:Object label="Fresnel Planar Reflection" value="FresnelPlanarReflection"/>
+			<fx:Object label="Light Map" value="LightMap"/>
+			<fx:Object label="Outline" value="Outline"/>
+			<fx:Object label="Planar Reflection" value="PlanarReflection"/>
+			<fx:Object label="Projective Texture" value="ProjectiveTexture"/>
+			<fx:Object label="Refraction Environment Map" value="RefractionEnvMap"/>
+			<fx:Object label="Rim Light" value="RimLight"/>-->
+		</s:ArrayList>
+	</fx:Declarations>
+	<fx:Script><![CDATA[
+		import away3d.lights.shadowmaps.CascadeShadowMapper;
+		import away3d.lights.shadowmaps.CubeMapShadowMapper;
+		import away3d.lights.shadowmaps.DirectionalShadowMapper;
+		import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
+		
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.EffectMethodVO;
+		import awaybuilder.model.vo.scene.LightVO;
+		import awaybuilder.model.vo.scene.MaterialVO;
+		import awaybuilder.model.vo.scene.MeshVO;
+		import awaybuilder.model.vo.scene.ShadowMethodVO;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		
+		import mx.collections.ArrayCollection;
+		import mx.events.ColorPickerEvent;
+		
+		import spark.events.IndexChangeEvent;
+		
+		[Bindable]
+		private var _asset:EffectMethodVO;
+		
+		[Bindable]
+		private var _selectedLight:LightVO;
+		
+		protected function methodList_changeHandler(event:IndexChangeEvent):void
+		{
+			currentState = methodList.selectedItem.value;
+		}
+		
+		override protected function validate(asset:AssetVO):void
+		{
+			if( !(asset is EffectMethodVO) ) return;
+			_asset = EffectMethodVO(asset).clone();
+		}
+		
+		private function editParentObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
+		}
+		
+		private function name_changeHandler(event:Event):void 
+		{
+			_asset.name = nameInput.text;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
+		}
+		
+		private function myFormatFunc(val:Number):String 
+		{ 
+			return val.toString().replace(".",","); 
+		} 
+		
+		private function myParseFunc(val:String):Number 
+		{ 
+			var stringVal:String = val.replace(",","."); 
+			return Number(stringVal);     
+		} 
+		
+		
+	]]></fx:Script>
+	
+	
+	<s:Group width="100%" top="0">
+		<s:Rect left="0" right="0" top="3" bottom="3">
+			<s:fill>
+				<s:SolidColor color="0x111111" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
+					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
+			<s:Label width="100%" text="EffectMethod" fontWeight="bold" fontSize="14"/>
+		</s:HGroup>
+	</s:Group>
+	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			
+			<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+			</s:FormItem>
+		</s:Form>
+		
+	</controls:CollapsiblePanel>
+	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="3" paddingBottom="3" width="100%">
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Label text="type"/>
+			<controls:HorizontalFormSeparator width="100%"/>
+		</s:HGroup>
+		<s:DropDownList id="methodList" requireSelection="true" width="100%" dataProvider="{typeList}" change="methodList_changeHandler(event)"/>
+		<controls:HorizontalFormSeparator/>
+	</s:VGroup>
+	<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="ColorMatrix">
+		
+		<s:FormItem label="Raw 1" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:NumericStepper id="r1c1Stepper" minimum="0" maximum="1" value="0.2225" stepSize="0.0001" valueFormatFunction="myFormatFunc"/>
+			<s:NumericStepper id="r1c2Stepper" minimum="0" maximum="1" value="0.7169" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r1c3Stepper" minimum="0" maximum="1" value="0.0606" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r1c4Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r1c5Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Raw 2" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:NumericStepper id="r2c1Stepper" minimum="0" maximum="1" value="0.2225" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r2c2Stepper" minimum="0" maximum="1" value="0.7169" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r2c3Stepper" minimum="0" maximum="1" value="0.0606" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r2c4Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r2c5Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Raw 3" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:NumericStepper id="r3c1Stepper" minimum="0" maximum="1" value="0.2225" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r3c2Stepper" minimum="0" maximum="1" value="0.7169" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r3c3Stepper" minimum="0" maximum="1" value="0.0606" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r3c4Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r3c5Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Raw 4" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:NumericStepper id="r4c1Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r4c2Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r4c3Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r4c4Stepper" minimum="0" maximum="1" value="1" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+			<s:NumericStepper id="r4c5Stepper" minimum="0" maximum="1" value="1" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+	</s:Form>
+	<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="ColorTransform">
+		<s:FormItem label="Red Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="redMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Green Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="greenMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Blue Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="blueMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Alpha Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="alphaMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Red Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="redOffsetStepper" minimum="-255" maximum="255" value="0" stepSize="1" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Green Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="greenOffsetStepper" minimum="-255" maximum="255" value="0" stepSize="1" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Blue Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="blueOffsetStepper" minimum="-255" maximum="255" value="0" stepSize="1" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Alpha Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
+			<s:NumericStepper id="alphaOffsetStepper" minimum="-1" maximum="1" value="0" stepSize="0.01" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+	</s:Form>
+	<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="Fog">
+		<s:FormItem label="Min Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:NumericStepper id="minDistanceStepper" minimum="0" maximum="1000" value="1" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Max Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:NumericStepper id="maxDistanceStepper" minimum="0" maximum="1000" value="1" valueFormatFunction="myFormatFunc" />
+		</s:FormItem>
+		<s:FormItem label="Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<mx:ColorPicker id="colorPicker"/>
+		</s:FormItem>		
+	</s:Form>
+		
+	
+</editors:EditorBase>

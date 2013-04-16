@@ -70,5 +70,10 @@ package awaybuilder.view.components.editors
 		{
 			
 		}
+		
+		public function Update():void 
+		{
+			validate( _data );
+		}
 	}
 }

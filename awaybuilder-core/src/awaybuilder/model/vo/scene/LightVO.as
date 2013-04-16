@@ -3,6 +3,7 @@ package awaybuilder.model.vo.scene
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
+	import away3d.lights.shadowmaps.ShadowMapperBase;
 	
 	import flash.geom.Vector3D;
 
@@ -12,10 +13,6 @@ package awaybuilder.model.vo.scene
 		
 		public function LightVO( light:LightBase )
 		{
-			if( !light.name || (light.name == "null") ) 
-			{
-				light.name = GetUniqueName();
-			}
 			super( light );
 			
 			this.color = light.color;
@@ -25,6 +22,10 @@ package awaybuilder.model.vo.scene
 			
 			this.diffuse = light.diffuse;
 			this.specular = light.specular;
+			
+			this.castsShadows = light.castsShadows;
+			
+			this.shadowMapper = light.shadowMapper;
 			
 			if( light is DirectionalLight ) 
 			{
@@ -61,6 +62,10 @@ package awaybuilder.model.vo.scene
 		public var directionY:Number;
 		public var directionZ:Number;
 		
+		public var castsShadows:Boolean;
+		
+		public var shadowMapper:ShadowMapperBase;
+		
 		override public function apply():void
 		{
 			super.apply();
@@ -71,6 +76,13 @@ package awaybuilder.model.vo.scene
 			lightBase.ambient = ambient;
 			lightBase.color = color;
 			lightBase.ambientColor = ambientColor;
+			
+			
+			if( castsShadows && shadowMapper ) 
+			{
+				lightBase.shadowMapper = shadowMapper;
+			}
+			lightBase.castsShadows = castsShadows;
 			
 			if( type == DIRECTIONAL )
 			{
@@ -111,15 +123,8 @@ package awaybuilder.model.vo.scene
 			return vo;
 		}
 		
-		
 		public static const DIRECTIONAL:String = "directionalType";
 		public static const POINT:String = "pointType";
 		
-		private static var count:int = 0;
-		private static function GetUniqueName():String
-		{
-			count++;
-			return "Light " + count;
-		}
 	}
 }

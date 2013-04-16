@@ -13,6 +13,7 @@ package awaybuilder.model
 	import away3d.library.AssetLibrary;
 	import away3d.library.assets.AssetType;
 	import away3d.loaders.parsers.Parsers;
+	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.textures.BitmapTexture;
@@ -82,7 +83,7 @@ package awaybuilder.model
 			{
 				if( !o.parent )
 				{
-					_document.scene.addItem( AssetFactory.CreateAsset( o ) );
+					_document.scene.addItem( AssetFactory.GetAsset( o ) );
 				}
 			}
 			
@@ -101,7 +102,7 @@ package awaybuilder.model
 					var mesh:Mesh = event.asset as Mesh;
 					if( !mesh.material )
 					{
-						mesh.material = DefaultMaterialManager.getDefaultMaterial();
+						mesh.material = AssetFactory.GetDefaultMaterial().linkedObject as MaterialBase;
 					}
 					_objects.push( mesh  );
 					break;
@@ -110,29 +111,22 @@ package awaybuilder.model
 					_objects.push( c );
 					break;
 				case AssetType.MATERIAL:
-					_document.materials.addItem( AssetFactory.CreateAsset( event.asset ) );
+					_document.materials.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
 				case AssetType.TEXTURE:
-					_document.textures.addItem( AssetFactory.CreateAsset( event.asset ) );
+					_document.textures.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
-					_document.geometry.addItem( AssetFactory.CreateAsset( event.asset ) );
+					_document.geometry.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_SET:
-					_document.animations.addItem( AssetFactory.CreateAsset( event.asset ) );
-					break;
 				case AssetType.ANIMATION_STATE:
-					_document.animations.addItem( AssetFactory.CreateAsset( event.asset ) );
-					break;
 				case AssetType.ANIMATION_NODE:
-					_document.animations.addItem( AssetFactory.CreateAsset( event.asset ) );
+					_document.animations.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
 				case AssetType.SKELETON:
-					_document.skeletons.addItem( AssetFactory.CreateAsset( event.asset ) );
-					break;
 				case AssetType.SKELETON_POSE:
-					var sp:SkeletonPose = event.asset as SkeletonPose;
-					_document.skeletons.addItem( AssetFactory.CreateAsset( event.asset ) );
+					_document.skeletons.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
 			}
 		}

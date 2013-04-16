@@ -27,7 +27,6 @@ package awaybuilder.controller.scene
 			
 			DataMerger.syncArrays( vo.lights, newAsset.lights, "linkedObject" );
 			
-			trace( "vo.lights = " + vo.lights );
 			vo.apply();
 			
 			addToHistory( event );

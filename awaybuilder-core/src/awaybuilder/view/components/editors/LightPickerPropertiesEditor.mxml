@@ -11,24 +11,20 @@
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightPickerVO;
-		import awaybuilder.model.vo.scene.LightVO;
-		import awaybuilder.model.vo.scene.MaterialVO;
-		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.view.components.controls.events.DroppedEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
-		
-		import mx.collections.ArrayCollection;
-		import mx.events.ColorPickerEvent;
 		
 		[Bindable]
 		private var _asset:LightPickerVO;
 		
 		override protected function validate(asset:AssetVO):void
 		{
-			_asset = asset as LightPickerVO;
+			if( !(asset is LightPickerVO) ) return;
+			_asset = LightPickerVO(asset).clone();
 		}
 		
-		private function name_changeHandler(event:Event):void {
+		private function name_changeHandler(event:Event):void 
+		{
 			_asset.name = nameInput.text;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHTPICKER_STEPPER_CHANGE, _asset, true));
 		}
@@ -49,7 +45,6 @@
 		}
 		
 	]]></fx:Script>
-	
 	
 	<s:Group width="100%" top="0">
 		<s:Rect left="0" right="0" top="3" bottom="3">
@@ -77,10 +72,9 @@
 									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 
 									  itemRenderer="awaybuilder.view.components.editors.renderers.LightItemRenderer"
 									  dropped="lightsList_droppedHandler(event)"/>
-		<!--<s:Button id="addEffectMethod" styleName/>-->
-		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
-			<s:Button id="addButton" width="100%" label="Light" styleName="addButton" enabled="false"/>
-			<s:Button id="deleteButton" enabled="{lightsList.selectedItem}" label="Delete" styleName="removeButton"
+		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
+			<s:Button id="addButton" toolTip="Add New" styleName="addButton" enabled="false"/>
+			<s:Button id="deleteButton" enabled="{lightsList.selectedItem}" toolTip="Remove" styleName="removeButton"
 					  click="deleteButton_clickHandler(event)"/>
 		</s:HGroup>
 	</s:VGroup>

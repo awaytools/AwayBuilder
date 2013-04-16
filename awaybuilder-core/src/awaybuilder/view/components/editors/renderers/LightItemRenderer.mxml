@@ -17,16 +17,16 @@
 		<![CDATA[
 			import away3d.materials.methods.EffectMethodBase;
 			
-			import awaybuilder.model.vo.scene.LightVO;
+			import awaybuilder.model.vo.scene.AssetVO;
 			import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 			
 			[Bindable]
-			private var _light:LightVO
+			private var _light:AssetVO
 			
 			override public function set data(value:Object):void
 			{
 				super.data = value;
-				_light = value as LightVO;
+				_light = value as AssetVO;
 			}
 			private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void
 			{

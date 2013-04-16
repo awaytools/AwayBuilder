@@ -8,6 +8,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
 
@@ -31,7 +32,7 @@ package awaybuilder.controller.scene
 			}
 			else 
 			{
-				document.lights.addItemAt( newValue.clone(), 0 );
+				document.lights.addItemAt( newValue, 0 );
 				Scene3DManager.addLight( newValue.linkedObject as LightBase );
 			}
 			

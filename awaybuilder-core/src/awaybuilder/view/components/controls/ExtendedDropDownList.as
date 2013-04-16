@@ -46,6 +46,12 @@ package awaybuilder.view.components.controls
 			_newItemLabel = value;
 		}
 		
+		override public function set selectedItem(value:*):void
+		{
+			super.selectedItem = value;
+			updateIconDisplay();
+		}
+		
 		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);

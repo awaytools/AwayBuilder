@@ -22,13 +22,18 @@ package awaybuilder.model.vo.scene
 		
 		public var linkedObject:Object; // away3d object, unique field
 		
-		public function apply():void // TODO: move sceneObject applying elsewhere
+		public function apply():void // TODO: move sceneObject applying to mediator
 		{
 			var asset:NamedAssetBase = linkedObject as NamedAssetBase;
 			if( asset )
 			{
 				linkedObject.name = name;
 			}
+		}
+		
+		public function equals( asset:AssetVO ):Boolean
+		{
+			return (asset.linkedObject == this.linkedObject); 
 			
 		}
 	}

@@ -15,6 +15,7 @@ package awaybuilder.model.vo.scene
     import away3d.textures.BitmapTexture;
     import away3d.textures.Texture2DBase;
     
+    import awaybuilder.model.vo.scene.interfaces.IDefaultable;
     import awaybuilder.utils.AssetFactory;
     
     import flash.display3D.textures.Texture;
@@ -23,7 +24,7 @@ package awaybuilder.model.vo.scene
     import mx.collections.ArrayCollection;
 
 	[Bindable]
-    public class MaterialVO extends MaterialBaseVO
+    public class MaterialVO extends MaterialBaseVO implements IDefaultable
     {
 		
 		public static const COLOR:String = "colorType";
@@ -40,34 +41,22 @@ package awaybuilder.model.vo.scene
 				var textureMaterial:TextureMaterial = item as TextureMaterial;
 				
 				alphaBlending = textureMaterial.alphaBlending;
-				alphaThreshold = textureMaterial.alphaThreshold;
 				colorTransform = textureMaterial.colorTransform;
 				
-				normalMethod = textureMaterial.normalMethod;
-				normalMap = AssetFactory.CreateAsset( textureMaterial.normalMethod.normalMap ) as TextureVO;
+				normalMethod = AssetFactory.GetAsset( textureMaterial.normalMethod ) as NormalMethodVO;
 				
-				shadowMethod = textureMaterial.shadowMethod;
+				shadowMethod =  AssetFactory.GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
 				
-				ambient = textureMaterial.ambient;
-				ambientColor = textureMaterial.ambientColor;
-				ambientMethod = textureMaterial.ambientMethod;
-				ambientTexture = AssetFactory.CreateAsset(  textureMaterial.ambientTexture ) as TextureVO;
+				ambientMethod = AssetFactory.GetAsset( textureMaterial.ambientMethod ) as AmbientMethodVO;
 				
-				diffuseMethod = textureMaterial.diffuseMethod;
-				diffuseTexture = AssetFactory.CreateAsset( textureMaterial.diffuseMethod.texture ) as TextureVO;
+				diffuseMethod = AssetFactory.GetAsset( textureMaterial.diffuseMethod ) as DiffuseMethodVO;
 				
-				specular = textureMaterial.specular;
-				specularColor = textureMaterial.specularColor;
-				specularMethod = textureMaterial.specularMethod;
-				gloss = textureMaterial.gloss;
-				specularMap = AssetFactory.CreateAsset( textureMaterial.specularMap ) as TextureVO;
-				diffuseAlpha = textureMaterial.diffuseMethod.diffuseAlpha;
+				specularMethod = AssetFactory.GetAsset( textureMaterial.specularMethod ) as SpecularMethodVO;
 			}
 			else if( item is ColorMaterial )
 			{
 				type = COLOR;
 				var colorMaterial:ColorMaterial = item as ColorMaterial;
-				diffuseColor = colorMaterial.color;
 //				alpha = colorMaterial.alpha;
 			}
 			
@@ -77,9 +66,8 @@ package awaybuilder.model.vo.scene
 				var singlePassMaterialBase:SinglePassMaterialBase = item as SinglePassMaterialBase;
 				for (var i:int = 0; i < singlePassMaterialBase.numMethods; i++) 
 				{
-					effectMethods.addItem( singlePassMaterialBase.getMethodAt( i ) );
+					effectMethods.addItem( AssetFactory.GetAsset(singlePassMaterialBase.getMethodAt( i )) );
 				}
-				
 			}
 			
         }
@@ -91,31 +79,26 @@ package awaybuilder.model.vo.scene
 //		public var texture:TextureVO;
 		
 		public var alphaBlending:Boolean;
-		public var alphaThreshold:Number;
 		
 		public var colorTransform:ColorTransform;
-		public var gloss:Number;
 		
-		public var normalMethod:BasicNormalMethod;
-		public var normalMap:TextureVO;
+		public var normalMethod:NormalMethodVO;
+//		public var normalMap:TextureVO;
 		
-		public var shadowMethod:ShadowMapMethodBase;
+		public var shadowMethod:ShadowMethodVO;
 		
-		public var ambient:Number;
-		public var ambientColor:uint;
-		public var ambientMethod:BasicAmbientMethod;
-		public var ambientTexture:TextureVO;
+		public var ambientMethod:AmbientMethodVO;
 		
-		public var diffuseAlpha:Number;
-		public var diffuseAlphaThreshold:Number;
-		public var diffuseColor:uint;
-		public var diffuseMethod:BasicDiffuseMethod;
-		public var diffuseTexture:TextureVO;
+//		public var diffuseAlpha:Number;
+//		public var diffuseAlphaThreshold:Number;
+//		public var diffuseColor:uint;
+		public var diffuseMethod:DiffuseMethodVO;
+//		public var diffuseTexture:TextureVO;
 		
-		public var specular:Number;
-		public var specularColor:uint;
-		public var specularMethod:BasicSpecularMethod;
-		public var specularMap:TextureVO;
+//		public var specular:Number;
+//		public var specularColor:uint;
+		public var specularMethod:SpecularMethodVO;
+//		public var specularMap:TextureVO;
 		
 		public var effectMethods:ArrayCollection;
 		
@@ -125,26 +108,37 @@ package awaybuilder.model.vo.scene
 			if( type == COLOR )
 			{
 				var cm:ColorMaterial = linkedObject as ColorMaterial;
-				cm.color = diffuseColor;
+//				cm.color = diffuseMethod.diffuseColor;
 //				cm.alpha = alpha;
 			}
 			else if( type == TEXTURE )
 			{
 				var tm:TextureMaterial = linkedObject as TextureMaterial;
-				if( diffuseTexture )
-					tm.diffuseMethod.texture = diffuseTexture.linkedObject as Texture2DBase;
 				
-				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
-				tm.diffuseMethod.diffuseColor = diffuseColor;
+				tm.diffuseMethod = null;
+				tm.diffuseMethod = diffuseMethod.linkedObject as BasicDiffuseMethod;
 				
-				if( specularMap )
-					tm.specularMethod.texture = specularMap.linkedObject as Texture2DBase;
+				tm.ambientMethod = null;
+				tm.ambientMethod = ambientMethod.linkedObject as BasicAmbientMethod;
+				tm.normalMethod = null;
+				tm.normalMethod = normalMethod.linkedObject as BasicNormalMethod;
+				tm.specularMethod = null;
+				tm.specularMethod = specularMethod.linkedObject as BasicSpecularMethod;
 				
-				if( normalMap )
-					tm.normalMethod.normalMap = normalMap.linkedObject as Texture2DBase;
+				tm.shadowMethod = null;
+				if( shadowMethod )
+				{
+					tm.shadowMethod = shadowMethod.linkedObject as ShadowMapMethodBase;
+				}
+					
+//				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
+//				tm.diffuseMethod.diffuseColor = diffuseColor;
 				
-				if( ambientTexture )
-					tm.ambientMethod.texture = ambientTexture.linkedObject as Texture2DBase;
+//				if( specularMap )
+//					tm.specularMethod.texture = specularMap.linkedObject as Texture2DBase;
+				
+//				if( ambientTexture )
+//					tm.ambientMethod.texture = ambientTexture.linkedObject as Texture2DBase;
 			}
 			var material:SinglePassMaterialBase = linkedObject as SinglePassMaterialBase;
 			if( material ) 
@@ -172,12 +166,11 @@ package awaybuilder.model.vo.scene
 				}
 				for (i = 0; i < effectMethods.length; i++) 
 				{
-					material.addMethod( effectMethods.getItemAt(i) as EffectMethodBase );
+					material.addMethod( EffectMethodVO(effectMethods.getItemAt(i)).linkedObject as EffectMethodBase );
 				}
 				
 			}
 		}
-		
 		
 		
         public function clone():MaterialVO
@@ -195,28 +188,14 @@ package awaybuilder.model.vo.scene
 			vo.smooth = this.smooth;
 			vo.blendMode = this.blendMode;
 			
-			vo.diffuseMethod = this.diffuseMethod;
-			vo.diffuseColor = this.diffuseColor;
-			vo.diffuseAlpha = this.diffuseAlpha;
-			vo.diffuseTexture =  this.diffuseTexture;
-			
 			vo.alphaBlending = this.alphaBlending;
-			vo.alphaThreshold = this.alphaThreshold;
 			vo.colorTransform = this.colorTransform;
-			vo.gloss = this.gloss;
+			
 			vo.normalMethod = this.normalMethod;
-			vo.normalMap =  this.normalMap;
-			
 			vo.shadowMethod = this.shadowMethod;
-			vo.ambient = this.ambient;
-			vo.ambientColor = this.ambientColor;
+			vo.diffuseMethod = this.diffuseMethod;
 			vo.ambientMethod = this.ambientMethod;
-			vo.ambientTexture =  this.ambientTexture;
-			
-			vo.specular = this.specular;
-			vo.specularColor = this.specularColor;
 			vo.specularMethod = this.specularMethod;
-			vo.specularMap =  this.specularMap;
 			
 			vo.id = this.id;
 			

@@ -61,11 +61,11 @@
 		
 		private function dropDownIconFunction(item:MaterialVO):Object 
 		{
-			if( item.type == MaterialVO.TEXTURE )
+			if( (item.type == MaterialVO.TEXTURE) && item.diffuseMethod.texture )
 			{
-				return item.diffuseTexture.bitmapData;
+				return item.diffuseMethod.texture.bitmapData;
 			}
-			return new BitmapData(32, 32, false, 0x0);
+			return new BitmapData(32, 32, false, item.diffuseMethod.color);
 		}
 		
 	]]></fx:Script>
@@ -78,13 +78,10 @@
 	</s:HGroup>-->
 	
 	<s:HGroup width="100%">
-		<controls:ExtendedDropDownList id="dropDownList" width="100%" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-									   dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}"
+		<controls:ExtendedDropDownList id="dropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+									   dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}" requireSelection="true"
 									   change="dropDownList1_changeHandler(event)"
-									   iconFunction="{dropDownIconFunction}"
-									   labelField="name"
-									   newItemLabel="Add New Material"
-									   height="40"
+									   iconFunction="{dropDownIconFunction}" labelField="name" newItemLabel="New Material"
 									   addNewItem="dropDownList_addNewItemHandler(event)"/>
 		<s:Button id="editSubmeshMaterialButton" styleName="editSharedObjectButtonStyle"
 				  width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>

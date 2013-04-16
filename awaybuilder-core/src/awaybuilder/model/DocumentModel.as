@@ -139,6 +139,16 @@ package awaybuilder.model
 			documentVO.lights = value;
 		}
 		
+		public function get methods():ArrayCollection
+		{
+			return documentVO.methods;
+		}
+		public function set methods(value:ArrayCollection):void
+		{
+			documentVO.methods = value;
+		}
+		
+		
 		private var _copiedObjects:Vector.<AssetVO>;
 		public function get copiedObjects():Vector.<AssetVO>
 		{

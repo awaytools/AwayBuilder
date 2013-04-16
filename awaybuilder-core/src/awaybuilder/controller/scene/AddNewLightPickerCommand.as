@@ -25,9 +25,9 @@ package awaybuilder.controller.scene
 			var oldValue:LightPickerVO = event.oldValue as LightPickerVO;
 			var newValue:LightPickerVO = event.newValue as LightPickerVO;
 			
-			if( material )
+			if( material && material.lightPicker )
 			{
-				saveOldValue( event, material.clone() );
+				saveOldValue( event, material.lightPicker.clone() );
 			}
 			
 			
@@ -37,7 +37,7 @@ package awaybuilder.controller.scene
 			}
 			else 
 			{
-				document.lights.addItemAt( newValue.clone(), 0 );
+				document.lights.addItemAt( newValue, 0 );
 			}
 			
 			if( material )

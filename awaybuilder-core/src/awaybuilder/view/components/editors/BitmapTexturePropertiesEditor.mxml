@@ -22,7 +22,7 @@
 		override protected function validate(asset:AssetVO):void
 		{
 			if( !(asset is TextureVO) ) return;
-			_asset = asset as TextureVO;
+			_asset = TextureVO(asset).clone();
 			_isDefault = false;
 			if( _asset.linkedObject == DefaultMaterialManager.getDefaultTexture() )
 			{

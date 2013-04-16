@@ -42,6 +42,9 @@ import mx.collections.ArrayCollection;
 		function get lights():ArrayCollection; 
 		function set lights(value:ArrayCollection):void;
 		
+		function get methods():ArrayCollection; 
+		function set methods(value:ArrayCollection):void;
+		
 		function get selectedObjects():Vector.<AssetVO>;
 		function set selectedObjects(value:Vector.<AssetVO>):void;
 		

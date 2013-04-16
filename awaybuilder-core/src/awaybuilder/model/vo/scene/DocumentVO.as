@@ -19,5 +19,7 @@ package awaybuilder.model.vo.scene
 		public var textures:ArrayCollection = new ArrayCollection();
 		
 		public var lights:ArrayCollection = new ArrayCollection();
+		
+		public var methods:ArrayCollection = new ArrayCollection();
 	}
 }

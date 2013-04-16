@@ -3,6 +3,7 @@ package awaybuilder.model.vo.scene
 	import away3d.lights.LightBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.DataMerger;
 	
 	import mx.collections.ArrayCollection;
@@ -13,16 +14,12 @@ package awaybuilder.model.vo.scene
 		
 		public function LightPickerVO( picker:StaticLightPicker )
 		{
-			if( !picker.name || (picker.name == "null") ) 
-			{
-				picker.name = GetUniqueName();
-			}
 			super( picker.name, picker );
 			
 			lights = new ArrayCollection();
 			for each( var light:LightBase in picker.lights )
 			{
-				lights.addItem( new LightVO( light ) );
+				lights.addItem( AssetFactory.GetAsset( light ) );
 			}
 		}
 		
@@ -47,11 +44,5 @@ package awaybuilder.model.vo.scene
 			return vo;
 		}
 		
-		private static var count:int = 0;
-		private static function GetUniqueName():String
-		{
-			count++;
-			return "Light Picker " + count;
-		}
 	}
 }

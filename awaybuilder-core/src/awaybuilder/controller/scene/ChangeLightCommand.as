@@ -3,12 +3,16 @@ package awaybuilder.controller.scene
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
+	import away3d.lights.shadowmaps.CubeMapShadowMapper;
+	import away3d.lights.shadowmaps.DirectionalShadowMapper;
 	
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.utils.scene.Scene3DManager;
+	
+	import flash.geom.Point;
 
 	public class ChangeLightCommand extends HistoryCommandBase
 	{
@@ -44,6 +48,23 @@ package awaybuilder.controller.scene
 			
 			vo.diffuse = newAsset.diffuse;
 			vo.specular = newAsset.specular;
+			
+			vo.castsShadows = newAsset.castsShadows;
+			
+			if( vo.castsShadows && !newAsset.shadowMapper )
+			{
+				if( vo.type == LightVO.DIRECTIONAL ) {
+					newAsset.shadowMapper = new DirectionalShadowMapper();
+				}
+				else {
+					newAsset.shadowMapper = new CubeMapShadowMapper();
+				}
+				
+			}
+			if( newAsset.shadowMapper )
+			{
+				vo.shadowMapper = newAsset.shadowMapper;
+			}
 			
 			
 			var linkedObjectChanged:Boolean = false;

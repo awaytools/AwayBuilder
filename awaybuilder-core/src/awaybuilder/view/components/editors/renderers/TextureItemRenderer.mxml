@@ -15,16 +15,30 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.scene.TextureVO;
 			import awaybuilder.model.vo.scene.MaterialVO;
+			import awaybuilder.model.vo.scene.TextureVO;
 			
 			[Bindable]
 			private var _texture:TextureVO;
+			
+			[Bindable]
+			private var _image:BitmapData;
+			[Bindable]
+			private var _isNull:Boolean;
 			
 			override public function set data(value:Object):void 
 			{
 				super.data = value;
 				_texture = value as TextureVO;
+				if( _texture ) {
+					_isNull = false;
+					_image = _texture.bitmapData;
+				}
+				else
+				{
+					_isNull = true;
+				}
+			
 			}
 		]]>
 	</fx:Script>
@@ -36,7 +50,7 @@
 			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
-	<s:Group width="34" height="34"> 
+	<s:Group width="34" height="34" visible="{!_isNull}"> 
 		<s:Rect top="0" bottom="0" left="0" right="0">
 			<s:fill>
 				<s:SolidColor color="0x222222"/>
@@ -45,8 +59,8 @@
 				<s:SolidColorStroke color="0xAAAAAA"/>
 			</s:stroke>
 		</s:Rect>
-		<s:BitmapImage source="{_texture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
+		<s:BitmapImage source="{_image}" top="1" bottom="1" left="1" right="1"/>
 		
 	</s:Group>
-	<s:Label text="{_texture.name.split('/').pop()}" width="100%" maxDisplayedLines="1"/>
+	<s:Label text="{_isNull?'Null':_texture.name.split('/').pop()}" width="100%" maxDisplayedLines="1"/>
 </s:ItemRenderer>

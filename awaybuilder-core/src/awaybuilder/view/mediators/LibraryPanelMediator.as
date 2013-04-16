@@ -15,9 +15,12 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.ScenegraphFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
@@ -27,6 +30,7 @@ package awaybuilder.view.mediators
 	import flash.utils.getTimer;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -49,6 +53,13 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_LIGHT, view_addLightHandler);
 			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
+			addViewListener(LibraryPanelEvent.ADD_SHADOWMETHOD, view_addShadowMethodHandler);
+			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
+			addViewListener(LibraryPanelEvent.ADD_AMBIENTMETHOD, view_addAmbientMethodHandler);
+			addViewListener(LibraryPanelEvent.ADD_DIFFUSEMETHOD, view_addDiffuseMethodHandler);
+			addViewListener(LibraryPanelEvent.ADD_NORMALMETHOD, view_addNormalMethodHandler);
+			addViewListener(LibraryPanelEvent.ADD_SPECULARMETHOD, view_addSpecularMethodHandler);
+			
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
@@ -65,6 +76,58 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
+		private function view_addSpecularMethodHandler(event:LibraryPanelEvent):void
+		{
+			var method:AssetVO = AssetFactory.CreateSpecularMethod();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SPECULAR_METHOD, null, method));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+		}
+		private function view_addNormalMethodHandler(event:LibraryPanelEvent):void
+		{
+			var method:AssetVO = AssetFactory.CreateNormalMethod();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_NORMAL_METHOD, null, method));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+		}
+		private function view_addDiffuseMethodHandler(event:LibraryPanelEvent):void
+		{
+			var method:AssetVO = AssetFactory.CreateDiffuseMethod();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_DIFFUSE_METHOD, null, method));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+		}
+		private function view_addAmbientMethodHandler(event:LibraryPanelEvent):void
+		{
+			var method:AssetVO = AssetFactory.CreateAmbientMethod();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_AMBIENT_METHOD, null, method));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+		}
+		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
+		{
+			var method:EffectMethodVO = AssetFactory.CreateEffectMethod();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, null, method));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+		}
+		private function view_addShadowMethodHandler(event:LibraryPanelEvent):void
+		{
+			var availableLight:LightVO;
+			for each( var asset:AssetVO in document.lights ) 
+			{
+				var light:LightVO = asset as LightVO;
+				
+				if( light && light.castsShadows ) 
+				{
+					availableLight = light;
+					break;
+				}
+			}
+			if( !availableLight )
+			{
+				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
+				return;
+			}
+			var method:ShadowMethodVO = AssetFactory.CreateSahdowMapMethod( availableLight );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, null, method));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+		}
 		private function view_addTextureHandler(event:LibraryPanelEvent):void
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));
@@ -72,14 +135,14 @@ package awaybuilder.view.mediators
 		
 		private function view_addLightHandler(event:LibraryPanelEvent):void
 		{
-			var asset:LightVO = new LightVO( new DirectionalLight(-1, -1, 1) );
+			var asset:LightVO = AssetFactory.CreateLight();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
 		
 		private function view_addLightPickerHandler(event:LibraryPanelEvent):void
 		{
-			var asset:LightPickerVO = new LightPickerVO( new StaticLightPicker([]) );
+			var asset:LightPickerVO = AssetFactory.CreateLightPicker();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHTPICKER,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
@@ -139,6 +202,7 @@ package awaybuilder.view.mediators
 			updateAllSelectedItems( view.model.materials, event.items );
 			updateAllSelectedItems( view.model.textures, event.items );
 			updateAllSelectedItems( view.model.geometry, event.items );
+			updateAllSelectedItems( view.model.methods, event.items );
 			updateAllSelectedItems( view.model.animations, event.items );
 			updateAllSelectedItems( view.model.skeletons, event.items );
 			updateAllSelectedItems( view.model.lights, event.items );
@@ -167,6 +231,10 @@ package awaybuilder.view.mediators
 			if( view.texturesTree.selectedIndex )
 			{
 				view.callLater( view.texturesTree.ensureIndexIsVisible, [view.texturesTree.selectedIndex] );	
+			}
+			if( view.methodsTree.selectedIndex )
+			{
+				view.callLater( view.methodsTree.ensureIndexIsVisible, [view.methodsTree.selectedIndex] );	
 			}
 			
 		}
@@ -207,6 +275,7 @@ package awaybuilder.view.mediators
 			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, ScenegraphFactory.CreateBranch( document.scene ), "item" );
 			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, ScenegraphFactory.CreateBranch( document.materials ), "item" );
 			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, ScenegraphFactory.CreateBranch( document.animations ), "item" );
+			view.model.methods = DataMerger.syncArrayCollections( view.model.methods,  ScenegraphFactory.CreateBranch( document.methods ), "item" );
 			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  ScenegraphFactory.CreateBranch( document.textures ), "item" );
 			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, ScenegraphFactory.CreateBranch( document.skeletons ), "item" );
 			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry ), "item" );

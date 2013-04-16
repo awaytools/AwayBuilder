@@ -204,26 +204,21 @@
                 </s:Rect>
 
                 <!-- layer 3: text -->
-				<s:Group left="9" right="7" minHeight="24" verticalCenter="0">
-					<s:layout>
-						<s:HorizontalLayout verticalAlign="middle"/>
-					</s:layout>
-					<!--- @copy spark.components.Panel#titleDisplay -->
-					<s:Group>
-						<fxg:CollapseArrowDownSkin scaleX="2" scaleY="2" id="icon" verticalCenter="0" horizontalCenter="0" rotation="0" rotation.collapsed="-90" alpha="0.8">
+				<s:HGroup left="9" right="7" minHeight="24" verticalCenter="0" verticalAlign="middle">
+					<s:Group height="20" width="20">
+						<fxg:CollapseArrowDownSkin scaleX="2" scaleY="2" id="icon" verticalCenter="0" horizontalCenter="0" rotation="0" rotation.collapsed="-90">
 							<fxg:filters>
 								<s:DropShadowFilter blurX="1" blurY="1" distance="1" angle="-140"/>
 							</fxg:filters>
 						</fxg:CollapseArrowDownSkin>
-						<s:Button id="collapseButton" label="" width="20" height="20" alpha="0"/>
 					</s:Group>
 					
-					
-					<s:Label id="titleDisplay" maxDisplayedLines="1" color="0xEEEEEE" paddingTop="1"
+					<s:Label id="titleDisplay" maxDisplayedLines="1" color="0xEEEEEE" paddingTop="1" fontLookup="embeddedCFF"
 							 verticalAlign="middle" textAlign="start" fontWeight="bold"
 							 width="100%"/>
 					
-				</s:Group>
+				</s:HGroup>
+				<s:Button id="collapseButton" label="" left="0" right="0" top="0" bottom="0" alpha="0"/>
             </s:Group>
 
             <!--
