@@ -31,10 +31,13 @@ package awaybuilder.model.vo.scene
 		public static const COLOR:String = "colorType";
 		public static const TEXTURE:String = "textureType";
 		
+		public static const SINGLEPASS:String = "singlepass";
+		public static const MULTIPASS:String = "multipass ";
+		
 		public var type:String;
 		
 //		public var color:uint = 0x996633;
-//		public var alpha:Number; // not clear what alptha to use diffuseAlpha or colortransformAlpha
+		public var alpha:Number;
 //		public var texture:TextureVO;
 		
 		public var alphaBlending:Boolean;
@@ -140,7 +143,7 @@ package awaybuilder.model.vo.scene
         {
             var vo:MaterialVO = new MaterialVO();
 			vo.name = this.name;
-			vo.type = this.type;
+//			vo.type = this.type;
 			vo.alphaPremultiplied = this.alphaPremultiplied;
 			
 			vo.repeat = this.repeat;
@@ -148,7 +151,7 @@ package awaybuilder.model.vo.scene
 			
 			vo.bothSides = this.bothSides;
 			vo.extra = this.extra;
-			vo.lightPicker = this.lightPicker;
+			
 			vo.mipmap = this.mipmap;
 			vo.smooth = this.smooth;
 			vo.blendMode = this.blendMode;
@@ -156,8 +159,11 @@ package awaybuilder.model.vo.scene
 			vo.alphaBlending = this.alphaBlending;
 			vo.colorTransform = this.colorTransform;
 			
-//			vo.normalMethod = this.normalMethod;
+			vo.lightPicker = this.lightPicker;
+			vo.light = this.light;
 			vo.shadowMethod = this.shadowMethod;
+			
+//			vo.normalMethod = this.normalMethod;
 			vo.texture = this.texture;
 //			vo.diffuseMethod = this.diffuseMethod;
 //			vo.ambientMethod = this.ambientMethod;

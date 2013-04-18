@@ -128,7 +128,7 @@
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
-			<editors:MaterialPropertiesEditor id="materialProperties" textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll" shadowMethods="{shadowMethods}"/>
+			<editors:MaterialPropertiesEditor id="materialProperties" textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
 			<editors:BitmapTexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
 			<editors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
 			<editors:LightPickerPropertiesEditor id="lightPickerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />

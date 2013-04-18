@@ -4,6 +4,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.utils.AssetFactory;
@@ -18,31 +19,24 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var material:MaterialVO;
+			var asset:LightVO;
 			if( event.items && event.items.length )
 			{
-				material = event.items[0] as MaterialVO;
+				asset = event.items[0] as LightVO;
 			}
 			var oldValue:ShadowMethodVO = event.oldValue as ShadowMethodVO;
 			var newValue:ShadowMethodVO = event.newValue as ShadowMethodVO;
 			
-			if( material && material.shadowMethod  )
+			if( asset )
 			{
-				saveOldValue( event, material.shadowMethod.clone() );
-			}
-			
-			if( event.isUndoAction )
-			{
-				document.removeAsset( document.methods, oldValue );
-			}
-			else 
-			{
-				document.methods.addItemAt( newValue, 0 );
-			}
-			
-			if( material )
-			{
-				material.shadowMethod = newValue;
+				if( event.isUndoAction )
+				{
+					document.removeAsset( asset.shadowMethods, oldValue );
+				}
+				else 
+				{
+					asset.shadowMethods.addItem(newValue);
+				}
 			}
 			
 			addToHistory( event );

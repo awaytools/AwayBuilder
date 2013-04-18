@@ -44,6 +44,11 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHTPICKER_CHANGE, _asset, true));
 		}
 		
+		protected function addButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHTPICKER_ADD_LIGHT, _asset, true));
+		}
+		
 	]]></fx:Script>
 	
 	<s:Group width="100%" top="0">
@@ -73,7 +78,7 @@
 									  itemRenderer="awaybuilder.view.components.editors.renderers.LightItemRenderer"
 									  dropped="lightsList_droppedHandler(event)"/>
 		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
-			<s:Button id="addButton" toolTip="Add New" styleName="addButton" enabled="false"/>
+			<s:Button id="addButton" toolTip="Add New" styleName="addButton" click="addButton_clickHandler(event)"/>
 			<s:Button id="deleteButton" enabled="{lightsList.selectedItem}" toolTip="Remove" styleName="removeButton"
 					  click="deleteButton_clickHandler(event)"/>
 		</s:HGroup>

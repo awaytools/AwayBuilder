@@ -50,6 +50,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
+			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightToLightpickerHandler);
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
 			
@@ -66,7 +67,6 @@ package awaybuilder.view.mediators
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
             addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler );
 			
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_SHADOWMETHOD, view_materialAddShadowMethodHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, view_materialAddEffectMetodHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_LIGHTPICKER, view_materialAddLightpickerHandler );
@@ -79,12 +79,20 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			
 			addViewListener( PropertyEditorEvent.LIGHT_POSITION_CHANGE, view_lightPositionChangeHandler );
-			addViewListener( PropertyEditorEvent.LIGHT_MAPPER_CHANGE, view_lightMapperChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_STEPPER_CHANGE, view_lightStepperChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_CHANGE, view_lightChangeHandler );
 			
+			addViewListener( PropertyEditorEvent.LIGHT_ADD_FilteredShadowMapMethod, view_lightAddFilteredShadowMapMethodHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod, view_lightAddCascadeShadowMapMethodHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_ADD_DitheredShadowMapMethod, view_lightAddDitheredShadowMapHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_ADD_HardShadowMapMethod, view_lightAddHardShadowMapMethodHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_ADD_NearShadowMapMethod, view_lightAddNearShadowMapMethodHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_ADD_SoftShadowMapMethod, view_lightAddSoftShadowMapMethodHandler );
+			
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_CHANGE, view_lightPickerChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_STEPPER_CHANGE, view_lightPickerStepperChangeHandler );
+			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_LIGHT, view_lightPickerAddLightHandler );
+			
 			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
@@ -170,27 +178,27 @@ package awaybuilder.view.mediators
 		}
 		
 		
-		private function view_materialAddShadowMethodHandler(event:PropertyEditorEvent):void
-		{
-			var availableLight:LightVO;
-			for each( var asset:AssetVO in document.lights ) 
-			{
-				var light:LightVO = asset as LightVO;
-				
-				if( light && light.castsShadows ) 
-				{
-					availableLight = light;
-					break;
-				}
-			}
-			if( !availableLight )
-			{
-				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
-				return;
-			}
-			
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSahdowMapMethod( availableLight )));
-		}
+//		private function view_materialAddShadowMethodHandler(event:PropertyEditorEvent):void
+//		{
+//			var availableLight:LightVO;
+//			for each( var asset:AssetVO in document.lights ) 
+//			{
+//				var light:LightVO = asset as LightVO;
+//				
+//				if( light && light.castsShadows ) 
+//				{
+//					availableLight = light;
+//					break;
+//				}
+//			}
+//			if( !availableLight )
+//			{
+//				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
+//				return;
+//			}
+//			
+//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSahdowMapMethod( availableLight )));
+//		}
 		
 		private function view_shadowmethodAddLightHandler(event:PropertyEditorEvent):void
 		{
@@ -241,17 +249,38 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
 		}
-		private function view_lightMapperChangeHandler(event:PropertyEditorEvent):void
-		{
-			var light:LightVO = view.data as LightVO;
-			light.shadowMapper = new event.data();
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], light, true));
-		}
 		
 		private function view_lightChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], event.data));
 		}
+		private function view_lightAddFilteredShadowMapMethodHandler(event:PropertyEditorEvent):void
+		{
+			trace("view_lightAddFilteredShadowMapMethodHandler" );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateFilteredShadowMapMethod(view.data as LightVO)));
+		}
+		private function view_lightAddCascadeShadowMapMethodHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateCascadeShadowMapMethod(view.data as LightVO)));
+		}
+		private function view_lightAddDitheredShadowMapHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateDitheredShadowMapMethod(view.data as LightVO)));
+		}
+		private function view_lightAddHardShadowMapMethodHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateHardShadowMapMethod(view.data as LightVO)));
+		}
+		private function view_lightAddNearShadowMapMethodHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateNearShadowMapMethod(view.data as LightVO)));
+		}
+		private function view_lightAddSoftShadowMapMethodHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSoftShadowMapMethod(view.data as LightVO)));
+		}
+		
+		
 		private function view_lightStepperChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT, [view.data], event.data, true));
@@ -264,6 +293,11 @@ package awaybuilder.view.mediators
 		private function view_lightPickerStepperChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER, [view.data], event.data, true));
+		}
+		private function view_lightPickerAddLightHandler(event:PropertyEditorEvent):void
+		{
+			var asset:LightVO = AssetFactory.CreateLight();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		
 		
@@ -301,6 +335,13 @@ package awaybuilder.view.mediators
         }
 		
 		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
+		{
+			if( event.items && event.items.length )
+			{
+				view.SetData(event.items[0]);
+			}
+		}
+		private function eventDispatcher_addNewLightToLightpickerHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length )
 			{

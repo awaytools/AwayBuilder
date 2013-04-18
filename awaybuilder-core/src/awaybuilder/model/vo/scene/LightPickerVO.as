@@ -12,7 +12,7 @@ package awaybuilder.model.vo.scene
 	public class LightPickerVO extends AssetVO
 	{
 		
-		public var lights:ArrayCollection;
+		public var lights:ArrayCollection = new ArrayCollection();
 		
 //		override public function apply():void
 //		{

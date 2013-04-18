@@ -6,6 +6,8 @@ package awaybuilder.model.vo.scene
 	import away3d.lights.shadowmaps.ShadowMapperBase;
 	
 	import flash.geom.Vector3D;
+	
+	import mx.collections.ArrayCollection;
 
 	[Bindable]
 	public class LightVO extends ObjectVO
@@ -30,7 +32,9 @@ package awaybuilder.model.vo.scene
 		
 		public var castsShadows:Boolean;
 		
-		public var shadowMapper:ShadowMapperBase;
+		public var shadowMapper:String;
+		
+		public var shadowMethods:ArrayCollection = new ArrayCollection();
 		
 //		override public function apply():void
 //		{
@@ -84,6 +88,8 @@ package awaybuilder.model.vo.scene
 			vo.castsShadows = this.castsShadows;
 			
 			vo.shadowMapper = this.shadowMapper;
+			
+			vo.shadowMethods = new ArrayCollection(this.shadowMethods.source);
 			
 			vo.diffuse = this.diffuse;
 			vo.specular = this.specular;

@@ -15,6 +15,7 @@ package awaybuilder.model.vo.scene
 		public var bothSides:Boolean;
 		public var extra:Object;
 		public var lightPicker:LightPickerVO;
+		public var light:LightVO;
 		public var mipmap:Boolean;
 		public var smooth:Boolean;
 		

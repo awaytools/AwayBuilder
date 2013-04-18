@@ -32,7 +32,9 @@ package awaybuilder.utils
 	import away3d.materials.methods.BasicSpecularMethod;
 	import away3d.materials.methods.CascadeShadowMapMethod;
 	import away3d.materials.methods.ColorMatrixMethod;
+	import away3d.materials.methods.DitheredShadowMapMethod;
 	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.HardShadowMapMethod;
 	import away3d.materials.methods.MethodVO;
 	import away3d.materials.methods.NearShadowMapMethod;
@@ -133,7 +135,6 @@ package awaybuilder.utils
 				
 				case(item is ShadowMapMethodBase):
 					asset = fillShadowMethod( new ShadowMethodVO(), item as ShadowMapMethodBase );
-					asset.name = "Shadow Method " + GetNextId("shadow");
 					return asset;
 				case(item is SubMesh):
 					return fillSubMesh( new SubMeshVO(), item as SubMesh );
@@ -171,7 +172,7 @@ package awaybuilder.utils
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;
 			asset.light = AssetFactory.GetAsset( item.castingLight ) as LightVO;
-			asset.type = getQualifiedClassName( item );
+			asset.type = getQualifiedClassName( item ).split("::")[1];
 			return asset;
 		}
 		private static function fillLight( asset:LightVO, item:LightBase ):LightVO
@@ -186,7 +187,7 @@ package awaybuilder.utils
 			
 			asset.castsShadows = item.castsShadows;
 			
-			asset.shadowMapper = item.shadowMapper;
+			asset.shadowMapper = getQualifiedClassName(item.shadowMapper).split("::")[1];
 			
 			if( item is DirectionalLight ) 
 			{
@@ -351,30 +352,30 @@ package awaybuilder.utils
 			
 			return AssetFactory.GetAsset(newMaterial) as MaterialVO;
 		}
-		public static function CreateSahdowMapMethod( light:LightVO ):ShadowMethodVO
-		{
-			var simple:SimpleShadowMapMethodBase = new SimpleShadowMapMethodBase( GetObject(light) as LightBase );
-			
-			var method:ShadowMapMethodBase;
-			if( light.shadowMapper is DirectionalShadowMapper )
-			{
-				method = new HardShadowMapMethod( GetObject(light) as LightBase );
-			}
-			if( light.shadowMapper is CascadeShadowMapper )
-			{
-				method = new CascadeShadowMapMethod( simple );
-			}
-			if( light.shadowMapper is NearDirectionalShadowMapper )
-			{
-				method = new NearShadowMapMethod( simple );
-			}
-			if( light.shadowMapper is CubeMapShadowMapper )
-			{
-				method = new SoftShadowMapMethod( GetObject(light) as DirectionalLight );
-			}
-//			DitheredShadowMapMethod, FilteredShadowMapMethod, HardShadowMapMethod, NearShadowMapMethod, SoftShadowMapMethod, TripleFilteredShadowMapMethod
-			return AssetFactory.GetAsset( method ) as ShadowMethodVO;
-		}
+//		public static function CreateSahdowMapMethod( light:LightVO ):ShadowMethodVO
+//		{
+//			var simple:SimpleShadowMapMethodBase = new SimpleShadowMapMethodBase( GetObject(light) as LightBase );
+//			
+//			var method:ShadowMapMethodBase;
+//			if( light.shadowMapper is DirectionalShadowMapper )
+//			{
+//				method = new HardShadowMapMethod( GetObject(light) as LightBase );
+//			}
+//			if( light.shadowMapper is CascadeShadowMapper )
+//			{
+//				method = new CascadeShadowMapMethod( simple );
+//			}
+//			if( light.shadowMapper is NearDirectionalShadowMapper )
+//			{
+//				method = new NearShadowMapMethod( simple );
+//			}
+//			if( light.shadowMapper is CubeMapShadowMapper )
+//			{
+//				method = new SoftShadowMapMethod( GetObject(light) as DirectionalLight );
+//			}
+////			DitheredShadowMapMethod, FilteredShadowMapMethod, HardShadowMapMethod, NearShadowMapMethod, SoftShadowMapMethod, TripleFilteredShadowMapMethod
+//			return AssetFactory.GetAsset( method ) as ShadowMethodVO;
+//		}
 		
 		public static function CreateEffectMethod():EffectMethodVO
 		{
@@ -396,6 +397,55 @@ package awaybuilder.utils
 			var asset:LightPickerVO = AssetFactory.GetAsset( lightPicker ) as LightPickerVO;
 			return asset;
 		}
+		
+		public static function CreateFilteredShadowMapMethod( light:LightVO ):ShadowMethodVO
+		{
+			var method:FilteredShadowMapMethod = new FilteredShadowMapMethod( GetObject(light) as DirectionalLight );
+			var asset:ShadowMethodVO = AssetFactory.GetAsset( method ) as ShadowMethodVO;
+			asset.name = "FilteredShadow " + GetNextId("FilteredShadowMapMethod");
+			return asset;
+		}
+		public static function CreateDitheredShadowMapMethod( light:LightVO ):ShadowMethodVO
+		{
+			var method:DitheredShadowMapMethod = new DitheredShadowMapMethod( GetObject(light) as DirectionalLight );
+			var asset:ShadowMethodVO = AssetFactory.GetAsset( method ) as ShadowMethodVO;
+			asset.name = "DitheredShadow " + GetNextId("DitheredShadowMapMethod");
+			return asset;
+		}
+		public static function CreateSoftShadowMapMethod( light:LightVO ):ShadowMethodVO
+		{
+			var method:SoftShadowMapMethod = new SoftShadowMapMethod( GetObject(light) as DirectionalLight );
+			var asset:ShadowMethodVO = AssetFactory.GetAsset( method ) as ShadowMethodVO;
+			asset.name = "SoftShadow " + GetNextId("SoftShadowMapMethod");
+			return asset;
+		}
+		public static function CreateHardShadowMapMethod( light:LightVO ):ShadowMethodVO
+		{
+			var method:HardShadowMapMethod = new HardShadowMapMethod( GetObject(light) as DirectionalLight );
+			var asset:ShadowMethodVO = AssetFactory.GetAsset( method ) as ShadowMethodVO;
+			asset.name = "HardShadow " + GetNextId("HardShadowMapMethod");
+			return asset;
+		}
+		public static function CreateNearShadowMapMethod( light:LightVO ):ShadowMethodVO
+		{
+			var simple:SimpleShadowMapMethodBase = new SimpleShadowMapMethodBase( GetObject(light) as LightBase );
+			var method:NearShadowMapMethod = new NearShadowMapMethod( simple );
+			var asset:ShadowMethodVO = AssetFactory.GetAsset( method ) as ShadowMethodVO;
+			asset.name = "NearShadow " + GetNextId("NearShadowMapMethod");
+			return asset;
+		}
+		public static function CreateCascadeShadowMapMethod( light:LightVO ):ShadowMethodVO
+		{
+			var simple:SimpleShadowMapMethodBase = new SimpleShadowMapMethodBase( GetObject(light) as LightBase );
+			var method:CascadeShadowMapMethod = new CascadeShadowMapMethod( simple );
+			var asset:ShadowMethodVO = AssetFactory.GetAsset( method ) as ShadowMethodVO;
+			asset.name = "CascadeShadow " + GetNextId("CascadeShadowMapMethod");
+			return asset;
+		}
+		
+		
+		
+		
 		public static function GetDefaultMaterial():MaterialVO
 		{
 			createDefaults();
@@ -406,6 +456,10 @@ package awaybuilder.utils
 			createDefaults();
 			return defaultTexture;
 		}
+		
+		
+		
+		
 		
 		private static function createDefaults():void 
 		{
@@ -440,7 +494,7 @@ package awaybuilder.utils
 				ids[type] = 0;
 			}
 			ids[type] = ids[type] + 1;
-			return ids[type]++;
+			return ids[type];
 		}
 		
 		public static var assets:Dictionary = new Dictionary();

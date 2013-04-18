@@ -112,7 +112,7 @@
              left="contentCol:0" right="helpCol:6" 
              baseline="row1:0" bottom="row1:0">
         <s:layout>
-            <s:HorizontalLayout/>
+            <s:HorizontalLayout gap="1"/>
         </s:layout>
     </s:Group>
     <!-- Don't include the indicator in layout since we position it ourselves -->

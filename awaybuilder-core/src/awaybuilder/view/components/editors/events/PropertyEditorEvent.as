@@ -14,7 +14,7 @@ package awaybuilder.view.components.editors.events
 		public static const MESH_SUBMESH_ADD_NEW_MATERIAL:String = "submeshAddNewMaterial";
 		
 		public static const MATERIAL_CHANGE:String = "materialChange";
-		public static const MATERIAL_ADD_SHADOWMETHOD:String = "materialAddShadowMethod";
+//		public static const MATERIAL_ADD_SHADOWMETHOD:String = "materialAddShadowMethod";
 		public static const MATERIAL_ADD_TEXTURE:String = "materialAddTexture";
 		public static const MATERIAL_ADD_LIGHTPICKER:String = "materialAddLightPicker";
 		public static const MATERIAL_ADD_EFFECT_METHOD:String = "materialAddEffectMethod";
@@ -29,8 +29,14 @@ package awaybuilder.view.components.editors.events
 		
 		public static const LIGHT_CHANGE:String = "lightChange";
 		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";
-		public static const LIGHT_MAPPER_CHANGE:String = "lightMapperChange";
 		public static const LIGHT_POSITION_CHANGE:String = "lightPositionChange";
+		
+		public static const LIGHT_ADD_FilteredShadowMapMethod:String = "lightAddFilteredShadowMapMethod";
+		public static const LIGHT_ADD_DitheredShadowMapMethod:String = "lightAddDitheredShadowMapMethod";
+		public static const LIGHT_ADD_SoftShadowMapMethod:String = "lightAddSoftShadowMapMethod";
+		public static const LIGHT_ADD_HardShadowMapMethod:String = "lightAddHardShadowMapMethod";
+		public static const LIGHT_ADD_NearShadowMapMethod:String = "lightAddNearShadowMapMethod";
+		public static const LIGHT_ADD_CascadeShadowMapMethod:String = "lightAddCascadeShadowMapMethod";
 		
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";
 		public static const SHADOWMETHOD_STEPPER_CHANGE:String = "shadowmethodStepperChange";
@@ -38,13 +44,14 @@ package awaybuilder.view.components.editors.events
 		
 		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";
 		public static const LIGHTPICKER_STEPPER_CHANGE:String = "lightPickerStepperChange";
+		public static const LIGHTPICKER_ADD_LIGHT:String = "lightPickerAddLight";
 		
 		public static const SHOW_CHILD_PROPERTIES:String = "showChildProperties";
 		
 		public static const SHOW_PARENT_MESH_PROPERTIES:String = "showParentMeshProperties";
 		public static const SHOW_PARENT_MATERIAL_PROPERTIES:String = "showParentTextureProperties";
 
-        public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=false ) {
+        public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=true ) {
             super( type, bubbles, cancelable );
             this.data = data;
         }

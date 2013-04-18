@@ -46,10 +46,8 @@ package awaybuilder.controller.scene
 			vo.mipmap = newMaterial.mipmap;
 			vo.alphaPremultiplied = newMaterial.alphaPremultiplied;
 			vo.blendMode = newMaterial.blendMode;
-			if( newMaterial.lightPicker )
-			{
-				vo.lightPicker = newMaterial.lightPicker;
-			}
+			vo.lightPicker = newMaterial.lightPicker;
+			vo.light = newMaterial.light;
 			
 			vo.type = newMaterial.type;
 			

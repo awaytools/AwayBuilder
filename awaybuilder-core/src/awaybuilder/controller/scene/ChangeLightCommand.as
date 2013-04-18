@@ -5,12 +5,14 @@ package awaybuilder.controller.scene
 	import away3d.lights.PointLight;
 	import away3d.lights.shadowmaps.CubeMapShadowMapper;
 	import away3d.lights.shadowmaps.DirectionalShadowMapper;
+	import away3d.tools.commands.Merge;
 	
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.geom.Point;
@@ -54,10 +56,10 @@ package awaybuilder.controller.scene
 			if( vo.castsShadows && !newAsset.shadowMapper )
 			{
 				if( vo.type == LightVO.DIRECTIONAL ) {
-					newAsset.shadowMapper = new DirectionalShadowMapper();
+					newAsset.shadowMapper = "DirectionalShadowMapper";
 				}
 				else {
-					newAsset.shadowMapper = new CubeMapShadowMapper();
+					newAsset.shadowMapper = "CubeMapShadowMapper";
 				}
 				
 			}
@@ -67,6 +69,14 @@ package awaybuilder.controller.scene
 			}
 			
 			var linkedObjectChanged:Boolean = false;
+			
+			trace( "vo.shadowMethods = " + vo.shadowMethods );
+			trace( "newAsset.shadowMethods = " + newAsset.shadowMethods );
+			
+			vo.shadowMethods = DataMerger.syncArrayCollections( vo.shadowMethods, newAsset.shadowMethods, "id" );
+			
+			trace( "vo.shadowMapper = " + vo.shadowMapper );
+			trace( "vo.shadowMethods = " + vo.shadowMethods );
 			
 			if( event.isUndoAction )
 			{

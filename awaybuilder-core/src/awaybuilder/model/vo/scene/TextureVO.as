@@ -22,5 +22,6 @@ package awaybuilder.model.vo.scene
 			vo.bitmapData = this.bitmapData;
 	        return vo;
 	    }
+		
 	}
 }

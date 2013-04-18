@@ -7,23 +7,6 @@
 					xmlns:editors="awaybuilder.view.components.editors.*" 
 					>
 	<fx:Declarations>
-		<s:ArrayCollection id="cascadeMethodsList">
-			<fx:Object label="CascadeShadowMapMethod" value="{CascadeShadowMapMethod}"/>
-		</s:ArrayCollection>
-		<s:ArrayCollection id="directionalMethodsList">
-			<fx:Object label="DitheredShadowMapMethod" value="{DitheredShadowMapMethod}"/>
-			<fx:Object label="FilteredShadowMapMethod" value="{FilteredShadowMapMethod}"/>
-			<fx:Object label="HardShadowMapMethod" value="{HardShadowMapMethod}"/>
-			<fx:Object label="NearShadowMapMethod" value="{NearShadowMapMethod}"/>
-			<fx:Object label="SoftShadowMapMethod" value="{SoftShadowMapMethod}"/>
-		</s:ArrayCollection>
-		<s:ArrayCollection id="cubeMethodsList">
-			<fx:Object label="DitheredShadowMapMethod" value="{DitheredShadowMapMethod}"/>
-			<fx:Object label="FilteredShadowMapMethod" value="{FilteredShadowMapMethod}"/>
-			<fx:Object label="HardShadowMapMethod" value="{HardShadowMapMethod}"/>
-			<fx:Object label="NearShadowMapMethod" value="{NearShadowMapMethod}"/>
-			<fx:Object label="SoftShadowMapMethod" value="{SoftShadowMapMethod}"/>
-		</s:ArrayCollection>
 	</fx:Declarations>
 	<editors:states>
 		<s:State name="directional"/>
@@ -76,44 +59,6 @@
 		{
 			if( !(asset is ShadowMethodVO) ) return;
 			_asset = ShadowMethodVO(asset).clone();
-			for each(var light:AssetVO in lightPickers) 
-			{
-				if(  asset.equals( _asset.light ) ) _selectedLight = light;
-			}
-			var o:Object;
-			if( _asset.light.shadowMapper is DirectionalShadowMapper ) 
-			{
-				currentState = "directional";
-				for each( o in directionalMethodsList )
-				{
-					if( _asset.type == o.value )
-					{
-						_selectedType = o;
-					}
-				}
-			}
-			else if( _asset.light.shadowMapper is CascadeShadowMapper ) 
-			{
-				currentState = "cascade";
-				for each( o in cascadeMethodsList )
-				{
-					if( _asset.type == o.value )
-					{
-						_selectedType = o;
-					}
-				}
-			}
-			else 
-			{
-				currentState = "cube";
-				for each( o in cubeMethodsList )
-				{
-					if( _asset.type == o.value )
-					{
-						_selectedType = o;
-					}
-				}
-			}
 			
 		}
 		
@@ -131,37 +76,6 @@
 		{
 			return item.name;
 		}
-		private function lightDropDownList_changeHandler(event:IndexChangeEvent):void 
-		{
-			_asset.light = lightDropDownList.selectedItem as LightVO;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
-		}
-		protected function lightDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
-		}
-		protected function editLightButton_clickHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.light, true));
-		}
-		
-		protected function cascadeList_changeHandler(event:IndexChangeEvent):void
-		{
-			_asset.type = cascadeList.selectedItem.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
-		}
-		
-		protected function directionalList_changeHandler(event:IndexChangeEvent):void
-		{
-			_asset.type = directionalList.selectedItem.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
-		}
-		
-		protected function cubeList_changeHandler(event:IndexChangeEvent):void
-		{
-			_asset.type = cubeList.selectedItem.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
-		}
 		
 	]]></fx:Script>
 	
@@ -175,7 +89,7 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="ShadowMapMethod" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="{_asset.type}" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	<!--<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" horizontalAlign="center">
@@ -196,7 +110,7 @@
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="lightDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
+			<!--<controls:ExtendedDropDownList id="lightDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
 										   dataProvider="{lights}" selectedItem="{_selectedLight}" requireSelection="true"
 										   labelFunction="{assetDropDownLabelFunction}"
 										   newItemLabel="New Light"
@@ -204,7 +118,7 @@
 										   addNewItem="lightDropDownList_addNewItemHandler(event)"
 										   />
 			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{lightDropDownList.selectedItem}"/>
+					  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{lightDropDownList.selectedItem}"/>-->
 		</s:HGroup>
 	</s:VGroup>
 	<s:Spacer height="6"/>
@@ -215,7 +129,7 @@
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
-			<s:DropDownList id="cascadeList" includeIn="cascade" width="100%" requireSelection="true"
+			<!--<s:DropDownList id="cascadeList" includeIn="cascade" width="100%" requireSelection="true"
 							dataProvider="{cascadeMethodsList}" selectedItem="{_selectedType}"
 							change="cascadeList_changeHandler(event)"/>
 			<s:DropDownList id="directionalList" includeIn="directional" width="100%" requireSelection="true"
@@ -223,7 +137,7 @@
 							change="directionalList_changeHandler(event)"/>
 			<s:DropDownList id="cubeList" includeIn="cube" width="100%" requireSelection="true"
 							dataProvider="{cubeMethodsList}" selectedItem="{_selectedType}"
-							change="cubeList_changeHandler(event)"/>
+							change="cubeList_changeHandler(event)"/>-->
 		</s:HGroup>
 	</s:VGroup>
 	

@@ -28,7 +28,7 @@ package awaybuilder.controller.scene
 			
 			if( material )
 			{
-				saveOldValue( event, material.clone() );
+				//saveOldValue( event, material.clone() );
 			}
 			
 			if( event.isUndoAction )

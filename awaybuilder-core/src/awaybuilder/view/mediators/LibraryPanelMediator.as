@@ -53,7 +53,6 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_LIGHT, view_addLightHandler);
 			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
-			addViewListener(LibraryPanelEvent.ADD_SHADOWMETHOD, view_addShadowMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
@@ -77,28 +76,28 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, null, method));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
 		}
-		private function view_addShadowMethodHandler(event:LibraryPanelEvent):void
-		{
-			var availableLight:LightVO;
-			for each( var asset:AssetVO in document.lights ) 
-			{
-				var light:LightVO = asset as LightVO;
-				
-				if( light && light.castsShadows ) 
-				{
-					availableLight = light;
-					break;
-				}
-			}
-			if( !availableLight )
-			{
-				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
-				return;
-			}
-			var method:ShadowMethodVO = AssetFactory.CreateSahdowMapMethod( availableLight );
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, null, method));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
-		}
+//		private function view_addShadowMethodHandler(event:LibraryPanelEvent):void
+//		{
+//			var availableLight:LightVO;
+//			for each( var asset:AssetVO in document.lights ) 
+//			{
+//				var light:LightVO = asset as LightVO;
+//				
+//				if( light && light.castsShadows ) 
+//				{
+//					availableLight = light;
+//					break;
+//				}
+//			}
+//			if( !availableLight )
+//			{
+//				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
+//				return;
+//			}
+//			var method:ShadowMethodVO = AssetFactory.CreateSahdowMapMethod( availableLight );
+//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, null, method));
+//			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
+//		}
 		private function view_addTextureHandler(event:LibraryPanelEvent):void
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));

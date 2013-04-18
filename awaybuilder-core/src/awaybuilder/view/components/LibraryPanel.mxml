@@ -20,18 +20,6 @@
 				<s:Button width="100%" label="New Light Picker" styleName="addItemButton" cornerRadius="0" click="close(true,'newLightPicker')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
-		<fx:Component className="NewMethodPopup">
-			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
-									   chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();"
-									   >
-				<s:layout>
-					<s:VerticalLayout gap="0"/>
-				</s:layout>
-				<s:Button width="100%" label="New Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newShadowMethod')"/>
-				<s:Button width="100%" label="New Effect Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newEffectMethod')"/>
-			</s:SkinnablePopUpContainer>
-		</fx:Component>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
@@ -140,40 +128,9 @@
 			}
 			private function methodsPanel_addNewItemHandler(event:MouseEvent):void
 			{
-				var button:ButtonBase = event.relatedObject as ButtonBase;
-				var popup:NewMethodPopup = new NewMethodPopup();
-				popup.open(this);
-				popup.addEventListener('close', newMethodPopup_closeHandler);
-				var pos:Point = button.localToGlobal( new Point() );
-				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_EFFECTMETHOD ) );
 			}
 			
-			private function newMethodPopup_closeHandler(event:PopUpEvent):void 
-			{
-				if (!event.commit) return;
-				
-				switch(event.data)
-				{
-					case "newShadowMethod":
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_SHADOWMETHOD ) );
-						break;
-					case "newEffectMethod":
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_EFFECTMETHOD ) );
-						break;
-					case "newDiffuseMethod":
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_DIFFUSEMETHOD ) );
-						break;
-					case "newNormalMethod":
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_NORMALMETHOD ) );
-						break;
-					case "newAmbientMethod":
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_AMBIENTMETHOD ) );
-						break;
-					case "newSpecularMethod":
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_SPECULARMETHOD ) );
-						break;
-				}
-			}   
 			private function newLightPopup_closeHandler(event:PopUpEvent):void 
 			{
 				if (!event.commit) return;

@@ -2,17 +2,14 @@
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
           xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
-		  currentState="{_asset.type}" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" >
+		  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" >
     <fx:Declarations>
 		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
     </fx:Declarations>
-	<editors:states>
-		<s:State name="textureType"/>
-		<s:State name="colorType"/>
-	</editors:states>
     <fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightPickerVO;
+		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.ShadowMethodVO;
 		import awaybuilder.model.vo.scene.TextureVO;
@@ -36,6 +33,10 @@
 		
 		[Bindable] private var _selectedLightPicker:AssetVO;
 		
+		[Bindable] private var _lights:ArrayCollection;
+		[Bindable] private var _selectedLight:AssetVO;
+		
+		[Bindable] private var _shadowMethods:ArrayCollection;
 		[Bindable] private var _selectedShadowMethod:AssetVO;
 		
 		[Bindable] private var _selectedTexture:TextureVO;
@@ -51,13 +52,27 @@
 			{
 				if( texture.equals( _asset.texture ) ) _selectedTexture = texture;
 			}
-			trace( "_selectedTexture.name = " +_selectedTexture.name );
+			
+			var a:AssetVO;
+			
+			var lights:Array = [];
+			var shadowMehtods:Array = [];
+			var nullItem:AssetVO = new AssetVO();
+			nullItem.name = "Null";
+			nullItem.isNull = true;
+			
+			lights.push( nullItem );
+			shadowMehtods.push( nullItem );
+			
 			if( _asset.lightPicker )
 			{
-				
 				for each(var picker:AssetVO in lightPickers) 
 				{
-					if(  asset.equals( _asset.lightPicker ) ) _selectedLightPicker = picker;
+					if(  picker.equals( _asset.lightPicker ) ) _selectedLightPicker = picker;
+				}
+				for each(a in _asset.lightPicker.lights ) 
+				{
+					lights.push( a );
 				}
 			}
 			else 
@@ -65,32 +80,42 @@
 				_selectedLightPicker = lightPickers.getItemAt(0) as AssetVO;
 			}
 			
-			var method:AssetVO;
 			
-			if( _asset.shadowMethod )
+			if( _asset.light && _asset.lightPicker )
 			{
-				for each(method in shadowMethods) 
+				
+				//					trace( "_asset.light = " + _asset.light.name );
+				for each(var light:AssetVO in lights ) 
 				{
-					if( method.equals( _asset.shadowMethod ) ) _selectedShadowMethod = method as AssetVO;
+					if( light.equals( _asset.light ) ) _selectedLight = light;
 				}
+				
+				for each(a in _asset.light.shadowMethods ) 
+				{
+					shadowMehtods.push( a );
+				}
+				
 			}
-			else
+			else 
 			{
-				_selectedShadowMethod = shadowMethods.getItemAt(0) as AssetVO;
+				_selectedLight = lights[0] as AssetVO;
 			}
 			
+			if( _asset.shadowMethod && _asset.light && _asset.lightPicker )
+			{
+				for each(var method:AssetVO in shadowMehtods ) 
+				{
+					if( method.equals( _asset.shadowMethod ) ) _selectedShadowMethod = method;
+				}
+				
+			}
+			else 
+			{
+				_selectedShadowMethod = shadowMehtods[0] as AssetVO;
+			}
 			
-		}
-		
-		private var _shadowMethods:ArrayCollection;
-		[Bindable]
-		public function get shadowMethods():ArrayCollection
-		{
-			return _shadowMethods;
-		}
-		public function set shadowMethods(value:ArrayCollection):void
-		{
-			_shadowMethods = value;
+			_shadowMethods = new ArrayCollection(shadowMehtods);
+			_lights = new ArrayCollection(lights);
 		}
 		
         private function name_changeHandler(event:Event):void 
@@ -131,6 +156,22 @@
 			else
 			{
 				_asset.lightPicker = null;
+				_asset.light = null;
+				_asset.shadowMethod = null;
+			}
+			
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		protected function shadowLightDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			if( !shadowLightDropDownList.selectedItem.isNull) 
+			{
+				_asset.light = shadowLightDropDownList.selectedItem as LightVO;
+			}
+			else
+			{
+				_asset.light = null;
+				_asset.shadowMethod = null;
 			}
 			
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
@@ -148,10 +189,6 @@
 		private function assetDropDownLabelFunction(item:AssetVO):Object 
 		{
 			return item.name;
-		}
-		protected function shadowMethodDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_SHADOWMETHOD, _asset, true));
 		}
 		protected function lightPickerDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
@@ -236,6 +273,27 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.texture, true));
 		}
 		
+		protected function alphaStepper_changeHandler(event:Event):void
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		private function stepperFormatFunc(val:Number):String 
+		{ 
+			return val.toString().replace(".",","); 
+		} 
+		
+		private function stepperParseFunc(val:String):Number 
+		{ 
+			var stringVal:String = val.replace(",","."); 
+			return Number(stringVal);     
+		} 
+		
+		protected function editLightButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.light, true));
+		}
+		
 	]]></fx:Script>
 
 	<s:Group width="100%" top="0">
@@ -251,42 +309,72 @@
 		</s:HGroup>
 	</s:Group>
 	
-	<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-		<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
-	</s:FormItem>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+		</s:FormItem>
+	</s:Form>
+	<s:Spacer height="6"/>
 	
-	<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" enabled="{!_asset.isDefault}" horizontalAlign="center">
-		<s:RadioButton label="Texture" width="100%" group="{typeRadioGroup}" value="{MaterialVO.TEXTURE}"/>
-		<s:RadioButton label="Color" width="100%" group="{typeRadioGroup}" value="{MaterialVO.COLOR}"/>
-	</s:HGroup>
-	
-    <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
+    <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" enabled="{!_asset.isDefault}" horizontalAlign="center">
+			<s:RadioButton label="Singlepass" width="100%" group="{typeRadioGroup}" value="{MaterialVO.SINGLEPASS}"/>
+			<s:RadioButton label="Multipass" width="100%" group="{typeRadioGroup}" value="{MaterialVO.MULTIPASS}"/>
+		</s:HGroup>
+		<controls:HorizontalFormSeparator/>
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
 			<!--<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:NumericStepper id="alphaStepper" minimum="0" maximum="100" value="{_asset.diffuseAlpha*100}" width="100%"
 								  change="alphaStepper_changeHandler(event)" enabled="{!_isDefault}"/>
 			</s:FormItem>-->
-			<s:FormItem label="repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+			<s:FormItem label="repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="repeatBox" change="basicProperties_changeHandler(event)" selected="{_asset.repeat}" />
 			</s:FormItem>
-			<s:FormItem label="smooth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+			<s:FormItem label="smooth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="smoothBox" change="basicProperties_changeHandler(event)" selected="{_asset.smooth}"/>
 			</s:FormItem>
-			<s:FormItem label="mipmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+			<s:FormItem label="mipmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="mipmapBox" change="basicProperties_changeHandler(event)" selected="{_asset.mipmap}" />
 			</s:FormItem>
-			<s:FormItem label="both sides" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+			<s:FormItem label="both sides" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="bothSidesBox" change="basicProperties_changeHandler(event)" selected="{_asset.bothSides}" />
 			</s:FormItem>
-			<s:FormItem label="alpha premultiplied" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+			<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="alphaStepper" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
+								  minimum="0" maximum="1" stepSize="0.01" width="100%" value="{_asset.alpha}"
+								  change="alphaStepper_changeHandler(event)"/>
+			</s:FormItem>
+			<s:FormItem label="Alpha Blending" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
+				<s:CheckBox id="alphaBlendingBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaBlending}" />
+			</s:FormItem>
+			<s:FormItem label="Pre-multiplied" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="alphaPremultipliedBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaPremultiplied}" />
 			</s:FormItem>
-			<s:FormItem label="blend mode" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="textureType">
+			<s:FormItem label="blend mode" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:DropDownList id="blendModeList" selectedItem="{_asset.blendMode}" change="blendModeList_changeHandler(event)" width="100%"
-								dataProvider="{new ArrayCollection([BlendMode.NORMAL,BlendMode.MULTIPLY,BlendMode.ADD,BlendMode.ALPHA])}"
+								dataProvider="{new ArrayCollection([BlendMode.NORMAL,BlendMode.MULTIPLY,BlendMode.ADD,BlendMode.ALPHA,BlendMode.LAYER])}"
 								/>
 			</s:FormItem>
         </s:Form>
+		
+    </controls:CollapsiblePanel>
+	
+	<controls:CollapsiblePanel width="100%" title="Colors &amp; Textures" collapsed="true" enabled="{!_asset.isDefault}">
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{textures}" selectedItem="{_selectedTexture}" requireSelection="true"
+										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   newItemLabel="New Texture"
+										   change="textureDropDownList_changeHandler(event)"
+										   addNewItem="textureDropDownList_addNewItemHandler(event)"
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="textureButton_clickHandler(event)" enabled="{textureDropDownList.selectedItem}"/>
+		</s:HGroup>
+	</controls:CollapsiblePanel>
+	
+	<controls:CollapsiblePanel width="100%" title="Lighting" collapsed="true">
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
 			<s:HGroup width="100%">
 				<s:Label text="Light Picker:" fontWeight="bold"/>
@@ -301,45 +389,37 @@
 											   addNewItem="lightPickerDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{lightPickerDropDownList.selectedItem}"/>
+						  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{!lightPickerDropDownList.selectedItem.isNull}"/>
 			</s:HGroup>
-			<s:VGroup width="100%" includeIn="textureType">
-				<s:HGroup width="100%">
-					<s:Label text="Shadow Method:" fontWeight="bold"/>
-					<controls:HorizontalFormSeparator/>
-				</s:HGroup>
-				<s:HGroup width="100%" verticalAlign="middle">
-					<controls:ExtendedDropDownList id="shadowMethodDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
-												   dataProvider="{shadowMethods}" selectedItem="{_selectedShadowMethod}" requireSelection="true"
-												   labelFunction="{assetDropDownLabelFunction}"
-												   newItemLabel="New ShadowMethod"
-												   change="shadowMethodDropDownList_changeHandler(event)"
-												   addNewItem="shadowMethodDropDownList_addNewItemHandler(event)"
-												   />
-					<s:Button styleName="editSharedObjectButtonStyle"
-							  width="23" height="100%" click="editShadowMethodButton_clickHandler(event)" enabled="{shadowMethodDropDownList.selectedItem}"/>
-				</s:HGroup>
-			</s:VGroup>
-		</s:VGroup>
-    </controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Shading Methods" collapsed="true" includeIn="textureType">
-		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
+			<s:HGroup width="100%">
+				<s:Label text="Shadow Light:" fontWeight="bold"/>
+				<controls:HorizontalFormSeparator/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle" enabled="{!lightPickerDropDownList.selectedItem.isNull}">
+				<s:DropDownList id="shadowLightDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" labelFunction="assetDropDownLabelFunction"
+								change="shadowLightDropDownList_changeHandler(event)" width="100%" requireSelection="true"
+								selectedItem="{_selectedLight}" dataProvider="{_lights}"/>
+				<s:Button styleName="editSharedObjectButtonStyle"
+						  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{!shadowLightDropDownList.selectedItem.isNull}"/>
+			</s:HGroup>
+			<s:HGroup width="100%">
+				<s:Label text="Shadow Method:" fontWeight="bold"/>
+				<controls:HorizontalFormSeparator/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle" enabled="{!lightPickerDropDownList.selectedItem.isNull&amp;&amp;!_selectedLight.isNull}">
+				<s:DropDownList id="shadowMethodDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" requireSelection="true" labelFunction="assetDropDownLabelFunction"
+								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_selectedShadowMethod}" dataProvider="{_shadowMethods}"
+								/>
+				<s:Button styleName="editSharedObjectButtonStyle"
+						  width="23" height="100%" click="editShadowMethodButton_clickHandler(event)" enabled="{!shadowMethodDropDownList.selectedItem.isNull}"/>
+			</s:HGroup>
 		</s:VGroup>
 	</controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Texture" collapsed="false" enabled="{!_asset.isDefault}">
-		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" selectedItem="{_selectedTexture}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
-										   change="textureDropDownList_changeHandler(event)"
-										   addNewItem="textureDropDownList_addNewItemHandler(event)"
-										   />
-			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="textureButton_clickHandler(event)" enabled="{textureDropDownList.selectedItem}"/>
-		</s:HGroup>
+	
+	<controls:CollapsiblePanel width="100%" title="Shading" collapsed="true" enabled="{!_asset.isDefault}">
 	</controls:CollapsiblePanel>
+	
 	<controls:CollapsiblePanel width="100%" title="Effect Methods" collapsed="true" enabled="{!_asset.isDefault}">
 		<controls:DroppableEffectsList id="effectMethodsList" dataProvider="{_asset.effectMethods}" 
 									  dropEnabled="true" width="100%" 

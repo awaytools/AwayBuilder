@@ -35,7 +35,7 @@
 			
 		]]>
 	</fx:Script>
-	<s:Rect height="22" width="{this.width}" y="1" includeIn="hovered,selected" alpha.hovered="0.3" includeInLayout="false">
+	<s:Rect height="24" width="{this.width}" y="0" includeIn="hovered,selected" alpha.hovered="0.3" includeInLayout="false">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0x105F9F" alpha="0.4" ratio="0.2"/>

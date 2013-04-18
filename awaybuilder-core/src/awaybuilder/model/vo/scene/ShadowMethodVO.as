@@ -8,6 +8,7 @@ package awaybuilder.model.vo.scene
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 
+	[Bindable]
 	public class ShadowMethodVO extends AssetVO
 	{
 		
@@ -29,8 +30,15 @@ package awaybuilder.model.vo.scene
 			var vo:ShadowMethodVO = new ShadowMethodVO();
 			vo.name = this.name;
 			vo.id = this.id;
+			vo.type = this.type;
 			return vo;
 		}
-		
+
+		public static const FILTERED_SHADOW_MAP_METHOD:String = "FilteredShadowMapMethod";
+		public static const DITHERED_SHADOW_MAP_METHOD:String = "DitheredShadowMapMethod";
+		public static const SOFT_SHADOW_MAP_METHOD:String = "SoftShadowMapMethod";
+		public static const HARD_SHADOW_MAP_METHOD:String = "HardShadowMapMethod";
+		public static const NEAR_SHADOW_MAP_METHOD:String = "NearShadowMapMethod";
+		public static const CASCADE_SHADOW_MAP_METHOD:String = "CascadeShadowMapMethod";
 	}
 }
