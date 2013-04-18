@@ -14,20 +14,12 @@
 		import mx.collections.ArrayCollection;
 
 		[Bindable]
-		private var _isDefault:Boolean = false;
-		
-		[Bindable]
 		private var _asset:TextureVO;
 		
 		override protected function validate(asset:AssetVO):void
 		{
 			if( !(asset is TextureVO) ) return;
 			_asset = TextureVO(asset).clone();
-			_isDefault = false;
-			if( _asset.linkedObject == DefaultMaterialManager.getDefaultTexture() )
-			{
-				_isDefault = true;
-			}
 		}
 		
         private function name_changeHandler( event:Event ):void
@@ -63,10 +55,10 @@
 	
     <s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
         <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-            <s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_isDefault}"/>
+            <s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
         </s:FormItem>
 		<s:FormItem label="Bitmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="replaceButton_clickHandler(event)" width="100%" enabled="{!_isDefault}"/>
+			<s:Button label="Replace ..." click="replaceButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
     </s:Form>
 	<s:Spacer height="10"/>

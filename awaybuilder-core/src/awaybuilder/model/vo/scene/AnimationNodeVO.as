@@ -4,11 +4,6 @@ package awaybuilder.model.vo.scene
 
 	public class AnimationNodeVO extends AssetVO
 	{
-		public function AnimationNodeVO( item:AnimationNodeBase )
-		{
-			super( item.name, item );
-			
-		}
 		
 	}
 }

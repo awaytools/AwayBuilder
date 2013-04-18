@@ -19,15 +19,13 @@ package awaybuilder.controller.scene
 			
 			var newAsset:LightPickerVO = event.newValue as LightPickerVO;
 			
-			var vo:LightPickerVO = document.getLight( event.items[0].linkedObject ) as LightPickerVO;
+			var vo:LightPickerVO = event.items[0] as LightPickerVO;
 
 			saveOldValue( event, vo.clone() );
 			
 			vo.name = newAsset.name;
 			
-			DataMerger.syncArrays( vo.lights, newAsset.lights, "linkedObject" );
-			
-			vo.apply();
+			DataMerger.syncArrays( vo.lights, newAsset.lights, "id" );
 			
 			addToHistory( event );
 		}

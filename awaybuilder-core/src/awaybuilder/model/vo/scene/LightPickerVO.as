@@ -12,34 +12,25 @@ package awaybuilder.model.vo.scene
 	public class LightPickerVO extends AssetVO
 	{
 		
-		public function LightPickerVO( picker:StaticLightPicker )
-		{
-			super( picker.name, picker );
-			
-			lights = new ArrayCollection();
-			for each( var light:LightBase in picker.lights )
-			{
-				lights.addItem( AssetFactory.GetAsset( light ) );
-			}
-		}
-		
 		public var lights:ArrayCollection;
 		
-		override public function apply():void
-		{
-			super.apply();
-			var picker:StaticLightPicker = linkedObject as StaticLightPicker;
-			var pickerLights:Array = [];
-			for each( var light:LightVO in lights )
-			{
-				pickerLights.push( light.linkedObject );
-			}
-			picker.lights = pickerLights;
-		}
-		
+//		override public function apply():void
+//		{
+//			super.apply();
+//			var picker:StaticLightPicker = linkedObject as StaticLightPicker;
+//			var pickerLights:Array = [];
+//			for each( var light:LightVO in lights )
+//			{
+//				pickerLights.push( light.linkedObject );
+//			}
+//			picker.lights = pickerLights;
+//		}
+//		
 		public function clone():LightPickerVO
 		{
-			var vo:LightPickerVO = new LightPickerVO( this.linkedObject as StaticLightPicker );
+			var vo:LightPickerVO = new LightPickerVO();
+			vo.name = this.name;
+			vo.lights = new ArrayCollection( this.lights.source );
 			vo.id = this.id;
 			return vo;
 		}

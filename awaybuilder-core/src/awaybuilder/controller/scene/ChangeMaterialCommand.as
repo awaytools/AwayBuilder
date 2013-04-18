@@ -11,6 +11,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
@@ -32,9 +33,9 @@ package awaybuilder.controller.scene
 	    override public function execute():void
 	    {
 	        var newMaterial:MaterialVO = event.newValue as MaterialVO;
-	        var vo:MaterialVO = AssetFactory.assets[newMaterial.linkedObject] as MaterialVO;
+	        var vo:MaterialVO = event.items[0] as MaterialVO;
 			
-			var prevMaterial:MaterialBase = newMaterial.linkedObject as MaterialBase;
+//			var prevMaterial:MaterialBase = newMaterial.linkedObject as MaterialBase;
 			
 			saveOldValue( event, vo.clone() );
 			
@@ -47,73 +48,58 @@ package awaybuilder.controller.scene
 			vo.blendMode = newMaterial.blendMode;
 			if( newMaterial.lightPicker )
 			{
-				vo.lightPicker = AssetFactory.GetAsset(newMaterial.lightPicker.linkedObject) as LightPickerVO;
+				vo.lightPicker = newMaterial.lightPicker;
 			}
 			
 			vo.type = newMaterial.type;
 			
-			vo.diffuseMethod = newMaterial.diffuseMethod;
-			
-			vo.ambientMethod = newMaterial.ambientMethod;
-			
-			vo.specularMethod = newMaterial.specularMethod;
-			
-			vo.normalMethod = newMaterial.normalMethod;
-			
 			vo.shadowMethod = newMaterial.shadowMethod;
-//			
-//			vo.ambientTexture = newMaterial.ambientTexture;
-//			
-//			vo.normalMap = newMaterial.normalMap;
-//			
-//			vo.specularMap = newMaterial.specularMap;
 			
-			vo.effectMethods = new ArrayCollection( newMaterial.effectMethods.source );
+			vo.texture = newMaterial.texture;
+			
+			trace( "vo.texture = " + vo.texture );
+			if( newMaterial.effectMethods )
+			{
+				vo.effectMethods = new ArrayCollection( newMaterial.effectMethods.source );
+			}
+			
 			
 			var linkedObjectChanged:Boolean = false;
 //			if( newMaterial.type == MaterialVO.TEXTURE && vo.linkedObject is ColorMaterial )
 //			{
-//				vo.linkedObject = new TextureMaterial( vo.diffuseTexture.linkedObject as Texture2DBase, newMaterial.smooth, newMaterial.repeat, newMaterial.mipmap );
+//				vo.linkedObject = new TextureMaterial( vo.diffuseMethod.texture.linkedObject as Texture2DBase, newMaterial.smooth, newMaterial.repeat, newMaterial.mipmap );
 //				linkedObjectChanged = true;
 //			}
 //			if( newMaterial.type == MaterialVO.COLOR && vo.linkedObject is TextureMaterial )
 //			{
-//				vo.linkedObject = new ColorMaterial( newMaterial.diffuseColor, 1 );
+//				vo.linkedObject = new ColorMaterial( newMaterial.diffuseMethod.color, 1 );
 //				linkedObjectChanged = true;
 //			}
-//			
-//			if( !vo.diffuseMethod ) 
-//			{
-//				vo.diffuseMethod = document.getTexture(DefaultMaterialManager.getDefaultTexture()) as TextureVO;
-//			}
 			
-			vo.apply();
 			
-//			if( linkedObjectChanged ) // update all meshes that use current material
-//			{
-//				update( document.scene, prevMaterial, vo );
-//			}
+			if( linkedObjectChanged ) // update all meshes that use current material
+			{
+//				update( prevMaterial, vo );
+			}
 			
-			event.items = [vo];
 	        addToHistory( event );
 	    }
-//		private function update( children:ArrayCollection, prevMaterial:MaterialBase, newMaterial:MaterialVO ):void 
+//		private function update( prevMaterial:MaterialBase, newMaterial:MaterialVO ):void 
 //		{
-//			for each( var asset:ContainerVO in children )
+//			for each( var asset:AssetVO in AssetFactory.assets )
 //			{
 //				var mesh:MeshVO = asset as MeshVO;
 //				if( mesh )
 //				{
+//					trace( mesh.name );
 //					for each( var subMesh:SubMeshVO in mesh.subMeshes )
 //					{
-//						if( subMesh.material.linkedObject == prevMaterial ) 
+//						if( subMesh.material.equals( prevMaterial ) ) 
 //						{
 //							subMesh.material = newMaterial.clone();
-//							subMesh.apply();
 //						}
 //					}
 //				}
-//				update( asset.children, prevMaterial, newMaterial );
 //			}
 //		}
 	}

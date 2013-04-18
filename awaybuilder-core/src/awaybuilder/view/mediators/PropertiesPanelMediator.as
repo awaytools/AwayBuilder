@@ -1,25 +1,19 @@
 package awaybuilder.view.mediators
 {
     import away3d.entities.Mesh;
-    import away3d.materials.lightpickers.StaticLightPicker;
     
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
-    import awaybuilder.model.vo.scene.AmbientMethodVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
-    import awaybuilder.model.vo.scene.DiffuseMethodVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
-    import awaybuilder.model.vo.scene.NormalMethodVO;
-    import awaybuilder.model.vo.scene.ObjectVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
-    import awaybuilder.model.vo.scene.SpecularMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureVO;
     import awaybuilder.utils.AssetFactory;
@@ -58,10 +52,6 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
-			addContextListener(SceneEvent.ADD_NEW_DIFFUSE_METHOD, eventDispatcher_addNewMethodHandler);
-			addContextListener(SceneEvent.ADD_NEW_NORMAL_METHOD, eventDispatcher_addNewMethodHandler);
-			addContextListener(SceneEvent.ADD_NEW_AMBIENT_METHOD, eventDispatcher_addNewMethodHandler);
-			addContextListener(SceneEvent.ADD_NEW_SPECULAR_METHOD, eventDispatcher_addNewMethodHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, context_documentUpdatedHandler);
 
@@ -77,26 +67,10 @@ package awaybuilder.view.mediators
             addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler );
 			
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_SHADOWMETHOD, view_materialAddShadowMethodHandler );
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_DIFFUSE_METHOD, view_materialAddNewDiffuseMethodHandler );
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_NORMAL_METHOD, view_materialAddNewNormalMethodHandler );
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_AMBIENT_METHOD, view_materialAddNewAmbientMethodHandler );
-			addViewListener( PropertyEditorEvent.MATERIAL_ADD_SPECULAR_METHOD, view_materialAddNewSpecularMethodHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_ADD_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, view_materialAddEffectMetodHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_LIGHTPICKER, view_materialAddLightpickerHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, view_materialRemoveEffectMetodHandler );
-			
-			addViewListener( PropertyEditorEvent.DIFFUSE_METHOD_CHANGE, view_diffuseChangeHandler );
-			addViewListener( PropertyEditorEvent.DIFFUSE_METHOD_STEPPER_CHANGE, view_diffuseChangeStepperHandler );
-			addViewListener( PropertyEditorEvent.DIFFUSE_METHOD_ADD_TEXTURE, view_methodAddTextureHandler );
-			addViewListener( PropertyEditorEvent.AMBIENT_METHOD_CHANGE, view_ambientChangeHandler );
-			addViewListener( PropertyEditorEvent.AMBIENT_METHOD_STEPPER_CHANGE, view_ambientChangeStepperHandler );
-			addViewListener( PropertyEditorEvent.AMBIENT_METHOD_ADD_TEXTURE, view_methodAddTextureHandler );
-			addViewListener( PropertyEditorEvent.NORMAL_METHOD_CHANGE, view_normalChangeHandler );
-			addViewListener( PropertyEditorEvent.NORMAL_METHOD_STEPPER_CHANGE, view_normalChangeStepperHandler );
-			addViewListener( PropertyEditorEvent.NORMAL_METHOD_ADD_TEXTURE, view_methodAddTextureHandler );
-			addViewListener( PropertyEditorEvent.SPECULAR_METHOD_CHANGE, view_specularChangeHandler );
-			addViewListener( PropertyEditorEvent.SPECULAR_METHOD_STEPPER_CHANGE, view_specularChangeStepperHandler );
-			addViewListener( PropertyEditorEvent.SPECULAR_METHOD_ADD_TEXTURE, view_methodAddTextureHandler );
 			
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
@@ -129,15 +103,15 @@ package awaybuilder.view.mediators
 
         private function view_translateHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[document.getSceneObject(view.data.linkedObject)], event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
         }
         private function view_rotateHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[document.getSceneObject(view.data.linkedObject)], event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[view.data], event.data, true));
         }
         private function view_scaleHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[document.getSceneObject(view.data.linkedObject)], event.data, true));
+            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[view.data], event.data, true));
         }
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
@@ -153,7 +127,7 @@ package awaybuilder.view.mediators
             var newValue:MeshVO = vo.clone() as MeshVO;
             for each( var subMesh:SubMeshVO in newValue.subMeshes )
             {
-                if( subMesh.linkedObject == SubMeshVO(event.data).linkedObject )
+                if( subMesh.equals( AssetVO(event.data) ) )
                 {
                     subMesh.material = SubMeshVO(event.data).material;
                 }
@@ -168,43 +142,6 @@ package awaybuilder.view.mediators
         {
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data, true));
         }
-		
-		
-		private function view_diffuseChangeHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_DIFFUSE_METHOD,[view.data], event.data));
-		}
-		private function view_diffuseChangeStepperHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_DIFFUSE_METHOD,[view.data], event.data, true));
-		}
-		
-		private function view_ambientChangeHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_AMBIENT_METHOD,[view.data], event.data));
-		}
-		private function view_ambientChangeStepperHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_AMBIENT_METHOD,[view.data], event.data, true));
-		}
-		
-		private function view_normalChangeHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_NORMAL_METHOD,[view.data], event.data));
-		}
-		private function view_normalChangeStepperHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_NORMAL_METHOD,[view.data], event.data, true));
-		}
-		
-		private function view_specularChangeHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SPECULAR_METHOD,[view.data], event.data));
-		}
-		private function view_specularChangeStepperHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SPECULAR_METHOD,[view.data], event.data, true));
-		}
 		
 		private function view_shadowmethodChangeHandler(event:PropertyEditorEvent):void
 		{
@@ -257,29 +194,8 @@ package awaybuilder.view.mediators
 		
 		private function view_shadowmethodAddLightHandler(event:PropertyEditorEvent):void
 		{
-//			this.dispatch(new ImportTextureEvent(SceneEvent.ADD_NEW_LIGHT,[view.data]));
+//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data]));
 		}
-		private function view_methodAddTextureHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data]));
-		}
-		private function view_materialAddNewDiffuseMethodHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_DIFFUSE_METHOD,[view.data], AssetFactory.CreateDiffuseMethod(MaterialVO(event.data).diffuseMethod)));
-		}
-		private function view_materialAddNewSpecularMethodHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SPECULAR_METHOD,[view.data], AssetFactory.CreateSpecularMethod(MaterialVO(event.data).specularMethod)));
-		}
-		private function view_materialAddNewNormalMethodHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_NORMAL_METHOD,[view.data], AssetFactory.CreateNormalMethod(MaterialVO(event.data).normalMethod)));
-		}
-		private function view_materialAddNewAmbientMethodHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_AMBIENT_METHOD,[view.data], AssetFactory.CreateAmbientMethod(MaterialVO(event.data).ambientMethod)));
-		}
-		
 		
 		private function view_materialAddLightpickerHandler(event:PropertyEditorEvent):void
 		{
@@ -287,6 +203,10 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHTPICKER,[view.data], asset ));
 		}
 		
+		private function view_materialAddNewTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data]));
+		}
 		private function view_materialAddEffectMetodHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], AssetFactory.CreateEffectMethod()));
@@ -421,7 +341,7 @@ package awaybuilder.view.mediators
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
-            var mesh:Mesh = MeshVO(event.items[0]).linkedObject as Mesh;
+            var mesh:MeshVO = event.items[0] as MeshVO;
             var vo:MeshVO = view.data as MeshVO;
             vo.x = mesh.x;
             vo.y = mesh.y;
@@ -496,26 +416,6 @@ package awaybuilder.view.mediators
 						view.showEditor( "effectMethod", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
-					else if( event.items[0] is AmbientMethodVO )
-					{
-						view.showEditor( "ambientMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
-					}
-					else if( event.items[0] is NormalMethodVO )
-					{
-						view.showEditor( "normalMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
-					}
-					else if( event.items[0] is DiffuseMethodVO )
-					{
-						view.showEditor( "diffuseMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
-					}
-					else if( event.items[0] is SpecularMethodVO )
-					{
-						view.showEditor( "specularMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
-					}
 //                    else if( event.items[0] is Geometry )
 //                    {
 //                        view.currentState = "geometry";
@@ -544,10 +444,13 @@ package awaybuilder.view.mediators
 
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
+			var nullItem:AssetVO = new AssetVO();
+			nullItem.name = "Null";
+			nullItem.isNull = true;
 			var asset:AssetVO;
 			var lights:ArrayCollection = new ArrayCollection();
 			var pickers:ArrayCollection = new ArrayCollection();
-			pickers.addItem( new AssetVO("Null", null) );
+			pickers.addItem( nullItem );
 			for each( asset in document.lights )
 			{
 				if( asset is LightPickerVO ) pickers.addItem( asset );
@@ -559,7 +462,7 @@ package awaybuilder.view.mediators
 			view.lights = lights;
 			
 			var shadowMethods:ArrayCollection = new ArrayCollection();
-			shadowMethods.addItem( new AssetVO("Null", null) );
+			shadowMethods.addItem( nullItem );
 			var ambientMethods:ArrayCollection = new ArrayCollection();
 			var normalMethods:ArrayCollection = new ArrayCollection();
 			var diffuseMethods:ArrayCollection = new ArrayCollection();
@@ -567,10 +470,6 @@ package awaybuilder.view.mediators
 			for each( asset in document.methods )
 			{
 				if( asset is ShadowMethodVO ) shadowMethods.addItem( asset );
-				if( asset is NormalMethodVO ) normalMethods.addItem( asset );
-				if( asset is AmbientMethodVO ) ambientMethods.addItem( asset );
-				if( asset is DiffuseMethodVO ) diffuseMethods.addItem( asset );
-				if( asset is SpecularMethodVO ) specularMethods.addItem( asset );
 			}
 			view.shadowMethods = shadowMethods;
 			view.normalMethods = normalMethods;
@@ -579,7 +478,7 @@ package awaybuilder.view.mediators
 			view.specularMethods = specularMethods;
 			
 			var textures:ArrayCollection = new ArrayCollection();
-			textures.addItem( new AssetVO("Null", null) );
+//			textures.addItem( nullItem );
 			for each( asset in document.textures )
 			{
 				textures.addItem( asset );

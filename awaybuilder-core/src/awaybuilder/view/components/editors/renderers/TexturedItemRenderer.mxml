@@ -15,9 +15,6 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.scene.AmbientMethodVO;
-			import awaybuilder.model.vo.scene.DiffuseMethodVO;
-			import awaybuilder.model.vo.scene.SpecularMethodVO;
 			import awaybuilder.model.vo.scene.interfaces.ITextured;
 			
 			[Bindable]
@@ -34,20 +31,6 @@
 				if( _asset.texture && _asset.texture.bitmapData )
 				{
 					_image = _asset.texture.bitmapData;
-				}
-				else
-				{
-					var color:uint;
-					if( _asset is DiffuseMethodVO ){
-						color = DiffuseMethodVO( _asset).color;
-					}
-					if( _asset is AmbientMethodVO ){
-						color = AmbientMethodVO( _asset).color;
-					}
-					if( _asset is SpecularMethodVO ){
-						color = SpecularMethodVO( _asset).color;
-					}
-					_image = new BitmapData(32, 32, false, color);
 				}
 				
 			}

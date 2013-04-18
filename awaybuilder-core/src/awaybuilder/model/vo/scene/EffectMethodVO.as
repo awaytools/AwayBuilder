@@ -4,24 +4,12 @@ package awaybuilder.model.vo.scene
 
 	public class EffectMethodVO extends AssetVO
 	{
-		public function EffectMethodVO( name:String, object:EffectMethodBase )
-		{
-			super( name, object );
-//			this.epsilon = object.epsilon;
-//			this.alpha = object.alpha;
-//			this.light = AssetFactory.GetAsset( object.castingLight ) as LightVO
-		}
 		
 		public var type:String;
 		
-		
-		override public function apply():void
-		{
-			var method:EffectMethodBase = linkedObject as EffectMethodBase;
-		}
 		public function clone():EffectMethodVO
 		{
-			var vo:EffectMethodVO = new EffectMethodVO( this.name, this.linkedObject as EffectMethodBase );
+			var vo:EffectMethodVO = new EffectMethodVO();
 			vo.name = this.name;
 			vo.id = this.id;
 			return vo;

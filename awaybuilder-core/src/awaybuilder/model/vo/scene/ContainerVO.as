@@ -11,24 +11,15 @@ package awaybuilder.model.vo.scene
 	[Bindable]
 	public class ContainerVO extends ObjectVO
 	{
-		public function ContainerVO( item:ObjectContainer3D )
-		{
-			super( item );
-			
-			children = new ArrayCollection();
-			for (var i:int = 0; i < item.numChildren; i++) 
-			{
-				children.addItem(AssetFactory.GetAsset( item.getChildAt(i) ) );
-			}
-		}
 		
 		public var children:ArrayCollection; // array of ContainerVO
 		
 		override public function clone():ObjectVO
 		{
-			var m:ContainerVO = new ContainerVO( this.linkedObject as ObjectContainer3D );
-			m.id = this.id;
-			return m;
+			var clone:ContainerVO = new ContainerVO();
+			clone.id = this.id;
+			clone.children = new ArrayCollection( children.source );
+			return clone;
 		}
 	}
 }

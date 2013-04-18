@@ -30,18 +30,12 @@ package awaybuilder
 	import awaybuilder.controller.history.RedoCommand;
 	import awaybuilder.controller.history.UndoCommand;
 	import awaybuilder.controller.history.UndoRedoEvent;
-	import awaybuilder.controller.scene.AddNewAmbientMethodCommand;
-	import awaybuilder.controller.scene.AddNewDiffuseMethodCommand;
 	import awaybuilder.controller.scene.AddNewEffectMethodCommand;
 	import awaybuilder.controller.scene.AddNewLightCommand;
 	import awaybuilder.controller.scene.AddNewLightPickerCommand;
 	import awaybuilder.controller.scene.AddNewMaterialCommand;
-	import awaybuilder.controller.scene.AddNewNormalMethodCommand;
 	import awaybuilder.controller.scene.AddNewShadowMethodCommand;
-	import awaybuilder.controller.scene.AddNewSpecularMethodCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
-	import awaybuilder.controller.scene.ChangeAmbientMethodCommand;
-	import awaybuilder.controller.scene.ChangeDiffuseMethodCommand;
 	import awaybuilder.controller.scene.ChangeLightCommand;
 	import awaybuilder.controller.scene.ChangeLightPickerCommand;
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
@@ -146,23 +140,12 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHT, ChangeLightCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHTPICKER, ChangeLightPickerCommand);
 			
-//			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_METHOD, ChangeLightPickerCommand);
-//			commandMap.mapEvent(SceneEvent.CHANGE_SPECULAR_METHOD, ChangeLightPickerCommand);
-//			commandMap.mapEvent(SceneEvent.CHANGE_NORMAL_METHOD, ChangeLightPickerCommand);
-			commandMap.mapEvent(SceneEvent.CHANGE_AMBIENT_METHOD, ChangeAmbientMethodCommand);
-			commandMap.mapEvent(SceneEvent.CHANGE_DIFFUSE_METHOD, ChangeDiffuseMethodCommand);
-			
-			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHT, AddNewLightCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHTPICKER, AddNewLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, AddNewShadowMethodCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, AddNewEffectMethodCommand);
-			commandMap.mapEvent(SceneEvent.ADD_NEW_AMBIENT_METHOD, AddNewAmbientMethodCommand);
-			commandMap.mapEvent(SceneEvent.ADD_NEW_DIFFUSE_METHOD, AddNewDiffuseMethodCommand);
-			commandMap.mapEvent(SceneEvent.ADD_NEW_NORMAL_METHOD, AddNewNormalMethodCommand);
-			commandMap.mapEvent(SceneEvent.ADD_NEW_SPECULAR_METHOD, AddNewSpecularMethodCommand);
 			
 			commandMap.mapEvent(SceneEvent.REPLACE_TEXTURE, ReplaceTextureCommand);
 

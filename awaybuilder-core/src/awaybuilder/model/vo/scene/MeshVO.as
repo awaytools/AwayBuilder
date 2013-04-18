@@ -12,56 +12,56 @@ package awaybuilder.model.vo.scene
 	[Bindable]
     public class MeshVO extends ContainerVO
     {
-        public function MeshVO( item:Mesh )
-        {
-            super( item );
 			
-			castsShadows = item.castsShadows;
-            subMeshes = new ArrayCollection();
-
-            for each( var subMesh:SubMesh in item.subMeshes )
-            {
-				var sm:SubMeshVO = AssetFactory.GetAsset(subMesh) as SubMeshVO;
-				sm.parentMesh = this;
-                subMeshes.addItem( sm );
-            }
-        }
-
         public var castsShadows:Boolean;
 
         public var subMeshes:ArrayCollection;
 		
-		override public function apply():void
-		{
-			super.apply();
-			var mesh:Mesh = Mesh( linkedObject );
-			mesh.x = x;
-			mesh.y = y;
-			mesh.z = z;
-			
-			mesh.scaleX = scaleX;
-			mesh.scaleY = scaleY;
-			mesh.scaleZ = scaleZ;
-			
-			mesh.rotationX = rotationX;
-			mesh.rotationY = rotationY;
-			mesh.rotationZ = rotationZ;
-			
-			mesh.castsShadows = castsShadows;
-			
-//			for (var i:int = 0; i < subMeshes.length; i++) 
-//			{
-//				var subMesh:SubMeshVO = subMeshes.getItemAt(i) as SubMeshVO;
-//				mesh.subMeshes[i].material = subMesh.material.linkedObject as MaterialBase;
-//			}
-			
-		}
+//		override public function apply():void
+//		{
+//			super.apply();
+//			var mesh:Mesh = Mesh( linkedObject );
+//			mesh.x = x;
+//			mesh.y = y;
+//			mesh.z = z;
+//			
+//			mesh.scaleX = scaleX;
+//			mesh.scaleY = scaleY;
+//			mesh.scaleZ = scaleZ;
+//			
+//			mesh.rotationX = rotationX;
+//			mesh.rotationY = rotationY;
+//			mesh.rotationZ = rotationZ;
+//			
+//			mesh.castsShadows = castsShadows;
+//			
+////			for (var i:int = 0; i < subMeshes.length; i++) 
+////			{
+////				var subMesh:SubMeshVO = subMeshes.getItemAt(i) as SubMeshVO;
+////				mesh.subMeshes[i].material = subMesh.material.linkedObject as MaterialBase;
+////			}
+//			
+//		}
 		
 		override public function clone():ObjectVO
         {
-			var m:MeshVO = new MeshVO( this.linkedObject as Mesh );
+			var m:MeshVO = fill( new MeshVO() ) as MeshVO;
+			m.x = this.x;
+			m.y = this.y;
+			m.z = this.z;
+			m.scaleX = this.scaleX;
+			m.scaleY = this.scaleY;
+			m.scaleZ = this.scaleZ;
+			m.rotationX = this.rotationX;
+			m.rotationY = this.rotationY;
+			m.rotationZ = this.rotationZ;
+			m.subMeshes = new ArrayCollection(this.subMeshes.source);
+			m.name = this.name;
+			m.castsShadows = this.castsShadows;
 			m.id = this.id;
             return m;
         }
+		
+		
     }
 }

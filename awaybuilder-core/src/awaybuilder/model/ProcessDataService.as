@@ -102,7 +102,7 @@ package awaybuilder.model
 					var mesh:Mesh = event.asset as Mesh;
 					if( !mesh.material )
 					{
-						mesh.material = AssetFactory.GetDefaultMaterial().linkedObject as MaterialBase;
+						mesh.material = AssetFactory.GetObject(AssetFactory.GetDefaultMaterial()) as MaterialBase;
 					}
 					_objects.push( mesh  );
 					break;

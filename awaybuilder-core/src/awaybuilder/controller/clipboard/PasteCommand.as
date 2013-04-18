@@ -7,9 +7,10 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import mx.collections.ArrayCollection;
@@ -39,8 +40,8 @@ package awaybuilder.controller.clipboard
 				{
 					if( vo is MeshVO ) 
 					{
-						var newMesh:MeshVO = new MeshVO( Mesh(vo.linkedObject).clone() as Mesh );
-						newObjects.push( newMesh );
+//						var newMesh:MeshVO = AssetFactory.CreateMaterialCopy(new MeshVO( Mesh(vo.linkedObject).clone() as Mesh );
+//						newObjects.push( newMesh );
 					}
 				}
 				event.newValue = newObjects;
@@ -66,7 +67,7 @@ package awaybuilder.controller.clipboard
 			var objects:Vector.<AssetVO> = event.oldValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( vo.linkedObject as Mesh );
+					Scene3DManager.removeMesh( AssetFactory(vo) as Mesh );
 				}
 			}
 			removeItems( document.scene, objects );
@@ -81,7 +82,7 @@ package awaybuilder.controller.clipboard
 				var item:AssetVO = source[i] as AssetVO;
 				for each( var oddItem:AssetVO in items ) 
 				{
-					if( item.linkedObject == oddItem.linkedObject )
+					if( item.equals( oddItem ) )
 					{
 						source.removeItemAt( i );
 						i--;

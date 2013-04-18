@@ -133,18 +133,6 @@ tree|TreeItemRenderer.bear
 {
 	icon: Embed("assets/images/teddy_bear.png");
 }
-tree|TreeItemRenderer.ambient
-{
-	icon: Embed("assets/images/blue-document-attribute.png");
-}
-tree|TreeItemRenderer.diffuse
-{
-	icon: Embed("assets/images/blue-document-attribute-d.png");
-}
-tree|TreeItemRenderer.normal
-{
-	icon: Embed("assets/images/blue-document-attribute-n.png");
-}
 tree|TreeItemRenderer.shadow
 {
 	icon: Embed("assets/images/blue-document-attribute-s.png");
@@ -152,10 +140,6 @@ tree|TreeItemRenderer.shadow
 tree|TreeItemRenderer.effect
 {
 	icon: Embed("assets/images/blue-document-attribute-e.png");
-}
-tree|TreeItemRenderer.specular
-{
-	icon: Embed("assets/images/blue-document-attribute-p.png");
 }
 
 

@@ -21,7 +21,7 @@ package awaybuilder.controller.scene
 			var material:MaterialVO;
 			if( event.items && event.items.length )
 			{
-				material = AssetFactory.assets[event.items[0].linkedObject] as MaterialVO;
+				material = event.items[0] as MaterialVO;
 			}
 			var oldValue:ShadowMethodVO = event.oldValue as ShadowMethodVO;
 			var newValue:ShadowMethodVO = event.newValue as ShadowMethodVO;
@@ -43,7 +43,6 @@ package awaybuilder.controller.scene
 			if( material )
 			{
 				material.shadowMethod = newValue;
-				material.apply();
 			}
 			
 			addToHistory( event );

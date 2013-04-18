@@ -20,7 +20,7 @@ package awaybuilder.controller.scene
 			var material:MaterialVO;
 			if( event.items && event.items.length )
 			{
-				material = document.getMaterial(event.items[0].linkedObject) as MaterialVO;
+				material = event.items[0] as MaterialVO;
 			}
 			var oldValue:LightPickerVO = event.oldValue as LightPickerVO;
 			var newValue:LightPickerVO = event.newValue as LightPickerVO;
@@ -43,7 +43,6 @@ package awaybuilder.controller.scene
 			if( material )
 			{
 				material.lightPicker = newValue;
-				material.apply();
 			}
 			
 			addToHistory( event );

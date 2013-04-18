@@ -55,11 +55,6 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
 			addViewListener(LibraryPanelEvent.ADD_SHADOWMETHOD, view_addShadowMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
-			addViewListener(LibraryPanelEvent.ADD_AMBIENTMETHOD, view_addAmbientMethodHandler);
-			addViewListener(LibraryPanelEvent.ADD_DIFFUSEMETHOD, view_addDiffuseMethodHandler);
-			addViewListener(LibraryPanelEvent.ADD_NORMALMETHOD, view_addNormalMethodHandler);
-			addViewListener(LibraryPanelEvent.ADD_SPECULARMETHOD, view_addSpecularMethodHandler);
-			
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
@@ -76,30 +71,6 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
-		private function view_addSpecularMethodHandler(event:LibraryPanelEvent):void
-		{
-			var method:AssetVO = AssetFactory.CreateSpecularMethod();
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SPECULAR_METHOD, null, method));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
-		}
-		private function view_addNormalMethodHandler(event:LibraryPanelEvent):void
-		{
-			var method:AssetVO = AssetFactory.CreateNormalMethod();
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_NORMAL_METHOD, null, method));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
-		}
-		private function view_addDiffuseMethodHandler(event:LibraryPanelEvent):void
-		{
-			var method:AssetVO = AssetFactory.CreateDiffuseMethod();
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_DIFFUSE_METHOD, null, method));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
-		}
-		private function view_addAmbientMethodHandler(event:LibraryPanelEvent):void
-		{
-			var method:AssetVO = AssetFactory.CreateAmbientMethod();
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_AMBIENT_METHOD, null, method));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
-		}
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
 		{
 			var method:EffectMethodVO = AssetFactory.CreateEffectMethod();
@@ -244,7 +215,7 @@ package awaybuilder.view.mediators
 			{
 				if( item.item )
 				{
-					if( getItemIsSelected( item.item.linkedObject, selectedItems ) )
+					if( getItemIsSelected( item.item.id, selectedItems ) )
 					{
 						_scenegraphSelected.push( item );
 					}
@@ -254,11 +225,11 @@ package awaybuilder.view.mediators
 				}
 			}
 		}
-		private function getItemIsSelected( o:Object, selectedItems:Array ):Boolean
+		private function getItemIsSelected( id:String, selectedItems:Array ):Boolean
 		{
 			for each( var object:AssetVO in selectedItems )
 			{
-				if( object.linkedObject == o )
+				if( object.id == id )
 				{
 					return true;
 				}

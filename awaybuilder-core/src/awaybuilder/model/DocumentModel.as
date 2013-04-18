@@ -213,7 +213,7 @@ package awaybuilder.model
 		{
 			for (var i:int = 0; i < source.length; i++) 
 			{
-				if( source[i].linkedObject == oddItem.linkedObject )
+				if( source[i].id == oddItem.id )
 				{
 					source.removeItemAt( i );
 					i--;
@@ -227,14 +227,7 @@ package awaybuilder.model
 		{
 			for each( var vo:AssetVO in children )
 			{
-				if( UIDUtil.isUID( value as String ) )
-				{
-					if( vo.id == value ) 
-					{
-						return vo;
-					}
-				}
-				else if( vo.linkedObject == value ) 
+				if( vo.id == value ) 
 				{
 					return vo;
 				}
@@ -245,20 +238,9 @@ package awaybuilder.model
 		{
 			for each( var vo:ContainerVO in children )
 			{
-				if( UIDUtil.isUID( value as String ) )
-				{
-					if( vo.id == value ) 
-					{
-						return vo;
-					}
-				}
-				else if( vo.linkedObject == value ) 
+				if( vo.id == value ) 
 				{
 					return vo;
-				}
-				if( vo.children && vo.children.length>0 ) 
-				{
-					return getContainerInCollection( vo.children, value );
 				}
 			}
 			return null;

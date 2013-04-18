@@ -14,6 +14,7 @@ package awaybuilder.controller.document
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;
@@ -73,7 +74,7 @@ package awaybuilder.controller.document
 			var data:DocumentVO = event.oldValue as DocumentVO;
 			for each( var vo:AssetVO in data.scene ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( vo.linkedObject as Mesh );
+					Scene3DManager.removeMesh( AssetFactory.GetObject(vo) as Mesh );
 				}
 			}
 			removeItems( document.animations, data.animations );
@@ -94,7 +95,7 @@ package awaybuilder.controller.document
 				var item:AssetVO = source[i] as AssetVO;
 				for each( var oddItem:AssetVO in items ) 
 				{
-					if( item.linkedObject == oddItem.linkedObject )
+					if( item.equals( oddItem ) )
 					{
 						source.removeItemAt( i );
 						i--;
@@ -128,7 +129,7 @@ package awaybuilder.controller.document
 			var o:ContainerVO = value as ContainerVO;
 			if( o ) 
 			{
-				Scene3DManager.addObject( o.linkedObject as ObjectContainer3D );
+				Scene3DManager.addObject( AssetFactory.GetObject(o) as ObjectContainer3D );
 			}
 		}
 		

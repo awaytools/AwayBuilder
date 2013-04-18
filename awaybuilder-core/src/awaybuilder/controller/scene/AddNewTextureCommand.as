@@ -9,13 +9,9 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.scene.AmbientMethodVO;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.DiffuseMethodVO;
 	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
-	import awaybuilder.model.vo.scene.NormalMethodVO;
-	import awaybuilder.model.vo.scene.SpecularMethodVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.interfaces.ITextured;
 	import awaybuilder.utils.AssetFactory;
@@ -37,7 +33,7 @@ package awaybuilder.controller.scene
 			var method:ITextured;
 			if( event.items && event.items.length )
 			{
-				method = AssetFactory.assets[event.items[0].linkedObject] as ITextured;
+				method = event.items[0] as ITextured;
 			}
 			var oldValue:DocumentVO = event.oldValue as DocumentVO;
 			var newValue:DocumentVO = event.newValue as DocumentVO;
@@ -64,18 +60,18 @@ package awaybuilder.controller.scene
 			if( method )
 			{
 				method.texture = newTexture;
-				if( method is DiffuseMethodVO ){
-					DiffuseMethodVO( method).apply();
-				}
-				if( method is AmbientMethodVO ){
-					AmbientMethodVO( method).apply();
-				}
-				if( method is SpecularMethodVO ){
-					SpecularMethodVO( method).apply();
-				}
-				if( method is NormalMethodVO ){
-					NormalMethodVO( method).apply();
-				}
+//				if( method is DiffuseMethodVO ){
+//					DiffuseMethodVO( method).apply();
+//				}
+//				if( method is AmbientMethodVO ){
+//					AmbientMethodVO( method).apply();
+//				}
+//				if( method is SpecularMethodVO ){
+//					SpecularMethodVO( method).apply();
+//				}
+//				if( method is NormalMethodVO ){
+//					NormalMethodVO( method).apply();
+//				}
 			}
 			else if( newTexture )
 			{

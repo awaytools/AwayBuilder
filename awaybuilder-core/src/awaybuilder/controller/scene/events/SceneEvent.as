@@ -19,20 +19,12 @@ import flash.events.Event;
 		public static const CHANGE_LIGHT:String = "changeLight";
 		public static const CHANGE_LIGHTPICKER:String = "changeLightPicker";
 		
-		public static const CHANGE_AMBIENT_METHOD:String = "changeAmbientMethodPicker";
-		public static const CHANGE_DIFFUSE_METHOD:String = "changeDiffuseMethodPicker";
-		public static const CHANGE_NORMAL_METHOD:String = "changeNormalMethodPicker";
 		public static const CHANGE_SHADOW_METHOD:String = "changeShadowMethodPicker";
-		public static const CHANGE_SPECULAR_METHOD:String = "changeSpecularMethodPicker";
 		
 		public static const ADD_NEW_LIGHT:String = "addNewLight";
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";
 		public static const ADD_NEW_SHADOW_METHOD:String = "addNewShadowMethod";
 		public static const ADD_NEW_EFFECT_METHOD:String = "addNewEffectMethod";
-		public static const ADD_NEW_AMBIENT_METHOD:String = "addNewAmbientMethod";
-		public static const ADD_NEW_SPECULAR_METHOD:String = "addNewSpecularMethod";
-		public static const ADD_NEW_DIFFUSE_METHOD:String = "addNewDiffuseMethod";
-		public static const ADD_NEW_NORMAL_METHOD:String = "addNewNormalMethod";
 		public static const ADD_NEW_LIGHTPICKER:String = "addNewLightPicker";
 		public static const ADD_NEW_TEXTURE:String = "addNewTexture";
 		public static const REPLACE_TEXTURE:String = "replaceTexture";

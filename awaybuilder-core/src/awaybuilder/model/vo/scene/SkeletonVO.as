@@ -4,11 +4,6 @@ package awaybuilder.model.vo.scene
 
 	public class SkeletonVO extends AssetVO
 	{
-		public function SkeletonVO( item:Skeleton )
-		{
-			super( item.name, item );
-			
-		}
 		
 	}
 }

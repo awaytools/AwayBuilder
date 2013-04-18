@@ -206,7 +206,7 @@ package awaybuilder.view.components.controls
 					for each( var light:LightVO in dataProvider ) 
 					{
 						
-						if( light.linkedObject == asset.linkedObject ) 
+						if( light.equals(asset) ) 
 						{
 							return null;
 						}

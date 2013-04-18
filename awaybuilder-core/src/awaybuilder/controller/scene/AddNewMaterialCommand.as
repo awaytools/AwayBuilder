@@ -39,8 +39,7 @@ package awaybuilder.controller.scene
 			
 			saveOldValue( event, subMesh.material.clone() );
 			
-			subMesh.material = AssetFactory.GetAsset(newMaterial.linkedObject) as MaterialVO;
-			subMesh.apply();
+			subMesh.material = newMaterial;
 			
 			if( event.isUndoAction )
 			{

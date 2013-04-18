@@ -7,10 +7,11 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display3D.textures.Texture;
@@ -35,7 +36,7 @@ package awaybuilder.controller.scene
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( vo.linkedObject as Mesh );
+					Scene3DManager.removeMesh( AssetFactory.GetObject(vo) as Mesh );
 				}
 			}
 			removeItemsFromDocument( objects );
@@ -53,7 +54,7 @@ package awaybuilder.controller.scene
 				{
 					if( vo is MeshVO ) 
 					{
-						Scene3DManager.addObject( vo.linkedObject as Mesh );
+						Scene3DManager.addObject( AssetFactory.GetObject(vo) as Mesh );
 					}
 					document.scene.addItemAt( vo, 0 );
 				}
@@ -98,7 +99,7 @@ package awaybuilder.controller.scene
 				var item:AssetVO = source[i] as AssetVO;
 				for each( var oddItem:AssetVO in items ) 
 				{
-					if( item.linkedObject == oddItem.linkedObject )
+					if( item.equals( oddItem ) )
 					{
 						source.removeItemAt( i );
 						i--;

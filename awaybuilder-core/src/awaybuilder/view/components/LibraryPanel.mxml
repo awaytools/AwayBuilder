@@ -28,10 +28,6 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
-				<s:Button width="100%" label="New Diffuse Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newDiffuseMethod')"/>
-				<s:Button width="100%" label="New Normal Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newNormalMethod')"/>
-				<s:Button width="100%" label="New Ambient Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newAmbientMethod')"/>
-				<s:Button width="100%" label="New Specular Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newSpecularMethod')"/>
 				<s:Button width="100%" label="New Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newShadowMethod')"/>
 				<s:Button width="100%" label="New Effect Method" styleName="addItemButton" cornerRadius="0" click="close(true,'newEffectMethod')"/>
 			</s:SkinnablePopUpContainer>

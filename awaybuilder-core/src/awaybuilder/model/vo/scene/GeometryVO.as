@@ -5,19 +5,9 @@ package awaybuilder.model.vo.scene
 	
 	import mx.collections.ArrayCollection;
 
+	[Bindable]
 	public class GeometryVO extends AssetVO
 	{
-		public function GeometryVO( item:Geometry )
-		{
-			super( item.name, item );
-			
-			subGeometries = new ArrayCollection();
-			for each( var sub:ISubGeometry in item.subGeometries )
-			{
-				subGeometries.addItem(new SubGeometryVO(sub, this));
-			}
-			
-		}
 		
 		public var subGeometries:ArrayCollection;
 		

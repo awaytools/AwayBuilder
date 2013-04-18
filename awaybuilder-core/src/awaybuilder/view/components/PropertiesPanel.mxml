@@ -21,11 +21,6 @@
         <s:State name="container"/>
 		<s:State name="shadowMethod"/>
 		<s:State name="effectMethod"/>
-		<s:State name="normalMethod"/>
-		<s:State name="ambientMethod"/>
-		<s:State name="diffuseMethod"/>
-		<s:State name="specularMethod"/>
-		
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -133,8 +128,7 @@
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
-			<editors:MaterialPropertiesEditor id="materialProperties" textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"
-											  shadowMethods="{shadowMethods}" normalMethods="{normalMethods}" ambientMethods="{ambientMethods}" diffuseMethods="{diffuseMethods}" specularMethods="{specularMethods}"/>
+			<editors:MaterialPropertiesEditor id="materialProperties" textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll" shadowMethods="{shadowMethods}"/>
 			<editors:BitmapTexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
 			<editors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
 			<editors:LightPickerPropertiesEditor id="lightPickerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
@@ -143,10 +137,6 @@
 			<editors:ShadowMethodPropertyEditor id="shadowMethodProperties" prevSelected="{prevSelected}" lights="{lights}" data="{_data}" includeIn="shadowMethod,initAll" />
 			<editors:EffectMethodPropertyEditor id="effectMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
 			
-			<editors:NormalMethodPropertyEditor id="normalMethodProperties" prevSelected="{prevSelected}" textures="{textures}" data="{_data}" includeIn="normalMethod,initAll" />
-			<editors:AmbientMethodPropertyEditor id="ambientMethodProperties" prevSelected="{prevSelected}" textures="{textures}" data="{_data}" includeIn="ambientMethod,initAll" />
-			<editors:DiffuseMethodPropertyEditor id="diffuseMethodProperties" prevSelected="{prevSelected}" textures="{textures}" data="{_data}" includeIn="diffuseMethod,initAll" />
-			<editors:SpecularMethodPropertyEditor id="specularMethodProperties" prevSelected="{prevSelected}" textures="{textures}" data="{_data}" includeIn="specularMethod,initAll" />
 		</s:Group>
 	</s:Scroller>
 </controls:CollapsiblePanel>

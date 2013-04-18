@@ -49,10 +49,6 @@ package awaybuilder.controller.document
 
 			document.materials.addItem( AssetFactory.GetDefaultMaterial() );
 			document.textures.addItem( AssetFactory.GetDefaultTexture() );
-			document.methods.addItem( AssetFactory.GetDefaultDiffuseMethod() );
-			document.methods.addItem( AssetFactory.GetDefaultAmbientMethod() );
-			document.methods.addItem( AssetFactory.GetDefaultSpecularMethod() );
-			document.methods.addItem( AssetFactory.GetDefaultNormalMethod() );
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}

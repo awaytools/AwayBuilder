@@ -204,7 +204,7 @@
 										   addNewItem="lightDropDownList_addNewItemHandler(event)"
 										   />
 			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{lightDropDownList.selectedItem.linkedObject}"/>
+					  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{lightDropDownList.selectedItem}"/>
 		</s:HGroup>
 	</s:VGroup>
 	<s:Spacer height="6"/>

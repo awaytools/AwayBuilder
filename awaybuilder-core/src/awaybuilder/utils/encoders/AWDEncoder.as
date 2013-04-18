@@ -120,7 +120,7 @@ package awaybuilder.utils.encoders
 		
 		private function _encodeChild(vo : MeshVO) : void
 		{
-			_encodeMesh(vo.linkedObject as Mesh);
+//			_encodeMesh(vo.linkedObject as Mesh);
 		}
 		
 		

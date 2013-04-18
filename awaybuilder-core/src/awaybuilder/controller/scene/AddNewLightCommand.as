@@ -28,12 +28,13 @@ package awaybuilder.controller.scene
 			if( event.isUndoAction )
 			{
 				document.removeAsset( document.lights, oldValue );
-				Scene3DManager.removeLight( oldValue.linkedObject as LightBase );
+				Scene3DManager.removeLight( AssetFactory.GetObject(oldValue) as LightBase );
 			}
 			else 
 			{
+				trace(  event.newValue );
 				document.lights.addItemAt( newValue, 0 );
-				Scene3DManager.addLight( newValue.linkedObject as LightBase );
+				Scene3DManager.addLight( AssetFactory.GetObject(newValue) as LightBase );
 			}
 			
 			addToHistory( event );

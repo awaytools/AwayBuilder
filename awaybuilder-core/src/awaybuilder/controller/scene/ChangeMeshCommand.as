@@ -24,14 +24,13 @@ package awaybuilder.controller.scene
         override public function execute():void
         {
             var mesh:MeshVO = event.newValue as MeshVO;
-            var vo:MeshVO = AssetFactory.assets[ mesh.linkedObject ] as MeshVO;
+            var vo:MeshVO = event.items[0] as MeshVO;
 			
 			if( !event.oldValue ) {
 				event.oldValue = vo.clone();
 			}
 			
             vo.name = mesh.name;
-            vo.linkedObject.name = mesh.name;
 
             var subMeshes:Vector.<SubMesh> = new Vector.<SubMesh>();
             var newSubMeshes:Array = new Array();
@@ -40,8 +39,7 @@ package awaybuilder.controller.scene
             {
                 var updatedSubMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
                 var subMesh:SubMeshVO = vo.subMeshes[i] as SubMeshVO;
-                subMesh.material = AssetFactory.GetAsset(updatedSubMesh.material.linkedObject) as MaterialVO;
-				subMesh.apply();
+                subMesh.material = updatedSubMesh.material;
             }
 
             addToHistory( event );

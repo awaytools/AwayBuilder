@@ -10,6 +10,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentModel;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.utils.AssetFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.geom.Point;
@@ -27,9 +28,8 @@ package awaybuilder.controller.scene
 			
 			var newAsset:LightVO = event.newValue as LightVO;
 			
-			var vo:LightVO = document.getLight( newAsset.linkedObject ) as LightVO;
+			var vo:LightVO = event.items[0] as LightVO;
 			
-			var oldLight:LightBase = vo.linkedObject as LightBase;
 			saveOldValue( event, vo.clone() );
 			
 			vo.name = newAsset.name;
@@ -66,39 +66,35 @@ package awaybuilder.controller.scene
 				vo.shadowMapper = newAsset.shadowMapper;
 			}
 			
-			
 			var linkedObjectChanged:Boolean = false;
 			
 			if( event.isUndoAction )
 			{
-				if( vo.linkedObject != newAsset.linkedObject )
+				if( !vo.equals( newAsset ) )
 				{
-					vo.linkedObject = newAsset.linkedObject;
 					linkedObjectChanged = true;
 				}
 			}
 			else
 			{
-				if( (newAsset.type == LightVO.POINT) && (vo.linkedObject is DirectionalLight) )
-				{
-					vo.linkedObject = new PointLight();
-					linkedObjectChanged = true;
-				}
-				if( (newAsset.type == LightVO.DIRECTIONAL) && (vo.linkedObject is PointLight) )
-				{
-					vo.linkedObject = new DirectionalLight( newAsset.directionX, newAsset.directionY, newAsset.directionZ );
-					linkedObjectChanged = true;
-				}
+//				if( (newAsset.type == LightVO.POINT) && (vo.linkedObject is DirectionalLight) )
+//				{
+//					vo.linkedObject = new PointLight();
+//					linkedObjectChanged = true;
+//				}
+//				if( (newAsset.type == LightVO.DIRECTIONAL) && (vo.linkedObject is PointLight) )
+//				{
+//					vo.linkedObject = new DirectionalLight( newAsset.directionX, newAsset.directionY, newAsset.directionZ );
+//					linkedObjectChanged = true;
+//				}
 			}
 			
 			
-			vo.apply();
-			
-			if( linkedObjectChanged ) // update all current
-			{
-				Scene3DManager.removeLight( oldLight );
-				Scene3DManager.addLight( vo.linkedObject as LightBase );
-			}
+//			if( linkedObjectChanged ) // update all current
+//			{
+//				Scene3DManager.removeLight( oldLight );
+//				Scene3DManager.addLight(  AssetFactory.GetAsset(vo) as LightBase );
+//			}
 			
 			event.items = [vo];
 			addToHistory( event );

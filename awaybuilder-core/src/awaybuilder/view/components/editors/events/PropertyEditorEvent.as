@@ -15,11 +15,8 @@ package awaybuilder.view.components.editors.events
 		
 		public static const MATERIAL_CHANGE:String = "materialChange";
 		public static const MATERIAL_ADD_SHADOWMETHOD:String = "materialAddShadowMethod";
+		public static const MATERIAL_ADD_TEXTURE:String = "materialAddTexture";
 		public static const MATERIAL_ADD_LIGHTPICKER:String = "materialAddLightPicker";
-		public static const MATERIAL_ADD_DIFFUSE_METHOD:String = "materialAddDiffuseMethod";
-		public static const MATERIAL_ADD_NORMAL_METHOD:String = "materialAddNormalMethod";
-		public static const MATERIAL_ADD_SPECULAR_METHOD:String = "materialAddSpecularMethod";
-		public static const MATERIAL_ADD_AMBIENT_METHOD:String = "materialAddAmbientMethod";
 		public static const MATERIAL_ADD_EFFECT_METHOD:String = "materialAddEffectMethod";
 		public static const MATERIAL_REMOVE_EFFECT_METHOD:String = "materialRemoveEffectMethod";
 		public static const MATERIAL_NAME_CHANGE:String = "materialNameChange";
@@ -38,22 +35,6 @@ package awaybuilder.view.components.editors.events
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";
 		public static const SHADOWMETHOD_STEPPER_CHANGE:String = "shadowmethodStepperChange";
 		public static const SHADOWMETHOD_ADD_LIGHT:String = "shadowmethodAddLight";
-		
-		public static const DIFFUSE_METHOD_CHANGE:String = "diffuseMethodChange";
-		public static const DIFFUSE_METHOD_STEPPER_CHANGE:String = "diffuseMethodStepperChange";
-		public static const DIFFUSE_METHOD_ADD_TEXTURE:String = "diffuseMethodAddNewTextureChange";
-		
-		public static const AMBIENT_METHOD_CHANGE:String = "ambientMethodChange";
-		public static const AMBIENT_METHOD_STEPPER_CHANGE:String = "ambientMethodStepperChange";
-		public static const AMBIENT_METHOD_ADD_TEXTURE:String = "ambientMethodAddNewTextureChange";
-		
-		public static const NORMAL_METHOD_CHANGE:String = "normalMethodChange";
-		public static const NORMAL_METHOD_STEPPER_CHANGE:String = "normalMethodStepperChange";
-		public static const NORMAL_METHOD_ADD_TEXTURE:String = "normalMethodAddNewTextureChange";
-		
-		public static const SPECULAR_METHOD_CHANGE:String = "specularMethodChange";
-		public static const SPECULAR_METHOD_STEPPER_CHANGE:String = "specularMethodStepperChange";
-		public static const SPECULAR_METHOD_ADD_TEXTURE:String = "specularMethodAddNewTextureChange";
 		
 		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";
 		public static const LIGHTPICKER_STEPPER_CHANGE:String = "lightPickerStepperChange";

@@ -35,9 +35,9 @@ package awaybuilder.controller.clipboard
 				var meshVO:MeshVO = vo as MeshVO;
 				if( meshVO )
 				{
-					var newMesh:Mesh = Mesh(meshVO.linkedObject).clone() as Mesh;
-					copiedObjects.push( new MeshVO(newMesh) );
-					trace( "newMesh.name  = " + newMesh.name );
+//					var newMesh:Mesh = Mesh(meshVO.linkedObject).clone() as Mesh;
+//					copiedObjects.push( new MeshVO(newMesh) );
+//					trace( "newMesh.name  = " + newMesh.name );
 				}
 				
 			}

@@ -2,13 +2,25 @@ package awaybuilder.view.mediators
 {
     import away3d.core.base.Object3D;
     import away3d.entities.Mesh;
+    import away3d.library.assets.NamedAssetBase;
+    import away3d.materials.ColorMaterial;
+    import away3d.materials.MaterialBase;
+    import away3d.materials.SinglePassMaterialBase;
+    import away3d.materials.TextureMaterial;
+    import away3d.materials.lightpickers.LightPickerBase;
+    import away3d.materials.methods.ShadowMapMethodBase;
+    import away3d.textures.Texture2DBase;
     
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.IDocumentModel;
     import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AssetVO;
+    import awaybuilder.model.vo.scene.EffectMethodVO;
+    import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
+    import awaybuilder.model.vo.scene.ObjectVO;
+    import awaybuilder.utils.AssetFactory;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
     import awaybuilder.utils.scene.modes.GizmoMode;
@@ -45,6 +57,20 @@ package awaybuilder.view.mediators
 		override public function onRegister():void
 		{
 			FlexGlobals.topLevelApplication.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
+			
+			addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
+			addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
+			
+			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
+			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
+			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
+			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
+			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
@@ -196,6 +222,164 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
+		private function eventDispatcher_translateHandler(event:SceneEvent):void
+		{
+			var object:ObjectVO = event.items[0] as ObjectVO;
+			if( object ) 
+			{
+				applyObject( object );
+			}
+		}
+		private function applyObject( asset:ObjectVO ):void
+		{
+			var o:Object3D = Object3D( AssetFactory.GetObject(asset) );
+			o.x = asset.x;
+			o.y = asset.y;
+			o.z = asset.z;
+			
+			o.scaleX = asset.scaleX;
+			o.scaleY = asset.scaleY;
+			o.scaleZ = asset.scaleZ;
+			
+			o.rotationX = asset.rotationX;
+			o.rotationY = asset.rotationY;
+			o.rotationZ = asset.rotationZ;
+		}
+		private function applyMaterial( asset:MaterialVO ):void
+		{
+			var m:MaterialBase = MaterialBase( AssetFactory.GetObject(asset) );
+			m.repeat = asset.repeat;
+			
+			m.alphaPremultiplied = asset.alphaPremultiplied;
+			
+			m.repeat = asset.repeat;
+			
+			m.bothSides = asset.bothSides;
+			m.extra = asset.extra;
+			
+			// TODO: check why we cannot set null
+			if( asset.lightPicker )
+			{
+				m.lightPicker = AssetFactory.GetObject(asset.lightPicker) as LightPickerBase;
+			}
+			
+			m.mipmap = asset.mipmap;
+			m.smooth = asset.smooth;
+			m.blendMode = asset.blendMode;
+			
+			if( asset.type == MaterialVO.COLOR )
+			{
+				var cm:ColorMaterial = m as ColorMaterial;
+//				cm.color = diffuseMethod.diffuseColor;
+//				cm.alpha = alpha;
+			}
+			else if( asset.type == MaterialVO.TEXTURE )
+			{
+				var tm:TextureMaterial = m as TextureMaterial;
+				
+				
+				tm.shadowMethod = null;
+				if( asset.shadowMethod )
+				{
+					tm.shadowMethod = AssetFactory.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+				}
+				
+				trace( asset.texture.name );
+				tm.texture = AssetFactory.GetObject(asset.texture) as Texture2DBase;
+					
+//				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
+//				tm.diffuseMethod.diffuseColor = diffuseColor;
+				
+//				if( specularMap )
+//					tm.specularMethod.texture = specularMap.linkedObject as Texture2DBase;
+				
+//				if( ambientTexture )
+//					tm.ambientMethod.texture = ambientTexture.linkedObject as Texture2DBase;
+			}
+			var material:SinglePassMaterialBase = m as SinglePassMaterialBase;
+			if( material ) 
+			{
+				var i:int;
+//				for (i = 0; i < material.numMethods; i++) 
+//				{
+//					if( (i < effectMethods.length) && material.getMethodAt( i ) != material.getMethodAt( i ) ) 
+//					{
+//						material.removeMethod( material.getMethodAt( i ) );
+//						i--;
+//					}
+//				}
+//				for (i = 0; i < effectMethods.length; i++) 
+//				{
+//					if( (i < material.numMethods) && effectMethods.getItemAt( i ) != material.getMethodAt( i ) ) 
+//					{
+//						material.addMethodAt( effectMethods.getItemAt( i ) as 
+//					}
+//				}
+//				for (i = 0; i < material.numMethods; i++) 
+//				{
+//					material.removeMethod( material.getMethodAt(i) );
+//					i--;
+//				}
+//				for (i = 0; i < asset.effectMethods.length; i++) 
+//				{
+//					material.addMethod( EffectMethodVO(effectMethods.getItemAt(i)).linkedObject as EffectMethodBase );
+//				}
+				
+			}
+		}
+		private function eventDispatcher_changeLightHandler(event:SceneEvent):void
+		{
+		}
+		private function eventDispatcher_changeLightPickerHandler(event:SceneEvent):void
+		{
+		}
+		
+		private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
+		{
+			for each( var item:MeshVO in event.items )
+			{
+				var obj:Mesh = AssetFactory.GetObject( item ) as Mesh;
+				applyName( obj, item );
+			}
+		}
+		
+		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
+		{
+		}
+		
+		private function eventDispatcher_addNewMethodHandler(event:SceneEvent):void
+		{
+		}
+		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
+		{
+		}
+		
+		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
+		{
+			var material:MaterialVO = event.items[0] as MaterialVO;
+			if( material ) 
+			{
+				applyMaterial( material );
+			}
+		}
+		private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
+		{
+			trace( "event.items[0] = " + event.items[0] );
+			var material:MaterialVO = event.items[0] as MaterialVO;
+			if( material ) 
+			{
+				applyMaterial( material );
+			}
+		}
+		
+		private function applyName( obj:Object, asset:AssetVO ):void 
+		{
+			var namedAssetBase:NamedAssetBase = obj as NamedAssetBase;
+			if( namedAssetBase )
+			{
+				namedAssetBase.name = asset.name;
+			}
+		}
 		private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
 		{
 			if( event.items.length )
@@ -205,7 +389,7 @@ package awaybuilder.view.mediators
 					if( event.items[0] is MeshVO )
 					{
 						var mesh:MeshVO = event.items[0] as MeshVO;
-						selectObjectsScene( mesh.linkedObject as Object3D );
+						selectObjectsScene( AssetFactory.GetObject( mesh ) as Object3D );
 					}
 					else {
                         Scene3DManager.unselectAll();
@@ -239,12 +423,12 @@ package awaybuilder.view.mediators
             CameraManager.focusTarget( Scene3DManager.selectedObject );
         }
 
-		
 		//----------------------------------------------------------------------
 		//
 		//	scene handlers
 		//
 		//----------------------------------------------------------------------
+		
 		
 		private function scene_readyHandler(event:Scene3DManagerEvent):void
 		{

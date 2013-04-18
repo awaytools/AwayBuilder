@@ -29,7 +29,7 @@ package awaybuilder.controller.scene
             vo.rotationY = vector.y;
             vo.rotationZ = vector.z;
 
-			vo.apply();
+//			vo.apply();
 
             addToHistory( event );
         }
