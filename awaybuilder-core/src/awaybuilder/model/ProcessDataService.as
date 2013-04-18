@@ -1,5 +1,8 @@
 package awaybuilder.model
 {
+	import away3d.library.assets.BitmapDataAsset;
+	import awaybuilder.utils.logging.AwayBuilderLogger;
+	import away3d.events.ParserEvent;
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.data.Skeleton;
 	import away3d.animators.data.SkeletonPose;
@@ -60,6 +63,7 @@ package awaybuilder.model
 			_nextEvent = nextEvent;
 			Parsers.enableAllBundled();
 			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
+			AssetLibrary.addEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
 			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.addEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
 			AssetLibrary.load(new URLRequest(url));	
@@ -72,10 +76,17 @@ package awaybuilder.model
 		{
 			Alert.show( event.message, "Asset not loaded" );
 		}
+
+		private function textureSizeErrorHandler( event:AssetEvent ):void
+		{
+			var bdAsset:BitmapDataAsset = event.asset as BitmapDataAsset;
+			AwayBuilderLogger.warn("Bitmap image not power of 2 or >2048:"+bdAsset.name+" size:"+bdAsset.bitmapData.width+"x"+bdAsset.bitmapData.height);
+		}
 		
 		private function resourceCompleteHandler( event:LoaderEvent ):void
 		{
 			AssetLibrary.removeEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
+			AssetLibrary.removeEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
 			AssetLibrary.removeEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.removeEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
 			
