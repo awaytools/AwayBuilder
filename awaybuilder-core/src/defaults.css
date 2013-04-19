@@ -413,6 +413,11 @@ s|DropDownList
     borderColor: #222222;
 }
 
+s|DataGrid
+{
+	contentBackgroundColor: #333333;
+}
+
 .toolsPanel
 {
 	chromeColor: #1d1d1c;

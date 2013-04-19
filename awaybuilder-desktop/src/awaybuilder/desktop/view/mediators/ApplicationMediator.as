@@ -1,6 +1,8 @@
 package awaybuilder.desktop.view.mediators
 {
 
+	import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
+	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.controller.clipboard.events.ClipboardEvent;
 	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.events.DocumentEvent;
@@ -170,7 +172,9 @@ package awaybuilder.desktop.view.mediators
 			addContextListener( SceneEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchScaleCameraHandler);
 
             addContextListener( UndoRedoEvent.UNDO_LIST_CHANGE, context_undoListChangeHandler);
-            
+  
+            addContextListener( ErrorLogEvent.LOG_ENTRY_MADE, eventDispatcher_errorLogHandler);
+          
 //			this.eventMap.mapListener(this._propertiesWindow, AIREvent.WINDOW_ACTIVATE, propertiesWindow_windowActivateHandler);
 			
 			addViewListener( Event.CLOSE, awaybuilder_closeHandler );
@@ -225,6 +229,10 @@ package awaybuilder.desktop.view.mediators
             _undoItem.enabled = undoRedoModel.canUndo;
             _redoItem.enabled = undoRedoModel.canRedo;
         }
+	
+		private function eventDispatcher_errorLogHandler(event:ErrorLogEvent):void {
+			this.dispatch(new TextureSizeErrorsEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS));
+		}
 
 		private function updatePageTitle():void
 		{

@@ -1,5 +1,7 @@
 package awaybuilder.model
 {
+	import awaybuilder.controller.events.ErrorLogEvent;
+	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	import away3d.library.assets.BitmapDataAsset;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	import away3d.events.ParserEvent;
@@ -61,6 +63,9 @@ package awaybuilder.model
 		{
 			_document = new DocumentVO();
 			_nextEvent = nextEvent;
+			
+			AwayBuilderLoadErrorLogger.clearLog();
+			
 			Parsers.enableAllBundled();
 			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
 			AssetLibrary.addEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
@@ -80,7 +85,7 @@ package awaybuilder.model
 		private function textureSizeErrorHandler( event:AssetEvent ):void
 		{
 			var bdAsset:BitmapDataAsset = event.asset as BitmapDataAsset;
-			AwayBuilderLogger.warn("Bitmap image not power of 2 or >2048:"+bdAsset.name+" size:"+bdAsset.bitmapData.width+"x"+bdAsset.bitmapData.height);
+			AwayBuilderLoadErrorLogger.logError("WARN:"+bdAsset.name+" - Bitmap dimensions are not a power of 2 or larger than 2048. Size:"+bdAsset.bitmapData.width+"x"+bdAsset.bitmapData.height, { assetEvent:bdAsset });
 		}
 		
 		private function resourceCompleteHandler( event:LoaderEvent ):void
@@ -98,12 +103,17 @@ package awaybuilder.model
 				}
 			}
 			
+			if (AwayBuilderLoadErrorLogger.log.length>0) {
+				dispatch( new ErrorLogEvent(ErrorLogEvent.LOG_ENTRY_MADE));
+			}
+			
 			_nextEvent.newValue = _document;
 			dispatch( _nextEvent );
 			
 			CursorManager.removeBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
 		}
+		
 		private function assetCompleteHandler( event:AssetEvent ):void
 		{		
 //			trace( event.asset.assetType + " " + event.asset );

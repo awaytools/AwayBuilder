@@ -1,5 +1,7 @@
 package awaybuilder.desktop
 {
+    import awaybuilder.desktop.controller.ShowTextureSizeErrorsCommand;
+    import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
     import awaybuilder.CoreContext;
     import awaybuilder.controller.events.DocumentEvent;
     import awaybuilder.controller.events.DocumentLoadEvent;
@@ -73,6 +75,8 @@ package awaybuilder.desktop
 			this.commandMap.mapEvent(AboutEvent.SHOW_ABOUT, ShowAboutWindowCommand);
 			
 			this.commandMap.mapEvent(DocumentLoadEvent.SHOW_DOCUMENT_LOAD_PROGRESS, ShowDocumentLoadProgressWindowCommand);
+
+			this.commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
 			
 			this.injector.mapSingleton(UpdateModel);
 			this.injector.mapSingletonOf(IDocumentService, FileSystemDocumentService);
