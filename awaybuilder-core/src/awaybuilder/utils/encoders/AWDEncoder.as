@@ -4,13 +4,24 @@ package awaybuilder.utils.encoders
 	import away3d.core.base.ISubGeometry;
 	import away3d.core.base.SubMesh;
 	import away3d.entities.Mesh;
+	import away3d.materials.ColorMaterial;
+	import away3d.materials.MaterialBase;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.utils.DefaultMaterialManager;
+	import away3d.textures.BitmapTexture;
+	import away3d.textures.Texture2DBase;
+	import away3d.textures.TextureProxyBase;
 	
 	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.utils.AssetFactory;
 	
+	import flash.display.PNGEncoderOptions;
+	import flash.display3D.textures.TextureBase;
 	import flash.geom.Matrix3D;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -34,6 +45,9 @@ package awaybuilder.utils.encoders
 		private static const UINT32 : uint = 6;
 		private static const FLOAT32 : uint = 11;
 		private static const FLOAT64 : uint = 12;
+		private static const BOOL : uint = 21;
+		private static const COLOR : uint = 22;
+		private static const BADDR : uint = 23;
 		
 		
 		public function AWDEncoder()
@@ -56,10 +70,7 @@ package awaybuilder.utils.encoders
 			scene = document.scene.source;
 			for each ( var vo:AssetVO in scene ) 
 			{
-				if( vo is MeshVO ) // also can be ContainerVO
-				{
-					_encodeChild( vo as MeshVO );
-				}
+				_encodeChild( vo as MeshVO );
 			}
 			
 			// Header
@@ -96,6 +107,84 @@ package awaybuilder.utils.encoders
 		}
 		
 		
+		private function _encodeProperty(id : int, value : *, type : uint) : void
+		{
+			var i : uint;
+			var len  : uint;
+			var flen : uint;
+			var values : Array;
+			
+			if (value is Array) {
+				len = value.length;
+				values = value;
+			}
+			else {
+				values = [ value ];
+				len = 1;
+			}
+			
+			switch (type) {
+				case INT8:
+				case UINT8:
+					flen = 1;
+					break;
+				case INT16:
+				case UINT16:
+					flen = 2;
+					break;
+				case INT32:
+				case UINT32:
+				case COLOR:
+				case BADDR:
+				case FLOAT32:
+					flen = 4;
+					break;
+				case FLOAT64:
+					flen = 8;
+				break;
+			}
+			
+			_body.writeShort(id);
+			_body.writeUnsignedInt(len * flen);
+			
+			for (i=0; i<len; i++) {
+				switch (type) {
+					case INT8:
+					case UINT8:
+						_body.writeByte(values[i]);
+						break;
+					
+					case BOOL:
+						_body.writeByte(values[i]? 1 : 0);
+						break;
+					
+					case INT16:
+					case UINT16:
+						_body.writeShort(values[i]);
+						break;
+					
+					case INT32:
+						_body.writeInt(values[i]);
+						break;
+					
+					case UINT32:
+					case COLOR:
+					case BADDR:
+						_body.writeUnsignedInt(values[i]);
+						break;
+					
+					case FLOAT32:
+						_body.writeFloat(values[i]);
+						break;
+					
+					case FLOAT64:
+						_body.writeDouble(values[i]);
+						break;
+				}
+			}
+		}
+		
+		
 		private function _beginElement() : void
 		{
 			_elemSizeOffsets.push(_body.position);
@@ -118,17 +207,134 @@ package awaybuilder.utils.encoders
 			}
 		}
 		
-		private function _encodeChild(vo : MeshVO) : void
+		private function _encodeChild(vo : ContainerVO) : void
 		{
-//			_encodeMesh(vo.linkedObject as Mesh);
+			var child : ContainerVO;
+			
+			if (vo is MeshVO) {
+				_encodeMesh(AssetFactory.GetObject(vo) as Mesh);
+			}
+			
+			for each (child in vo.children) {
+				_encodeChild(child as ContainerVO);
+			}
+		}
+		
+		
+		private function _encodeTexture(tex : Texture2DBase) : void
+		{
+			if (tex is BitmapTexture) {
+				var ba : ByteArray;
+				var btex : BitmapTexture;
+				
+				btex = BitmapTexture(tex);
+				
+				_encodeBlockHeader(82);
+				_beginElement(); // Block
+				
+				_body.writeUTF(tex.name);
+				
+				// TODO: Check whether to embed or use external textures,
+				// depending on some app-specific configuration
+				ba = new ByteArray();
+				btex.bitmapData.encode(btex.bitmapData.rect, new PNGEncoderOptions(), ba);
+				_body.writeByte(1);
+				_body.writeUnsignedInt(ba.length);
+				_body.writeBytes(ba);
+				
+				_beginElement(); // Properties (empty)
+				_endElement(); // Properties
+				
+				_beginElement(); // Attributes (empty)
+				_endElement(); // Attributes
+				
+				_endElement(); // Block
+				
+				_blockCache[tex] = _blockId;
+			}
+			else {
+				// Fail on unsupported type (e.g. ATF?)
+			}
+		}
+		
+		
+		private function _encodeMaterial(mtl : MaterialBase) : void
+		{
+			if (mtl is TextureMaterial) {
+				var tmtl : TextureMaterial;
+				
+				tmtl = TextureMaterial(mtl);
+				
+				if (!_blockCache[tmtl.texture])
+					_encodeTexture(tmtl.texture);
+				
+				_encodeBlockHeader(81);
+				_beginElement(); // Block
+				
+				_body.writeUTF(mtl.name);
+				_body.writeByte(2);
+				
+				// TODO: Implement shading methods
+				_body.writeByte(0);
+				
+				// Property list
+				_beginElement(); // Prop list
+				_encodeProperty(2, _blockCache[tmtl.texture], BADDR);
+				_encodeProperty(10, tmtl.alpha, FLOAT32);
+				_encodeProperty(11, tmtl.alphaBlending, BOOL);
+				_encodeProperty(12, tmtl.alphaThreshold, FLOAT32);
+				_endElement(); // Prop list
+				
+				// TODO: Add shading methods here
+				
+				_beginElement(); // Attr list
+				_endElement(); // Attr list
+				
+				_endElement(); // Block
+				
+				_blockCache[mtl] = _blockId;
+			}
+			else if (mtl is ColorMaterial) {
+				var cmtl : ColorMaterial;
+				
+				cmtl = ColorMaterial(mtl);
+				
+				_encodeBlockHeader(81);
+				_beginElement(); // Block
+				
+				_body.writeUTF(mtl.name);
+				_body.writeByte(1);
+				
+				// TODO: Implement shading methods
+				_body.writeByte(0);
+				
+				// Property list
+				_beginElement(); // Prop list
+				_encodeProperty(1, cmtl.color, COLOR);
+				_encodeProperty(10, cmtl.alpha, FLOAT32);
+				_encodeProperty(11, cmtl.alphaBlending, BOOL);
+				_encodeProperty(12, cmtl.alphaThreshold, FLOAT32);
+				_endElement(); // Prop list
+				
+				// TODO: Add shading methods here
+				
+				_beginElement(); // Attr list
+				_endElement(); // Attr list
+				
+				_endElement(); // Block
+				
+				_blockCache[mtl] = _blockId;
+			}
 		}
 		
 		
 		private function _encodeMesh(mesh : Mesh) : void
 		{
+			var i : uint;
 			var geomId : uint;
 			var parentId : uint;
-			var materialId : uint;
+			var materialIds : Vector.<uint>;
+			var hasSubMaterials : Boolean;
 			
 			trace('encoding mesh');
 			
@@ -136,14 +342,36 @@ package awaybuilder.utils.encoders
 				_encodeGeometry(mesh.geometry);
 			geomId = _blockCache[mesh.geometry];
 			
-			// TODO: Export materials
-			materialId = 0;
+			for (i=0; i<mesh.subMeshes.length; i++) {
+				if (mesh.subMeshes[i].material != mesh.material) {
+					hasSubMaterials = true;
+					break;
+				}
+			}
+			
+			materialIds = new Vector.<uint>();
+			if (hasSubMaterials) {
+				for (i=0; i<mesh.subMeshes.length; i++) {
+					var sub : SubMesh = mesh.subMeshes[i];
+					if (!_blockCache[sub.material])
+						_encodeMaterial(sub.material);
+					
+					materialIds[i] = _blockCache[sub.material];
+				}
+			}
+			else if (mesh.material) {
+				if (!_blockCache[mesh.material])
+					_encodeMaterial(mesh.material);
+				
+				materialIds[0] = _blockCache[mesh.material];
+			}
+			else {
+				materialIds[0] = 0;
+			}
 			
 			parentId = 0;
 			if (mesh.parent && _blockCache[mesh])
 				parentId = _blockCache[mesh];
-			
-			// TODO: deal with sub-materials
 			
 			_encodeBlockHeader(23);
 			_beginElement(); // Block
@@ -153,9 +381,10 @@ package awaybuilder.utils.encoders
 			_body.writeUTF(mesh.name);
 			_body.writeUnsignedInt(geomId);
 			
-			// TODO: Export materials
-			_body.writeShort(1);
-			_body.writeUnsignedInt(0);
+			_body.writeShort(materialIds.length);
+			for (i=0; i<materialIds.length; i++) {
+				_body.writeUnsignedInt(materialIds[i]);
+			}
 			
 			_beginElement(); // Prop list
 			_endElement(); // Prop list
