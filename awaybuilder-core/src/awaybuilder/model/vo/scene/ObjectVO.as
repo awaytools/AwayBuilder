@@ -19,6 +19,10 @@ package awaybuilder.model.vo.scene
 		public var rotationY:Number;
 		public var rotationZ:Number;
 		
+		public var pivotX:Number;
+		public var pivotY:Number;
+		public var pivotZ:Number;
+		
 		public function clone():ObjectVO
 		{
 			throw new Error( "Abstract method");

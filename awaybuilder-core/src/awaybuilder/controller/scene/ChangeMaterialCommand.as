@@ -55,7 +55,6 @@ package awaybuilder.controller.scene
 			
 			vo.texture = newMaterial.texture;
 			
-			trace( "vo.texture = " + vo.texture );
 			if( newMaterial.effectMethods )
 			{
 				vo.effectMethods = new ArrayCollection( newMaterial.effectMethods.source );

@@ -72,7 +72,7 @@ package awaybuilder.view.mediators
 		
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
 		{
-			var method:EffectMethodVO = AssetFactory.CreateEffectMethod();
+			var method:EffectMethodVO =  AssetFactory.CreateEffectMethod( event.data as String );
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, null, method));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
 		}

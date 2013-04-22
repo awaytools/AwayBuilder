@@ -217,7 +217,8 @@ package awaybuilder.view.mediators
 		}
 		private function view_materialAddEffectMetodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], AssetFactory.CreateEffectMethod()));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], AssetFactory.CreateEffectMethod( event.data as String )));
+			
 		}
 		private function view_materialRemoveEffectMetodHandler(event:PropertyEditorEvent):void
 		{

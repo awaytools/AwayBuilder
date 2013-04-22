@@ -45,6 +45,18 @@
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
+		
+		private function stepperFormatFunc(val:Number):String 
+		{ 
+			return val.toString().replace(".",","); 
+		} 
+		
+		private function stepperParseFunc(val:String):Number 
+		{ 
+			var stringVal:String = val.replace(",","."); 
+			return Number(stringVal);     
+		} 
+		
 	]]></fx:Script>
 	
 	
@@ -61,66 +73,61 @@
 		</s:HGroup>
 	</s:Group>
 	
-	<s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
-	<s:Spacer height="1"/>
+	<s:Spacer height="6"/>
 	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-			<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="xStepper"
+			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="xStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
 								  minimum="-999999" maximum="999999" width="100%" value="{_asset.x}"
 								  change="position_commitHandler(event)" />
-			</s:FormItem>
-			<s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="yStepper"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.y}"
+				<s:NumericStepper id="yStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
+								  minimum="-999999" maximum="999999" width="100%" value="{_asset.y}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
+								  change="position_commitHandler(event)"/>
+				<s:NumericStepper id="zStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
+								  minimum="-999999" maximum="999999" width="100%" value="{_asset.z}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
 								  change="position_commitHandler(event)"/>
 			</s:FormItem>
-			<s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="zStepper"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.z}"
+			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="pivotXStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
+								  minimum="-999999" maximum="999999" width="100%" value="{_asset.pivotX}"
+								  change="position_commitHandler(event)" />
+				<s:NumericStepper id="pivotYStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
+								  minimum="-999999" maximum="999999" width="100%" value="{_asset.pivotY}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
+								  change="position_commitHandler(event)"/>
+				<s:NumericStepper id="pivotZStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" 
+								  minimum="-999999" maximum="999999" width="100%" value="{_asset.pivotZ}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
 								  change="position_commitHandler(event)"/>
 			</s:FormItem>
-			<controls:HorizontalFormSeparator/>
-			
-			<s:FormItem label="Rotation X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="rotationXStepper"
-								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}"
+			<s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="rotationXStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
+								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
 								  change="rotation_commitHandler(event)"/>
-			</s:FormItem>
-			<s:FormItem label="Rotation Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="rotationYStepper"
+				<s:NumericStepper id="rotationYStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
 								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
 								  change="rotation_commitHandler(event)"/>
-			</s:FormItem>
-			<s:FormItem label="Rotation Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="rotationZStepper"
+				<s:NumericStepper id="rotationZStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
 								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}"
 								  change="rotation_commitHandler(event)"/>
 			</s:FormItem>
 			<controls:HorizontalFormSeparator/>
-				
-			<s:FormItem label="Scale X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="scaleXStepper"
+			<s:FormItem label="Scale" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:NumericStepper id="scaleXStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
 								  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleX}"
 								  change="scale_commitHandler(event)" />
-			</s:FormItem>
-			<s:FormItem label="Scale Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="scaleYStepper"
+				<s:NumericStepper id="scaleYStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
 								  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleY}"
 								  change="scale_commitHandler(event)"/>
-			</s:FormItem>
-			<s:FormItem label="Scale Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="scaleZStepper"
+				<s:NumericStepper id="scaleZStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
 								  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleZ}"
 								  change="scale_commitHandler(event)"/>
 			</s:FormItem>
 		</s:Form>
 	</controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Children" collapsed="true">
-		<s:List dataProvider="{_asset.children}" width="100%" labelField="name" skinClass="awaybuilder.view.skins.ChildrenListSkin" />
+	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
 	</controls:CollapsiblePanel>
 </editors:EditorBase>

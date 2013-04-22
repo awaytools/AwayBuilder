@@ -426,17 +426,24 @@ s|DataGrid
 	backgroundColor:#1d1d1c;
 }
 
-controls|CollapsiblePanel {
+controls|CollapsiblePanel
+{
     chromeColor: #1d1d1c;
     color: #dbdbdb;
     fontSize: 11;
     backgroundColor: #1d1d1c;
     skinClass: ClassReference("awaybuilder.view.skins.CollapsibleDropdownPanelSkin");
 }
-controls|LibraryCollapsiblePanel {
+controls|LibraryCollapsiblePanel
+{
 	chromeColor: #1d1d1c;
 	color: #dbdbdb;
 	fontSize: 11;
 	backgroundColor: #1d1d1c;
 	skinClass: ClassReference("awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin");
+}
+controls|DragableNumericStepper
+{
+	skinClass: ClassReference("awaybuilder.view.skins.DragableNumericStepperSkin");
+	focusSkin: ClassReference("awaybuilder.view.skins.DragableLabelFocusSkin");
 }

@@ -69,7 +69,7 @@
 		}
 		
 	]]></fx:Script>
-	<s:Label text="{'sub mesh ' + (this.itemIndex+1)}" fontWeight="bold"/>
+	<s:Label text="{_subMesh.name + ' ' + (this.itemIndex+1)}" fontWeight="bold"/>
 	<!--<s:HGroup width="100%" paddingLeft="4">
 		<s:Label text="sub geometry:" fontWeight="bold"/>
 		<s:Label text="{_subMesh.subGeometry.name}"/>

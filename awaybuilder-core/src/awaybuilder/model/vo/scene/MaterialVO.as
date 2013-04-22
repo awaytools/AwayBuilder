@@ -47,6 +47,11 @@ package awaybuilder.model.vo.scene
 //		public var normalMethod:NormalMethodVO;
 //		public var normalMap:TextureVO;
 		
+		public var ambientMethodType:String;
+		public var diffuseMethodType:String;
+		public var normalMethodType:String;
+		public var specularMethodType:String;
+		
 		public var shadowMethod:ShadowMethodVO;
 		
 		public var texture:TextureVO;

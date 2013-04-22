@@ -71,7 +71,6 @@
 			<s:Label text="Lights:" fontWeight="bold"/>
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
-		<s:Label text="drop light from library" width="100%" textAlign="center" visible="{_asset.lights.length==0}" includeInLayout="{_asset.lights.length==0}" alpha="0.5"/>
 		<controls:DroppableLightsList id="lightsList" dataProvider="{_asset.lights}" 
 									  dropEnabled="true" width="100%" 
 									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 

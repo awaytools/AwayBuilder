@@ -161,7 +161,7 @@ package awaybuilder.utils
 		}
 		private static function fillSubMesh( asset:SubMeshVO, item:SubMesh ):SubMeshVO
 		{
-			asset.name = "subMesh";
+			asset.name = "SubMesh";
 			asset.material = AssetFactory.GetAsset( item.material ) as MaterialVO;
 //			this.subGeometry = AssetFactory.GetAsset( object.subGeometry ) as SubGeometryVO;
 			return asset;
@@ -306,6 +306,9 @@ package awaybuilder.utils
 			asset.x = item.x;
 			asset.y = item.y;
 			asset.z = item.z;
+			asset.pivotX = item.pivotPoint.x;
+			asset.pivotY = item.pivotPoint.y;
+			asset.pivotZ = item.pivotPoint.z;
 			asset.scaleX = item.scaleX;
 			asset.scaleY = item.scaleY;
 			asset.scaleZ = item.scaleZ;
@@ -377,9 +380,25 @@ package awaybuilder.utils
 //			return AssetFactory.GetAsset( method ) as ShadowMethodVO;
 //		}
 		
-		public static function CreateEffectMethod():EffectMethodVO
+		public static function CreateEffectMethod( type:String ):EffectMethodVO
 		{
-			var method:EffectMethodBase = new ColorMatrixMethod([ 0.2225, 0.7169, 0.0606, 0, 0, 0.2225, 0.7169, 0.0606, 0, 0, 0.2225, 0.7169, 0.0606, 0, 0, 0, 0, 0, 1, 1]);
+			var method:EffectMethodBase;
+			switch( type )
+			{
+				case "LightMapMethod":
+				case "ProjectiveTextureMethod":
+				case "RimLightMethod":
+				case "ColorTransformMethod":
+				case "AlphaMaskMethod":
+				case "ColorMatrixMethod":
+					method = new ColorMatrixMethod([ 0.2225, 0.7169, 0.0606, 0, 0, 0.2225, 0.7169, 0.0606, 0, 0, 0.2225, 0.7169, 0.0606, 0, 0, 0, 0, 0, 1, 1]);
+					break;
+				case "RefractionEnvMapMethod":
+				case "OutlineMethod":
+				case "FresnelEnvMapMethod":
+				case "FogMethod":
+				case "EnvMapMethod":
+			}
 			return AssetFactory.GetAsset( method ) as EffectMethodVO;
 		}
 		public static function CreateLight():LightVO

@@ -5,8 +5,55 @@
 		  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" >
     <fx:Declarations>
 		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
+		<s:ArrayCollection id="ambientList">
+			<fx:Object label="BasicAmbientMethod" value="BasicAmbientMethod"/>
+			<fx:Object label="EnvMapAmbientMethod" value="EnvMapAmbientMethod"/>
+		</s:ArrayCollection>
+		<s:ArrayCollection id="diffuseList">
+			<fx:Object label="BasicDiffuseMethod" value="BasicDiffuseMethod"/>
+			<fx:Object label="DepthDiffuseMethod" value="DepthDiffuseMethod"/>
+			<fx:Object label="GradientDiffuseMethod" value="GradientDiffuseMethod"/>
+			<fx:Object label="WrapDiffuseMethod" value="WrapDiffuseMethod"/>
+			<fx:Object label="LightMapDiffuseMethod" value="LightMapDiffuseMethod"/>
+			<fx:Object label="CellDiffuseMethod" value="CellDiffuseMethod"/>
+		</s:ArrayCollection>
+		<s:ArrayCollection id="specularList">
+			<fx:Object label="BasicSpecularMethod" value="BasicSpecularMethod"/>
+			<fx:Object label="AnisotropicSpecularMethod" value="AnisotropicSpecularMethod"/>
+			<fx:Object label="PhongSpecularMethod" value="PhongSpecularMethod"/>
+			<fx:Object label="CellSpecularMethod" value="CellSpecularMethod"/>
+			<fx:Object label="FresnelSpecularMethod" value="FresnelSpecularMethod"/>
+		</s:ArrayCollection>
+		<s:ArrayCollection id="normalList">
+			<fx:Object label="BasicNormalMethod" value="BasicNormalMethod"/>
+			<fx:Object label="HeightMapNormalMethod" value="HeightMapNormalMethod"/>
+			<fx:Object label="SimpleWaterNormalMethod" value="SimpleWaterNormalMethod"/>
+		</s:ArrayCollection>
+		<fx:Component className="NewEffectPopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
+									   chromeColor="0x1d1d1c" color="0xdbdbdb"
+									   mouseDownOutside="close();"
+									   >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="New LightMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'LightMapMethod')"/>
+				<s:Button width="100%" label="New ProjectiveTextureMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ProjectiveTextureMethod')"/>
+				<s:Button width="100%" label="New RimLightMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'RimLightMethod')"/>
+				<s:Button width="100%" label="New ColorTransformMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ColorTransformMethod')"/>
+				<s:Button width="100%" label="New AlphaMaskMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'AlphaMaskMethod')"/>
+				<s:Button width="100%" label="New ColorMatrixMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ColorMatrixMethod')"/>
+				<s:Button width="100%" label="New RefractionEnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'RefractionEnvMapMethod')"/>
+				<s:Button width="100%" label="New OutlineMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'OutlineMethod')"/>
+				<s:Button width="100%" label="New FresnelEnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'FresnelEnvMapMethod')"/>
+				<s:Button width="100%" label="New FogMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'FogMethod')"/>
+				<s:Button width="100%" label="New EnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'EnvMapMethod')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
     </fx:Declarations>
     <fx:Script><![CDATA[
+		import away3d.materials.methods.LightMapMethod;
+		
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightPickerVO;
 		import awaybuilder.model.vo.scene.LightVO;
@@ -17,20 +64,15 @@
 		import awaybuilder.view.components.controls.events.DroppedEvent;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		import awaybuilder.view.components.events.LibraryPanelEvent;
 		
 		import mx.collections.ArrayCollection;
 		import mx.events.ColorPickerEvent;
 		
+		import spark.components.supportClasses.ButtonBase;
 		import spark.events.IndexChangeEvent;
+		import spark.events.PopUpEvent;
 
-		[Bindable] private var _selectedDiffuseMethod:AssetVO;
-		
-		[Bindable] private var _selectedSpecularMethod:AssetVO;
-		
-		[Bindable] private var _selectedAmbientMethod:AssetVO;
-		
-		[Bindable] private var _selectedNormalMethod:AssetVO;
-		
 		[Bindable] private var _selectedLightPicker:AssetVO;
 		
 		[Bindable] private var _lights:ArrayCollection;
@@ -221,20 +263,29 @@
 		
 		protected function addEffectMethodButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, _asset, true));
+			var button:ButtonBase = event.target as ButtonBase;
+			var popup:NewEffectPopup = new NewEffectPopup();
+			popup.open(this);
+			popup.addEventListener('close', newEffectPopup_closeHandler);
+			var pos:Point = button.localToGlobal( new Point() );
+			popup.move( Math.min(pos.x-4, stage.width-230),  Math.min(pos.y-4, stage.height-300) );
 		}
-		
+		private function newEffectPopup_closeHandler(event:PopUpEvent):void 
+		{
+			if (!event.commit) return;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, event.data));
+		}   
 		protected function deleteEffectMethodButton_clickHandler(event:MouseEvent):void
 		{
 			if( effectMethodsList.selectedItem )
 			{
-				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, effectMethodsList.selectedItem, true));
+				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, effectMethodsList.selectedItem));
 			}
 		}
 		
 		protected function editPickerButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.lightPicker, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.lightPicker));
 		}
 		protected function editShadowMethodButton_clickHandler(event:MouseEvent):void
 		{
@@ -417,10 +468,44 @@
 		</s:VGroup>
 	</controls:CollapsiblePanel>
 	
-	<controls:CollapsiblePanel width="100%" title="Shading" collapsed="true" enabled="{!_asset.isDefault}">
+	<controls:CollapsiblePanel width="100%" title="Shading" collapsed="true">
+		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
+			<s:HGroup width="100%">
+				<s:Label text="Ambient Method:" fontWeight="bold"/>
+				<controls:HorizontalFormSeparator/>
+			</s:HGroup>
+			<s:DropDownList id="ambientMethodDropDownList" requireSelection="true" selectionColor="0x222222"
+							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+							selectedItem="{_asset.ambientMethodType}" dataProvider="{ambientList}"
+							/>
+			<s:HGroup width="100%">
+				<s:Label text="Diffuse Method:" fontWeight="bold"/>
+				<controls:HorizontalFormSeparator/>
+			</s:HGroup>
+			<s:DropDownList id="diffuseMethodDropDownList" requireSelection="true" selectionColor="0x222222"
+							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+							selectedItem="{_asset.diffuseMethodType}" dataProvider="{diffuseList}"
+							/>
+			<s:HGroup width="100%">
+				<s:Label text="Specular Method:" fontWeight="bold"/>
+				<controls:HorizontalFormSeparator/>
+			</s:HGroup>
+			<s:DropDownList id="specularMethodDropDownList" requireSelection="true" selectionColor="0x222222"
+							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+							selectedItem="{_asset.specularMethodType}" dataProvider="{specularList}"
+							/>
+			<s:HGroup width="100%">
+				<s:Label text="Normal Method:" fontWeight="bold"/>
+				<controls:HorizontalFormSeparator/>
+			</s:HGroup>
+			<s:DropDownList id="normalMethodDropDownList" requireSelection="true" selectionColor="0x222222"
+							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+							selectedItem="{_asset.normalMethodType}" dataProvider="{normalList}"
+							/>
+		</s:VGroup>
 	</controls:CollapsiblePanel>
 	
-	<controls:CollapsiblePanel width="100%" title="Effect Methods" collapsed="true" enabled="{!_asset.isDefault}">
+	<controls:CollapsiblePanel width="100%" title="Effects" collapsed="true" enabled="{!_asset.isDefault}">
 		<controls:DroppableEffectsList id="effectMethodsList" dataProvider="{_asset.effectMethods}" 
 									  dropEnabled="true" width="100%" 
 									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 

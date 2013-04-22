@@ -8,6 +8,7 @@ package awaybuilder.view.mediators
     import away3d.materials.SinglePassMaterialBase;
     import away3d.materials.TextureMaterial;
     import away3d.materials.lightpickers.LightPickerBase;
+    import away3d.materials.lightpickers.StaticLightPicker;
     import away3d.materials.methods.ShadowMapMethodBase;
     import away3d.textures.Texture2DBase;
     
@@ -17,6 +18,8 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
+    import awaybuilder.model.vo.scene.LightPickerVO;
+    import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.scene.ObjectVO;
@@ -37,6 +40,7 @@ package awaybuilder.view.mediators
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.FlexGlobals;
+    import mx.rpc.events.AbstractEvent;
     
     import org.robotlegs.mvcs.Mediator;
     
@@ -71,6 +75,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
+			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightHandler);
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
@@ -245,35 +250,47 @@ package awaybuilder.view.mediators
 			o.rotationY = asset.rotationY;
 			o.rotationZ = asset.rotationZ;
 		}
+		
+		private function applyLightPicker( asset:LightPickerVO ):void
+		{
+			var picker:StaticLightPicker = AssetFactory.GetObject( asset ) as StaticLightPicker;
+			var lights:Array = [];
+			for each( var light:LightVO in asset.lights )
+			{
+				lights.push( AssetFactory.GetObject(light) );
+			}
+			picker.lights = lights;
+		}
 		private function applyMaterial( asset:MaterialVO ):void
 		{
 			var m:MaterialBase = MaterialBase( AssetFactory.GetObject(asset) );
-			m.repeat = asset.repeat;
-			
 			m.alphaPremultiplied = asset.alphaPremultiplied;
-			
 			m.repeat = asset.repeat;
-			
 			m.bothSides = asset.bothSides;
 			m.extra = asset.extra;
 			
 			// TODO: check why we cannot set null
+			
 			if( asset.lightPicker )
 			{
 				m.lightPicker = AssetFactory.GetObject(asset.lightPicker) as LightPickerBase;
+			}
+			else
+			{
+				m.lightPicker = null;
 			}
 			
 			m.mipmap = asset.mipmap;
 			m.smooth = asset.smooth;
 			m.blendMode = asset.blendMode;
 			
-			if( asset.type == MaterialVO.COLOR )
+			if( m is ColorMaterial )
 			{
 				var cm:ColorMaterial = m as ColorMaterial;
 //				cm.color = diffuseMethod.diffuseColor;
 //				cm.alpha = alpha;
 			}
-			else if( asset.type == MaterialVO.TEXTURE )
+			else if( m is TextureMaterial )
 			{
 				var tm:TextureMaterial = m as TextureMaterial;
 				
@@ -284,7 +301,6 @@ package awaybuilder.view.mediators
 					tm.shadowMethod = AssetFactory.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 				}
 				
-				trace( asset.texture.name );
 				tm.texture = AssetFactory.GetObject(asset.texture) as Texture2DBase;
 					
 //				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
@@ -329,9 +345,17 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_changeLightHandler(event:SceneEvent):void
 		{
+			for each( var asset:LightVO in event.items )
+			{
+//				applyLightPicker( asset );
+			}
 		}
 		private function eventDispatcher_changeLightPickerHandler(event:SceneEvent):void
 		{
+			for each( var asset:LightPickerVO in event.items )
+			{
+				applyLightPicker( asset );
+			}
 		}
 		
 		private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
@@ -343,8 +367,19 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function eventDispatcher_addNewLightHandler(event:SceneEvent):void
+		{
+			for each( var asset:LightPickerVO in event.items )
+			{
+				applyLightPicker( asset );
+			}
+		}
 		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
 		{
+			for each( var asset:MaterialVO in event.items )
+			{
+				applyMaterial( asset );
+			}
 		}
 		
 		private function eventDispatcher_addNewMethodHandler(event:SceneEvent):void
@@ -364,7 +399,7 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
 		{
-			trace( "event.items[0] = " + event.items[0] );
+			trace( "eventDispatcher_changeMaterialHandler = " + event.items[0] );
 			var material:MaterialVO = event.items[0] as MaterialVO;
 			if( material ) 
 			{
@@ -443,13 +478,11 @@ package awaybuilder.view.mediators
 				var mesh:Mesh = item as Mesh;
 				if( mesh ) 
 				{
-					if( document.getSceneObject( item ) ) 
+					var asset:AssetVO = AssetFactory.GetAsset(item);
+					
+					if( asset ) 
 					{
-						selected.push( document.getSceneObject( item ) );
-					}
-					else 
-					{
-						trace( "NOT SCENE OBJECT, BUT MESH!!!!!! (possible it is light)" );
+						selected.push(asset);
 					}
 					
 				}
@@ -459,7 +492,7 @@ package awaybuilder.view.mediators
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-            var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
+            var vo:MeshVO = AssetFactory.GetAsset( event.object ) as MeshVO;
 			vo = vo.clone() as MeshVO;
             switch( event.gizmoMode ) 
 			{

@@ -17,6 +17,8 @@ package awaybuilder.model.vo.scene
 
         public var subMeshes:ArrayCollection;
 		
+		public var extras:ArrayCollection;
+		
 //		override public function apply():void
 //		{
 //			super.apply();

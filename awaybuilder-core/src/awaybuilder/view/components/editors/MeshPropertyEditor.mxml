@@ -61,6 +61,18 @@
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
+		
+		private function stepperFormatFunc(val:Number):String 
+		{ 
+			return val.toString().replace(".",","); 
+		} 
+		
+		private function stepperParseFunc(val:String):Number 
+		{ 
+			var stringVal:String = val.replace(",","."); 
+			return Number(stringVal);     
+		} 
+		
         ]]></fx:Script>
 
 	
@@ -77,30 +89,22 @@
 		</s:HGroup>
 	</s:Group>
 	
-
-    <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+		</s:FormItem>
+	</s:Form>
+	<s:Spacer height="6"/>
+	
+    <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
         <s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 
-            <s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+            <s:FormItem label="Geometry" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
+                <s:DropDownList width="100%"/>
+           </s:FormItem>
+            <s:FormItem label="Animator" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
+                <s:DropDownList width="100%"/>
             </s:FormItem>
-
-            <!--<s:FormItem label="Children" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
-                <!--<s:Button label="Select..." width="100%"/>-->
-            <!--</s:FormItem>-->
-            <!--<s:FormItem label="Extra" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
-                <!--<s:Button label="Select..." width="100%"/>-->
-            <!--</s:FormItem>-->
-            <!--<s:FormItem label="Material" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">-->
-                <!--<s:Button id="materialButton" width="100%" label="{_asset.item.material.name}" click="materialButton_clickHandler(event)"/>-->
-                <!--&lt;!&ndash;<s:Button label="..." width="22"/>&ndash;&gt;-->
-            <!--</s:FormItem>-->
-            <!--<s:FormItem label="Geometry" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
-                <!--<s:DropDownList width="100%"/>-->
-            <!--</s:FormItem>-->
-            <!--<s:FormItem label="Animator" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">-->
-                <!--<s:DropDownList width="100%"/>-->
-            <!--</s:FormItem>-->
             <s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
                 <s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>
             </s:FormItem>
@@ -109,64 +113,57 @@
     </controls:CollapsiblePanel>
     <controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-            <s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="xStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.x}"
+            <s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <controls:DragableNumericStepper id="xStepper" stepSize="0.01" snapInterval="0.01"
+                                   width="100%" value="{_asset.x}"
                                   change="position_commitHandler(event)" />
-            </s:FormItem>
-            <s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="yStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.y}"
+                <controls:DragableNumericStepper id="yStepper"  stepSize="0.01" snapInterval="0.01"
+                                  width="100%" value="{_asset.y}"
+                                  change="position_commitHandler(event)"/>
+                <controls:DragableNumericStepper id="zStepper" stepSize="0.01" snapInterval="0.01"
+                                   width="100%" value="{_asset.z}"
                                   change="position_commitHandler(event)"/>
             </s:FormItem>
-            <s:FormItem label="Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="zStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.z}"
-                                  change="position_commitHandler(event)"/>
-            </s:FormItem>
-			<controls:HorizontalFormSeparator/>
-            <s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
-                <s:Button label="Select..." width="100%"/>
-            </s:FormItem>
-			<controls:HorizontalFormSeparator/>
-            <s:FormItem label="Rotation X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="rotationXStepper"
-                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}"
+			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<controls:DragableNumericStepper id="pivotXStepper" stepSize="0.01" snapInterval="0.01"
+								   width="100%" value="{_asset.pivotX}"
+								  change="position_commitHandler(event)" />
+				<controls:DragableNumericStepper id="pivotYStepper" stepSize="0.01" snapInterval="0.01"
+								  width="100%" value="{_asset.pivotY}"
+								  change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="pivotZStepper"  stepSize="0.01" snapInterval="0.01"
+								 width="100%" value="{_asset.pivotZ}" 
+								  change="position_commitHandler(event)"/>
+			</s:FormItem>
+            <s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
+                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
                                   change="rotation_commitHandler(event)"/>
-            </s:FormItem>
-            <s:FormItem label="Rotation Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="rotationYStepper"
+                <controls:DragableNumericStepper id="rotationYStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
                                   minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
                                   change="rotation_commitHandler(event)"/>
-            </s:FormItem>
-            <s:FormItem label="Rotation Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="rotationZStepper"
-                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}"
+                <controls:DragableNumericStepper id="rotationZStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
+                                  minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}" 
                                   change="rotation_commitHandler(event)"/>
             </s:FormItem>
 			<controls:HorizontalFormSeparator/>
-            <s:FormItem label="Scale X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="scaleXStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleX}"
+            <s:FormItem label="Scale" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+                <controls:DragableNumericStepper id="scaleXStepper" stepSize="0.01" snapInterval="0.01"
+                                   width="100%" value="{_asset.scaleX}"
                                   change="scale_commitHandler(event)" />
-            </s:FormItem>
-            <s:FormItem label="Scale Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="scaleYStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleY}"
+                <controls:DragableNumericStepper id="scaleYStepper" stepSize="0.01" snapInterval="0.01"
+                                  width="100%" value="{_asset.scaleY}"
                                   change="scale_commitHandler(event)"/>
-            </s:FormItem>
-            <s:FormItem label="Scale Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:NumericStepper id="scaleZStepper"
-                                  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleZ}"
+                <controls:DragableNumericStepper id="scaleZStepper" stepSize="0.01" snapInterval="0.01"
+                                   width="100%" value="{_asset.scaleZ}"
                                   change="scale_commitHandler(event)"/>
             </s:FormItem>
         </s:Form>
     </controls:CollapsiblePanel>
-    <controls:CollapsiblePanel width="100%" title="Sub Meshes" collapsed="false">
+    <controls:CollapsiblePanel width="100%" title="Materials" collapsed="false">
         <s:List dataProvider="{_asset.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
     </controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Children" collapsed="true">
-		<s:List dataProvider="{_asset.children}" width="100%" labelField="name" skinClass="awaybuilder.view.skins.ChildrenListSkin" />
+	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
 	</controls:CollapsiblePanel>
 	
 </editors:EditorBase>
