@@ -61,11 +61,11 @@
 		
 		private function dropDownIconFunction(item:MaterialVO):Object 
 		{
-			if( (item.type == MaterialVO.TEXTURE) && item.texture )
+			if( item.diffuseTexture )
 			{
-				return item.texture.bitmapData;
+				return item.diffuseTexture.bitmapData;
 			}
-			return new BitmapData(32, 32, false, item.color);
+			return new BitmapData(32, 32, false, item.diffuseColor);
 		}
 		
 	]]></fx:Script>

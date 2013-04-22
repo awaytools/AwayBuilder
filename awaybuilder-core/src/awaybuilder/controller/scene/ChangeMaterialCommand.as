@@ -53,7 +53,7 @@ package awaybuilder.controller.scene
 			
 			vo.shadowMethod = newMaterial.shadowMethod;
 			
-			vo.texture = newMaterial.texture;
+			vo.diffuseTexture = newMaterial.diffuseTexture;
 			
 			if( newMaterial.effectMethods )
 			{

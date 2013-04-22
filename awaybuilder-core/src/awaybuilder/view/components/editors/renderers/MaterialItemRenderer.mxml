@@ -44,7 +44,7 @@
 				<s:SolidColorStroke color="0xAAAAAA"/>
 			</s:stroke>
 		</s:Rect>
-		<s:BitmapImage source="{_material.texture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
+		<s:BitmapImage source="{_material.diffuseTexture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
 		
 	</s:Group>
 	

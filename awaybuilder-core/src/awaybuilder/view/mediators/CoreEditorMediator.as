@@ -301,7 +301,7 @@ package awaybuilder.view.mediators
 					tm.shadowMethod = AssetFactory.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 				}
 				
-				tm.texture = AssetFactory.GetObject(asset.texture) as Texture2DBase;
+				tm.texture = AssetFactory.GetObject(asset.diffuseTexture) as Texture2DBase;
 					
 //				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
 //				tm.diffuseMethod.diffuseColor = diffuseColor;

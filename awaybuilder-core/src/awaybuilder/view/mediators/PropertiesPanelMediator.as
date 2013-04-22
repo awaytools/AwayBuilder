@@ -65,7 +65,7 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler );
 			
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
-            addViewListener( PropertyEditorEvent.MATERIAL_NAME_CHANGE, view_materialNameChangeHandler );
+            addViewListener( PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, view_materialNameChangeHandler );
 			
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, view_materialAddEffectMetodHandler );
@@ -489,6 +489,9 @@ package awaybuilder.view.mediators
 			var nullItem:AssetVO = new AssetVO();
 			nullItem.name = "Null";
 			nullItem.isNull = true;
+			var nullTextureItem:TextureVO = new TextureVO();
+			nullTextureItem.name = "Null";
+			nullTextureItem.isNull = true;
 			var asset:AssetVO;
 			var lights:ArrayCollection = new ArrayCollection();
 			var pickers:ArrayCollection = new ArrayCollection();
@@ -496,7 +499,8 @@ package awaybuilder.view.mediators
 			for each( asset in document.lights )
 			{
 				if( asset is LightPickerVO ) pickers.addItem( asset );
-				if( asset is LightVO ) {
+				if( asset is LightVO ) 
+				{
 					if( LightVO(asset).castsShadows ) lights.addItem( asset );
 				}
 			}
@@ -520,7 +524,7 @@ package awaybuilder.view.mediators
 			view.specularMethods = specularMethods;
 			
 			var textures:ArrayCollection = new ArrayCollection();
-//			textures.addItem( nullItem );
+			textures.addItem( nullTextureItem );
 			for each( asset in document.textures )
 			{
 				textures.addItem( asset );

@@ -229,7 +229,6 @@ package awaybuilder.utils
 			asset.alphaPremultiplied = item.alphaPremultiplied;
 			
 			asset.repeat = item.repeat;
-			
 			asset.bothSides = item.bothSides;
 			asset.extra = item.extra;
 			if( item.lightPicker ) 
@@ -240,30 +239,54 @@ package awaybuilder.utils
 			asset.smooth = item.smooth;
 			asset.blendMode = item.blendMode;
 			
+			
+			
 			if( item is TextureMaterial )
 			{
-				asset.type = MaterialVO.TEXTURE;
+//				asset.type = MaterialVO.TEXTURE;
 				var textureMaterial:TextureMaterial = item as TextureMaterial;
+				
+				asset.alpha = textureMaterial.alpha;
 				
 				asset.alphaBlending = textureMaterial.alphaBlending;
 				asset.colorTransform = textureMaterial.colorTransform;
 				
-//				asset.normalMethod = AssetFactory.GetAsset( textureMaterial.normalMethod ) as NormalMethodVO;
+				asset.ambientLevel = textureMaterial.ambient;
+				asset.ambientColor = textureMaterial.ambientColor;
+				asset.ambientTexture = AssetFactory.GetAsset( textureMaterial.ambientTexture ) as TextureVO;
+				asset.ambientMethodType = getQualifiedClassName( textureMaterial.ambientMethod ).split("::")[1];
+				
+				asset.diffuseColor= textureMaterial.diffuseMethod.diffuseColor;
+				asset.diffuseTexture = AssetFactory.GetAsset( textureMaterial.texture ) as TextureVO;
+				asset.diffuseMethodType = getQualifiedClassName( textureMaterial.ambientMethod ).split("::")[1];
+				
+				asset.specularLevel = textureMaterial.specular;
+				asset.specularColor = textureMaterial.specularColor;
+				asset.specularGloss = textureMaterial.gloss;
+				asset.specularTexture = AssetFactory.GetAsset( textureMaterial.specularMap ) as TextureVO;
+				asset.specularMethodType = getQualifiedClassName( textureMaterial.ambientMethod ).split("::")[1];
+				
+//				asset.normalColor = textureMaterial.normalMethod.
+				asset.normalTexture = AssetFactory.GetAsset( textureMaterial.normalMap ) as TextureVO;
+				asset.normalMethodType = getQualifiedClassName( textureMaterial.ambientMethod ).split("::")[1];
+				
+
 				
 				asset.shadowMethod = AssetFactory.GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
 				
-				asset.texture = AssetFactory.GetAsset( textureMaterial.texture ) as TextureVO;
+				
 //				asset.ambientMethod = AssetFactory.GetAsset( textureMaterial.ambientMethod ) as AmbientMethodVO;
-				
 //				asset.diffuseMethod = AssetFactory.GetAsset( textureMaterial.diffuseMethod ) as DiffuseMethodVO;
-				
+//				asset.normalMethod = AssetFactory.GetAsset( textureMaterial.normalMethod ) as NormalMethodVO;
 //				asset.specularMethod = AssetFactory.GetAsset( textureMaterial.specularMethod ) as SpecularMethodVO;
 			}
 			else if( item is ColorMaterial )
 			{
-				asset.type = MaterialVO.COLOR;
+				
+//				asset.type = MaterialVO.COLOR;
 				var colorMaterial:ColorMaterial = item as ColorMaterial;
-				//				alpha = colorMaterial.alpha;
+//				alpha = colorMaterial.alpha;
+				asset.alpha = colorMaterial.alpha;
 			}
 			
 			asset.effectMethods = new ArrayCollection();
@@ -334,16 +357,16 @@ package awaybuilder.utils
 		{
 			var newMaterial:SinglePassMaterialBase;
 
-			if( material.type == MaterialVO.TEXTURE )
-			{
+//			if( material.type == MaterialVO.TEXTURE )
+//			{
 				var textureMaterial:TextureMaterial = GetObject(material) as TextureMaterial;
 				newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
-			}
-			else
-			{
-				var colorMaterial:ColorMaterial = GetObject(material) as ColorMaterial;
-				newMaterial = new ColorMaterial( colorMaterial.color, colorMaterial.alpha );
-			}
+//			}
+//			else
+//			{
+//				var colorMaterial:ColorMaterial = GetObject(material) as ColorMaterial;
+//				newMaterial = new ColorMaterial( colorMaterial.color, colorMaterial.alpha );
+//			}
 			var base:SinglePassMaterialBase = GetObject(material) as SinglePassMaterialBase;
 			newMaterial.diffuseMethod = base.diffuseMethod;
 			

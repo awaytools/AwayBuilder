@@ -19,7 +19,7 @@ package awaybuilder.view.components.editors.events
 		public static const MATERIAL_ADD_LIGHTPICKER:String = "materialAddLightPicker";
 		public static const MATERIAL_ADD_EFFECT_METHOD:String = "materialAddEffectMethod";
 		public static const MATERIAL_REMOVE_EFFECT_METHOD:String = "materialRemoveEffectMethod";
-		public static const MATERIAL_NAME_CHANGE:String = "materialNameChange";
+		public static const MATERIAL_STEPPER_CHANGE:String = "materialStepperChange";
 		
 		public static const REPLACE_TEXTURE:String = "replaceTexture";
 
