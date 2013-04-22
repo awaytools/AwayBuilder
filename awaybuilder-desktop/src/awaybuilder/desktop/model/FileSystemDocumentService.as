@@ -21,7 +21,7 @@ package awaybuilder.desktop.model
 	
 	public class FileSystemDocumentService extends Actor implements IDocumentService
 	{
-		private static const FILE_EXTENSION : String = 'awd';
+		private static const FILE_EXTENSION : String = '.awd';
 		
 		private var _fileToData:Dictionary = new Dictionary();
 		private var _filesToOpen:Vector.<File> = new Vector.<File>;
@@ -60,9 +60,9 @@ package awaybuilder.desktop.model
 		public function saveAs(data:Object, defaultName:String):void
 		{
 			trace(defaultName);
-			trace(defaultName.toLowerCase().indexOf(FILE_EXTENSION));
+			trace(defaultName.toLowerCase().lastIndexOf(FILE_EXTENSION));
 			trace(defaultName.length - FILE_EXTENSION.length);
-			if(defaultName.toLowerCase().indexOf(FILE_EXTENSION) != defaultName.length - FILE_EXTENSION.length)
+			if(defaultName.toLowerCase().lastIndexOf(FILE_EXTENSION) != defaultName.length - FILE_EXTENSION.length)
 			{
 				defaultName += FILE_EXTENSION;
 			}
@@ -105,7 +105,11 @@ package awaybuilder.desktop.model
 		private function file_save_selectHandler(event:Event):void
 		{
 			var file:File = File(event.currentTarget);
-			if(file.nativePath.toLowerCase().indexOf(FILE_EXTENSION) != file.nativePath.length - FILE_EXTENSION.length)
+			trace('saving!');
+			trace(file.nativePath);
+			trace(file.nativePath.toLowerCase().lastIndexOf(FILE_EXTENSION));
+			trace(file.nativePath.length - FILE_EXTENSION.length);
+			if(file.nativePath.toLowerCase().lastIndexOf(FILE_EXTENSION) != file.nativePath.length - FILE_EXTENSION.length)
 			{
 				//this is kind of nasty, but there's no way to force AIR to add
 				//a file extension with browseForSave()! WTF?
