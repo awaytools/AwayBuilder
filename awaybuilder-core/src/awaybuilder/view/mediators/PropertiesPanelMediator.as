@@ -257,7 +257,6 @@ package awaybuilder.view.mediators
 		}
 		private function view_lightAddFilteredShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
-			trace("view_lightAddFilteredShadowMapMethodHandler" );
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateFilteredShadowMapMethod(view.data as LightVO)));
 		}
 		private function view_lightAddCascadeShadowMapMethodHandler(event:PropertyEditorEvent):void
@@ -383,20 +382,7 @@ package awaybuilder.view.mediators
         }
         private function eventDispatcher_changingHandler(event:SceneEvent):void
         {
-            var mesh:MeshVO = event.items[0] as MeshVO;
-            var vo:MeshVO = view.data as MeshVO;
-            vo.x = mesh.x;
-            vo.y = mesh.y;
-            vo.z = mesh.z;
-
-            vo.scaleX = mesh.scaleX;
-            vo.scaleY = mesh.scaleY;
-            vo.scaleZ = mesh.scaleZ;
-
-            vo.rotationX = mesh.rotationX;
-            vo.rotationY = mesh.rotationY;
-            vo.rotationZ = mesh.rotationZ;
-
+			view.SetData( event.items[0] );
         }
         private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
         {

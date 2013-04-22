@@ -116,7 +116,6 @@ package awaybuilder.view.mediators
 		{
 			if (e.keyCode == Keyboard.ALTERNATE) CameraManager.panning = true;		
 			
-//			trace( "e.keyCode " + e.keyCode );
 			switch (e.keyCode) 
 			{
                 case Keyboard.W:
@@ -399,7 +398,6 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
 		{
-			trace( "eventDispatcher_changeMaterialHandler = " + event.items[0] );
 			var material:MaterialVO = event.items[0] as MaterialVO;
 			if( material ) 
 			{
@@ -518,7 +516,7 @@ package awaybuilder.view.mediators
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
-			var vo:MeshVO = document.getSceneObject( event.object ) as MeshVO;
+			var vo:MeshVO = AssetFactory.GetAsset( event.object ) as MeshVO;
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:

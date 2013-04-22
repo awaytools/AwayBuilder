@@ -51,13 +51,13 @@ import mx.collections.ArrayCollection;
 		function get copiedObjects():Vector.<AssetVO>;
 		function set copiedObjects(value:Vector.<AssetVO>):void;
 		
-		function getSceneObject( value:Object ):ContainerVO;
-		function getMaterial( value:Object ):AssetVO;
-		function getAnimation( value:Object ):AssetVO;
-		function getGeometry( value:Object ):AssetVO;
-		function getTexture( value:Object ):AssetVO;
-		function getSkeleton( value:Object ):AssetVO;
-		function getLight( value:Object ):AssetVO;
+//		function getSceneObject( value:Object ):ContainerVO;
+//		function getMaterial( value:Object ):AssetVO;
+//		function getAnimation( value:Object ):AssetVO;
+//		function getGeometry( value:Object ):AssetVO;
+//		function getTexture( value:Object ):AssetVO;
+//		function getSkeleton( value:Object ):AssetVO;
+//		function getLight( value:Object ):AssetVO;
 		
 		function clear():void;
 		

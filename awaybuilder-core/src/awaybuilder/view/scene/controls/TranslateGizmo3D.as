@@ -232,7 +232,6 @@ package awaybuilder.view.scene.controls
 					xv2.normalize();
 					var ax:Number = xv1.dotProduct(xv2);
 					
-					trace (ax);
 					if (ax < 0) trans = -trans;					
 					
 					this.translate(content.rightVector, trans);

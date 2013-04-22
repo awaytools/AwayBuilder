@@ -156,7 +156,7 @@ package awaybuilder.view.scene
 		{
 			currentOrientation = e.target.name;
 			
-			trace(CameraManager._yDeg);
+			trace("CameraManager._yDeg= " + CameraManager._yDeg);
 			
 			switch(e.target.name)
 			{

@@ -5,7 +5,7 @@
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	showStatusBar="false"
 	frameRate="60"
-	invoke="invokeHandler(event)" minWidth="1000" minHeight="700"
+	invoke="invokeHandler(event)" minWidth="1000" minHeight="700" backgroundColor="0x333333"
 	preinitialize="preinitializeHandler(event)"  xmlns:components="awaybuilder.view.components.*">
 	
 	<fx:Declarations>

@@ -88,7 +88,6 @@ package awaybuilder.controller.scene
 //				var mesh:MeshVO = asset as MeshVO;
 //				if( mesh )
 //				{
-//					trace( mesh.name );
 //					for each( var subMesh:SubMeshVO in mesh.subMeshes )
 //					{
 //						if( subMesh.material.equals( prevMaterial ) ) 

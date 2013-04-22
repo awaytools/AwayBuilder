@@ -70,13 +70,7 @@ package awaybuilder.controller.scene
 			
 			var linkedObjectChanged:Boolean = false;
 			
-			trace( "vo.shadowMethods = " + vo.shadowMethods );
-			trace( "newAsset.shadowMethods = " + newAsset.shadowMethods );
-			
 			vo.shadowMethods = DataMerger.syncArrayCollections( vo.shadowMethods, newAsset.shadowMethods, "id" );
-			
-			trace( "vo.shadowMapper = " + vo.shadowMapper );
-			trace( "vo.shadowMethods = " + vo.shadowMethods );
 			
 			if( event.isUndoAction )
 			{

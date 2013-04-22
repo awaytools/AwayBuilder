@@ -116,7 +116,6 @@ package awaybuilder.model
 		
 		private function assetCompleteHandler( event:AssetEvent ):void
 		{		
-//			trace( event.asset.assetType + " " + event.asset );
 			switch( event.asset.assetType )
 			{
 				case AssetType.MESH:

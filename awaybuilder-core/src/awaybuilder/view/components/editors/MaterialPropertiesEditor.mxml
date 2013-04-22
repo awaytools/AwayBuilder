@@ -162,7 +162,6 @@
 			if( _asset.light && _asset.lightPicker )
 			{
 				
-				//					trace( "_asset.light = " + _asset.light.name );
 				for each(var light:AssetVO in lights ) 
 				{
 					if( light.equals( _asset.light ) ) _selectedLight = light;
