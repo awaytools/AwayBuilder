@@ -532,7 +532,6 @@ package awaybuilder.view.mediators
 			var selected:Array = [];
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
-				trace( item );
 				var mesh:Mesh = item as Mesh;
 				if( mesh ) 
 				{
