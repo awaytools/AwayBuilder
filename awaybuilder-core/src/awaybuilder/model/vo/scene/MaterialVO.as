@@ -69,7 +69,7 @@ package awaybuilder.model.vo.scene
 			vo.name = this.name;
 			vo.alpha = this.alpha;
 			vo.alphaPremultiplied = this.alphaPremultiplied;
-			
+			vo.type = this.type;
 			vo.repeat = this.repeat;
 			vo.isDefault = this.isDefault;
 			

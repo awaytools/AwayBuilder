@@ -26,10 +26,10 @@ package awaybuilder.desktop.controller
 			if( document.empty ) 
 			{
 				this.dispatch(new ReadDocumentEvent(ReadDocumentEvent.REPLACE_DOCUMENT, event.file.name, event.file.url));
+				return;
 			}
 				
 			var popup:ImportWarningPopup = ImportWarningPopup.show( popup_closeHandler );
-			
 		}
 		
 		private function popup_closeHandler( e:CloseEvent ):void 

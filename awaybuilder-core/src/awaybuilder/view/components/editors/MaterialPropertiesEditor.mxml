@@ -345,12 +345,19 @@
 		
 		protected function textureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_TEXTURE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_TEXTURE, "diffuseTexture", true));
 		}
 		
 		protected function textureDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
-			_asset.diffuseTexture = textureDropDownList.selectedItem;
+			if( textureDropDownList.selectedItem.isNull )
+			{
+				_asset.diffuseTexture = null;
+			}
+			else
+			{
+				_asset.diffuseTexture = textureDropDownList.selectedItem;
+			}
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
@@ -408,34 +415,68 @@
 		
 		protected function specularGlossStepper_changeHandler(event:Event):void
 		{
+			_asset.specularGloss = specularGlossStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
 		protected function specularColorPicker_changeHandler(event:ColorPickerEvent):void
 		{
+			_asset.specularColor = specularColorPicker.selectedColor;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
 		protected function specularDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_TEXTURE, "specularTexture", true));
 		}
 		
 		protected function specularDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
+			if( specularDropDownList.selectedItem.isNull )
+			{
+				_asset.specularTexture = null;
+			}
+			else
+			{
+				_asset.specularTexture = specularDropDownList.selectedItem;
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
 		protected function ambientTextureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_TEXTURE, "ambientTexture", true));
 		}
 		
 		protected function ambientTextureDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
+			if( ambientTextureDropDownList.selectedItem.isNull )
+			{
+				_asset.ambientTexture = null;
+			}
+			else
+			{
+				_asset.ambientTexture = ambientTextureDropDownList.selectedItem;
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
 		protected function normalTextureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_TEXTURE, "normalTexture", true));
 		}
 		
 		protected function normalTextureDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
+			if( normalTextureDropDownList.selectedItem.isNull )
+			{
+				_asset.normalTexture = null;
+			}
+			else
+			{
+				_asset.normalTexture = normalTextureDropDownList.selectedItem;
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
 	]]></fx:Script>
@@ -461,7 +502,7 @@
 	<s:Spacer height="6"/>
 	
     <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
-		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" enabled="{!_asset.isDefault}" horizontalAlign="center">
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="1" paddingBottom="1" enabled="{!_asset.isDefault}" horizontalAlign="center">
 			<s:RadioButton label="Singlepass" width="100%" group="{typeRadioGroup}" value="{MaterialVO.SINGLEPASS}"/>
 			<s:RadioButton label="Multipass" width="100%" group="{typeRadioGroup}" value="{MaterialVO.MULTIPASS}"/>
 		</s:HGroup>
@@ -533,7 +574,7 @@
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
-			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{textureDropDownList.selectedItem.isNull}">
 				<mx:ColorPicker id="diffuseColorPicker" selectedColor="{_asset.diffuseColor}" change="diffuseColorPicker_changeHandler(event)"/>
 			</s:FormItem>
 		</s:Form>

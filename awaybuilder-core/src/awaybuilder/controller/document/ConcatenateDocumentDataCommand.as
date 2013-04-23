@@ -115,7 +115,7 @@ package awaybuilder.controller.document
 			{
 				DisplayObject(FlexGlobals.topLevelApplication).removeEventListener( Event.ENTER_FRAME, addNextObject_enterFrameHandler );
 				
-				CursorManager.removeBusyCursor();
+				
 				Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
 				return;
 			}
@@ -123,10 +123,14 @@ package awaybuilder.controller.document
 			{
 				addObject( _sceneObjects.shift() );
 			}
+			CursorManager.removeBusyCursor();
+			
 		}
 		private function addObject( value:Object ):void
 		{
+			
 			var o:ContainerVO = value as ContainerVO;
+			
 			if( o ) 
 			{
 				Scene3DManager.addObject( AssetFactory.GetObject(o) as ObjectContainer3D );

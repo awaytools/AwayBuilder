@@ -22,6 +22,7 @@ package awaybuilder.utils
 	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.MaterialBase;
+	import away3d.materials.MultiPassMaterialBase;
 	import away3d.materials.SinglePassMaterialBase;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.lightpickers.LightPickerBase;
@@ -71,6 +72,7 @@ package awaybuilder.utils
 	{
 		public static function GetObject( asset:AssetVO ):Object 
 		{
+			if( !asset ) return null;
 			for (var object:Object in assets)
 			{
 				if( asset.equals( assets[object] as AssetVO ) ) 
@@ -108,9 +110,8 @@ package awaybuilder.utils
 				case(item is Entity):
 				case(item is ObjectContainer3D):
 					return fillContainer( new ContainerVO(), item as ObjectContainer3D );
-				case(item is TextureMaterial):
-				case(item is ColorMaterial):
-					return fillMaterial( new MaterialVO(), item as SinglePassMaterialBase );
+				case(item is MaterialBase):
+					return fillMaterial( new MaterialVO(), item as MaterialBase );
 				case(item is BitmapTexture):
 					return fillTexture( new TextureVO(), item as BitmapTexture );
 				case(item is Geometry):
@@ -231,19 +232,22 @@ package awaybuilder.utils
 			asset.repeat = item.repeat;
 			asset.bothSides = item.bothSides;
 			asset.extra = item.extra;
-			if( item.lightPicker ) 
-			{
-				asset.lightPicker = AssetFactory(item.lightPicker) as LightPickerVO;
-			}
+			asset.lightPicker = AssetFactory(item.lightPicker) as LightPickerVO;
 			asset.mipmap = item.mipmap;
 			asset.smooth = item.smooth;
 			asset.blendMode = item.blendMode;
 			
-			
+			if( item is MultiPassMaterialBase )
+			{
+				asset.type = MaterialVO.MULTIPASS;
+			}
+			else
+			{
+				asset.type = MaterialVO.SINGLEPASS;
+			}
 			
 			if( item is TextureMaterial )
 			{
-//				asset.type = MaterialVO.TEXTURE;
 				var textureMaterial:TextureMaterial = item as TextureMaterial;
 				
 				asset.alpha = textureMaterial.alpha;
@@ -270,7 +274,6 @@ package awaybuilder.utils
 				asset.normalTexture = AssetFactory.GetAsset( textureMaterial.normalMap ) as TextureVO;
 				asset.normalMethodType = getQualifiedClassName( textureMaterial.ambientMethod ).split("::")[1];
 				
-
 				
 				asset.shadowMethod = AssetFactory.GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
 				
@@ -282,10 +285,7 @@ package awaybuilder.utils
 			}
 			else if( item is ColorMaterial )
 			{
-				
-//				asset.type = MaterialVO.COLOR;
 				var colorMaterial:ColorMaterial = item as ColorMaterial;
-//				alpha = colorMaterial.alpha;
 				asset.alpha = colorMaterial.alpha;
 			}
 			

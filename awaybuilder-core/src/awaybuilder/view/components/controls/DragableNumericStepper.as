@@ -85,6 +85,8 @@ package awaybuilder.view.components.controls
 			stage.addEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
 			prevX = event.stageX;
 			prevY = event.stageY;
+			baseX = event.stageX;
+			baseY = event.stageY;
 		}
 		private function valueDisplay_clickHandler( event:MouseEvent ):void
 		{
@@ -96,28 +98,50 @@ package awaybuilder.view.components.controls
 		
 		private var prevX:Number = 0;
 		private var prevY:Number = 0;
+		private var baseX:Number = 0;
+		private var baseY:Number = 0;
 		
 		private function stage_mouseMoveHandler( event:MouseEvent ):void
 		{
 			valueDisplay.removeEventListener( MouseEvent.CLICK, valueDisplay_clickHandler );
+			var offsetX:Number = event.stageX - baseX;
+			var offsetY:Number = event.stageY - baseY;
 			var deltaX:Number = event.stageX - prevX;
 			var deltaY:Number = event.stageY - prevY;
 			if( deltaX > 0 )
 			{
-				changeValue(true);
+				if( offsetX > 25 ) {
+					changeValue(true);
+					changeValue(true);
+					changeValue(true);
+				}
 				changeValue(true);
 			}
 			else if( deltaX < 0 )
 			{
-				changeValue(false);
+				if( offsetX < -25 ) {
+					changeValue(false);
+					changeValue(false);
+					changeValue(false);
+				}
 				changeValue(false);
 			}
 			if( deltaY < 0 )
 			{
+				if( offsetY < -25 ) {
+					changeValue(true);
+					changeValue(true);
+					changeValue(true);
+				}
 				changeValue(true);
 			}
 			else if( deltaY > 0 )
 			{
+				if( offsetY > 25 ) {
+					changeValue(false);
+					changeValue(false);
+					changeValue(false);
+				}
 				changeValue(false);
 			}
 			prevX = event.stageX;

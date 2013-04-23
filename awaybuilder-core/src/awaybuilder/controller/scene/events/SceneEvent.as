@@ -49,6 +49,8 @@ import flash.events.Event;
 		}
 		
 		public var items:Array;
+		
+		public var options:Object;
 
 		override public function clone():Event
 		{

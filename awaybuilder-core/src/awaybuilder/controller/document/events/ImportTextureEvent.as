@@ -12,17 +12,19 @@ package awaybuilder.controller.document.events
 		public static const IMPORT_AND_ADD:String = "importTextureForMaterial";
 		public static const LOAD_AND_ADD:String = "loadTextureForMaterial";
 		
-		public function ImportTextureEvent( type:String, items:Array )
+		public function ImportTextureEvent( type:String, items:Array, options:Object=null )
 		{
 			super( type );
 			this.items = items;
+			this.options = options;
 		}
 		
 		public var items:Array;
+		public var options:Object;
 		
 		override public function clone():Event
 		{
-			return new ImportTextureEvent(this.type, this.items );
+			return new ImportTextureEvent(this.type, this.items, this.options );
 		}
 	}
 }

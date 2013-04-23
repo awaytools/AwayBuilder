@@ -18,7 +18,7 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			var nextEvent:ImportTextureEvent = new ImportTextureEvent(ImportTextureEvent.LOAD_AND_ADD, event.items);
+			var nextEvent:ImportTextureEvent = new ImportTextureEvent(ImportTextureEvent.LOAD_AND_ADD, event.items, event.options);
 			this.fileService.open( "images", nextEvent );
 		}
 	}

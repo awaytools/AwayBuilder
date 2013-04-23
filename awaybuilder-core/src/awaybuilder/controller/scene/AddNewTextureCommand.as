@@ -30,16 +30,16 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var method:ITextured;
+			var material:MaterialVO;
 			if( event.items && event.items.length )
 			{
-				method = event.items[0] as ITextured;
+				material = event.items[0] as MaterialVO;
 			}
 			var oldValue:DocumentVO = event.oldValue as DocumentVO;
 			var newValue:DocumentVO = event.newValue as DocumentVO;
 			
-			if( method ) {
-				saveOldValue( event, method );
+			if( material ) {
+				saveOldTexture( event, material, event.options as String );
 			}
 			
 			var newTexture:TextureVO;
@@ -57,9 +57,9 @@ package awaybuilder.controller.scene
 				document.textures.addItemAt( newTexture, 0 ); // add new texture to library
 			}
 			
-			if( method )
+			if( material )
 			{
-				method.texture = newTexture;
+				material[event.options] = newTexture;
 //				if( method is DiffuseMethodVO ){
 //					DiffuseMethodVO( method).apply();
 //				}
@@ -83,17 +83,14 @@ package awaybuilder.controller.scene
 			document.empty = false;
 		}
 		
-		override protected function saveOldValue( event:HistoryEvent, prevValue:Object ):void 
+		protected function saveOldTexture( event:HistoryEvent, prevValue:MaterialVO, option:String ):void 
 		{
 			if( !event.oldValue )
 			{
 				var oldDocument:DocumentVO = new DocumentVO();
-				if( prevValue ) 
+				if( prevValue[option] ) 
 				{
-					if( ITextured(prevValue).texture ) 
-					{
-						oldDocument.textures.addItem( ITextured(prevValue).texture.clone() );
-					}
+					oldDocument.textures.addItem( TextureVO(prevValue[option]).clone() );
 				}
 				event.oldValue = oldDocument;
 			}

@@ -213,7 +213,7 @@ package awaybuilder.view.mediators
 		
 		private function view_materialAddNewTextureHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data]));
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data],event.data));
 		}
 		private function view_materialAddEffectMetodHandler(event:PropertyEditorEvent):void
 		{
