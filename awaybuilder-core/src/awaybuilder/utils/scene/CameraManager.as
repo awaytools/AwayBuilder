@@ -376,10 +376,15 @@ package awaybuilder.utils.scene
 			{
 				switch(mode)
 				{
-					case CameraMode.TARGET: radius -= event.delta * wheelSpeed;
+					case CameraMode.TARGET: {
+						radius -= event.delta * radius/500;
+						Scene3DManager.zoomToDistance();
 						break;
-					case CameraMode.FREE: camera.moveForward(speed * event.delta);
+					}
+					case CameraMode.FREE: {
+						camera.moveForward(speed * event.delta);
 						break;						
+					}
 				}
 			}			
 		}						
@@ -425,7 +430,14 @@ package awaybuilder.utils.scene
 				instance._xSpeed = moveSpeed;
 			}			
 		}		
-		
+
+		// Camera zoom math function ********************************************************************************************************************************************
+
+		public static function log2(x:Number):Number
+		{
+			trace("Log:"+(Math.log(0.3)/Math.LN2));
+			return Math.log(x)/Math.LN2;
+		}
 	}
 
 }

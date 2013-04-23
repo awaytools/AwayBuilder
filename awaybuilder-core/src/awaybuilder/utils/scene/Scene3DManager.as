@@ -487,5 +487,8 @@ package awaybuilder.utils.scene
 			}
 		}
 		
+		public static function zoomToDistance() : void {
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ZOOM_TO_DISTANCE));
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package awaybuilder.view.mediators
 {
-	import awaybuilder.controller.events.EditorStateChangeEvent;
+	import awaybuilder.view.scene.events.Scene3DManagerEvent;
+	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.events.ToolBarZoomEvent;
 	
@@ -17,30 +18,30 @@ package awaybuilder.view.mediators
 			this.eventMap.mapListener(this.statusBar, ToolBarZoomEvent.ZOOM_OUT, statusBar_zoomOutHandler);
 			this.eventMap.mapListener(this.statusBar, ToolBarZoomEvent.ZOOM_TO, statusBar_zoomToHandler);
 			
-			this.eventMap.mapListener(this.eventDispatcher, EditorStateChangeEvent.ZOOM_CHANGE, eventDispatcher_zoomChangeHandler);
-			
-			//this.statusBar.zoom = this.editor.zoom;
+			addContextListener( Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomChangeHandler);
 		}
 		
-		private function eventDispatcher_zoomChangeHandler(event:EditorStateChangeEvent):void
+		private function eventDispatcher_zoomChangeHandler(event:Scene3DManagerEvent):void
 		{
-			//this.statusBar.zoom = this.editor.zoom;
-//			CameraManager.radius = (1-this.editor.zoom)*10000;
+			statusBar.zoom = Math.pow(2, CameraManager.radius / -2000);
+			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
 		}
 		
 		private function statusBar_zoomToHandler(event:ToolBarZoomEvent):void
 		{
-//			this.editor.zoom = event.zoomValue;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
 		}
 		
 		private function statusBar_zoomInHandler(event:ToolBarZoomEvent):void
 		{
-//			this.editor.zoom += 100/10000;
+			statusBar.zoom += 0.05;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
 		}
 		
 		private function statusBar_zoomOutHandler(event:ToolBarZoomEvent):void
 		{
-//			this.editor.zoom -= 100/10000;
+			statusBar.zoom -= 0.05;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
 		}
 	}
 }

@@ -14,7 +14,7 @@
 	
 	<s:Button id="zoomOutButton" styleName="toolbarButton" toolTip="Zoom Out" autoRepeat="true"
 			  buttonDown="zoomOutButton_clickHandler(event)"/>
-	<s:HSlider id="zoomSlider" minimum="0" maximum="1" stepSize="0.001" value="0.9"
+	<s:HSlider id="zoomSlider" minimum="0.00001" maximum="0.99999" stepSize="0.001" value="0.75"
 		liveDragging="true" focusEnabled="false"
 		dataTipFormatFunction="{zoomSlider_dataTipFormat}"
 		change="zoomSlider_changeHandler(event)"/>
@@ -23,6 +23,7 @@
 	
 	<fx:Script>
 	<![CDATA[
+		import awaybuilder.utils.scene.CameraManager;
 		import awaybuilder.view.components.events.ToolBarZoomEvent;
 		
 		import mx.events.FlexEvent;
@@ -43,23 +44,15 @@
 			{
 				return;
 			}
+			if (value < this.zoomSlider.minimum) return;
+			if (value > this.zoomSlider.maximum) return;
+			trace("zoomSliderSet:"+value);
 			this.zoomSlider.value = value;
 		}
 
 		private function zoomSlider_dataTipFormat(value:Number):String
 		{
-			
-//			if(value >= 1)
-//			{
-//				value = 1 + 4 * (value - 1);
-//			}
-//			else
-//			{
-//				value = 0.25 + 0.75 * value;
-//			}
-//			return int(value * 100) + "%";
-			
-			return (Math.round((1-value)*10000)).toString();
+			return int(CameraManager.log2(value)*-2000).toString();
 		}
 		
 		protected function zoomInButton_clickHandler(event:FlexEvent):void
