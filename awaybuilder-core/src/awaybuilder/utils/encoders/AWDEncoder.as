@@ -4,6 +4,7 @@ package awaybuilder.utils.encoders
 	import away3d.core.base.ISubGeometry;
 	import away3d.core.base.SubMesh;
 	import away3d.entities.Mesh;
+	import away3d.containers.ObjectContainer3D;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
@@ -70,7 +71,7 @@ package awaybuilder.utils.encoders
 			scene = document.scene.source;
 			for each ( var vo:AssetVO in scene ) 
 			{
-				_encodeChild( vo as MeshVO );
+				_encodeChild( vo as ContainerVO );
 			}
 			
 			// Header
@@ -141,7 +142,7 @@ package awaybuilder.utils.encoders
 					break;
 				case FLOAT64:
 					flen = 8;
-				break;
+					break;
 			}
 			
 			_body.writeShort(id);
@@ -200,7 +201,7 @@ package awaybuilder.utils.encoders
 			
 			size = _body.position - (offs+4);
 			if (size) {
-				trace('size was ', size);
+				//trace('size was ', size);
 				_body.position = offs;
 				_body.writeUnsignedInt(size);
 				_body.position = _body.length;
@@ -210,13 +211,15 @@ package awaybuilder.utils.encoders
 		private function _encodeChild(vo : ContainerVO) : void
 		{
 			var child : ContainerVO;
-			
 			if (vo is MeshVO) {
 				_encodeMesh(AssetFactory.GetObject(vo) as Mesh);
 			}
-			
+				
+			else if (vo is ContainerVO) {
+				_encodeContainer3D(AssetFactory.GetObject(vo) as ObjectContainer3D);
+			}
 			for each (child in vo.children) {
-				_encodeChild(child as ContainerVO);
+					_encodeChild(child as ContainerVO);
 			}
 		}
 		
@@ -268,6 +271,10 @@ package awaybuilder.utils.encoders
 				if (!_blockCache[tmtl.texture])
 					_encodeTexture(tmtl.texture);
 				
+				if (tmtl.normalMap){					
+					if (!_blockCache[tmtl.normalMap])
+						_encodeTexture(tmtl.normalMap);
+				}
 				_encodeBlockHeader(81);
 				_beginElement(); // Block
 				
@@ -280,6 +287,9 @@ package awaybuilder.utils.encoders
 				// Property list
 				_beginElement(); // Prop list
 				_encodeProperty(2, _blockCache[tmtl.texture], BADDR);
+				if (tmtl.normalMap){
+					_encodeProperty(3, _blockCache[tmtl.normalMap], BADDR);					
+				}
 				_encodeProperty(10, tmtl.alpha, FLOAT32);
 				_encodeProperty(11, tmtl.alphaBlending, BOOL);
 				_encodeProperty(12, tmtl.alphaThreshold, FLOAT32);
@@ -299,6 +309,10 @@ package awaybuilder.utils.encoders
 				
 				cmtl = ColorMaterial(mtl);
 				
+				if (cmtl.normalMap){					
+					if (!_blockCache[cmtl.normalMap])
+						_encodeTexture(cmtl.normalMap);
+				}
 				_encodeBlockHeader(81);
 				_beginElement(); // Block
 				
@@ -311,6 +325,9 @@ package awaybuilder.utils.encoders
 				// Property list
 				_beginElement(); // Prop list
 				_encodeProperty(1, cmtl.color, COLOR);
+				if (cmtl.normalMap){
+					_encodeProperty(3, _blockCache[cmtl.normalMap], BADDR);					
+				}
 				_encodeProperty(10, cmtl.alpha, FLOAT32);
 				_encodeProperty(11, cmtl.alphaBlending, BOOL);
 				_encodeProperty(12, cmtl.alphaThreshold, FLOAT32);
@@ -325,6 +342,34 @@ package awaybuilder.utils.encoders
 				
 				_blockCache[mtl] = _blockId;
 			}
+		}
+		
+		private function _encodeContainer3D(container : ObjectContainer3D) : void
+		{
+			
+			var i : uint;
+			var parentId : uint;
+			
+			parentId = 0;
+			if (container.parent)
+				parentId = _blockCache[container.parent];
+			
+			_encodeBlockHeader(22);
+			_beginElement(); // Block
+			
+			_body.writeUnsignedInt(parentId);
+			_encodeMatrix3D(container.transform);
+			_body.writeUTF(container.name);
+			
+			
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+			_beginElement(); // Attr list
+			_endElement(); // Attr list
+			
+			_endElement(); // Block
+			
+			_blockCache[container] = _blockId;
 		}
 		
 		
@@ -370,8 +415,8 @@ package awaybuilder.utils.encoders
 			}
 			
 			parentId = 0;
-			if (mesh.parent && _blockCache[mesh])
-				parentId = _blockCache[mesh];
+			if (mesh.parent)
+				parentId = _blockCache[mesh.parent];
 			
 			_encodeBlockHeader(23);
 			_beginElement(); // Block
