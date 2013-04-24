@@ -10,7 +10,7 @@ package awaybuilder.view.components.editors.events
         public static const ROTATE:String = "objectRotate";
 
         public static const MESH_CHANGE:String = "meshChange";
-        public static const MESH_NAME_CHANGE:String = "meshNameChange";
+        public static const MESH_STEPPER_CHANGE:String = "meshStepperChange";
 		public static const MESH_SUBMESH_ADD_NEW_MATERIAL:String = "submeshAddNewMaterial";
 		
 		public static const MATERIAL_CHANGE:String = "materialChange";
@@ -26,6 +26,7 @@ package awaybuilder.view.components.editors.events
         public static const MESH_SUBMESH_CHANGE:String = "meshSubmeshChange";
 
 		public static const CONTAINER_CHANGE:String = "containerChange";
+		public static const CONTAINER_STEPPER_CHANGE:String = "containerStepperChange";
 		
 		public static const LIGHT_CHANGE:String = "lightChange";
 		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";

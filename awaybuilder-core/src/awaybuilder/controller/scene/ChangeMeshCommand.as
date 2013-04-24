@@ -32,15 +32,19 @@ package awaybuilder.controller.scene
 			
             vo.name = mesh.name;
 
-            var subMeshes:Vector.<SubMesh> = new Vector.<SubMesh>();
-            var newSubMeshes:Array = new Array();
-
-            for( var i:int = 0; i < mesh.subMeshes.length; i++ )
-            {
-                var updatedSubMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
-                var subMesh:SubMeshVO = vo.subMeshes[i] as SubMeshVO;
-                subMesh.material = updatedSubMesh.material;
-            }
+			vo.pivotX = mesh.pivotX;
+			vo.pivotY = mesh.pivotY;
+			vo.pivotZ = mesh.pivotZ;
+			
+//            var subMeshes:Vector.<SubMesh> = new Vector.<SubMesh>();
+//            var newSubMeshes:Array = new Array();
+//
+//            for( var i:int = 0; i < mesh.subMeshes.length; i++ )
+//            {
+//                var updatedSubMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
+//                var subMesh:SubMeshVO = vo.subMeshes[i] as SubMeshVO;
+//                subMesh.material = updatedSubMesh.material;
+//            }
 
             addToHistory( event );
         }

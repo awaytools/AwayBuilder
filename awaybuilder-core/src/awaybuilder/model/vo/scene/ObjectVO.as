@@ -39,6 +39,10 @@ package awaybuilder.model.vo.scene
 			asset.rotationX = this.rotationX;
 			asset.rotationY = this.rotationY;
 			asset.rotationZ = this.rotationZ;
+			
+			asset.pivotX = this.pivotX;
+			asset.pivotY = this.pivotY;
+			asset.pivotZ = this.pivotZ;
 			asset.name = this.name;
 			asset.id = this.id;
 			return asset;

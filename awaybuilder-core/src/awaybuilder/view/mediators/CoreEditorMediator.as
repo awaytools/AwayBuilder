@@ -1,5 +1,6 @@
 package awaybuilder.view.mediators
 {
+    import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
@@ -22,6 +23,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AssetVO;
+    import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
@@ -75,6 +77,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
 			addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
+			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
@@ -241,9 +244,17 @@ package awaybuilder.view.mediators
 				applyObject( object );
 			}
 		}
+		
+		private function applyContainer( asset:ContainerVO ):void
+		{
+			var obj:ObjectContainer3D = AssetFactory.GetObject( asset ) as ObjectContainer3D;
+			applyName( obj, asset );
+			obj.pivotPoint = new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ );
+		}
 		private function applyObject( asset:ObjectVO ):void
 		{
 			var o:Object3D = Object3D( AssetFactory.GetObject(asset) );
+			o.name = asset.name;
 			o.x = asset.x;
 			o.y = asset.y;
 			o.z = asset.z;
@@ -432,7 +443,7 @@ package awaybuilder.view.mediators
 			for each( var item:MeshVO in event.items )
 			{
 				var obj:Mesh = AssetFactory.GetObject( item ) as Mesh;
-				applyName( obj, item );
+				applyContainer( item );
 				for each( var sub:SubMeshVO in item.subMeshes )
 				{
 					applySubMesh( sub );
@@ -460,7 +471,6 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
 		{
-			trace( event.items );
 			var asset:SubMeshVO = event.items[0] as SubMeshVO;
 			if( asset ) 
 			{
@@ -474,6 +484,15 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applyMaterial( asset );
+			}
+		}
+		
+		private function eventDispatcher_changeContainerHandler(event:SceneEvent):void
+		{
+			var asset:ContainerVO = event.items[0] as ContainerVO;
+			if( asset ) 
+			{
+				applyContainer( asset );
 			}
 		}
 		private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void

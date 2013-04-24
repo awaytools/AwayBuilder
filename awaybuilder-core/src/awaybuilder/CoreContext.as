@@ -36,6 +36,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewMaterialCommand;
 	import awaybuilder.controller.scene.AddNewShadowMethodCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
+	import awaybuilder.controller.scene.ChangeContainerCommand;
 	import awaybuilder.controller.scene.ChangeLightCommand;
 	import awaybuilder.controller.scene.ChangeLightPickerCommand;
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
@@ -136,6 +137,7 @@ package awaybuilder
 			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_REPLACE, LoadTextureAndRepalceCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_CONTAINER, ChangeContainerCommand);
             commandMap.mapEvent(SceneEvent.CHANGE_MATERIAL, ChangeMaterialCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHT, ChangeLightCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHTPICKER, ChangeLightPickerCommand);

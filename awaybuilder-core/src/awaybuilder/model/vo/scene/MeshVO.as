@@ -57,9 +57,6 @@ package awaybuilder.model.vo.scene
 			m.rotationX = this.rotationX;
 			m.rotationY = this.rotationY;
 			m.rotationZ = this.rotationZ;
-			m.pivotX = this.pivotX;
-			m.pivotY = this.pivotX;
-			m.pivotZ = this.pivotZ;
 			m.subMeshes = new ArrayCollection(this.subMeshes.source);
 			m.name = this.name;
 			m.castsShadows = this.castsShadows;

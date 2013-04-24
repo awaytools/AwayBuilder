@@ -26,7 +26,12 @@
             var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue, true));
         }
-
+		private function pivot_commitHandler(event:Event):void {
+			_asset.pivotX = pivotXStepper.value;
+			_asset.pivotY = pivotYStepper.value;
+			_asset.pivotZ = pivotZStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
+		}
         private function rotation_commitHandler(event:Event):void 
 		{
             var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
@@ -127,13 +132,13 @@
 			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="pivotXStepper" stepSize="0.01" snapInterval="0.01"
 								   width="100%" value="{_asset.pivotX}"
-								  change="position_commitHandler(event)" />
+								  change="pivot_commitHandler(event)" />
 				<controls:DragableNumericStepper id="pivotYStepper" stepSize="0.01" snapInterval="0.01"
 								  width="100%" value="{_asset.pivotY}"
-								  change="position_commitHandler(event)"/>
+								  change="pivot_commitHandler(event)"/>
 				<controls:DragableNumericStepper id="pivotZStepper"  stepSize="0.01" snapInterval="0.01"
 								 width="100%" value="{_asset.pivotZ}" 
-								  change="position_commitHandler(event)"/>
+								  change="pivot_commitHandler(event)"/>
 			</s:FormItem>
             <s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"

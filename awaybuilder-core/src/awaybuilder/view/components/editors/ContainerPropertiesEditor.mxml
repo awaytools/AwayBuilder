@@ -24,7 +24,13 @@
 		
 		private function position_commitHandler(event:Event):void {
 			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
+		}
+		private function pivot_commitHandler(event:Event):void {
+			_asset.pivotX = pivotXStepper.value;
+			_asset.pivotY = pivotYStepper.value;
+			_asset.pivotZ = pivotZStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CONTAINER_STEPPER_CHANGE, _asset));
 		}
 		
 		private function rotation_commitHandler(event:Event):void {
@@ -39,7 +45,7 @@
 		
 		private function name_changeHandler(event:Event):void {
 			_asset.name = nameInput.text;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CONTAINER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CONTAINER_STEPPER_CHANGE, _asset));
 		}
 		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
 		{
@@ -82,49 +88,49 @@
 	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="xStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.x}"
-								  change="position_commitHandler(event)" />
-				<s:NumericStepper id="yStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.y}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
-								  change="position_commitHandler(event)"/>
-				<s:NumericStepper id="zStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.z}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
-								  change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="xStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.x}"
+												 change="position_commitHandler(event)" />
+				<controls:DragableNumericStepper id="yStepper"  stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.y}"
+												 change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="zStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.z}"
+												 change="position_commitHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="pivotXStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.pivotX}"
-								  change="position_commitHandler(event)" />
-				<s:NumericStepper id="pivotYStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.pivotY}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
-								  change="position_commitHandler(event)"/>
-				<s:NumericStepper id="pivotZStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" 
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.pivotZ}" stepSize="0.01" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc"
-								  change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="pivotXStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.pivotX}"
+												 change="pivot_commitHandler(event)" />
+				<controls:DragableNumericStepper id="pivotYStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.pivotY}"
+												 change="pivot_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="pivotZStepper"  stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.pivotZ}" 
+												 change="pivot_commitHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="rotationXStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
-								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
-								  change="rotation_commitHandler(event)"/>
-				<s:NumericStepper id="rotationYStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
-								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
-								  change="rotation_commitHandler(event)"/>
-				<s:NumericStepper id="rotationZStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
-								  minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}"
-								  change="rotation_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
+												 minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
+												 change="rotation_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="rotationYStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
+												 minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
+												 change="rotation_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="rotationZStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
+												 minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}" 
+												 change="rotation_commitHandler(event)"/>
 			</s:FormItem>
 			<controls:HorizontalFormSeparator/>
 			<s:FormItem label="Scale" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="scaleXStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleX}"
-								  change="scale_commitHandler(event)" />
-				<s:NumericStepper id="scaleYStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleY}"
-								  change="scale_commitHandler(event)"/>
-				<s:NumericStepper id="scaleZStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin" valueFormatFunction="stepperFormatFunc" valueParseFunction="stepperParseFunc" stepSize="0.01"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.scaleZ}"
-								  change="scale_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="scaleXStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.scaleX}"
+												 change="scale_commitHandler(event)" />
+				<controls:DragableNumericStepper id="scaleYStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.scaleY}"
+												 change="scale_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="scaleZStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.scaleZ}"
+												 change="scale_commitHandler(event)"/>
 			</s:FormItem>
 		</s:Form>
 	</controls:CollapsiblePanel>

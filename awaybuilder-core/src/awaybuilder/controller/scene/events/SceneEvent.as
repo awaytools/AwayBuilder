@@ -14,6 +14,7 @@ import flash.events.Event;
         public static const ROTATE_OBJECT:String = "rotateObject";
         public static const SCALE_OBJECT:String = "scaleObject";
 
+		public static const CHANGE_CONTAINER:String = "changeContainer";
         public static const CHANGE_MESH:String = "changeMesh";
         public static const CHANGE_MATERIAL:String = "changeMaterial";
 		public static const CHANGE_LIGHT:String = "changeLight";

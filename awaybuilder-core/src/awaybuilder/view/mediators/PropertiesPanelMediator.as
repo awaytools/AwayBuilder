@@ -60,9 +60,12 @@ package awaybuilder.view.mediators
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
             addViewListener( PropertyEditorEvent.SCALE, view_scaleHandler );
             addViewListener( PropertyEditorEvent.MESH_CHANGE, view_meshChangeHandler );
-            addViewListener( PropertyEditorEvent.MESH_NAME_CHANGE, view_meshNameChangeHandler );
+            addViewListener( PropertyEditorEvent.MESH_STEPPER_CHANGE, view_meshNameChangeHandler );
             addViewListener( PropertyEditorEvent.MESH_SUBMESH_CHANGE, view_meshSubmeshChangeHandler );
 			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler );
+			
+			addViewListener( PropertyEditorEvent.CONTAINER_CHANGE, view_containerChangeHandler );
+			addViewListener( PropertyEditorEvent.CONTAINER_STEPPER_CHANGE, view_containerStepperChangeHandler );
 			
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
             addViewListener( PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, view_materialNameChangeHandler );
@@ -121,6 +124,16 @@ package awaybuilder.view.mediators
         {
             this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[view.data], event.data, true));
         }
+		private function view_containerChangeHandler(event:PropertyEditorEvent):void
+		{
+			trace( "view_containerChangeHandler " );
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CONTAINER,[view.data], event.data));
+		}
+		private function view_containerStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			trace( "view_containerStepperChangeHandler " );
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CONTAINER,[view.data], event.data, true));
+		}
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data));
