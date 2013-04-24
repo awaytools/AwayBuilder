@@ -280,7 +280,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSoftShadowMapMethod(view.data as LightVO)));
 		}
 		
-		
 		private function view_lightStepperChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT, [view.data], event.data, true));

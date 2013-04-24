@@ -193,6 +193,7 @@ package awaybuilder.utils
 			if( item is DirectionalLight ) 
 			{
 				var dl:DirectionalLight = DirectionalLight( item );
+				dl.direction.normalize();
 				asset.directionX = dl.direction.x;
 				asset.directionY = dl.direction.y;
 				asset.directionZ = dl.direction.z;

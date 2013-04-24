@@ -24,10 +24,10 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
-				<s:Button width="100%" label="New Filtered Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'FilteredShadowMapMethod')"/>
-				<s:Button width="100%" label="New Dithered Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'DitheredShadowMapMethod')"/>
-				<s:Button width="100%" label="New Soft Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'SoftShadowMapMethod')"/>
-				<s:Button width="100%" label="HardShadowMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'HardShadowMapMethod')"/>
+				<s:Button width="100%" label="Filtered Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'FilteredShadowMapMethod')"/>
+				<s:Button width="100%" label="Dithered Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'DitheredShadowMapMethod')"/>
+				<s:Button width="100%" label="Soft Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'SoftShadowMapMethod')"/>
+				<s:Button width="100%" label="Hard Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'HardShadowMapMethod')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 	</fx:Declarations>
@@ -36,6 +36,7 @@
 		<s:State name="pointType"/>
 	</editors:states>
 	<fx:Script><![CDATA[
+		import away3d.core.math.Vector3DUtils;
 		import away3d.lights.shadowmaps.CascadeShadowMapper;
 		import away3d.lights.shadowmaps.CubeMapShadowMapper;
 		import away3d.lights.shadowmaps.DirectionalShadowMapper;
@@ -47,6 +48,8 @@
 		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
+		import flash.utils.getTimer;
+		
 		import mx.collections.ArrayCollection;
 		import mx.events.ColorPickerEvent;
 		
@@ -56,6 +59,12 @@
 		
 		[Bindable]
 		private var _asset:LightVO;
+		
+		[Bindable]
+		private var _azimuthAngle:Number = 0;
+		
+		[Bindable]
+		private var _elevationAngle:Number = 0;
 		
 		[Bindable]
 		private var _directionalMappersSelectedItem:Object;
@@ -74,16 +83,22 @@
 			{
 				if( _asset.shadowMapper == o.value )
 				{
-					_directionalMappersSelectedItem = o;
+					if( _directionalMappersSelectedItem != o )
+						_directionalMappersSelectedItem = o;
 				}
 			}
 			for each( o in pointMappersList )
 			{
 				if( _asset.shadowMapper == o.value )
 				{
-					_pointMappersSelectedItem = o;
+					if( _pointMappersSelectedItem != o )
+						_pointMappersSelectedItem = o;
 				}
 			}
+			_elevationAngle = Math.round(-Math.asin( _asset.directionY )*180/Math.PI);
+			
+			var a:Number = Math.atan2(_asset.directionX, _asset.directionZ )*180/Math.PI;
+			_azimuthAngle = Math.round(a<0?a+360:a);
 		}
 		
 		private function name_changeHandler(event:Event):void 
@@ -147,10 +162,7 @@
 		
 		protected function directionStepper_changeHandler(event:Event):void
 		{
-			_asset.directionX = directionxStepper.value;
-			_asset.directionY = directionyStepper.value;
-			_asset.directionZ = directionzStepper.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
+//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
 		}
 		private function editParentObjectButton_clickHandler(event:MouseEvent):void
 		{
@@ -222,6 +234,15 @@
 			}
 		}
 		
+		protected function angleStepper_changeHandler(event:Event):void
+		{
+			_asset.directionY = -Math.sin(elevationStepper.value*Math.PI/180);
+			_asset.directionX =  Math.sin(Math.PI/2 - elevationStepper.value*Math.PI/180)*Math.sin(horizontalStepper.value*Math.PI/180);
+			_asset.directionZ =  Math.sin(Math.PI/2 - elevationStepper.value*Math.PI/180)*Math.cos(horizontalStepper.value*Math.PI/180);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
+			
+		}
+		
 	]]></fx:Script>
 	
 	
@@ -258,29 +279,30 @@
 	
 	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-			
 			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="xStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.x}"
-								  change="position_commitHandler(event)" />
-				<s:NumericStepper id="yStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.y}"
-								  change="position_commitHandler(event)"/>
-				<s:NumericStepper id="zStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.z}"
-								  change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="xStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.x}"
+												 change="position_commitHandler(event)" />
+				<controls:DragableNumericStepper id="yStepper"  stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.y}"
+												 change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="zStepper" stepSize="0.01" snapInterval="0.01"
+												 width="100%" value="{_asset.z}"
+												 change="position_commitHandler(event)"/>
 			</s:FormItem>
-			<s:FormItem label="Direction" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="directionxStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.directionX}"
-								  change="directionStepper_changeHandler(event)" />
-				<s:NumericStepper id="directionyStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.directionY}"
-								  change="directionStepper_changeHandler(event)"/>
-				<s:NumericStepper id="directionzStepper" skinClass="awaybuilder.view.skins.TinyStepperSkin"
-								  minimum="-999999" maximum="999999" width="100%" value="{_asset.directionZ}"
-								  change="directionStepper_changeHandler(event)"/>
+			<s:FormItem label="Azimuth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<controls:DragableNumericStepper id="horizontalStepper" stepSize="1" snapInterval="1" allowValueWrap="true"
+												 width="100%" value="{_azimuthAngle}" minimum="0" maximum="360"
+												 change="angleStepper_changeHandler(event)" />
 			</s:FormItem>
+			<s:FormItem label="Elevation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<controls:DragableNumericStepper id="elevationStepper" stepSize="1" snapInterval="1" allowValueWrap="false"
+												 width="100%" value="{_elevationAngle}" minimum="-90" maximum="90"
+												 change="angleStepper_changeHandler(event)" />
+			</s:FormItem>
+			
+			
+			
 		</s:Form>
 	</controls:CollapsiblePanel>
 	

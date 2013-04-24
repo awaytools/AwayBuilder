@@ -250,7 +250,6 @@
 					   dragStart="tree_dragStartHandler(event)" dragComplete="lightsTree_dragCompleteHandler(event)"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
-			
 		</controls:LibraryCollapsiblePanel>
 	</s:VGroup>
 	

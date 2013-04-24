@@ -175,8 +175,14 @@ package awaybuilder.view.components.controls
 		override protected function setValue(newValue:Number):void
 		{
 			super.setValue(newValue);
-			const parts:Array = (new String(1 + snapInterval)).split("."); 
-			valueDisplay.text = newValue.toFixed(parts[1].length);
+			if( isNaN( newValue) ) return;
+			if( snapInterval<0 ) {
+				const parts:Array = (new String(1 + snapInterval)).split("."); 
+				valueDisplay.text = newValue.toFixed(parts[1].length);
+			}
+			else {
+				valueDisplay.text = newValue.toString();
+			}
 		}
 		
 		override protected function nearestValidValue(value:Number, interval:Number):Number

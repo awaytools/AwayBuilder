@@ -70,6 +70,7 @@ package awaybuilder.model.vo.scene
 		{
 			var vo:LightVO = fill( new LightVO() ) as LightVO;
 			
+			vo.type = this.type;
 			vo.name = this.name;
 			
 			vo.color = this.color;

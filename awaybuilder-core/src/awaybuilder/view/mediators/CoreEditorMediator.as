@@ -4,6 +4,8 @@ package awaybuilder.view.mediators
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
     import away3d.library.assets.NamedAssetBase;
+    import away3d.lights.DirectionalLight;
+    import away3d.lights.LightBase;
     import away3d.materials.ColorMaterial;
     import away3d.materials.ColorMultiPassMaterial;
     import away3d.materials.MaterialBase;
@@ -255,6 +257,19 @@ package awaybuilder.view.mediators
 			o.rotationZ = asset.rotationZ;
 		}
 		
+		private function applyLight( asset:LightVO ):void
+		{
+			var light:LightBase = AssetFactory.GetObject( asset ) as LightBase;
+			applyObject( asset );
+			if( asset.type == LightVO.DIRECTIONAL ) 
+			{
+				var dl:DirectionalLight = light as DirectionalLight;
+				dl.position = new Vector3D( asset.directionX, asset.directionY, asset.directionZ);
+				dl.position.normalize();
+//				trace( dl.position );
+			}
+			
+		}
 		private function applyLightPicker( asset:LightPickerVO ):void
 		{
 			var picker:StaticLightPicker = AssetFactory.GetObject( asset ) as StaticLightPicker;
@@ -320,17 +335,22 @@ package awaybuilder.view.mediators
 			if( m is ColorMaterial )
 			{
 				var cm:ColorMaterial = m as ColorMaterial;
-//				cm.color = diffuseMethod.diffuseColor;
-//				cm.alpha = alpha;
+				cm.color = asset.diffuseColor;
+				cm.alpha = asset.alpha;
 			}
 			else if( m is TextureMaterial )
 			{
 				var tm:TextureMaterial = m as TextureMaterial;
 				
-				
 				tm.shadowMethod = AssetFactory.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 				
 				tm.texture = AssetFactory.GetObject(asset.diffuseTexture) as Texture2DBase;
+				
+				tm.alpha = asset.alpha;
+				
+				tm.normalMap = AssetFactory.GetObject(asset.normalTexture) as Texture2DBase;
+				tm.specularMap = AssetFactory.GetObject(asset.specularTexture) as Texture2DBase;
+				tm.ambientTexture = AssetFactory.GetObject(asset.ambientTexture) as Texture2DBase;
 					
 //				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
 //				tm.diffuseMethod.diffuseColor = diffuseColor;
@@ -396,7 +416,7 @@ package awaybuilder.view.mediators
 		{
 			for each( var asset:LightVO in event.items )
 			{
-//				applyLightPicker( asset );
+				applyLight( asset );
 			}
 		}
 		private function eventDispatcher_changeLightPickerHandler(event:SceneEvent):void
