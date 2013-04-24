@@ -126,12 +126,10 @@ package awaybuilder.view.mediators
         }
 		private function view_containerChangeHandler(event:PropertyEditorEvent):void
 		{
-			trace( "view_containerChangeHandler " );
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CONTAINER,[view.data], event.data));
 		}
 		private function view_containerStepperChangeHandler(event:PropertyEditorEvent):void
 		{
-			trace( "view_containerStepperChangeHandler " );
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CONTAINER,[view.data], event.data, true));
 		}
         private function view_meshChangeHandler(event:PropertyEditorEvent):void

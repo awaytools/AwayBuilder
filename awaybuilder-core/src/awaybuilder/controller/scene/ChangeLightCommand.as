@@ -44,12 +44,11 @@ package awaybuilder.controller.scene
 			vo.ambient = newAsset.ambient;
 			vo.diffuse = newAsset.diffuse;
 			
-			vo.directionX = newAsset.directionX;
-			vo.directionY = newAsset.directionY;
-			vo.directionZ = newAsset.directionZ;
-			
 			vo.diffuse = newAsset.diffuse;
 			vo.specular = newAsset.specular;
+			
+			vo.azimuthAngle = newAsset.azimuthAngle;
+			vo.elevationAngle = newAsset.elevationAngle;
 			
 			vo.castsShadows = newAsset.castsShadows;
 			

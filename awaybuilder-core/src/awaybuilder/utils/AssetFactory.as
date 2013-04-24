@@ -194,9 +194,11 @@ package awaybuilder.utils
 			{
 				var dl:DirectionalLight = DirectionalLight( item );
 				dl.direction.normalize();
-				asset.directionX = dl.direction.x;
-				asset.directionY = dl.direction.y;
-				asset.directionZ = dl.direction.z;
+				
+				asset.elevationAngle = Math.round(-Math.asin( dl.direction.y )*180/Math.PI);
+				var a:Number = Math.atan2(dl.direction.x, dl.direction.z )*180/Math.PI;
+				asset.azimuthAngle = Math.round(a<0?a+360:a);
+				
 				asset.type = LightVO.DIRECTIONAL;
 			}
 			else if( item is PointLight ) 

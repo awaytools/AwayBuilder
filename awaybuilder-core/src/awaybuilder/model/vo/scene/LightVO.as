@@ -26,15 +26,20 @@ package awaybuilder.model.vo.scene
 		public var radius:Number = 1;
 		public var fallOff:Number = 1;
 		
-		public var directionX:Number;
-		public var directionY:Number;
-		public var directionZ:Number;
+//		public var directionX:Number;
+//		public var directionY:Number;
+//		public var directionZ:Number;
 		
 		public var castsShadows:Boolean;
 		
 		public var shadowMapper:String;
 		
 		public var shadowMethods:ArrayCollection = new ArrayCollection();
+		
+//		public var zeroAzimuthAngle:Number = 0; // azimuth angle if light elevation = 90 or -90
+		
+		public var azimuthAngle:Number = 0;
+		public var elevationAngle:Number = 0;
 		
 //		override public function apply():void
 //		{
@@ -78,10 +83,6 @@ package awaybuilder.model.vo.scene
 			vo.ambient = this.ambient;
 			vo.diffuse = this.diffuse;
 			
-			vo.directionX = this.directionX;
-			vo.directionY = this.directionY;
-			vo.directionZ = this.directionZ;
-			
 			vo.x = this.x;
 			vo.y = this.y;
 			vo.z = this.z;
@@ -92,6 +93,8 @@ package awaybuilder.model.vo.scene
 			
 			vo.shadowMethods = new ArrayCollection(this.shadowMethods.source);
 			
+			vo.azimuthAngle = this.azimuthAngle;
+			vo.elevationAngle = this.elevationAngle;
 			vo.diffuse = this.diffuse;
 			vo.specular = this.specular;
 			

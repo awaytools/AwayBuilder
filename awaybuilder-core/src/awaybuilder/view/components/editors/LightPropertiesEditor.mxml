@@ -61,12 +61,6 @@
 		private var _asset:LightVO;
 		
 		[Bindable]
-		private var _azimuthAngle:Number = 0;
-		
-		[Bindable]
-		private var _elevationAngle:Number = 0;
-		
-		[Bindable]
 		private var _directionalMappersSelectedItem:Object;
 		
 		[Bindable]
@@ -95,10 +89,7 @@
 						_pointMappersSelectedItem = o;
 				}
 			}
-			_elevationAngle = Math.round(-Math.asin( _asset.directionY )*180/Math.PI);
 			
-			var a:Number = Math.atan2(_asset.directionX, _asset.directionZ )*180/Math.PI;
-			_azimuthAngle = Math.round(a<0?a+360:a);
 		}
 		
 		private function name_changeHandler(event:Event):void 
@@ -236,15 +227,13 @@
 		
 		protected function angleStepper_changeHandler(event:Event):void
 		{
-			_asset.directionY = -Math.sin(elevationStepper.value*Math.PI/180);
-			_asset.directionX =  Math.sin(Math.PI/2 - elevationStepper.value*Math.PI/180)*Math.sin(horizontalStepper.value*Math.PI/180);
-			_asset.directionZ =  Math.sin(Math.PI/2 - elevationStepper.value*Math.PI/180)*Math.cos(horizontalStepper.value*Math.PI/180);
+			_asset.elevationAngle = elevationStepper.value;
+			_asset.azimuthAngle = horizontalStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
 			
 		}
 		
 	]]></fx:Script>
-	
 	
 	<s:Group width="100%" top="0">
 		<s:Rect left="0" right="0" top="3" bottom="3">
@@ -292,12 +281,12 @@
 			</s:FormItem>
 			<s:FormItem label="Azimuth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="horizontalStepper" stepSize="1" snapInterval="1" allowValueWrap="true"
-												 width="100%" value="{_azimuthAngle}" minimum="0" maximum="360"
+												 width="100%" value="{_asset.azimuthAngle}" minimum="0" maximum="360"
 												 change="angleStepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Elevation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="elevationStepper" stepSize="1" snapInterval="1" allowValueWrap="false"
-												 width="100%" value="{_elevationAngle}" minimum="-90" maximum="90"
+												 width="100%" value="{_asset.elevationAngle}" minimum="-90" maximum="90"
 												 change="angleStepper_changeHandler(event)" />
 			</s:FormItem>
 			

@@ -275,9 +275,10 @@ package awaybuilder.view.mediators
 			if( asset.type == LightVO.DIRECTIONAL ) 
 			{
 				var dl:DirectionalLight = light as DirectionalLight;
-				dl.position = new Vector3D( asset.directionX, asset.directionY, asset.directionZ);
-				dl.position.normalize();
-//				trace( dl.position );
+				var y:Number = -Math.sin( asset.elevationAngle*Math.PI/180);
+				var x:Number =  Math.sin(Math.PI/2 - asset.elevationAngle*Math.PI/180)*Math.sin( asset.azimuthAngle*Math.PI/180);
+				var z:Number =  Math.sin(Math.PI/2 - asset.elevationAngle*Math.PI/180)*Math.cos( asset.azimuthAngle*Math.PI/180);
+				dl.direction = new Vector3D( x, y, z); // tested
 			}
 			
 		}
