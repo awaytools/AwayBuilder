@@ -432,9 +432,10 @@ package awaybuilder.utils.scene
 
 		// Camera zoom math function ********************************************************************************************************************************************
 
-		public static function log2(x:Number):Number
+		public static function zoomFunction(x:Number):Number
 		{
-			return Math.log(x)/Math.LN2;
+			return Math.pow(2, 8-x);
+			//return 16-Math.log(x)/(Math.LN2);
 		}
 	}
 

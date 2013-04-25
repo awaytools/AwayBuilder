@@ -14,7 +14,7 @@
 	
 	<s:Button id="zoomOutButton" styleName="toolbarButton" toolTip="Zoom Out" autoRepeat="true"
 			  buttonDown="zoomOutButton_clickHandler(event)"/>
-	<s:HSlider id="zoomSlider" minimum="0.00001" maximum="0.99999" stepSize="0.001" value="0.75"
+	<s:HSlider id="zoomSlider" minimum="-8" maximum="8" stepSize="0.001" value="0.75"
 		liveDragging="true" focusEnabled="false"
 		dataTipFormatFunction="{zoomSlider_dataTipFormat}"
 		change="zoomSlider_changeHandler(event)"/>
@@ -51,7 +51,7 @@
 
 		private function zoomSlider_dataTipFormat(value:Number):String
 		{
-			return int(CameraManager.log2(value)*-2000).toString();
+			return int(CameraManager.zoomFunction(value)).toString();
 		}
 		
 		protected function zoomInButton_clickHandler(event:FlexEvent):void
