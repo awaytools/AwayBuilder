@@ -259,7 +259,7 @@
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
-	<controls:CollapsiblePanel width="100%" title="General" collapsed="true">
+	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>

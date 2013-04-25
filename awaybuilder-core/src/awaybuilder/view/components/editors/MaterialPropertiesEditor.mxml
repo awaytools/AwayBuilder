@@ -362,17 +362,21 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
+		protected function ambientTextureDropDownListButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.ambientTexture, true));
+		}
 		protected function textureButton_clickHandler(event:MouseEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.diffuseTexture, true));
 		}
 		protected function normalTexturButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.diffuseTexture, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.normalTexture, true));
 		}
 		protected function specularTextureButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.diffuseTexture, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.specularTexture, true));
 		}
 		
 		protected function alphaStepper_changeHandler(event:Event):void
@@ -582,7 +586,7 @@
 											   addNewItem="ambientTextureDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="textureButton_clickHandler(event)" enabled="{!ambientTextureDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="ambientTextureDropDownListButton_clickHandler(event)" enabled="{!ambientTextureDropDownList.selectedItem.isNull}"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">

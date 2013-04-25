@@ -414,7 +414,7 @@ package awaybuilder.view.mediators
 				tm.normalMap = AssetFactory.GetObject(asset.normalTexture) as Texture2DBase;
 				tm.specularMap = AssetFactory.GetObject(asset.specularTexture) as Texture2DBase;
 				tm.ambientTexture = AssetFactory.GetObject(asset.ambientTexture) as Texture2DBase;
-					
+				trace( tm.ambientTexture );
 //				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
 //				tm.diffuseMethod.diffuseColor = diffuseColor;
 				
@@ -458,7 +458,7 @@ package awaybuilder.view.mediators
 			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
 			if( multiPassMaterialBase ) 
 			{
-				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
+				multiPassMaterialBase.alphaThreshold = asset.alphaThreshold;
 			}
 			
 			var len:uint = 0;
