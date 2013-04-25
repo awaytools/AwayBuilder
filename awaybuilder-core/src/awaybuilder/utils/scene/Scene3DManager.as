@@ -1,5 +1,7 @@
 package awaybuilder.utils.scene
 {
+	import away3d.lights.DirectionalLight;
+	import awaybuilder.utils.MathUtils;
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.Scene3D;
@@ -50,6 +52,7 @@ package awaybuilder.utils.scene
 		public static var stage3DProxy:Stage3DProxy;
 		public static var mode:String;
 		public static var view:View3D;
+		public static var directionalLightView:View3D;
 		public static var scene:Scene3D;
 		public static var camera:Camera3D;
 		
@@ -68,7 +71,7 @@ package awaybuilder.utils.scene
 		public static var rotateGizmo:RotateGizmo3D;
 		public static var scaleGizmo:ScaleGizmo3D;
 		
-		private static var lightGizmos:ArrayList = new ArrayList();// TODO: Use vector
+		public static var lightGizmos:Vector.<LightGizmo3D> = new Vector.<LightGizmo3D>();
 		
 		public static function init(scope:UIComponent):void
 		{
@@ -93,11 +96,18 @@ package awaybuilder.utils.scene
 			view.camera.position = new Vector3D(0, 200, -1000);
 			view.camera.rotationX = 0;
 			view.camera.rotationY = 0;	
-			view.camera.rotationZ = 0			
+			view.camera.rotationZ = 0;			
 			scope.addChild(view);
 			Scene3DManager.scene = view.scene;
 			Scene3DManager.camera = view.camera;							
 			
+			directionalLightView = new View3D();
+			directionalLightView.shareContext = true;
+			directionalLightView.stage3DProxy = stage3DProxy;	
+			directionalLightView.mousePicker = PickingType.RAYCAST_BEST_HIT;
+			directionalLightView.camera.lens.near = 1;
+			directionalLightView.camera.lens.far = 100000;
+			scope.addChild(directionalLightView);
 			
 			//Create Gizmos
 			translateGizmo = new TranslateGizmo3D();
@@ -163,9 +173,42 @@ package awaybuilder.utils.scene
 		{
 			orientationTool.update();
 			currentGizmo.update();
+			updateLights();
 			
 			view.render();			
-		}		
+			updateDirectionalLightView();
+		}
+
+		private function updateDirectionalLightView() : void {
+			directionalLightView.camera.eulers = Scene3DManager.camera.eulers;
+			
+			var camPos:Vector3D = getCameraPosition(CameraManager._xDeg, -CameraManager._yDeg);
+			directionalLightView.camera.x = -camPos.x;
+			directionalLightView.camera.y = -camPos.y;
+			directionalLightView.camera.z = -camPos.z;
+			
+			directionalLightView.render();						
+		}
+		private function getCameraPosition(xDegree:Number, yDegree:Number):Vector3D
+		{
+			var cy:Number = Math.cos(MathUtils.convertToRadian(yDegree)) * Scene3DManager.view.height/2;			
+			
+			var v:Vector3D = new Vector3D();
+			
+			v.x = Math.sin(MathUtils.convertToRadian(xDegree)) * cy;
+			v.y = Math.sin(MathUtils.convertToRadian(yDegree)) * Scene3DManager.view.height/2;
+			v.z = Math.cos(MathUtils.convertToRadian(xDegree)) * cy;
+			
+			return v;
+		}				
+		private function updateLights() : void {
+			var l:LightGizmo3D;
+			var lI:int;
+			for (lI=0; lI<lightGizmos.length; lI++) {
+				l = lightGizmos[lI];
+				l.updateLight();
+			}
+		}
 		
 		private function handleScreenSize(e:Event=null):void 
 		{
@@ -190,6 +233,8 @@ package awaybuilder.utils.scene
 			
 			view.width = scope.width;
 			view.height = scope.height;
+			directionalLightView.width = scope.width;
+			directionalLightView.height = scope.height;
 		}
 		
 		// Mouse Events *************************************************************************************************************************************************
@@ -228,20 +273,24 @@ package awaybuilder.utils.scene
 					break;													
 			}
 			
-			if (selectedObject) currentGizmo.show(selectedObject);			
+			var isLightGizmo:LightGizmo3D = selectedObject.parent as LightGizmo3D;
+			if (selectedObject && (!isLightGizmo || isLightGizmo.type==LightGizmo3D.POINT_LIGHT || Scene3DManager.currentGizmo==rotateGizmo))
+				currentGizmo.show(selectedObject);			
 		}
 		
 		// Lights Handling *********************************************************************************************************************************************
 		
 		public static function addLight(light:LightBase):void
 		{
-			var gizmo:LightGizmo3D = new LightGizmo3D(light); 
+			var gizmo:LightGizmo3D = new LightGizmo3D(light, camera); 
 			gizmo.cone.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);
 			light.addChild(gizmo);
-			lightGizmos.addItem(gizmo);
+			lightGizmos.push(gizmo);
 			objects.addItem(light);
 			
-			scene.addChild(light);
+			if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.addChild(light);
+			else scene.addChild(light);
+			
 			lights.addItem(light);
 		}
 		
@@ -254,7 +303,7 @@ package awaybuilder.utils.scene
 				if (lights.getItemAt(i) == light)
 				{
 					lights.removeItemAt(i);
-					lightGizmos.removeItemAt(i);
+					lightGizmos.splice(i, 1);
 					break;
 				}
 			}
@@ -400,9 +449,16 @@ package awaybuilder.utils.scene
 		{
 			if (!CameraManager.hasMoved && !currentGizmo.hasMoved && active)
 			{
-				var mesh:Mesh = toggleMeshBounds(e.target as ObjectContainer3D);
-				if (mesh.showBounds) unSelectObjectByName(mesh.name);
-				else selectObjectByName(mesh.name);					
+				var selectedMesh:ObjectContainer3D = e.target as ObjectContainer3D;
+				var mesh:Mesh = toggleMeshBounds(selectedMesh);
+				if (selectedMesh.parent is LightGizmo3D) { 
+					selectedMesh = (selectedMesh.parent as LightGizmo3D).light;
+					if (mesh.showBounds) unSelectObjectByName(selectedMesh.name);
+					selectObjectByName(selectedMesh.name);	
+				} else {
+					if (mesh.showBounds) unSelectObjectByName(mesh.name);
+					else selectObjectByName(mesh.name);	
+				}				
 			}
 		}
 
@@ -470,6 +526,12 @@ package awaybuilder.utils.scene
 		private static function selectObjectInContainer(o : ObjectContainer3D, meshName : String) : void {
 
 			var m:Mesh = o as Mesh;
+
+			if (o is LightBase) {
+				var lB:LightBase = o as LightBase;
+				m = (lB.getChildAt(0) as LightGizmo3D).cone;
+			}
+			
 			if (m && m.name == meshName)
 			{
 				if (!m.showBounds)
@@ -477,7 +539,10 @@ package awaybuilder.utils.scene
 					if (m is Mesh) m.showBounds = true;
 					selectedObjects.addItem(m);						
 					selectedObject = m;
-					currentGizmo.show(selectedObject);
+					
+					var isLightGizmo:LightGizmo3D = m.parent as LightGizmo3D;
+					if (!isLightGizmo || isLightGizmo.type==LightGizmo3D.POINT_LIGHT || Scene3DManager.currentGizmo==rotateGizmo)
+						currentGizmo.show(selectedObject);
 				}
 			} else {
 				for (var c:int = 0; c<o.numChildren; c++) {

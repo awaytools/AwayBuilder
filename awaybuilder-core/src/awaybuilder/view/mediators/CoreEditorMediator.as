@@ -1,5 +1,6 @@
 package awaybuilder.view.mediators
 {
+    import awaybuilder.view.scene.controls.LightGizmo3D;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
@@ -590,6 +591,11 @@ package awaybuilder.view.mediators
 						var mesh:MeshVO = event.items[0] as MeshVO;
 						selectObjectsScene( AssetFactory.GetObject( mesh ) as Object3D );
 					}
+					else if( event.items[0] is LightVO )
+					{
+						var light:LightVO = event.items[0] as LightVO;
+						selectLightsScene( AssetFactory.GetObject( light ) as LightBase );
+					}
 					else {
                         Scene3DManager.unselectAll();
 					}
@@ -617,6 +623,17 @@ package awaybuilder.view.mediators
 			Scene3DManager.selectObject(o.name);
 			
 		}
+		private function selectLightsScene( l:LightBase ):void
+		{
+			for each( var lightGizmo:LightGizmo3D in Scene3DManager.lightGizmos )
+			{
+				if( lightGizmo.light == l )
+				{
+					selectObjectsScene(lightGizmo.cone);
+					return;
+				}
+			}
+		}
         private function eventDispatcher_itemsFocusHandler(event:SceneEvent):void
         {
             CameraManager.focusTarget( Scene3DManager.selectedObject );
@@ -642,18 +659,20 @@ package awaybuilder.view.mediators
 		private function scene_meshSelectedHandler(event:Scene3DManagerEvent):void
 		{
 			var selected:Array = [];
+			var mesh:Mesh;
+			var asset:AssetVO;
+			var isLight:LightGizmo3D;
+				
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
-				var mesh:Mesh = item as Mesh;
-				if( mesh ) 
-				{
-					var asset:AssetVO = AssetFactory.GetAsset(item);
-					
-					if( asset ) 
-					{
+				mesh = item as Mesh;
+				if( mesh ) {
+					if ((isLight = (mesh.parent as LightGizmo3D)))
+						asset = AssetFactory.GetAsset(isLight.light);
+					else
+						asset = AssetFactory.GetAsset(mesh);
+					if ( asset )
 						selected.push(asset);
-					}
-					
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));

@@ -15,7 +15,7 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
-				<s:Button width="100%" label="New Directinal Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newDirectionalLight')"/>
+				<s:Button width="100%" label="New Directional Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newDirectionalLight')"/>
 				<s:Button width="100%" label="New Point Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newPointLight')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
