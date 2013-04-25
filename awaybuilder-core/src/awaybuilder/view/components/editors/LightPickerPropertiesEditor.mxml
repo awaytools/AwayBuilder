@@ -7,12 +7,27 @@
 					xmlns:editors="awaybuilder.view.components.editors.*" 
 					>
 	<fx:Declarations>
+		<fx:Component className="NewLightPopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
+									   chromeColor="0x1d1d1c" color="0xdbdbdb"
+									   mouseDownOutside="close();"
+									   >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="New Directinal Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newDirectionalLight')"/>
+				<s:Button width="100%" label="New Point Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newPointLight')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightPickerVO;
 		import awaybuilder.view.components.controls.events.DroppedEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		
+		import spark.components.supportClasses.ButtonBase;
+		import spark.events.PopUpEvent;
 		
 		[Bindable]
 		private var _asset:LightPickerVO;
@@ -46,8 +61,26 @@
 		
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHTPICKER_ADD_LIGHT, _asset, true));
+			var button:ButtonBase = event.target as ButtonBase;
+			var popup:NewLightPopup = new NewLightPopup();
+			popup.open(this);
+			popup.addEventListener('close', newLightPopup_closeHandler);
+			var pos:Point = button.localToGlobal( new Point() );
+			popup.move( Math.min(pos.x-4, stage.width-200),  Math.min(pos.y-4, stage.height-200) );
 		}
+		private function newLightPopup_closeHandler(event:PopUpEvent):void 
+		{
+			if (!event.commit) return;
+			switch(event.data)
+			{
+				case "newDirectionalLight":
+					this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHTPICKER_ADD_DIRECTIONAL_LIGHT ) );
+					break;
+				default:
+					this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHTPICKER_ADD_POINT_LIGHT ) );
+					break;
+			}
+		}   
 		
 	]]></fx:Script>
 	

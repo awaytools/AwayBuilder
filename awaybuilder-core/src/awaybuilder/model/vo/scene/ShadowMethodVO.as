@@ -12,25 +12,27 @@ package awaybuilder.model.vo.scene
 	public class ShadowMethodVO extends AssetVO
 	{
 		
-		public var light:LightVO;
-		
 		public var epsilon:Number = .002;
 		public var alpha:Number = 1;
 		
+		public var samples:Number = 5;
+		public var range:Number = 1;
+		
+		public var baseMethod:String;
+		
 		public var type:String;
 		
-//		override public function apply():void
-//		{
-//			var method:ShadowMapMethodBase = linkedObject as ShadowMapMethodBase;
-//			method.epsilon = epsilon;
-//			method.alpha = alpha;
-//		}
 		public function clone():ShadowMethodVO
 		{
 			var vo:ShadowMethodVO = new ShadowMethodVO();
 			vo.name = this.name;
 			vo.id = this.id;
 			vo.type = this.type;
+			vo.epsilon = this.epsilon;
+			vo.alpha = this.alpha;
+			vo.samples = this.samples;
+			vo.range = this.range;
+			vo.baseMethod = this.baseMethod;
 			return vo;
 		}
 

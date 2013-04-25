@@ -10,7 +10,8 @@ package awaybuilder.view.components.events
 		
 		public static const ADD_EFFECTMETHOD:String = "addEffectMethod";
 		
-		public static const ADD_LIGHT:String = "addLight";
+		public static const ADD_DIRECTIONAL_LIGHT:String = "addDirectionalLight";
+		public static const ADD_POINT_LIGHT:String = "addPointLight";
 		public static const ADD_LIGHTPICKER:String = "addLightPicker";
 		
 		public function LibraryPanelEvent(type:String, data:Object=null )

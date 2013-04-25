@@ -5,61 +5,32 @@
 					xmlns:controls="awaybuilder.view.components.controls.*"
 					xmlns:mx="library://ns.adobe.com/flex/mx"
 					xmlns:editors="awaybuilder.view.components.editors.*" 
+					currentState="{_asset.type}"
 					>
 	<fx:Declarations>
 	</fx:Declarations>
 	<editors:states>
-		<s:State name="directional"/>
-		<s:State name="cascade"/>
-		<s:State name="cube"/>
+		<s:State name="CascadeShadowMapMethod"/>
+		<s:State name="NearShadowMapMethod"/>
+		<s:State name="DitheredShadowMapMethod"/>
+		<s:State name="FilteredShadowMapMethod"/>
+		<s:State name="SoftShadowMapMethod"/>
+		<s:State name="HardShadowMapMethod"/>
 	</editors:states>
 	<fx:Script><![CDATA[
-		import away3d.lights.shadowmaps.CascadeShadowMapper;
-		import away3d.lights.shadowmaps.DirectionalShadowMapper;
-		import away3d.materials.methods.CascadeShadowMapMethod;
-		import away3d.materials.methods.DitheredShadowMapMethod;
-		import away3d.materials.methods.FilteredShadowMapMethod;
-		import away3d.materials.methods.HardShadowMapMethod;
-		import away3d.materials.methods.NearShadowMapMethod;
-		import away3d.materials.methods.SoftShadowMapMethod;
-		import away3d.materials.methods.TripleFilteredShadowMapMethod;
-		
 		import awaybuilder.model.vo.scene.AssetVO;
-		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.ShadowMethodVO;
-		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
-		
-		import mx.collections.ArrayCollection;
 		
 		import spark.events.IndexChangeEvent;
 		
 		[Bindable]
 		private var _asset:ShadowMethodVO;
 		
-		[Bindable]
-		private var _selectedLight:AssetVO;
-		
-		private var _lights:ArrayCollection;
-		
-		[Bindable]
-		private var _selectedType:Object;
-		
-		[Bindable]
-		public function get lights():ArrayCollection
-		{
-			return _lights;
-		}
-		public function set lights(value:ArrayCollection):void
-		{
-			_lights = value;
-		}
-		
 		override protected function validate(asset:AssetVO):void
 		{
 			if( !(asset is ShadowMethodVO) ) return;
 			_asset = ShadowMethodVO(asset).clone();
-			
 		}
 		
 		private function editParentObjectButton_clickHandler(event:MouseEvent):void
@@ -72,9 +43,29 @@
 			_asset.name = nameInput.text;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
 		}
-		private function assetDropDownLabelFunction(item:AssetVO):Object 
+		
+		protected function rangeStepper_changeHandler(event:Event):void
 		{
-			return item.name;
+			_asset.range = rangeStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
+		}
+		
+		protected function samplesStepper_changeHandler(event:Event):void
+		{
+			_asset.samples = samplesStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
+		}
+		
+		protected function epsilonStepper_changeHandler(event:Event):void
+		{
+			_asset.epsilon = epsilonStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
+		}
+		
+		protected function alphaStepper_changeHandler(event:Event):void
+		{
+			_asset.alpha = alphaStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
 		}
 		
 	]]></fx:Script>
@@ -92,53 +83,40 @@
 			<s:Label width="100%" text="{_asset.type}" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
-	<!--<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" horizontalAlign="center">
-		<s:RadioButton label="Directional" width="100%" group="{typeRadioGroup}" value="{LightVO.DIRECTIONAL}"/>
-		<s:RadioButton label="Point" width="100%" group="{typeRadioGroup}" value="{LightVO.POINT}"/>
-	</s:HGroup>-->
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-		
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
-	<s:VGroup width="100%" paddingLeft="10" paddingRight="8">
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="HardShadowMapMethod,SoftShadowMapMethod,DitheredShadowMapMethod,FilteredShadowMapMethod">
+			<controls:DragableNumericStepper id="alphaStepper" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1"
+											 width="40" value="{_asset.alpha}"
+											 change="alphaStepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="Epsilon" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="HardShadowMapMethod,SoftShadowMapMethod,DitheredShadowMapMethod,FilteredShadowMapMethod">
+			<controls:DragableNumericStepper id="epsilonStepper" stepSize="0.001" snapInterval="0.001" minimum="0" maximum="1"
+											 width="40" value="{_asset.epsilon}"
+											 change="epsilonStepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="Samples" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="SoftShadowMapMethod,DitheredShadowMapMethod">
+			<controls:DragableNumericStepper id="samplesStepper" stepSize="1" snapInterval="1" minimum="1" maximum="24"
+											 width="40" value="{_asset.samples}"
+											 change="samplesStepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="Range" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="SoftShadowMapMethod,DitheredShadowMapMethod">
+			<controls:DragableNumericStepper id="rangeStepper" stepSize="0.1" snapInterval="0.001" minimum="1" maximum="50"
+											 width="40" value="{_asset.range}"
+											 change="rangeStepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="Base Method" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CascadeShadowMapMethod,NearShadowMapMethod">
+			<s:DropDownList id="baseMethodDropDownList" requireSelection="true" selectionColor="0x111111" enabled="false"
+							width="100%"
+							/>
+		</s:FormItem>
 		
-		<s:HGroup width="100%">
-			<s:Label text="Light:" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<!--<controls:ExtendedDropDownList id="lightDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
-										   dataProvider="{lights}" selectedItem="{_selectedLight}" requireSelection="true"
-										   labelFunction="{assetDropDownLabelFunction}"
-										   newItemLabel="New Light"
-										   change="lightDropDownList_changeHandler(event)"
-										   addNewItem="lightDropDownList_addNewItemHandler(event)"
-										   />
-			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{lightDropDownList.selectedItem}"/>-->
-		</s:HGroup>
-	</s:VGroup>
-	<s:Spacer height="6"/>
-	<s:VGroup width="100%" paddingLeft="10" paddingRight="8">
-	
-		<s:HGroup width="100%">
-			<s:Label text="Type:" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<!--<s:DropDownList id="cascadeList" includeIn="cascade" width="100%" requireSelection="true"
-							dataProvider="{cascadeMethodsList}" selectedItem="{_selectedType}"
-							change="cascadeList_changeHandler(event)"/>
-			<s:DropDownList id="directionalList" includeIn="directional" width="100%" requireSelection="true"
-							dataProvider="{directionalMethodsList}" selectedItem="{_selectedType}"
-							change="directionalList_changeHandler(event)"/>
-			<s:DropDownList id="cubeList" includeIn="cube" width="100%" requireSelection="true"
-							dataProvider="{cubeMethodsList}" selectedItem="{_selectedType}"
-							change="cubeList_changeHandler(event)"/>-->
-		</s:HGroup>
-	</s:VGroup>
+
+	</s:Form>
 	
 </editors:EditorBase>

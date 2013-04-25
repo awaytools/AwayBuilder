@@ -16,7 +16,8 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
-				<s:Button width="100%" label="New Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newLight')"/>
+				<s:Button width="100%" label="New Directinal Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newDirectionalLight')"/>
+				<s:Button width="100%" label="New Point Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newPointLight')"/>
 				<s:Button width="100%" label="New Light Picker" styleName="addItemButton" cornerRadius="0" click="close(true,'newLightPicker')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
@@ -166,12 +167,15 @@
 				if (!event.commit) return;
 				switch(event.data)
 				{
+					
 					case "newLightPicker":
 						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_LIGHTPICKER ) );
 						break;
-						
+					case "newDirectionalLight":
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_DIRECTIONAL_LIGHT ) );
+						break;
 					default:
-						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_LIGHT ) );
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_POINT_LIGHT ) );
 						break;
 				}
 			}   

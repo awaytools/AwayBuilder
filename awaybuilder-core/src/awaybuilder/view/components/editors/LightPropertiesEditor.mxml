@@ -7,7 +7,6 @@
 						    currentState="{_asset.type}" xmlns:editors="awaybuilder.view.components.editors.*" 
 						    >
 	<fx:Declarations>
-		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
 		<s:ArrayCollection id="directionalMappersList">
 			<fx:Object label="Directional" value="DirectionalShadowMapper"/>
 			<fx:Object label="Cascade" value="CascadeShadowMapper"/>
@@ -28,6 +27,17 @@
 				<s:Button width="100%" label="Dithered Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'DitheredShadowMapMethod')"/>
 				<s:Button width="100%" label="Soft Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'SoftShadowMapMethod')"/>
 				<s:Button width="100%" label="Hard Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'HardShadowMapMethod')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
+		<fx:Component className="NewCascadeShadowMapperShadowMethodPopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
+									   chromeColor="0x1d1d1c" color="0xdbdbdb"
+									   mouseDownOutside="close();"
+									   >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="Cascade Shadow Map Method" styleName="addItemButton" cornerRadius="0" click="close(true,'CascadeShadowMapMethod')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 	</fx:Declarations>
@@ -101,11 +111,6 @@
 		private function position_commitHandler(event:Event):void {
 			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_POSITION_CHANGE, newValue));
-		}
-		protected function typeRadioGroup_changeHandler(event:Event):void
-		{
-			_asset.type = typeRadioGroup.selectedValue as String;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _asset));
 		}
 		protected function colorPicker_changeHandler(event:ColorPickerEvent):void
 		{
@@ -186,11 +191,11 @@
 		
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			if( _asset.shadowMapper is CascadeShadowMapper )
+			if( _asset.shadowMapper == "CascadeShadowMapper" )
 			{
 				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod ) );
 			}
-			else if( _asset.shadowMapper is NearDirectionalShadowMapper )
+			else if( _asset.shadowMapper == "NearDirectionalShadowMapper" )
 			{
 				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_NearShadowMapMethod ) );
 			}
@@ -255,20 +260,31 @@
 	</s:Form>
 	<s:Spacer height="6"/>
 	<controls:CollapsiblePanel width="100%" title="General" collapsed="true">
-		<s:VGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6" horizontalAlign="center">
-			<s:RadioButton label="Directional" width="100%" group="{typeRadioGroup}" value="{LightVO.DIRECTIONAL}"/>
-			<s:RadioButton label="Point" width="100%" group="{typeRadioGroup}" value="{LightVO.POINT}"/>
-		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>
 			</s:FormItem>
-		</s:Form>
-	</controls:CollapsiblePanel>
-	
-	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
-		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:FormItem label="Radius" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="pointType">
+				<controls:DragableNumericStepper id="radiusStepper" stepSize="1" snapInterval="10" minimum="0" maximum="10000000"
+												 width="50" value="{_asset.radius}"
+												 change="radiusStepper_changeHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Fall Off" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="pointType">
+				<controls:DragableNumericStepper id="falloffStepper" stepSize="10" snapInterval="1" minimum="0" maximum="10000000"
+												 width="50" value="{_asset.fallOff}"
+												 change="falloffStepper_changeHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Azimuth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="directionalType">
+				<controls:DragableNumericStepper id="horizontalStepper" stepSize="1" snapInterval="1" allowValueWrap="true"
+												 width="100%" value="{_asset.azimuthAngle}" minimum="0" maximum="360"
+												 change="angleStepper_changeHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Elevation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="directionalType">
+				<controls:DragableNumericStepper id="elevationStepper" stepSize="1" snapInterval="1" allowValueWrap="false"
+												 width="100%" value="{_asset.elevationAngle}" minimum="-90" maximum="90"
+												 change="angleStepper_changeHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="pointType">
 				<controls:DragableNumericStepper id="xStepper" stepSize="0.01" snapInterval="0.01"
 												 width="100%" value="{_asset.x}"
 												 change="position_commitHandler(event)" />
@@ -279,44 +295,31 @@
 												 width="100%" value="{_asset.z}"
 												 change="position_commitHandler(event)"/>
 			</s:FormItem>
-			<s:FormItem label="Azimuth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="horizontalStepper" stepSize="1" snapInterval="1" allowValueWrap="true"
-												 width="100%" value="{_asset.azimuthAngle}" minimum="0" maximum="360"
-												 change="angleStepper_changeHandler(event)" />
-			</s:FormItem>
-			<s:FormItem label="Elevation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="elevationStepper" stepSize="1" snapInterval="1" allowValueWrap="false"
-												 width="100%" value="{_asset.elevationAngle}" minimum="-90" maximum="90"
-												 change="angleStepper_changeHandler(event)" />
-			</s:FormItem>
-			
-			
-			
 		</s:Form>
 	</controls:CollapsiblePanel>
 	
 	<controls:CollapsiblePanel width="100%" title="Color" collapsed="true" includeIn="directionalType">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Ambient Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="ambientStepper"
-								  minimum="0" maximum="100" width="100%" value="{_asset.ambient*100}"
-								  change="ambientStepper_changeHandler(event)"/>
+				<controls:DragableNumericStepper id="ambientStepper" stepSize="0.1" snapInterval="0.001"
+												 width="40" value="{_asset.ambient}" minimum="0" maximum="100"
+												 change="ambientStepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Ambient Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<mx:ColorPicker id="ambientColorPicker" selectedColor="{_asset.ambientColor}" change="ambientColorPicker_changeHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="diffuseStepper"
-								  minimum="0" maximum="999" width="100%" value="{_asset.diffuse}"
-								  change="diffuseStepper_changeHandler(event)"/>
+				<controls:DragableNumericStepper id="diffuseStepper" stepSize="0.1" snapInterval="0.001"
+												 width="40" value="{_asset.diffuse}" minimum="0" maximum="100"
+												 change="diffuseStepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<mx:ColorPicker id="colorPicker" selectedColor="{_asset.color}" change="colorPicker_changeHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Specular Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="specularStepper"
-								  minimum="0" maximum="999" width="100%" value="{_asset.specular}"
-								  change="specularStepper_changeHandler(event)"/>
+				<controls:DragableNumericStepper id="specularStepper" stepSize="0.1" snapInterval="0.001"
+												 width="40" value="{_asset.specular}" minimum="0" maximum="100"
+												 change="specularStepper_changeHandler(event)" />
 			</s:FormItem>
 		</s:Form>
 	</controls:CollapsiblePanel>
@@ -352,23 +355,6 @@
 						  click="deleteButton_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
-	</controls:CollapsiblePanel>
-	
-	<controls:CollapsiblePanel width="100%" title="Glow" collapsed="true" includeIn="pointType">
-		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-			
-			<s:FormItem label="Radius" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="radiusStepper"
-								  minimum="0" maximum="{99999}" width="100%" value="{_asset.radius}" 
-								  change="radiusStepper_changeHandler(event)"/>
-			</s:FormItem>
-			<s:FormItem label="Fall Off" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="falloffStepper"
-								  minimum="0" maximum="999999" width="100%" value="{_asset.fallOff}"
-								  change="falloffStepper_changeHandler(event)"/>
-			</s:FormItem>
-		</s:Form>
-		
 	</controls:CollapsiblePanel>
 	
 </editors:EditorBase>

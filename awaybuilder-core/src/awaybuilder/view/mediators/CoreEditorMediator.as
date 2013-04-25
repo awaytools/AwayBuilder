@@ -7,15 +7,23 @@ package awaybuilder.view.mediators
     import away3d.library.assets.NamedAssetBase;
     import away3d.lights.DirectionalLight;
     import away3d.lights.LightBase;
+    import away3d.lights.shadowmaps.CubeMapShadowMapper;
     import away3d.materials.ColorMaterial;
     import away3d.materials.ColorMultiPassMaterial;
     import away3d.materials.MaterialBase;
+    import away3d.materials.MultiPassMaterialBase;
     import away3d.materials.SinglePassMaterialBase;
     import away3d.materials.TextureMaterial;
     import away3d.materials.TextureMultiPassMaterial;
     import away3d.materials.lightpickers.LightPickerBase;
     import away3d.materials.lightpickers.StaticLightPicker;
+    import away3d.materials.methods.CascadeShadowMapMethod;
+    import away3d.materials.methods.DitheredShadowMapMethod;
+    import away3d.materials.methods.FilteredShadowMapMethod;
+    import away3d.materials.methods.HardShadowMapMethod;
+    import away3d.materials.methods.NearShadowMapMethod;
     import away3d.materials.methods.ShadowMapMethodBase;
+    import away3d.materials.methods.SoftShadowMapMethod;
     import away3d.textures.Texture2DBase;
     
     import awaybuilder.controller.scene.events.SceneEvent;
@@ -30,6 +38,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.scene.ObjectVO;
+    import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.utils.AssetFactory;
     import awaybuilder.utils.scene.CameraManager;
@@ -78,6 +87,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
 			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
+			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, eventDispatcher_changeShadowMethodHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
@@ -245,6 +255,48 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function applyShadowMethod( asset:ShadowMethodVO ):void
+		{
+			var obj:ShadowMapMethodBase = AssetFactory.GetObject( asset ) as ShadowMapMethodBase;
+			trace( obj );
+			applyName( obj, asset );
+			if( obj is HardShadowMapMethod )
+			{
+				var hardShadowMapMethod:HardShadowMapMethod = obj as HardShadowMapMethod;
+				hardShadowMapMethod.alpha = asset.alpha;
+				hardShadowMapMethod.epsilon = asset.epsilon;
+			}
+			else if( obj is FilteredShadowMapMethod )
+			{
+				var filteredShadowMapMethod:FilteredShadowMapMethod = obj as FilteredShadowMapMethod;
+				filteredShadowMapMethod.alpha = asset.alpha;
+				filteredShadowMapMethod.epsilon = asset.epsilon;
+			}
+			else if( obj is SoftShadowMapMethod )
+			{
+				var softShadowMapMethod:SoftShadowMapMethod = obj as SoftShadowMapMethod;
+				softShadowMapMethod.numSamples = asset.samples;
+				softShadowMapMethod.range = asset.range;
+				softShadowMapMethod.alpha = asset.alpha;
+				softShadowMapMethod.epsilon = asset.epsilon;
+			}
+			else if( obj is DitheredShadowMapMethod )
+			{
+				var ditheredShadowMapMethod:DitheredShadowMapMethod = obj as DitheredShadowMapMethod;
+				ditheredShadowMapMethod.numSamples = asset.samples;
+				ditheredShadowMapMethod.range = asset.range;
+				ditheredShadowMapMethod.alpha = asset.alpha;
+				ditheredShadowMapMethod.epsilon = asset.epsilon;
+			}
+			else if( obj is CascadeShadowMapMethod )
+			{
+				var cascadeShadowMapMethod:CascadeShadowMapMethod = obj as CascadeShadowMapMethod;
+			}
+			else if( obj is NearShadowMapMethod )
+			{
+				var nearShadowMapMethod:NearShadowMapMethod = obj as NearShadowMapMethod;
+			}
+		}
 		private function applyContainer( asset:ContainerVO ):void
 		{
 			var obj:ObjectContainer3D = AssetFactory.GetObject( asset ) as ObjectContainer3D;
@@ -359,7 +411,6 @@ package awaybuilder.view.mediators
 				tm.texture = AssetFactory.GetObject(asset.diffuseTexture) as Texture2DBase;
 				
 				tm.alpha = asset.alpha;
-				
 				tm.normalMap = AssetFactory.GetObject(asset.normalTexture) as Texture2DBase;
 				tm.specularMap = AssetFactory.GetObject(asset.specularTexture) as Texture2DBase;
 				tm.ambientTexture = AssetFactory.GetObject(asset.ambientTexture) as Texture2DBase;
@@ -373,10 +424,11 @@ package awaybuilder.view.mediators
 //				if( ambientTexture )
 //					tm.ambientMethod.texture = ambientTexture.linkedObject as Texture2DBase;
 			}
-			var material:SinglePassMaterialBase = m as SinglePassMaterialBase;
-			if( material ) 
+			var singlePassMaterialBase:SinglePassMaterialBase = m as SinglePassMaterialBase;
+			if( singlePassMaterialBase ) 
 			{
 				var i:int;
+				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
 //				for (i = 0; i < material.numMethods; i++) 
 //				{
 //					if( (i < effectMethods.length) && material.getMethodAt( i ) != material.getMethodAt( i ) ) 
@@ -402,6 +454,11 @@ package awaybuilder.view.mediators
 //					material.addMethod( EffectMethodVO(effectMethods.getItemAt(i)).linkedObject as EffectMethodBase );
 //				}
 				
+			}
+			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
+			if( multiPassMaterialBase ) 
+			{
+				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
 			}
 			
 			var len:uint = 0;
@@ -496,6 +553,15 @@ package awaybuilder.view.mediators
 				applyContainer( asset );
 			}
 		}
+		private function eventDispatcher_changeShadowMethodHandler(event:SceneEvent):void
+		{
+			var asset:ShadowMethodVO = event.items[0] as ShadowMethodVO;
+			if( asset ) 
+			{
+				applyShadowMethod( asset );
+			}
+		}
+		
 		private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
 		{
 			var material:MaterialVO = event.items[0] as MaterialVO;

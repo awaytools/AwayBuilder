@@ -134,7 +134,7 @@
 			<editors:LightPickerPropertiesEditor id="lightPickerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
 			<s:Group includeIn="geometry,initAll"><s:Label text="Geometry Options"/></s:Group>
 			<editors:ContainerPropertiesEditor id="containerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
-			<editors:ShadowMethodPropertyEditor id="shadowMethodProperties" prevSelected="{prevSelected}" lights="{lights}" data="{_data}" includeIn="shadowMethod,initAll" />
+			<editors:ShadowMethodPropertyEditor id="shadowMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
 			<editors:EffectMethodPropertyEditor id="effectMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
 			
 		</s:Group>
