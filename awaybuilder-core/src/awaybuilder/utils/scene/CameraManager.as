@@ -377,8 +377,7 @@ package awaybuilder.utils.scene
 				switch(mode)
 				{
 					case CameraMode.TARGET: {
-						radius -= event.delta * radius/500;
-						Scene3DManager.zoomToDistance();
+						Scene3DManager.zoomToDistance(event.delta / 500);
 						break;
 					}
 					case CameraMode.FREE: {
@@ -435,7 +434,6 @@ package awaybuilder.utils.scene
 
 		public static function log2(x:Number):Number
 		{
-			trace("Log:"+(Math.log(0.3)/Math.LN2));
 			return Math.log(x)/Math.LN2;
 		}
 	}

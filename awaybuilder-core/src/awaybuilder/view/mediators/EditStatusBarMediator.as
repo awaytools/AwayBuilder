@@ -23,25 +23,25 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_zoomChangeHandler(event:Scene3DManagerEvent):void
 		{
-			statusBar.zoom = Math.pow(2, CameraManager.radius / -2000);
-			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
+			statusBar.zoom += event.currentValue.x;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom) * -2000;
 		}
 		
 		private function statusBar_zoomToHandler(event:ToolBarZoomEvent):void
 		{
-			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom) * -2000;
 		}
 		
 		private function statusBar_zoomInHandler(event:ToolBarZoomEvent):void
 		{
 			statusBar.zoom += 0.05;
-			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom) * -2000;
 		}
 		
 		private function statusBar_zoomOutHandler(event:ToolBarZoomEvent):void
 		{
 			statusBar.zoom -= 0.05;
-			CameraManager.radius = CameraManager.log2(statusBar.zoom)*-2000;
+			CameraManager.radius = CameraManager.log2(statusBar.zoom) * -2000;
 		}
 	}
 }

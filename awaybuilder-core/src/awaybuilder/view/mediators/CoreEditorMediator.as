@@ -624,7 +624,7 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_zoomToDistanceHandler(event:Scene3DManagerEvent):void
         {
-            this.dispatch( new Scene3DManagerEvent( Scene3DManagerEvent.ZOOM_TO_DISTANCE ) );
+            this.dispatch( new Scene3DManagerEvent( Scene3DManagerEvent.ZOOM_TO_DISTANCE, "", null, event.currentValue ) );
         }
 
 		//----------------------------------------------------------------------

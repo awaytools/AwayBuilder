@@ -44,9 +44,8 @@
 			{
 				return;
 			}
-			if (value < this.zoomSlider.minimum) return;
-			if (value > this.zoomSlider.maximum) return;
-			trace("zoomSliderSet:"+value);
+			if (value < this.zoomSlider.minimum) value = this.zoomSlider.minimum;
+			if (value > this.zoomSlider.maximum) value = this.zoomSlider.maximum;
 			this.zoomSlider.value = value;
 		}
 
