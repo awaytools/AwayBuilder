@@ -50,7 +50,8 @@ package awaybuilder.view.mediators
 		override public function onRegister():void
 		{
 			addViewListener(LibraryPanelEvent.TREE_CHANGE, view_treeChangeHandler);
-			addViewListener(LibraryPanelEvent.ADD_LIGHT, view_addLightHandler);
+			addViewListener(LibraryPanelEvent.ADD_DIRECTIONAL_LIGHT, view_addDirectionalLightHandler);
+			addViewListener(LibraryPanelEvent.ADD_POINT_LIGHT, view_addPointLightHandler);
 			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
@@ -103,9 +104,15 @@ package awaybuilder.view.mediators
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));
 		}
 		
-		private function view_addLightHandler(event:LibraryPanelEvent):void
+		private function view_addDirectionalLightHandler(event:LibraryPanelEvent):void
 		{
-			var asset:LightVO = AssetFactory.CreateLight();
+			var asset:LightVO = AssetFactory.CreateDirectionalLight();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		private function view_addPointLightHandler(event:LibraryPanelEvent):void
+		{
+			var asset:LightVO = AssetFactory.CreatePointLight()
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}

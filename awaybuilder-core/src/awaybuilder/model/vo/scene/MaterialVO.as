@@ -39,6 +39,7 @@ package awaybuilder.model.vo.scene
 		
 		public var colorTransform:ColorTransform;
 		
+		public var alphaThreshold:Number;
 		
 		public var ambientLevel:Number;
 		public var ambientColor:uint;
@@ -68,6 +69,8 @@ package awaybuilder.model.vo.scene
             var vo:MaterialVO = new MaterialVO();
 			vo.name = this.name;
 			vo.alpha = this.alpha;
+			vo.alphaThreshold = this.alphaThreshold;
+			
 			vo.alphaPremultiplied = this.alphaPremultiplied;
 			vo.type = this.type;
 			vo.repeat = this.repeat;

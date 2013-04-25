@@ -1,9 +1,35 @@
 package awaybuilder.controller.scene
 {
-	public class ChangeShadowMethodCommand
+	import awaybuilder.controller.history.HistoryCommandBase;
+	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.vo.scene.ShadowMethodVO;
+
+	public class ChangeShadowMethodCommand extends HistoryCommandBase
 	{
-		public function ChangeShadowMethodCommand()
+		[Inject]
+		public var event:SceneEvent;
+		
+		[Inject]
+		public var document:IDocumentModel;
+		
+		override public function execute():void
 		{
+			var newAsset:ShadowMethodVO = event.newValue as ShadowMethodVO;
+			
+			var vo:ShadowMethodVO = event.items[0] as ShadowMethodVO;
+			
+			saveOldValue( event, vo.clone() );
+			
+			vo.name = newAsset.name;
+			vo.type = newAsset.type;
+			vo.epsilon = newAsset.epsilon;
+			vo.alpha = newAsset.alpha;
+			vo.samples = newAsset.samples;
+			vo.range = newAsset.range;
+			vo.baseMethod = newAsset.baseMethod;
+			
+			addToHistory( event );
 		}
 	}
 }

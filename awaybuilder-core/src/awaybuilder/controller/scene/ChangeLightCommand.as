@@ -52,20 +52,7 @@ package awaybuilder.controller.scene
 			
 			vo.castsShadows = newAsset.castsShadows;
 			
-			if( vo.castsShadows && !newAsset.shadowMapper )
-			{
-				if( vo.type == LightVO.DIRECTIONAL ) {
-					newAsset.shadowMapper = "DirectionalShadowMapper";
-				}
-				else {
-					newAsset.shadowMapper = "CubeMapShadowMapper";
-				}
-				
-			}
-			if( newAsset.shadowMapper )
-			{
-				vo.shadowMapper = newAsset.shadowMapper;
-			}
+			vo.shadowMapper = newAsset.shadowMapper;
 			
 			var linkedObjectChanged:Boolean = false;
 			

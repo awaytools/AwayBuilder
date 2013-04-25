@@ -207,6 +207,7 @@
 			_asset.smooth = smoothBox.selected;
 			_asset.bothSides = bothSidesBox.selected;
 			_asset.mipmap = mipmapBox.selected;
+			_asset.alphaBlending = alphaBlendingBox.selected;
 			_asset.alphaPremultiplied = alphaPremultipliedBox.selected;
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
         }
@@ -280,7 +281,7 @@
 		
 		protected function diffuseColorPicker_changeHandler(event:ColorPickerEvent):void
 		{
-//			_asset.diffuseColor = diffuseColorPicker.selectedColor;
+			_asset.diffuseColor = diffuseColorPicker.selectedColor;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
@@ -376,9 +377,15 @@
 		
 		protected function alphaStepper_changeHandler(event:Event):void
 		{
-			// TODO Auto-generated method stub
-			
+			_asset.alpha = alphaStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
 		}
+		protected function alphaThresholdStepper_changeHandler(event:Event):void
+		{
+			_asset.alphaThreshold = alphaThresholdStepper.value;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
+		}
+		
 		private function stepperFormatFunc(val:Number):String 
 		{ 
 			return val.toString().replace(".",","); 
@@ -525,12 +532,17 @@
 				<s:CheckBox id="bothSidesBox" change="basicProperties_changeHandler(event)" selected="{_asset.bothSides}" />
 			</s:FormItem>
 			<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="alphaStepper" value="{_asset.alpha}"
-												 minimum="0" maximum="1" stepSize="0.01"
+				<controls:DragableNumericStepper id="alphaStepper" value="{_asset.alpha}" width="38"
+												 minimum="0" maximum="1" stepSize="0.01" snapInterval="0.001"
 												 change="alphaStepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Alpha Blending" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="alphaBlendingBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaBlending}" />
+			</s:FormItem>
+			<s:FormItem label="Alpha Threshold" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{_asset.alphaBlending}" >
+				<controls:DragableNumericStepper id="alphaThresholdStepper" value="{_asset.alphaThreshold}" width="38"
+												 minimum="0" maximum="1" stepSize="0.01" snapInterval="0.001"
+												 change="alphaThresholdStepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Pre-multiplied" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="alphaPremultipliedBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaPremultiplied}" />

@@ -39,21 +39,43 @@ package awaybuilder.controller.scene
 			
 			saveOldValue( event, vo.clone() );
 			
-	        vo.name = newMaterial.name;
-	        vo.repeat = newMaterial.repeat;
-			vo.smooth = newMaterial.smooth;
-			vo.bothSides = newMaterial.bothSides;
-			vo.mipmap = newMaterial.mipmap;
+			vo.name = newMaterial.name;
+			vo.alpha = newMaterial.alpha;
 			vo.alphaPremultiplied = newMaterial.alphaPremultiplied;
+			vo.type = newMaterial.type;
+			vo.repeat = newMaterial.repeat;
+			vo.isDefault = newMaterial.isDefault;
+			vo.bothSides = newMaterial.bothSides;
+			vo.extra = newMaterial.extra;
+			
+			vo.mipmap = newMaterial.mipmap;
+			vo.smooth = newMaterial.smooth;
 			vo.blendMode = newMaterial.blendMode;
+			vo.alphaThreshold = newMaterial.alphaThreshold;
+			vo.alphaBlending = newMaterial.alphaBlending;
+			vo.colorTransform = newMaterial.colorTransform;
+			
 			vo.lightPicker = newMaterial.lightPicker;
 			vo.light = newMaterial.light;
-			
-			vo.type = newMaterial.type;
-			
 			vo.shadowMethod = newMaterial.shadowMethod;
 			
+			vo.normalTexture = newMaterial.normalTexture;
+			vo.normalMethodType = newMaterial.normalMethodType;
+			
 			vo.diffuseTexture = newMaterial.diffuseTexture;
+			vo.diffuseColor = newMaterial.diffuseColor;
+			vo.diffuseMethodType = newMaterial.diffuseMethodType;
+			
+			vo.ambientLevel = newMaterial.ambientLevel;
+			vo.ambientColor = newMaterial.ambientColor;
+			vo.ambientTexture = newMaterial.ambientTexture;
+			vo.ambientMethodType = newMaterial.ambientMethodType;
+			
+			vo.specularLevel = newMaterial.specularLevel;
+			vo.specularColor = newMaterial.specularColor;
+			vo.specularGloss = newMaterial.specularGloss;
+			vo.specularTexture = newMaterial.specularTexture;
+			vo.specularMethodType = newMaterial.specularMethodType;
 			
 			if( newMaterial.effectMethods )
 			{

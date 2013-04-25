@@ -77,7 +77,6 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
-			addViewListener( PropertyEditorEvent.SHADOWMETHOD_ADD_LIGHT, view_shadowmethodAddLightHandler );
 			
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			
@@ -94,7 +93,8 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_CHANGE, view_lightPickerChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_STEPPER_CHANGE, view_lightPickerStepperChangeHandler );
-			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_LIGHT, view_lightPickerAddLightHandler );
+			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_DIRECTIONAL_LIGHT, view_lightPickerAddDirectionalLightHandler );
+			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_POINT_LIGHT, view_lightPickerAddPointLightHandler );
 			
 			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
@@ -211,11 +211,6 @@ package awaybuilder.view.mediators
 //			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSahdowMapMethod( availableLight )));
 //		}
 		
-		private function view_shadowmethodAddLightHandler(event:PropertyEditorEvent):void
-		{
-//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data]));
-		}
-		
 		private function view_materialAddLightpickerHandler(event:PropertyEditorEvent):void
 		{
 			var asset:LightPickerVO = AssetFactory.CreateLightPicker();
@@ -304,9 +299,15 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER, [view.data], event.data, true));
 		}
-		private function view_lightPickerAddLightHandler(event:PropertyEditorEvent):void
+		
+		private function view_lightPickerAddDirectionalLightHandler(event:PropertyEditorEvent):void
 		{
-			var asset:LightVO = AssetFactory.CreateLight();
+			var asset:LightVO = AssetFactory.CreateDirectionalLight();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
+		}
+		private function view_lightPickerAddPointLightHandler(event:PropertyEditorEvent):void
+		{
+			var asset:LightVO = AssetFactory.CreatePointLight();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		

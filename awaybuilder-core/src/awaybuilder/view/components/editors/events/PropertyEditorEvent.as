@@ -41,11 +41,11 @@ package awaybuilder.view.components.editors.events
 		
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";
 		public static const SHADOWMETHOD_STEPPER_CHANGE:String = "shadowmethodStepperChange";
-		public static const SHADOWMETHOD_ADD_LIGHT:String = "shadowmethodAddLight";
 		
 		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";
 		public static const LIGHTPICKER_STEPPER_CHANGE:String = "lightPickerStepperChange";
-		public static const LIGHTPICKER_ADD_LIGHT:String = "lightPickerAddLight";
+		public static const LIGHTPICKER_ADD_DIRECTIONAL_LIGHT:String = "lightPickerAddDirectionalLight";
+		public static const LIGHTPICKER_ADD_POINT_LIGHT:String = "lightPickerAddPointLight";
 		
 		public static const SHOW_CHILD_PROPERTIES:String = "showChildProperties";
 		
