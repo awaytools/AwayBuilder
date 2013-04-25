@@ -1,14 +1,25 @@
 package awaybuilder.utils.encoders
 {
+	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
 	import away3d.core.base.ISubGeometry;
+	import away3d.core.base.SkinnedSubGeometry;
 	import away3d.core.base.SubMesh;
 	import away3d.entities.Mesh;
-	import away3d.containers.ObjectContainer3D;
+	import away3d.lights.DirectionalLight;
+	import away3d.lights.LightBase;
+	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.ColorMultiPassMaterial;
 	import away3d.materials.MaterialBase;
+	import away3d.materials.MultiPassMaterialBase;
+	import away3d.materials.SinglePassMaterialBase;
 	import away3d.materials.TextureMaterial;
+	import away3d.materials.TextureMultiPassMaterial;
+	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.utils.DefaultMaterialManager;
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.PrimitiveBase;
 	import away3d.textures.BitmapTexture;
 	import away3d.textures.Texture2DBase;
 	import away3d.textures.TextureProxyBase;
@@ -18,12 +29,20 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
+	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.AssetFactory;
 	
+	import com.adobe.images.PNGEncoder;
+	
+	import flash.display.BitmapData;
+	import flash.display.BlendMode;
+	import flash.display.JPEGEncoderOptions;
 	import flash.display.PNGEncoderOptions;
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
@@ -44,19 +63,49 @@ package awaybuilder.utils.encoders
 		private static const UINT8 : uint = 4;
 		private static const UINT16 : uint = 5;
 		private static const UINT32 : uint = 6;
-		private static const FLOAT32 : uint = 11;
-		private static const FLOAT64 : uint = 12;
+		private static const FLOAT32 : uint = 7;
+		private static const FLOAT64 : uint = 8;
 		private static const BOOL : uint = 21;
 		private static const COLOR : uint = 22;
 		private static const BADDR : uint = 23;
 		
 		
+		//public static const AWD_FIELD_STRING : uint = 31;
+		//public static const AWD_FIELD_BYTEARRAY : uint = 32;
+		
+		//public static const AWD_FIELD_VECTOR2x1 : uint = 41;
+		//public static const AWD_FIELD_VECTOR3x1 : uint = 42;
+		//public static const AWD_FIELD_VECTOR4x1 : uint = 43;
+		//public static const AWD_FIELD_MTX3x2 : uint = 44;
+		//public static const AWD_FIELD_MTX3x3 : uint = 45;
+		//public static const AWD_FIELD_MTX4x3 : uint = 46;
+		//public static const AWD_FIELD_MTX4x4 : uint = 47;
+		
+		private var blendModeDic:Dictionary;
+		
 		public function AWDEncoder()
 		{
 			super();
-			
+			BlendMode.NORMAL
 			_blockCache = new Dictionary();
 			_elemSizeOffsets = new Vector.<uint>();
+			blendModeDic=new Dictionary();
+			blendModeDic[BlendMode.NORMAL]=0;
+			blendModeDic[BlendMode.ADD]=1;
+			blendModeDic[BlendMode.ALPHA]=2;
+			blendModeDic[BlendMode.DARKEN]=3;
+			blendModeDic[BlendMode.DIFFERENCE]=4;
+			blendModeDic[BlendMode.ERASE]=5;
+			blendModeDic[BlendMode.HARDLIGHT]=6;
+			blendModeDic[BlendMode.INVERT]=7;
+			blendModeDic[BlendMode.LAYER]=8;
+			blendModeDic[BlendMode.LIGHTEN]=9;
+			blendModeDic[BlendMode.MULTIPLY]=10;
+			blendModeDic[BlendMode.NORMAL]=11;
+			blendModeDic[BlendMode.OVERLAY]=12;
+			blendModeDic[BlendMode.SCREEN]=13;
+			blendModeDic[BlendMode.SHADER]=14;
+			blendModeDic[BlendMode.OVERLAY]=15;
 		}
 		
 		
@@ -76,10 +125,10 @@ package awaybuilder.utils.encoders
 			
 			// Header
 			output.endian = Endian.LITTLE_ENDIAN;
-			output.writeUTFBytes("AWD");
-			output.writeByte(2);
-			output.writeByte(0);
-			output.writeShort(0);
+			output.writeUTFBytes("AWD");//MagicString
+			output.writeByte(0);//versionNumber
+			output.writeByte(0);//RevisionNumber
+			output.writeShort(0);//flags
 			output.writeByte(1); // ZLIB
 			
 			_body.compress();
@@ -125,6 +174,7 @@ package awaybuilder.utils.encoders
 			}
 			
 			switch (type) {
+				case BOOL:
 				case INT8:
 				case UINT8:
 					flen = 1;
@@ -199,8 +249,9 @@ package awaybuilder.utils.encoders
 			
 			offs = _elemSizeOffsets.pop();
 			
-			size = _body.position - (offs+4);
+			size = _body.position - (offs);
 			if (size) {
+				size-=4;
 				//trace('size was ', size);
 				_body.position = offs;
 				_body.writeUnsignedInt(size);
@@ -210,14 +261,15 @@ package awaybuilder.utils.encoders
 		
 		private function _encodeChild(vo : ContainerVO) : void
 		{
-			var child : ContainerVO;
 			if (vo is MeshVO) {
-				_encodeMesh(AssetFactory.GetObject(vo) as Mesh);
+				_encodeMesh(AssetFactory.GetObject(vo) as Mesh);	
 			}
 				
 			else if (vo is ContainerVO) {
 				_encodeContainer3D(AssetFactory.GetObject(vo) as ObjectContainer3D);
 			}
+			
+			var child : ContainerVO;
 			for each (child in vo.children) {
 					_encodeChild(child as ContainerVO);
 			}
@@ -229,6 +281,7 @@ package awaybuilder.utils.encoders
 			if (tex is BitmapTexture) {
 				var ba : ByteArray;
 				var btex : BitmapTexture;
+				var usePNG : Boolean;
 				
 				btex = BitmapTexture(tex);
 				
@@ -240,7 +293,12 @@ package awaybuilder.utils.encoders
 				// TODO: Check whether to embed or use external textures,
 				// depending on some app-specific configuration
 				ba = new ByteArray();
-				btex.bitmapData.encode(btex.bitmapData.rect, new PNGEncoderOptions(), ba);
+				usePNG=bitMapHasTransparency(btex.bitmapData,btex.bitmapData.rect.width,btex.bitmapData.rect.height);
+				if (usePNG){
+					//ba = PNGEncoder.encode( btex.bitmapData );
+					btex.bitmapData.encode(btex.bitmapData.rect, new PNGEncoderOptions(), ba);}
+				else {
+					btex.bitmapData.encode(btex.bitmapData.rect, new JPEGEncoderOptions(100), ba);}
 				_body.writeByte(1);
 				_body.writeUnsignedInt(ba.length);
 				_body.writeBytes(ba);
@@ -259,91 +317,277 @@ package awaybuilder.utils.encoders
 				// Fail on unsupported type (e.g. ATF?)
 			}
 		}
-		
-		
+		private function bitMapHasTransparency(bmd:BitmapData,w:Number,h:Number):Boolean {
+						
+			var i:int;
+			var j:int;
+			
+			for(i=0;i<w;i++) for(j=0;j<h;j++) if(bmd.getPixel32(i, j) == 0) return true;
+			
+			return false;
+			
+		}
 		private function _encodeMaterial(mtl : MaterialBase) : void
 		{
-			if (mtl is TextureMaterial) {
-				var tmtl : TextureMaterial;
+			//this vars will have allways have to be exported (since they are block-properties)
+			var matType:int=1;			
+			
+			var color:uint;//1
+			var texture:int;//2
+			var normalTexture:int;//3
+			var isSingle:Boolean=true;//4
+			var smooth:Boolean=true;//5
+			var mipmap:Boolean=true;//6
+			var bothSides:Boolean=false;//7
+			var alphaPremultiplied:Boolean=false;//8
+			var blendMode:uint;//9
+			var alpha:Number;//10
+			var alphaBlending:Boolean=true;//11
+			var alphaThreshold:Number;//12
+			var repeat:Boolean=false;//13
+			//var diffuse-Level:Number;//14
+			var ambient:uint;//15
+			var ambientColor:uint;//16
+			var ambientTexture:int;//17
+			var specular:Number;//18
+			var gloss:Number;//19
+			var specularColor:uint;//20
+			var specularTexture:uint;//21
+			var lightPicker:int;//22
+			
+			
+			// ColorMaterial
+			if ((mtl is ColorMaterial) || (mtl is ColorMultiPassMaterial)) {
+				matType=1;
+				if (mtl is ColorMaterial) {
+					color=ColorMaterial(mtl).color;
+					if (ColorMaterial(mtl).alpha!=Number(1.0)){
+						alpha=ColorMaterial(mtl).alpha;}
+					}
+				if (mtl is ColorMultiPassMaterial) {
+					color=ColorMultiPassMaterial(mtl).color;}
 				
-				tmtl = TextureMaterial(mtl);
-				
-				if (!_blockCache[tmtl.texture])
-					_encodeTexture(tmtl.texture);
-				
-				if (tmtl.normalMap){					
-					if (!_blockCache[tmtl.normalMap])
-						_encodeTexture(tmtl.normalMap);
-				}
-				_encodeBlockHeader(81);
-				_beginElement(); // Block
-				
-				_body.writeUTF(mtl.name);
-				_body.writeByte(2);
-				
-				// TODO: Implement shading methods
-				_body.writeByte(0);
-				
-				// Property list
-				_beginElement(); // Prop list
-				_encodeProperty(2, _blockCache[tmtl.texture], BADDR);
-				if (tmtl.normalMap){
-					_encodeProperty(3, _blockCache[tmtl.normalMap], BADDR);					
-				}
-				_encodeProperty(10, tmtl.alpha, FLOAT32);
-				_encodeProperty(11, tmtl.alphaBlending, BOOL);
-				_encodeProperty(12, tmtl.alphaThreshold, FLOAT32);
-				_endElement(); // Prop list
-				
-				// TODO: Add shading methods here
-				
-				_beginElement(); // Attr list
-				_endElement(); // Attr list
-				
-				_endElement(); // Block
-				
-				_blockCache[mtl] = _blockId;
 			}
-			else if (mtl is ColorMaterial) {
-				var cmtl : ColorMaterial;
-				
-				cmtl = ColorMaterial(mtl);
-				
-				if (cmtl.normalMap){					
-					if (!_blockCache[cmtl.normalMap])
-						_encodeTexture(cmtl.normalMap);
+			// TextureMaterial
+			if ((mtl is TextureMaterial) || (mtl is TextureMultiPassMaterial)) {
+				matType=2;
+				if (mtl is TextureMaterial) {
+					if (!_blockCache[TextureMaterial(mtl).texture]){
+						_encodeTexture(TextureMaterial(mtl).texture);}	
+					texture=_blockCache[TextureMaterial(mtl).texture];
+					if (TextureMaterial(mtl).ambientTexture!=null){
+						if (!_blockCache[TextureMaterial(mtl).ambientTexture]){
+							_encodeTexture(TextureMaterial(mtl).ambientTexture);}	
+						ambientTexture=_blockCache[TextureMaterial(mtl).ambientTexture];}
+					if (TextureMaterial(mtl).alpha!=Number(1.0)){		alpha=TextureMaterial(mtl).alpha;	}
 				}
-				_encodeBlockHeader(81);
-				_beginElement(); // Block
-				
-				_body.writeUTF(mtl.name);
-				_body.writeByte(1);
-				
-				// TODO: Implement shading methods
-				_body.writeByte(0);
-				
-				// Property list
-				_beginElement(); // Prop list
-				_encodeProperty(1, cmtl.color, COLOR);
-				if (cmtl.normalMap){
-					_encodeProperty(3, _blockCache[cmtl.normalMap], BADDR);					
+				if (mtl is TextureMultiPassMaterial) {
+					if (!_blockCache[TextureMultiPassMaterial(mtl).texture]){
+						_encodeTexture(TextureMultiPassMaterial(mtl).texture);}	
+					texture=_blockCache[TextureMultiPassMaterial(mtl).texture];
+					if (TextureMultiPassMaterial(mtl).ambientTexture!=null){
+						if (!_blockCache[TextureMultiPassMaterial(mtl).ambientTexture]){
+							_encodeTexture(TextureMultiPassMaterial(mtl).ambientTexture);}	
+						ambientTexture=_blockCache[TextureMultiPassMaterial(mtl).ambientTexture];}
 				}
-				_encodeProperty(10, cmtl.alpha, FLOAT32);
-				_encodeProperty(11, cmtl.alphaBlending, BOOL);
-				_encodeProperty(12, cmtl.alphaThreshold, FLOAT32);
-				_endElement(); // Prop list
-				
-				// TODO: Add shading methods here
-				
-				_beginElement(); // Attr list
-				_endElement(); // Attr list
-				
-				_endElement(); // Block
-				
-				_blockCache[mtl] = _blockId;
 			}
+			// SinglePassMaterial
+			if (mtl is SinglePassMaterialBase){				
+				if (SinglePassMaterialBase(mtl).alphaThreshold!=Number(0.0)){	alphaThreshold=SinglePassMaterialBase(mtl).alphaThreshold;	}
+				if (SinglePassMaterialBase(mtl).ambient!=Number(0.0)){	alphaThreshold=SinglePassMaterialBase(mtl).ambient;	}
+				if (SinglePassMaterialBase(mtl).ambientColor!=uint(0xffffff)){	ambientColor=SinglePassMaterialBase(mtl).ambientColor;	}
+				if (SinglePassMaterialBase(mtl).specular!=Number(1.0)){	ambientColor=SinglePassMaterialBase(mtl).specular;	}
+				if (SinglePassMaterialBase(mtl).gloss!=Number(1.0)){	specular=SinglePassMaterialBase(mtl).gloss;	}
+				if (SinglePassMaterialBase(mtl).specularColor!=uint(0xffffff)){	specular=SinglePassMaterialBase(mtl).specularColor;	}
+				
+				if (SinglePassMaterialBase(mtl).alphaBlending!=false){	alphaBlending=SinglePassMaterialBase(mtl).alphaBlending;	}
+				
+				//NormalMap for SinglePassMaterial
+				if (SinglePassMaterialBase(mtl).normalMap){				
+					if (!_blockCache[SinglePassMaterialBase(mtl).normalMap]){
+						_encodeTexture(SinglePassMaterialBase(mtl).normalMap);}
+					normalTexture=_blockCache[SinglePassMaterialBase(mtl).normalMap];}
+				//SpecularMap for SinglePassMaterial
+				if (SinglePassMaterialBase(mtl).specularMap){				
+					if (!_blockCache[SinglePassMaterialBase(mtl).specularMap]){
+						_encodeTexture(SinglePassMaterialBase(mtl).specularMap);}
+					specularTexture=_blockCache[SinglePassMaterialBase(mtl).specularMap];}
+			}	
+			
+			// MultiPassMaterial
+			if (mtl is MultiPassMaterialBase){
+				isSingle=false;
+				
+				
+				if (MultiPassMaterialBase(mtl).alphaThreshold!=Number(0.0)){	alphaThreshold=MultiPassMaterialBase(mtl).alphaThreshold;	}
+				if (MultiPassMaterialBase(mtl).ambient!=Number(0.0)){	alphaThreshold=MultiPassMaterialBase(mtl).ambient;	}
+				if (MultiPassMaterialBase(mtl).ambientColor!=uint(0xffffff)){	ambientColor=MultiPassMaterialBase(mtl).ambientColor;	}
+				if (MultiPassMaterialBase(mtl).specular!=Number(1.0)){	specular=MultiPassMaterialBase(mtl).specular;	}
+				if (MultiPassMaterialBase(mtl).gloss!=Number(1.0)){	specular=MultiPassMaterialBase(mtl).gloss;	}
+				if (MultiPassMaterialBase(mtl).specularColor!=uint(0xffffff)){	specular=MultiPassMaterialBase(mtl).specularColor;	}
+				
+				//NormalMap for MultiPassMaterial
+				if (MultiPassMaterialBase(mtl).normalMap){				
+					if (!_blockCache[MultiPassMaterialBase(mtl).normalMap]){
+						_encodeTexture(MultiPassMaterialBase(mtl).normalMap);}
+					normalTexture=_blockCache[MultiPassMaterialBase(mtl).normalMap];}
+				//SpecularMap for MultiPassMaterial
+				if (MultiPassMaterialBase(mtl).specularMap){				
+					if (!_blockCache[MultiPassMaterialBase(mtl).specularMap]){
+						_encodeTexture(MultiPassMaterialBase(mtl).specularMap);}
+					specularTexture=_blockCache[MultiPassMaterialBase(mtl).specularMap];}
+			}	
+			
+			//MaterialBase-Propeties
+			
+			if (mtl.lightPicker){
+				//trace("mtl.lightPicker = "+mtl.lightPicker);
+				if (!_blockCache[mtl.lightPicker]){
+					_encodeLightPicker(mtl.lightPicker);	}
+				lightPicker=_blockCache[mtl.lightPicker];	}
+			if (mtl.smooth!=true){	smooth=false;	}
+			if (mtl.mipmap!=true){	mipmap=false;	}
+			if (mtl.bothSides!=false){bothSides=true;}
+			if (mtl.alphaPremultiplied!=false){alphaPremultiplied=true;}			
+			var thisBlendMode:uint=blendModeDic[mtl.blendMode];
+			if ((thisBlendMode!=1)&&(thisBlendMode!=2)&&(thisBlendMode!=8)&&(thisBlendMode!=10)){
+				thisBlendMode=0;
+			}
+			if (thisBlendMode>0){	blendMode=thisBlendMode;	}
+			
+					
+			//write down the material as awdblock 
+					
+			_encodeBlockHeader(81);
+			_beginElement(); // Block
+			
+			_body.writeUTF(mtl.name);
+			_body.writeByte(matType);	//materialType			
+			_body.writeByte(0); //num of methods
+			
+			// Property list
+			_beginElement(); // Prop list
+			if (color){	_encodeProperty(1,color, COLOR);}//color
+			if (texture){_encodeProperty(2,texture, BADDR);}//texture
+			if (normalTexture){_encodeProperty(3,normalTexture, BADDR);}//normalMap 
+			if (isSingle==false){_encodeProperty(4,isSingle, BOOL);}// multi/singlepass	
+			if (smooth==false){_encodeProperty(5, smooth, BOOL);} // smooth
+			if (mipmap==false){_encodeProperty(6, mipmap, BOOL);} // mipmap
+			if (bothSides==true){_encodeProperty(7, bothSides, BOOL);} // bothsides
+			if (alphaPremultiplied==true){_encodeProperty(8, alphaPremultiplied, BOOL);} // pre-multiplied				
+			if (blendMode){_encodeProperty(9, blendMode, UINT8);} // BlendMode
+			if (alpha){_encodeProperty(10, alpha, FLOAT32);}// alpha
+			if (alphaBlending==false){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
+			if (alphaThreshold){_encodeProperty(12, alphaThreshold, FLOAT32);}// alphaThreshold
+			if (repeat==true){_encodeProperty(13, repeat, BOOL);}// repeat
+			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
+			if (ambient){_encodeProperty(15, ambient, FLOAT32);}// ambient-level
+			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
+			if (ambientTexture){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap (optional)				
+			if (specular){_encodeProperty(18, specular, FLOAT32);}// specular-level
+			if (gloss){_encodeProperty(19, gloss, FLOAT32);}// specular-gloss
+			if (specularColor){_encodeProperty(20, specularColor, COLOR);}// specular-color
+			if (specularTexture){_encodeProperty(21, specularTexture, BADDR);}//specularMap (optional)		
+			if (lightPicker){_encodeProperty(22, lightPicker, BADDR);}//specularMap (optional)				
+			_endElement(); // Prop list				
+			// TODO: Add shading methods here
+					
+			_beginElement(); // Attr list
+			_endElement(); // Attr list
+				
+			_endElement(); // Block
+				
+			_blockCache[mtl] = _blockId;	
+					
+
+
 		}
 		
+		private function _encodeLightPicker(_lp : LightPickerBase) : void
+		{
+			var lightIDs:Vector.<int>=new Vector.<int>;
+			var k:int;
+			
+			for (k=0;k<_lp.allPickedLights.length;k++){		
+				if (!_blockCache[_lp.allPickedLights[k]])
+					_encodeLight(_lp.allPickedLights[k]);
+				lightIDs.push(_blockCache[_lp.allPickedLights[k]]);
+			}
+			
+			_encodeBlockHeader(51);
+			_beginElement(); // Block
+			
+			_body.writeUTF(_lp.name);
+			_body.writeShort(_lp.allPickedLights.length);	//num of lights
+			for (k=0;k<_lp.allPickedLights.length;k++){	
+				_body.writeUnsignedInt(lightIDs[k]);	//light-ids
+				}
+			
+			_beginElement(); // Attr list
+			_endElement(); // Attr list
+			
+			_endElement(); // Block
+			
+			_blockCache[_lp] = _blockId;
+			
+		}
+		private function _encodeLight(_light : LightBase) : void
+		{
+			var k:int;
+			var parentId:int = 0;
+			var lightType:uint=1;
+			var radius:Number;
+			var fallOff:Number;
+		//	if (_light.parent){
+		//		if (_blockCache[_light.parent]){
+		//			parentId = _blockCache[_light.parent];					
+		//			}
+		//		}			
+			
+			_encodeBlockHeader(41);
+			_beginElement(); // Block
+			_body.writeUnsignedInt(parentId);//parent	
+			//var thisLight:LightBase=AssetFactory.GetObject(_light) as LightBase;		
+			_encodeMatrix3D(_light.transform);//matrix
+			_body.writeUTF(_light.name);//name
+			
+			
+			if (_light is PointLight){
+				if(PointLight(_light).radius!=90000){
+					radius=PointLight(_light).radius;
+				}
+				if(PointLight(_light).fallOff!=100000){
+					fallOff=PointLight(_light).fallOff;
+				}
+			}
+			if (_light is DirectionalLight){
+				lightType=2;
+			}			
+			//LightBase(thisLight).shadowMapper;
+			_body.writeByte(lightType);	//lightType	
+			
+			_beginElement(); // prop list			
+			if(radius){_encodeProperty(1,radius, FLOAT32);}//radius
+			if(fallOff){_encodeProperty(2,fallOff, FLOAT32);}//fallOff
+			if(_light.color!=0xffffff){_encodeProperty(3,_light.color, COLOR);}//color
+			if(_light.specular!=1){_encodeProperty(4,_light.specular, FLOAT32);}//specular
+			if(_light.diffuse!=1){_encodeProperty(5,_light.diffuse, FLOAT32);}//diffuse
+			if(_light.castsShadows!=false){_encodeProperty(6,_light.castsShadows, BOOL);}//castsShadows
+			if(_light.ambientColor!=0xffffff){_encodeProperty(7,_light.ambientColor, COLOR);}//ambientColor
+			if(_light.ambient!=0){_encodeProperty(8,_light.ambient, FLOAT32);}//color
+			_endElement(); // prop list
+			
+			_beginElement(); // Shadow list
+			_endElement(); // Shadow list
+			
+			_beginElement(); // Attr list
+			_endElement(); // Attr list
+			
+			_endElement(); // Block
+			
+			_blockCache[_light] = _blockId;
+			
+		}
 		private function _encodeContainer3D(container : ObjectContainer3D) : void
 		{
 			
@@ -373,6 +617,7 @@ package awaybuilder.utils.encoders
 		}
 		
 		
+	
 		private function _encodeMesh(mesh : Mesh) : void
 		{
 			var i : uint;
@@ -381,7 +626,7 @@ package awaybuilder.utils.encoders
 			var materialIds : Vector.<uint>;
 			var hasSubMaterials : Boolean;
 			
-			trace('encoding mesh');
+			//trace('encoding mesh');
 			
 			if (!_blockCache[mesh.geometry])
 				_encodeGeometry(mesh.geometry);
@@ -444,37 +689,48 @@ package awaybuilder.utils.encoders
 		
 		private function _encodeGeometry(geom : Geometry) : void
 		{
-			var sub : ISubGeometry;
 			
-			_encodeBlockHeader(1);
-			_beginElement(); // Block
-			
-			_body.writeUTF(geom.name);
-			_body.writeShort(geom.subGeometries.length);
-			
-			_beginElement(); // Prop list
-			_endElement(); // Prop list
-			
-			for each (sub in geom.subGeometries) {
-				_beginElement(); // Sub-geom
+			if (geom is PrimitiveBase){				
+			}
+			else {
+				var sub : ISubGeometry;
+				
+				_encodeBlockHeader(1);
+				_beginElement(); // Block
+				
+				_body.writeUTF(geom.name);
+				_body.writeShort(geom.subGeometries.length);
+				
 				_beginElement(); // Prop list
 				_endElement(); // Prop list
 				
-				_encodeStream(1, sub.vertexData, sub.vertexOffset, sub.vertexStride);
-				_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride);
-				_encodeStream(2, sub.indexData);
-				
-				_endElement(); // Sub-geom
+				for each (sub in geom.subGeometries) {
+					_beginElement(); // Sub-geom
+					_beginElement(); // Prop list
+					_endElement(); // Prop list
+					
+					_encodeStream(1, sub.vertexData, sub.vertexOffset, sub.vertexStride);
+					_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride);
+					_encodeStream(2, sub.indexData);
+					_encodeStream(4, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
+					/*if(sub is SkinnedSubGeometry){
+						var skinnedSub:SkinnedSubGeometry= sub as SkinnedSubGeometry;
+						_encodeStream(6, skinnedSub., sub.vertexNormalOffset, sub.vertexNormalStride);
+						_encodeStream(7, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
+						
+					}*/
+					
+					_endElement(); // Sub-geom
+					
+					_beginElement(); // User attr
+					_endElement(); // User attr
+				}
 				
 				_beginElement(); // User attr
 				_endElement(); // User attr
+				
+				_endElement(); // Block
 			}
-			
-			_beginElement(); // User attr
-			_endElement(); // User attr
-			
-			_endElement(); // Block
-			
 			_blockCache[geom] = _blockId;
 		}
 		
@@ -484,6 +740,7 @@ package awaybuilder.utils.encoders
 			_body.writeByte(type);
 			
 			switch (type) {
+				case 4:
 				case 1:
 					_body.writeByte(FLOAT32);
 					_beginElement();
