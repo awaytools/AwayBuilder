@@ -394,11 +394,11 @@ package awaybuilder.utils.encoders
 			// SinglePassMaterial
 			if (mtl is SinglePassMaterialBase){				
 				if (SinglePassMaterialBase(mtl).alphaThreshold!=Number(0.0)){	alphaThreshold=SinglePassMaterialBase(mtl).alphaThreshold;	}
-				if (SinglePassMaterialBase(mtl).ambient!=Number(0.0)){	alphaThreshold=SinglePassMaterialBase(mtl).ambient;	}
+				if (SinglePassMaterialBase(mtl).ambient!=Number(0.0)){	ambient=SinglePassMaterialBase(mtl).ambient;	}
 				if (SinglePassMaterialBase(mtl).ambientColor!=uint(0xffffff)){	ambientColor=SinglePassMaterialBase(mtl).ambientColor;	}
-				if (SinglePassMaterialBase(mtl).specular!=Number(1.0)){	ambientColor=SinglePassMaterialBase(mtl).specular;	}
-				if (SinglePassMaterialBase(mtl).gloss!=Number(1.0)){	specular=SinglePassMaterialBase(mtl).gloss;	}
-				if (SinglePassMaterialBase(mtl).specularColor!=uint(0xffffff)){	specular=SinglePassMaterialBase(mtl).specularColor;	}
+				if (SinglePassMaterialBase(mtl).specular!=Number(1.0)){	specular=SinglePassMaterialBase(mtl).specular;	}
+				if (SinglePassMaterialBase(mtl).gloss!=Number(50)){	gloss=SinglePassMaterialBase(mtl).gloss;	}
+				if (SinglePassMaterialBase(mtl).specularColor!=uint(0xffffff)){	specularColor=SinglePassMaterialBase(mtl).specularColor;	}
 				
 				if (SinglePassMaterialBase(mtl).alphaBlending!=false){	alphaBlending=SinglePassMaterialBase(mtl).alphaBlending;	}
 				
@@ -420,11 +420,11 @@ package awaybuilder.utils.encoders
 				
 				
 				if (MultiPassMaterialBase(mtl).alphaThreshold!=Number(0.0)){	alphaThreshold=MultiPassMaterialBase(mtl).alphaThreshold;	}
-				if (MultiPassMaterialBase(mtl).ambient!=Number(0.0)){	alphaThreshold=MultiPassMaterialBase(mtl).ambient;	}
+				if (MultiPassMaterialBase(mtl).ambient!=Number(0.0)){	ambient=MultiPassMaterialBase(mtl).ambient;	}
 				if (MultiPassMaterialBase(mtl).ambientColor!=uint(0xffffff)){	ambientColor=MultiPassMaterialBase(mtl).ambientColor;	}
 				if (MultiPassMaterialBase(mtl).specular!=Number(1.0)){	specular=MultiPassMaterialBase(mtl).specular;	}
-				if (MultiPassMaterialBase(mtl).gloss!=Number(1.0)){	specular=MultiPassMaterialBase(mtl).gloss;	}
-				if (MultiPassMaterialBase(mtl).specularColor!=uint(0xffffff)){	specular=MultiPassMaterialBase(mtl).specularColor;	}
+				if (MultiPassMaterialBase(mtl).gloss!=Number(50)){	gloss=MultiPassMaterialBase(mtl).gloss;	}
+				if (MultiPassMaterialBase(mtl).specularColor!=uint(0xffffff)){	specularColor=MultiPassMaterialBase(mtl).specularColor;	}
 				
 				//NormalMap for MultiPassMaterial
 				if (MultiPassMaterialBase(mtl).normalMap){				
