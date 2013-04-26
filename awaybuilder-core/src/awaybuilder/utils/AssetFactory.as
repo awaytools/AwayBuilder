@@ -258,7 +258,7 @@ package awaybuilder.utils
 			asset.repeat = item.repeat;
 			asset.bothSides = item.bothSides;
 			asset.extra = item.extra;
-			asset.lightPicker = AssetFactory(item.lightPicker) as LightPickerVO;
+			asset.lightPicker = AssetFactory.GetAsset(item.lightPicker) as LightPickerVO;
 			asset.mipmap = item.mipmap;
 			asset.smooth = item.smooth;
 			asset.blendMode = item.blendMode;

@@ -111,16 +111,18 @@ package awaybuilder.utils.encoders
 		
 		public function encode(document : IDocumentModel, output : ByteArray) : Boolean
 		{
-			var scene : Array;
 			
 			_body = new ByteArray();
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
 			
-			scene = document.scene.source;
-			for each ( var vo:AssetVO in scene ) 
+			var allAssetsDic:Dictionary=AssetFactory.assets;			
+			for (var object:Object in allAssetsDic)
 			{
-				_encodeChild( vo as ContainerVO );
+				if( object is ObjectContainer3D ) 
+				{
+					_encodeChild(AssetFactory.GetAsset(object) as ContainerVO);
+				}
 			}
 			
 			// Header
@@ -259,6 +261,10 @@ package awaybuilder.utils.encoders
 			}
 		}
 		
+		private function _preEncodeChild(vo : ContainerVO) : void
+		{
+			trace("object in scene = "+vo)
+		}
 		private function _encodeChild(vo : ContainerVO) : void
 		{
 			if (vo is MeshVO) {
@@ -268,7 +274,6 @@ package awaybuilder.utils.encoders
 			else if (vo is ContainerVO) {
 				_encodeContainer3D(AssetFactory.GetObject(vo) as ObjectContainer3D);
 			}
-			
 			var child : ContainerVO;
 			for each (child in vo.children) {
 					_encodeChild(child as ContainerVO);
@@ -445,10 +450,10 @@ package awaybuilder.utils.encoders
 				if (!_blockCache[mtl.lightPicker]){
 					_encodeLightPicker(mtl.lightPicker);	}
 				lightPicker=_blockCache[mtl.lightPicker];	}
-			if (mtl.smooth!=true){	smooth=false;	}
-			if (mtl.mipmap!=true){	mipmap=false;	}
-			if (mtl.bothSides!=false){bothSides=true;}
-			if (mtl.alphaPremultiplied!=false){alphaPremultiplied=true;}			
+			smooth=mtl.smooth;
+			mipmap=mtl.mipmap;
+			bothSides=mtl.bothSides;
+			alphaPremultiplied=mtl.alphaPremultiplied;		
 			var thisBlendMode:uint=blendModeDic[mtl.blendMode];
 			if ((thisBlendMode!=1)&&(thisBlendMode!=2)&&(thisBlendMode!=8)&&(thisBlendMode!=10)){
 				thisBlendMode=0;
@@ -477,9 +482,9 @@ package awaybuilder.utils.encoders
 			if (alphaPremultiplied==true){_encodeProperty(8, alphaPremultiplied, BOOL);} // pre-multiplied				
 			if (blendMode){_encodeProperty(9, blendMode, UINT8);} // BlendMode
 			if (alpha){_encodeProperty(10, alpha, FLOAT32);}// alpha
-			if (alphaBlending==false){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
+			if (alphaBlending==true){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
 			if (alphaThreshold){_encodeProperty(12, alphaThreshold, FLOAT32);}// alphaThreshold
-			if (repeat==true){_encodeProperty(13, repeat, BOOL);}// repeat
+			if (repeat==false){_encodeProperty(13, repeat, BOOL);}// repeat
 			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
 			if (ambient){_encodeProperty(15, ambient, FLOAT32);}// ambient-level
 			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
@@ -811,3 +816,35 @@ package awaybuilder.utils.encoders
 		}
 	}
 }
+
+
+
+
+
+internal class AWDBlock
+{
+	public var id : uint;
+	public var name : String;
+	public var data : *;
+	public var isExported : *;
+	public function AWDBlock() {} 
+}
+/*
+
+internal dynamic class AWDProperties
+{
+	public function set(key : uint, value : *) : void
+	{
+		this[key.toString()] = value;
+	}
+	
+	public function get(key : uint, fallback : *) : *
+	{
+		if (this.hasOwnProperty(key.toString()))
+			return this[key.toString()];
+		else return fallback;
+	}
+}
+
+
+*/

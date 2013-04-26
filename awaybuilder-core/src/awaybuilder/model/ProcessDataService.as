@@ -135,6 +135,12 @@ package awaybuilder.model
 					}
 					_objects.push( c );
 					break;
+				case AssetType.LIGHT:
+					_document.lights.addItem( AssetFactory.GetAsset( event.asset ) );
+					break;
+				case AssetType.LIGHTPICKER:
+					_document.lights.addItem( AssetFactory.GetAsset( event.asset ) );
+					break;
 				case AssetType.MATERIAL:
 					_document.materials.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
