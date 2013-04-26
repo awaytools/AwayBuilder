@@ -1,5 +1,6 @@
 package awaybuilder.utils.scene
 {
+	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	import away3d.lights.DirectionalLight;
 	import awaybuilder.utils.MathUtils;
 	import away3d.cameras.Camera3D;
@@ -72,6 +73,7 @@ package awaybuilder.utils.scene
 		public static var scaleGizmo:ScaleGizmo3D;
 		
 		public static var lightGizmos:Vector.<LightGizmo3D> = new Vector.<LightGizmo3D>();
+		public static var containers:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
 		
 		public static function init(scope:UIComponent):void
 		{
@@ -174,6 +176,7 @@ package awaybuilder.utils.scene
 			orientationTool.update();
 			currentGizmo.update();
 			updateLights();
+			updateContainerGizmos();
 			
 			view.render();			
 			updateDirectionalLightView();
@@ -207,6 +210,18 @@ package awaybuilder.utils.scene
 			for (lI=0; lI<lightGizmos.length; lI++) {
 				l = lightGizmos[lI];
 				l.updateLight();
+			}
+		}
+
+		private function updateContainerGizmos() : void {
+			var c:ObjectContainer3D;
+			var cI:int;
+			for (cI=0; cI<containers.length; cI++) {
+				c = containers[cI];
+				if (c.numChildren == 1) {
+					var cG:ContainerGizmo3D = c.getChildAt(0) as ContainerGizmo3D;
+					cG.updateContainer();
+				}
 			}
 		}
 		
@@ -282,7 +297,7 @@ package awaybuilder.utils.scene
 		
 		public static function addLight(light:LightBase):void
 		{
-			var gizmo:LightGizmo3D = new LightGizmo3D(light, camera); 
+			var gizmo:LightGizmo3D = new LightGizmo3D(light); 
 			gizmo.cone.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);
 			light.addChild(gizmo);
 			lightGizmos.push(gizmo);

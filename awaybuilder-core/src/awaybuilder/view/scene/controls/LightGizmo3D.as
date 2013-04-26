@@ -1,5 +1,8 @@
 package awaybuilder.view.scene.controls
 {
+	import awaybuilder.utils.scene.CameraManager;
+	import flash.display3D.Context3DCompareMode;
+	import flash.display.BlendMode;
 	import away3d.primitives.WireframeCylinder;
 	import away3d.lights.DirectionalLight;
 	import flash.geom.Vector3D;
@@ -22,14 +25,12 @@ package awaybuilder.view.scene.controls
 
 		public var light:LightBase;
 		public var cone : Mesh;
-		public var camera : Camera3D;
 		
 		public var type : String;
 		
-		public function LightGizmo3D(light:LightBase, camera:Camera3D)
+		public function LightGizmo3D(light:LightBase)
 		{
 			this.light = light;
-			this.camera = camera;
 			
 			type = (light is DirectionalLight) ? DIRECTIONAL_LIGHT : POINT_LIGHT;
 				
@@ -44,6 +45,7 @@ package awaybuilder.view.scene.controls
 				cone.addChild(wC);
 				cone.rotationX = -90;
 				cone.pivotPoint = new Vector3D(0, -150, 0);
+				cone.material.depthCompareMode = wC.material.depthCompareMode = Context3DCompareMode.ALWAYS;
 			} else {
 				cone = new Mesh(new PlaneGeometry(100, 100, 1, 1), lightTexture);			
 			}
@@ -58,7 +60,9 @@ package awaybuilder.view.scene.controls
 			if (type == DIRECTIONAL_LIGHT) {
 				//TODO: any additional processing per frame
 			} else {
-				//TODO: any additional processing per frame
+				cone.eulers = CameraManager.camera.eulers.clone();
+				cone.rotationX -= 90;
+				cone.scaleX = cone.scaleZ = CameraManager.radius / 1500;
 			}
 		}
 	}

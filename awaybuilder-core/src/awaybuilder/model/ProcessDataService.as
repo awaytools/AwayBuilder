@@ -1,5 +1,6 @@
 package awaybuilder.model
 {
+	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	import away3d.library.assets.BitmapDataAsset;
@@ -128,6 +129,10 @@ package awaybuilder.model
 					break;
 				case AssetType.CONTAINER:
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
+					if (c.numChildren == 0) {
+						Scene3DManager.containers.push(c);
+						c.addChild(new ContainerGizmo3D(c));
+					}
 					_objects.push( c );
 					break;
 				case AssetType.MATERIAL:
