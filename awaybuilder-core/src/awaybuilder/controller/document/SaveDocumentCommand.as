@@ -1,7 +1,7 @@
 package awaybuilder.controller.document
 {
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
 	
 	import org.robotlegs.mvcs.Command;
@@ -12,7 +12,7 @@ package awaybuilder.controller.document
 		public var event:SaveDocumentEvent;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var documentService:IDocumentService;

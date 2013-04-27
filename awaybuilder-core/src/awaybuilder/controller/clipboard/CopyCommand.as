@@ -5,7 +5,7 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.clipboard.events.ClipboardEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	
@@ -17,7 +17,7 @@ package awaybuilder.controller.clipboard
 	{
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var event:ClipboardEvent;

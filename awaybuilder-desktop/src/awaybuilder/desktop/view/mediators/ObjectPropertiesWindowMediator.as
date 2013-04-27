@@ -13,7 +13,7 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
 	import awaybuilder.controller.events.EditorStateChangeEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IEditorModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.view.components.propertyEditors.IObjectPropertyEditor;
@@ -31,7 +31,7 @@ package awaybuilder.desktop.view.mediators
 		public var editor:IEditorModel;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var undoRedo:UndoRedoModel;

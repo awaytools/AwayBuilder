@@ -1,7 +1,7 @@
     package awaybuilder.controller.scene {
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.controller.scene.events.SceneEvent;
-    import awaybuilder.model.IDocumentModel;
+    import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.scene.ObjectVO;
     
@@ -13,7 +13,7 @@
         public var event:SceneEvent;
 
         [Inject]
-        public var document:IDocumentModel;
+        public var document:DocumentModel;
 
         override public function execute():void
         {

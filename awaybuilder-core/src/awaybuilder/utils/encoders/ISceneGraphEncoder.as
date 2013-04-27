@@ -1,12 +1,12 @@
 package awaybuilder.utils.encoders
 {
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	
 	import flash.utils.ByteArray;
 
 	public interface ISceneGraphEncoder
 	{
-		function encode(scenegraph : IDocumentModel, output : ByteArray) : Boolean;
+		function encode(scenegraph : DocumentModel, output : ByteArray) : Boolean;
 		function dispose() : void;
 	}
 }

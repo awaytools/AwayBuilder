@@ -2,7 +2,7 @@ package awaybuilder.desktop.model
 {
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
 	import awaybuilder.utils.encoders.AWDEncoder;
 	import awaybuilder.utils.encoders.ISceneGraphEncoder;
@@ -80,7 +80,7 @@ package awaybuilder.desktop.model
 			var bytes : ByteArray;
 			var success : Boolean;
 			var encoder : ISceneGraphEncoder;
-			var document : IDocumentModel = IDocumentModel(data);
+			var document : DocumentModel = DocumentModel(data);
 			
 			bytes = new ByteArray();
 			encoder = new AWDEncoder();

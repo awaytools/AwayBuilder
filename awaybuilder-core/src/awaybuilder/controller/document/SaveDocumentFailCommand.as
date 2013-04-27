@@ -3,8 +3,8 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.MessageBoxEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.WindowModel;
 
 	import org.robotlegs.mvcs.Command;

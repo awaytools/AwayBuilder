@@ -3,7 +3,7 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.ProcessDataService;
 	
 	import org.robotlegs.mvcs.Command;
@@ -11,7 +11,7 @@ package awaybuilder.controller.document
 	public class ReplaceDocumentCommand extends Command
 	{
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var dataService:ProcessDataService;

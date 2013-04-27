@@ -2,7 +2,7 @@ package awaybuilder.desktop.controller
 {
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.view.components.popup.ImportWarningPopup;
 	
 	import flash.filesystem.File;
@@ -16,7 +16,7 @@ package awaybuilder.desktop.controller
 	public class OpenFromInvokeCommand extends Command
 	{
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var event:OpenFromInvokeEvent;

@@ -21,6 +21,12 @@ package awaybuilder.view.components.editors.events
 		public static const MATERIAL_REMOVE_EFFECT_METHOD:String = "materialRemoveEffectMethod";
 		public static const MATERIAL_STEPPER_CHANGE:String = "materialStepperChange";
 		
+		public static const TEXTURE_CHANGE:String = "textureChange";
+		public static const TEXTURE_STEPPER_CHANGE:String = "textureStepperChange";
+		
+		public static const CUBETEXTURE_CHANGE:String = "cubetextureChange";
+		public static const CUBETEXTURE_STEPPER_CHANGE:String = "cubetextureStepperChange";
+		
 		public static const REPLACE_TEXTURE:String = "replaceTexture";
 
         public static const MESH_SUBMESH_CHANGE:String = "meshSubmeshChange";
@@ -41,6 +47,9 @@ package awaybuilder.view.components.editors.events
 		
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";
 		public static const SHADOWMETHOD_STEPPER_CHANGE:String = "shadowmethodStepperChange";
+		
+		public static const EFFECTMETHOD_CHANGE:String = "effectmethodChange";
+		public static const EFFECTMETHOD_STEPPER_CHANGE:String = "effectmethodStepperChange";
 		
 		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";
 		public static const LIGHTPICKER_STEPPER_CHANGE:String = "lightPickerStepperChange";

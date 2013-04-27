@@ -8,7 +8,6 @@ package awaybuilder.view.mediators
     import away3d.library.assets.NamedAssetBase;
     import away3d.lights.DirectionalLight;
     import away3d.lights.LightBase;
-    import away3d.lights.shadowmaps.CubeMapShadowMapper;
     import away3d.materials.ColorMaterial;
     import away3d.materials.ColorMultiPassMaterial;
     import away3d.materials.MaterialBase;
@@ -19,7 +18,9 @@ package awaybuilder.view.mediators
     import away3d.materials.lightpickers.LightPickerBase;
     import away3d.materials.lightpickers.StaticLightPicker;
     import away3d.materials.methods.CascadeShadowMapMethod;
+    import away3d.materials.methods.ColorMatrixMethod;
     import away3d.materials.methods.DitheredShadowMapMethod;
+    import away3d.materials.methods.EffectMethodBase;
     import away3d.materials.methods.FilteredShadowMapMethod;
     import away3d.materials.methods.HardShadowMapMethod;
     import away3d.materials.methods.NearShadowMapMethod;
@@ -28,7 +29,8 @@ package awaybuilder.view.mediators
     import away3d.textures.Texture2DBase;
     
     import awaybuilder.controller.scene.events.SceneEvent;
-    import awaybuilder.model.IDocumentModel;
+    import awaybuilder.model.AssetsModel;
+    import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AssetVO;
@@ -41,7 +43,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ObjectVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
-    import awaybuilder.utils.AssetFactory;
+    import awaybuilder.utils.AssetUtil;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
     import awaybuilder.utils.scene.modes.GizmoMode;
@@ -58,7 +60,6 @@ package awaybuilder.view.mediators
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.FlexGlobals;
-    import mx.rpc.events.AbstractEvent;
     
     import org.robotlegs.mvcs.Mediator;
     
@@ -70,7 +71,10 @@ package awaybuilder.view.mediators
 		public var view:CoreEditor;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var assets:AssetsModel;
+		
+		[Inject]
+		public var document:DocumentModel;
 		
 		private var _scenegraphSort:Sort = new Sort();
 		private var _scenegraph:ArrayCollection;
@@ -89,12 +93,13 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
 			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, eventDispatcher_changeShadowMethodHandler);
+			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, eventDispatcher_changeEffectMethodHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
-			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
-			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
+			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewShadowMethodHandler);
+			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewEffectMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightHandler);
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
@@ -256,10 +261,19 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function applyEffectMethod( asset:EffectMethodVO ):void
+		{
+			var obj:EffectMethodBase = assets.GetObject( asset ) as EffectMethodBase;
+			applyName( obj, asset );
+			if( obj is ColorMatrixMethod )
+			{
+				var colorMatrixMethod:ColorMatrixMethod = obj as ColorMatrixMethod;
+				colorMatrixMethod.colorMatrix = [ asset.r, asset.g, asset.b, asset.a, asset.rO, asset.rG, asset.gG, asset.bG, asset.aG, asset.gO,  asset.rB, asset.gB, asset.bB, asset.aB, asset.bO, asset.rA, asset.gA, asset.bA, asset.aA, asset.aO,];
+			}
+		}
 		private function applyShadowMethod( asset:ShadowMethodVO ):void
 		{
-			var obj:ShadowMapMethodBase = AssetFactory.GetObject( asset ) as ShadowMapMethodBase;
-			trace( obj );
+			var obj:ShadowMapMethodBase = assets.GetObject( asset ) as ShadowMapMethodBase;
 			applyName( obj, asset );
 			if( obj is HardShadowMapMethod )
 			{
@@ -300,13 +314,13 @@ package awaybuilder.view.mediators
 		}
 		private function applyContainer( asset:ContainerVO ):void
 		{
-			var obj:ObjectContainer3D = AssetFactory.GetObject( asset ) as ObjectContainer3D;
+			var obj:ObjectContainer3D = assets.GetObject( asset ) as ObjectContainer3D;
 			applyName( obj, asset );
 			obj.pivotPoint = new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ );
 		}
 		private function applyObject( asset:ObjectVO ):void
 		{
-			var o:Object3D = Object3D( AssetFactory.GetObject(asset) );
+			var o:Object3D = Object3D( assets.GetObject(asset) );
 			o.name = asset.name;
 			o.x = asset.x;
 			o.y = asset.y;
@@ -323,7 +337,7 @@ package awaybuilder.view.mediators
 		
 		private function applyLight( asset:LightVO ):void
 		{
-			var light:LightBase = AssetFactory.GetObject( asset ) as LightBase;
+			var light:LightBase = assets.GetObject( asset ) as LightBase;
 			applyObject( asset );
 			if( asset.type == LightVO.DIRECTIONAL ) 
 			{
@@ -337,23 +351,23 @@ package awaybuilder.view.mediators
 		}
 		private function applyLightPicker( asset:LightPickerVO ):void
 		{
-			var picker:StaticLightPicker = AssetFactory.GetObject( asset ) as StaticLightPicker;
+			var picker:StaticLightPicker = assets.GetObject( asset ) as StaticLightPicker;
 			var lights:Array = [];
 			for each( var light:LightVO in asset.lights )
 			{
-				lights.push( AssetFactory.GetObject(light) );
+				lights.push( assets.GetObject(light) );
 			}
 			picker.lights = lights;
 		}
 		
 		private function applySubMesh( asset:SubMeshVO ):void
 		{
-			var submesh:SubMesh = SubMesh( AssetFactory.GetObject(asset) );
-			submesh.material = MaterialBase( AssetFactory.GetObject(asset.material) );
+			var submesh:SubMesh = SubMesh( assets.GetObject(asset) );
+			submesh.material = MaterialBase( assets.GetObject(asset.material) );
 		}
 		private function applyMaterial( asset:MaterialVO ):void
 		{
-			var m:MaterialBase = MaterialBase( AssetFactory.GetObject(asset) );
+			var m:MaterialBase = MaterialBase( assets.GetObject(asset) );
 			var classType:Class;
 			var oldMaterial:MaterialBase;
 			if( asset.diffuseTexture ) 
@@ -391,31 +405,33 @@ package awaybuilder.view.mediators
 			
 			// TODO: check why we cannot set null
 			
-			m.lightPicker = AssetFactory.GetObject(asset.lightPicker) as LightPickerBase;
+			m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
 			
 			m.mipmap = asset.mipmap;
 			m.smooth = asset.smooth;
 			m.blendMode = asset.blendMode;
+			
+			
 			
 			if( m is ColorMaterial )
 			{
 				var cm:ColorMaterial = m as ColorMaterial;
 				cm.color = asset.diffuseColor;
 				cm.alpha = asset.alpha;
+				
 			}
 			else if( m is TextureMaterial )
 			{
 				var tm:TextureMaterial = m as TextureMaterial;
 				
-				tm.shadowMethod = AssetFactory.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+				tm.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 				
-				tm.texture = AssetFactory.GetObject(asset.diffuseTexture) as Texture2DBase;
+				tm.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
 				
 				tm.alpha = asset.alpha;
-				tm.normalMap = AssetFactory.GetObject(asset.normalTexture) as Texture2DBase;
-				tm.specularMap = AssetFactory.GetObject(asset.specularTexture) as Texture2DBase;
-				tm.ambientTexture = AssetFactory.GetObject(asset.ambientTexture) as Texture2DBase;
-				trace( tm.ambientTexture );
+				tm.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+				tm.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+				tm.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
 //				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
 //				tm.diffuseMethod.diffuseColor = diffuseColor;
 				
@@ -425,60 +441,52 @@ package awaybuilder.view.mediators
 //				if( ambientTexture )
 //					tm.ambientMethod.texture = ambientTexture.linkedObject as Texture2DBase;
 			}
+			var effect:EffectMethodVO;
 			var singlePassMaterialBase:SinglePassMaterialBase = m as SinglePassMaterialBase;
 			if( singlePassMaterialBase ) 
 			{
 				var i:int;
 				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
-//				for (i = 0; i < material.numMethods; i++) 
-//				{
-//					if( (i < effectMethods.length) && material.getMethodAt( i ) != material.getMethodAt( i ) ) 
-//					{
-//						material.removeMethod( material.getMethodAt( i ) );
-//						i--;
-//					}
-//				}
-//				for (i = 0; i < effectMethods.length; i++) 
-//				{
-//					if( (i < material.numMethods) && effectMethods.getItemAt( i ) != material.getMethodAt( i ) ) 
-//					{
-//						material.addMethodAt( effectMethods.getItemAt( i ) as 
-//					}
-//				}
-//				for (i = 0; i < material.numMethods; i++) 
-//				{
-//					material.removeMethod( material.getMethodAt(i) );
-//					i--;
-//				}
-//				for (i = 0; i < asset.effectMethods.length; i++) 
-//				{
-//					material.addMethod( EffectMethodVO(effectMethods.getItemAt(i)).linkedObject as EffectMethodBase );
-//				}
+				while( singlePassMaterialBase.numMethods )
+				{
+					singlePassMaterialBase.removeMethod(singlePassMaterialBase.getMethodAt(0));
+				}
+				for each( effect in asset.effectMethods )
+				{
+					singlePassMaterialBase.addMethod(assets.GetObject( effect ) as EffectMethodBase);
+				}
 				
 			}
 			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
 			if( multiPassMaterialBase ) 
 			{
 				multiPassMaterialBase.alphaThreshold = asset.alphaThreshold;
+				while( multiPassMaterialBase.numMethods )
+				{
+					multiPassMaterialBase.removeMethod(multiPassMaterialBase.getMethodAt(0));
+				}
+				for each( effect in asset.effectMethods )
+				{
+					multiPassMaterialBase.addMethod(assets.GetObject( effect ) as EffectMethodBase);
+				}
+				
 			}
-			
-			var len:uint = 0;
 			
 			if( oldMaterial ) 
 			{
-				delete AssetFactory.assets[oldMaterial];
-				for (var item:Object in AssetFactory.assets)
+				assets.RemoveObject( oldMaterial );
+				var newAsset:MaterialVO = assets.GetAsset( m ) as MaterialVO;
+				newAsset.fillFromMaterial( asset );
+				
+				// TODO use document, not assets
+				var subMeshes:Vector.<SubMesh> = assets.GetObjectsByType( SubMesh, "material", oldMaterial ) as Vector.<SubMesh>;
+				
+				for each(var obj:SubMesh in subMeshes)
 				{
-					var subMesh:SubMesh = item as SubMesh;
-					if( subMesh ) 
-					{
-						if( subMesh.material == oldMaterial ) {
-							subMesh.material = m;
-						}
-					}
-					len++;
+					obj.material = m;
+					var vo:SubMeshVO = assets.GetAsset( obj ) as SubMeshVO;
+					vo.material = assets.GetAsset( obj ) as MaterialVO;
 				}
-				AssetFactory.assets[m] = asset;
 			}
 			
 		}
@@ -501,7 +509,7 @@ package awaybuilder.view.mediators
 		{
 			for each( var item:MeshVO in event.items )
 			{
-				var obj:Mesh = AssetFactory.GetObject( item ) as Mesh;
+				var obj:Mesh = assets.GetObject( item ) as Mesh;
 				applyContainer( item );
 				for each( var sub:SubMeshVO in item.subMeshes )
 				{
@@ -525,8 +533,21 @@ package awaybuilder.view.mediators
 			}
 		}
 		
-		private function eventDispatcher_addNewMethodHandler(event:SceneEvent):void
+		private function eventDispatcher_addNewShadowMethodHandler(event:SceneEvent):void
 		{
+			var asset:MaterialVO = event.items[0] as MaterialVO;
+			if( asset ) 
+			{
+				applyMaterial( asset );
+			}
+		}
+		private function eventDispatcher_addNewEffectMethodHandler(event:SceneEvent):void
+		{
+			var asset:MaterialVO = event.items[0] as MaterialVO;
+			if( asset ) 
+			{
+				applyMaterial( asset );
+			}
 		}
 		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
 		{
@@ -552,6 +573,15 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applyContainer( asset );
+			}
+		}
+		
+		private function eventDispatcher_changeEffectMethodHandler(event:SceneEvent):void
+		{
+			var asset:EffectMethodVO = event.items[0] as EffectMethodVO;
+			if( asset ) 
+			{
+				applyEffectMethod( asset );
 			}
 		}
 		private function eventDispatcher_changeShadowMethodHandler(event:SceneEvent):void
@@ -589,7 +619,7 @@ package awaybuilder.view.mediators
 					if( event.items[0] is MeshVO )
 					{
 						var mesh:MeshVO = event.items[0] as MeshVO;
-						selectObjectsScene( AssetFactory.GetObject( mesh ) as Object3D );
+						selectObjectsScene( assets.GetObject( mesh ) as Object3D );
 					}
 					else if( event.items[0] is LightVO )
 					{
@@ -665,6 +695,7 @@ package awaybuilder.view.mediators
 				
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
+<<<<<<< HEAD
 				mesh = item as Mesh;
 				if( mesh ) {
 					if ((isLight = (mesh.parent as LightGizmo3D)))
@@ -672,6 +703,15 @@ package awaybuilder.view.mediators
 					else
 						asset = AssetFactory.GetAsset(mesh);
 					if ( asset )
+=======
+				var mesh:Mesh = item as Mesh;
+				if( mesh ) 
+				{
+					var asset:AssetVO = assets.GetAsset(item);
+					
+					if( asset ) 
+					{
+>>>>>>> ce0770e... effect methods added
 						selected.push(asset);
 				}
 			} 
@@ -680,7 +720,7 @@ package awaybuilder.view.mediators
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-            var vo:ObjectVO = AssetFactory.GetAsset( event.object ) as ObjectVO;
+            var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
 			vo = vo.clone() as ObjectVO;
             switch( event.gizmoMode ) 
 			{
@@ -706,7 +746,7 @@ package awaybuilder.view.mediators
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
-			var vo:ObjectVO = AssetFactory.GetAsset( event.object ) as ObjectVO;
+			var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:

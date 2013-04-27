@@ -3,8 +3,8 @@ package awaybuilder.controller.document
 	import flash.events.Event;
 	
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.WindowModel;
 
 	import org.robotlegs.mvcs.Command;
@@ -15,7 +15,7 @@ package awaybuilder.controller.document
 		public var event:SaveDocumentEvent;
 		
 		[Inject]
-		public var documentModel:IDocumentModel;
+		public var documentModel:DocumentModel;
 
 		[Inject]
 		public var windowModel:WindowModel;

@@ -21,6 +21,7 @@
         <s:State name="container"/>
 		<s:State name="shadowMethod"/>
 		<s:State name="effectMethod"/>
+		<s:State name="cubeTexture"/>
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -129,7 +130,8 @@
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
 			<editors:MaterialPropertiesEditor id="materialProperties" textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
-			<editors:BitmapTexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
+			<editors:TexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
+			<editors:CubeTexturePropertiesEditor id="cubetextureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="cubeTexture,initAll" />
 			<editors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
 			<editors:LightPickerPropertiesEditor id="lightPickerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
 			<s:Group includeIn="geometry,initAll"><s:Label text="Geometry Options"/></s:Group>

@@ -3,7 +3,7 @@ package awaybuilder.controller.scene
 	import away3d.materials.utils.DefaultMaterialManager;
 	
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
 	
 	import org.robotlegs.mvcs.Command;
@@ -14,7 +14,7 @@ package awaybuilder.controller.scene
 		public var event:SceneEvent;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		override public function execute():void
 		{

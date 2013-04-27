@@ -4,7 +4,7 @@ package awaybuilder.model.vo.scene
 	import away3d.entities.Mesh;
 	import away3d.primitives.WireframeCube;
 	
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	
 	import mx.collections.ArrayCollection;
 
@@ -16,8 +16,8 @@ package awaybuilder.model.vo.scene
 		
 		override public function clone():ObjectVO
 		{
-			var clone:ContainerVO = fill( new ContainerVO() ) as ContainerVO;
-			clone.id = this.id;
+			var clone:ContainerVO = new ContainerVO()
+			clone.fillFromObject( this );
 			clone.children = new ArrayCollection( children.source );
 			return clone;
 		}

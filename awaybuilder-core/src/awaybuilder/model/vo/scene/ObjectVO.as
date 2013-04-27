@@ -28,24 +28,23 @@ package awaybuilder.model.vo.scene
 			throw new Error( "Abstract method");
 		}
 		
-		protected function fill( asset:ObjectVO ):ObjectVO
+		public function fillFromObject( asset:ObjectVO ):void
 		{
-			asset.x = this.x;
-			asset.y = this.y;
-			asset.z = this.z;
-			asset.scaleX = this.scaleX;
-			asset.scaleY = this.scaleY;
-			asset.scaleZ = this.scaleZ;
-			asset.rotationX = this.rotationX;
-			asset.rotationY = this.rotationY;
-			asset.rotationZ = this.rotationZ;
+			this.x = asset.x;
+			this.y = asset.y;
+			this.z = asset.z;
+			this.scaleX = asset.scaleX;
+			this.scaleY = asset.scaleY;
+			this.scaleZ = asset.scaleZ;
+			this.rotationX = asset.rotationX;
+			this.rotationY = asset.rotationY;
+			this.rotationZ = asset.rotationZ;
 			
-			asset.pivotX = this.pivotX;
-			asset.pivotY = this.pivotY;
-			asset.pivotZ = this.pivotZ;
-			asset.name = this.name;
-			asset.id = this.id;
-			return asset;
+			this.pivotX = asset.pivotX;
+			this.pivotY = asset.pivotY;
+			this.pivotZ = asset.pivotZ;
+			this.name = asset.name;
+			this.id = asset.id;
 		}
 	}
 }

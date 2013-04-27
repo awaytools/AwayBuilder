@@ -6,14 +6,14 @@ package awaybuilder.controller.document
 	import away3d.textures.BitmapTexture;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.ISettingsModel;
+	import awaybuilder.model.AssetsModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.utils.Dictionary;
@@ -25,30 +25,30 @@ package awaybuilder.controller.document
 	public class NewDocumentCommand extends Command
 	{	
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
+		
+		[Inject]
+		public var assets:AssetsModel;
 		
 		[Inject]
 		public var undoRedo:UndoRedoModel;
 
-		[Inject]
-		public var settings:ISettingsModel;
-		
 		override public function execute():void
 		{
 			AssetLibrary.removeAllAssets(true);
 			
-			AssetFactory.assets = new Dictionary();
-			AssetFactory.clear();
+			assets.Clear();
 			undoRedo.clear();
 			Scene3DManager.clear();
 			document.clear();
 			
-			document.name = "Untitled Library " + AssetFactory.GetNextId("document");
+			document.name = "Untitled Library " + AssetUtil.GetNextId("document");
 			document.edited = false;
 			document.path = null;
 
-			document.materials.addItem( AssetFactory.GetDefaultMaterial() );
-			document.textures.addItem( AssetFactory.GetDefaultTexture() );
+			document.materials.addItem( assets.GetDefaultMaterial() );
+			document.textures.addItem( assets.GetDefaultTexture() );
+			document.textures.addItem( assets.GetDefaultCubeTexture() );
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}

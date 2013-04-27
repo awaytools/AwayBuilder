@@ -3,7 +3,7 @@ package awaybuilder.model
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
-	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.DocumentVO;
 	
 	import flash.display3D.textures.Texture;
 	
@@ -12,9 +12,9 @@ package awaybuilder.model
 	
 	import org.robotlegs.mvcs.Actor;
 
-	public class DocumentModel extends Actor implements IDocumentModel
+	public class DocumentModel extends Actor
 	{
-		public var documentVO:DocumentVO = new DocumentVO();
+		private var documentVO:DocumentVO = new DocumentVO();
 		
 		private var _empty:Boolean = true;
 		public function get empty():Boolean
@@ -160,41 +160,6 @@ package awaybuilder.model
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.CLIPBOARD_UPDATED));
 		}
 		
-//		public function getAnimation(value:Object):AssetVO
-//		{
-//			return getItemInCollection( animations, value );
-//		}
-//		
-//		public function getGeometry(value:Object):AssetVO
-//		{
-//			return getItemInCollection( geometry, value );
-//		}
-//		
-//		public function getLight(value:Object):AssetVO
-//		{
-//			return getItemInCollection( lights, value );
-//		}
-//		
-//		public function getMaterial(value:Object):AssetVO
-//		{
-//			return getItemInCollection( materials, value );
-//		}
-//		
-//		public function getSceneObject(value:Object):ContainerVO
-//		{
-//			return getContainerInCollection( scene, value );
-//		}
-//		
-//		public function getSkeleton(value:Object):AssetVO
-//		{
-//			return getItemInCollection( skeletons, value );
-//		}
-//		
-//		public function getTexture(value:Object):AssetVO
-//		{
-//			return getItemInCollection( textures, value );
-//		}
-		
 		public function clear():void
 		{
 			documentVO = new DocumentVO();
@@ -221,29 +186,5 @@ package awaybuilder.model
 			}
 		}
 		
-		// private 
-		
-//		private function getItemInCollection( children:ArrayCollection, value:Object ):AssetVO
-//		{
-//			for each( var vo:AssetVO in children )
-//			{
-//				if( vo.id == value ) 
-//				{
-//					return vo;
-//				}
-//			}
-//			return null;
-//		}
-//		private function getContainerInCollection( children:ArrayCollection, value:Object ):ContainerVO
-//		{
-//			for each( var vo:ContainerVO in children )
-//			{
-//				if( vo.id == value ) 
-//				{
-//					return vo;
-//				}
-//			}
-//			return null;
-//		}
 	}
 }

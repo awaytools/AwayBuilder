@@ -1,6 +1,6 @@
 package awaybuilder.desktop.controller
 {
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.WindowModel;
 	
 	import org.robotlegs.mvcs.Command;
@@ -14,7 +14,7 @@ package awaybuilder.desktop.controller
 		public var windowModel:WindowModel;
 		
 		[Inject]
-		public var documentModel:IDocumentModel;
+		public var documentModel:DocumentModel;
 		
 		override public function execute():void
 		{

@@ -4,7 +4,7 @@ package awaybuilder.view.mediators
 	import flash.events.MouseEvent;
 	
 	import awaybuilder.controller.events.SettingsEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.view.components.DocumentSettingsForm;
 	
 	import org.robotlegs.mvcs.Mediator;
@@ -15,7 +15,7 @@ package awaybuilder.view.mediators
 		public var form:DocumentSettingsForm;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		override public function onRegister():void
 		{

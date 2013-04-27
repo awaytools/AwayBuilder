@@ -2,7 +2,7 @@ package awaybuilder.desktop.controller
 {
 	import awaybuilder.view.components.popup.TextureSizeWarningPopup;
 	import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	
 	
 	import org.robotlegs.mvcs.Command;
@@ -10,7 +10,7 @@ package awaybuilder.desktop.controller
 	public class ShowTextureSizeErrorsCommand extends Command
 	{
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var event:TextureSizeErrorsEvent;

@@ -1,6 +1,6 @@
 package awaybuilder.controller.history
 {
-    import awaybuilder.model.IDocumentModel;
+    import awaybuilder.model.DocumentModel;
     import awaybuilder.model.UndoRedoModel;
 
     import org.robotlegs.mvcs.Command;
@@ -14,7 +14,7 @@ package awaybuilder.controller.history
         public var event:UndoRedoEvent;
 
         [Inject]
-        public var document:IDocumentModel;
+        public var document:DocumentModel;
 
         override public function execute():void
         {

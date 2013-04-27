@@ -9,7 +9,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.history.UndoRedoEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.events.ToolBarEvent;
@@ -22,7 +22,7 @@ package awaybuilder.view.mediators
 		public var toolBar:EditToolBar;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var undoRedo:UndoRedoModel;

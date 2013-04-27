@@ -16,8 +16,10 @@ package awaybuilder.model
 	import away3d.entities.Mesh;
 	import away3d.events.AssetEvent;
 	import away3d.events.LoaderEvent;
+	import away3d.events.ParserEvent;
 	import away3d.library.AssetLibrary;
 	import away3d.library.assets.AssetType;
+	import away3d.library.assets.BitmapDataAsset;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
@@ -25,18 +27,21 @@ package awaybuilder.model
 	import away3d.textures.BitmapTexture;
 	
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
+	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
-	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
+	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
+	import awaybuilder.utils.logging.AwayBuilderLogger;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.events.Event;
@@ -51,10 +56,14 @@ package awaybuilder.model
 	
 	import spark.components.Application;
 
-	public class ProcessDataService extends Actor
+	// TODO move logic into command
+	public class ProcessDataService extends Actor 
 	{
 		
-		private var _document:DocumentVO;
+		[Inject]
+		public var assetModel:AssetsModel
+		
+		private var _documentVO:DocumentVO;
 		
 		private var _objects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
 		
@@ -62,7 +71,7 @@ package awaybuilder.model
 		
 		public function load( url:String, nextEvent:HistoryEvent ):void
 		{
-			_document = new DocumentVO();
+			_documentVO = new DocumentVO();
 			_nextEvent = nextEvent;
 			
 			AwayBuilderLoadErrorLogger.clearLog();
@@ -100,7 +109,7 @@ package awaybuilder.model
 			{
 				if( !o.parent )
 				{
-					_document.scene.addItem( AssetFactory.GetAsset( o ) );
+					_documentVO.scene.addItem( assetModel.GetAsset( o ) );
 				}
 			}
 			
@@ -108,7 +117,7 @@ package awaybuilder.model
 				dispatch( new ErrorLogEvent(ErrorLogEvent.LOG_ENTRY_MADE));
 			}
 			
-			_nextEvent.newValue = _document;
+			_nextEvent.newValue = _documentVO;
 			dispatch( _nextEvent );
 			
 			CursorManager.removeBusyCursor();
@@ -123,7 +132,7 @@ package awaybuilder.model
 					var mesh:Mesh = event.asset as Mesh;
 					if( !mesh.material )
 					{
-						mesh.material = AssetFactory.GetObject(AssetFactory.GetDefaultMaterial()) as MaterialBase;
+						mesh.material = assetModel.GetObject(assetModel.GetDefaultMaterial()) as MaterialBase;
 					}
 					_objects.push( mesh  );
 					break;
@@ -142,22 +151,22 @@ package awaybuilder.model
 					_document.lights.addItem( AssetFactory.GetAsset( event.asset ) );
 					break;
 				case AssetType.MATERIAL:
-					_document.materials.addItem( AssetFactory.GetAsset( event.asset ) );
+					_documentVO.materials.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.TEXTURE:
-					_document.textures.addItem( AssetFactory.GetAsset( event.asset ) );
+					_documentVO.textures.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
-					_document.geometry.addItem( AssetFactory.GetAsset( event.asset ) );
+					_documentVO.geometry.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_SET:
 				case AssetType.ANIMATION_STATE:
 				case AssetType.ANIMATION_NODE:
-					_document.animations.addItem( AssetFactory.GetAsset( event.asset ) );
+					_documentVO.animations.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.SKELETON:
 				case AssetType.SKELETON_POSE:
-					_document.skeletons.addItem( AssetFactory.GetAsset( event.asset ) );
+					_documentVO.skeletons.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 			}
 		}

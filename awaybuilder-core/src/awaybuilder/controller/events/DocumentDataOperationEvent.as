@@ -1,7 +1,7 @@
 package awaybuilder.controller.events
 {
 	import awaybuilder.controller.history.HistoryEvent;
-	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.DocumentVO;
 	
 	import flash.events.Event;
 

@@ -8,13 +8,13 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.interfaces.ITextured;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	
 	import flash.display3D.textures.Texture;
 	
@@ -26,7 +26,7 @@ package awaybuilder.controller.scene
 		public var event:SceneEvent;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		override public function execute():void
 		{

@@ -1,26 +1,22 @@
 package awaybuilder.desktop.view.mediators
 {
 
-	import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
-	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.controller.clipboard.events.ClipboardEvent;
 	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.events.DocumentRequestEvent;
-	import awaybuilder.controller.events.HelpEvent;
-	import awaybuilder.controller.events.MessageBoxEvent;
+	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.history.UndoRedoEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.desktop.controller.events.AboutEvent;
 	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-	import awaybuilder.desktop.model.UpdateModel;
+	import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.SettingsModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	
 	import flash.desktop.NativeApplication;
@@ -33,8 +29,6 @@ package awaybuilder.desktop.view.mediators
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.filesystem.File;
-	import flash.net.URLRequest;
-	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
 	
 	import mx.core.DragSource;
@@ -98,16 +92,10 @@ package awaybuilder.desktop.view.mediators
 		public var app:AwayBuilderApplication;
 		
 		[Inject]
-		public var documentModel:IDocumentModel;
+		public var documentModel:DocumentModel;
 		
 		[Inject]
 		public var undoRedoModel:UndoRedoModel;
-		
-		[Inject]
-		public var settingsModel:SettingsModel;
-		
-//		[Inject]
-//		public var updateModel:UpdateModel;
 		
 		[Inject(name="version")]
 		public var version:String;
@@ -216,10 +204,6 @@ package awaybuilder.desktop.view.mediators
 //					"Update", "Would you like to check for an update?",
 //					"Check for Update", updateMessageBox_onCheckForUpdate, "Don't Check"));
 //			}
-			if(this.settingsModel.showSamplesAtStartup)
-			{
-				this.dispatch(new HelpEvent(HelpEvent.SHOW_WELCOME));
-			}
 			this.updateMenus();
 			this.updateMenuEnabled();
 		}
@@ -290,17 +274,14 @@ package awaybuilder.desktop.view.mediators
 		
 		private function eventDispatcher_showGridChangeHandler(event:Event):void
 		{
-			this._showGridItem.checked = this.settingsModel.showGrid;
 		}
 		
 		private function eventDispatcher_snapToGridChangeHandler(event:Event):void
 		{
-			this._snapToGridItem.checked = this.settingsModel.snapToGrid;
 		}
 		
 		private function eventDispatcher_showObjectPickerChangeHandler(event:Event):void
 		{
-			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
 		}
 		
 		private function eventDispatcher_switchToFreeCameraHandler(event:SceneEvent):void
@@ -551,18 +532,6 @@ package awaybuilder.desktop.view.mediators
 					this.dispatch(new SceneEvent(SceneEvent.FOCUS_SELECTION));
                     break;
 				}
-				case MENU_SNAP_TO_GRID:
-				{
-					this._snapToGridItem.checked = !this._snapToGridItem.checked;
-					this.settingsModel.snapToGrid = this._snapToGridItem.checked;
-					break;
-				}
-				case MENU_SHOW_GRID:
-				{
-					this._showGridItem.checked = !this._showGridItem.checked;
-					this.settingsModel.showGrid = this._showGridItem.checked;
-					break;
-				}
 				//help
 				case MENU_ABOUT:
 				{
@@ -572,11 +541,6 @@ package awaybuilder.desktop.view.mediators
 				case MENU_CHECK_UPDATE:
 				{
 //					this.checkForUpdate();
-					break;
-				}
-				case MENU_SAMPLES:
-				{
-					this.dispatch(new HelpEvent(HelpEvent.SHOW_WELCOME));
 					break;
 				}
 				default:
@@ -761,7 +725,6 @@ package awaybuilder.desktop.view.mediators
 //			this._snapToGridItem = this.createMenuItem("Snap To Grid", MENU_SNAP_TO_GRID, viewMenu);
 //			this._snapToGridItem.checked = this.settingsModel.snapToGrid;
 			this._showGridItem = this.createMenuItem("Show Grid", MENU_SHOW_GRID, viewMenu);
-			this._showGridItem.checked = this.settingsModel.showGrid;
 			this._viewMenuItem.submenu = viewMenu;
 			this._mainMenu.addItem(this._viewMenuItem);
 			

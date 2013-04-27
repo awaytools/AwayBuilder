@@ -7,7 +7,7 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.WindowModel;
 	
 	import org.robotlegs.mvcs.Mediator;
@@ -21,7 +21,7 @@ package awaybuilder.desktop.view.mediators
 		public var window:EditedDocumentWarningWindow;
 		
 		[Inject]
-		public var documentModel:IDocumentModel;
+		public var documentModel:DocumentModel;
 		
 		[Inject]
 		public var windowModel:WindowModel;

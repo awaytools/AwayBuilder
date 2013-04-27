@@ -8,6 +8,18 @@
 	<fx:Declarations>
 		<s:Power id="collapseEaser" exponent="2" easeInFraction="0.1" />
 		<s:Resize id="collapseEffect" duration="150" easer="{collapseEaser}" heightTo="24" />
+		<fx:Component className="NewTexturePopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
+									   chromeColor="0x1d1d1c" color="0xdbdbdb"
+									   mouseDownOutside="close();"
+									   >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="New Texture" styleName="addItemButton" cornerRadius="0" click="close(true,'newTexture')"/>
+				<s:Button width="100%" label="New Cube Texture" styleName="addItemButton" cornerRadius="0" click="close(true,'newCubeTexture')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
 		<fx:Component className="NewLightPopup">
 			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
 									   chromeColor="0x1d1d1c" color="0xdbdbdb"
@@ -45,7 +57,7 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.scene.DocumentVO;
+			import awaybuilder.model.vo.DocumentVO;
 			import awaybuilder.view.components.events.CoreEditorEvent;
 			import awaybuilder.view.components.events.LibraryPanelEvent;
 			
@@ -136,9 +148,27 @@
 			
 			protected function texturesPanel_addNewItemHandler(event:MouseEvent):void
 			{
-				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_TEXTURE ) );
+				var button:ButtonBase = event.relatedObject as ButtonBase;
+				var popup:NewTexturePopup = new NewTexturePopup();
+				popup.open(this);
+				popup.addEventListener('close', newTexturePopup_closeHandler);
+				var pos:Point = button.localToGlobal( new Point() );
+				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
 			}
 			
+			private function newTexturePopup_closeHandler(event:PopUpEvent):void 
+			{
+				if (!event.commit) return;
+				switch(event.data)
+				{
+					case "newTexture":
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_TEXTURE ) );
+						break;
+					default:
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_CUBE_TEXTURE ) );
+						break;
+				}
+			}   
 			private function lightsPanel_addNewItemHandler(event:MouseEvent):void
 			{
 				var button:ButtonBase = event.relatedObject as ButtonBase;

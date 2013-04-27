@@ -4,7 +4,7 @@ package awaybuilder.model.vo.scene
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	
 	import flash.display3D.textures.Texture;
 	
@@ -22,10 +22,5 @@ package awaybuilder.model.vo.scene
 		
 	    public var linkedMaterials:ArrayCollection;
 	
-//		override public function apply():void
-//		{
-//			var subMesh:SubMesh = linkedObject as SubMesh;
-//			subMesh.material = material.linkedObject as MaterialBase;
-//		}
 	}
 }

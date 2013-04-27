@@ -8,13 +8,14 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.AssetsModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.ProcessDataService;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
-	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;
@@ -32,7 +33,10 @@ package awaybuilder.controller.document
 	public class ConcatenateDocumentDataCommand extends HistoryCommandBase
 	{
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
+		
+		[Inject]
+		public var assets:AssetsModel;
 		
 		[Inject]
 		public var event:DocumentDataOperationEvent;
@@ -74,7 +78,7 @@ package awaybuilder.controller.document
 			var data:DocumentVO = event.oldValue as DocumentVO;
 			for each( var vo:AssetVO in data.scene ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( AssetFactory.GetObject(vo) as Mesh );
+					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
 				}
 			}
 			removeItems( document.animations, data.animations );
@@ -133,7 +137,7 @@ package awaybuilder.controller.document
 			
 			if( o ) 
 			{
-				Scene3DManager.addObject( AssetFactory.GetObject(o) as ObjectContainer3D );
+				Scene3DManager.addObject( assets.GetObject(o) as ObjectContainer3D );
 			}
 		}
 		

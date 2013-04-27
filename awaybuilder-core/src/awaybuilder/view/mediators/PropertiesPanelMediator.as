@@ -5,9 +5,11 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
-    import awaybuilder.model.IDocumentModel;
+    import awaybuilder.model.AssetsModel;
+    import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
+    import awaybuilder.model.vo.scene.CubeTextureVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
@@ -16,7 +18,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureVO;
-    import awaybuilder.utils.AssetFactory;
+    import awaybuilder.utils.AssetUtil;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.editors.events.PropertyEditorEvent;
     
@@ -32,8 +34,11 @@ package awaybuilder.view.mediators
         [Inject]
         public var view:PropertiesPanel;
 
+		[Inject]
+		public var assets:AssetsModel;
+		
         [Inject]
-        public var document:IDocumentModel;
+        public var document:DocumentModel;
 
         override public function onRegister():void
         {
@@ -77,6 +82,9 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
+			addViewListener( PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, view_effectmethodChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			
@@ -162,6 +170,15 @@ package awaybuilder.view.mediators
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data, true));
         }
 		
+		
+		private function view_effectmethodChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_EFFECT_METHOD,[view.data], event.data));
+		}
+		private function view_effectmethodChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_EFFECT_METHOD,[view.data], event.data, true));
+		}
 		private function view_shadowmethodChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_METHOD,[view.data], event.data));
@@ -188,32 +205,9 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],false,false,true));
 		}
 		
-		
-//		private function view_materialAddShadowMethodHandler(event:PropertyEditorEvent):void
-//		{
-//			var availableLight:LightVO;
-//			for each( var asset:AssetVO in document.lights ) 
-//			{
-//				var light:LightVO = asset as LightVO;
-//				
-//				if( light && light.castsShadows ) 
-//				{
-//					availableLight = light;
-//					break;
-//				}
-//			}
-//			if( !availableLight )
-//			{
-//				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
-//				return;
-//			}
-//			
-//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSahdowMapMethod( availableLight )));
-//		}
-		
 		private function view_materialAddLightpickerHandler(event:PropertyEditorEvent):void
 		{
-			var asset:LightPickerVO = AssetFactory.CreateLightPicker();
+			var asset:LightPickerVO = assets.CreateLightPicker();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHTPICKER,[view.data], asset ));
 		}
 		
@@ -223,7 +217,7 @@ package awaybuilder.view.mediators
 		}
 		private function view_materialAddEffectMetodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], AssetFactory.CreateEffectMethod( event.data as String )));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], assets.CreateEffectMethod( event.data as String )));
 			
 		}
 		private function view_materialRemoveEffectMetodHandler(event:PropertyEditorEvent):void
@@ -245,7 +239,7 @@ package awaybuilder.view.mediators
 		private function view_submeshAddNewMaterialHandler(event:PropertyEditorEvent):void
 		{
 			var newValue:SubMeshVO = SubMeshVO(event.data);
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[newValue], AssetFactory.CreateMaterialCopy( newValue.material )));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[newValue], assets.CreateMaterial( newValue.material )));
 		}
 		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
 		{
@@ -263,27 +257,27 @@ package awaybuilder.view.mediators
 		}
 		private function view_lightAddFilteredShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateFilteredShadowMapMethod(view.data as LightVO)));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], assets.CreateFilteredShadowMapMethod(view.data as LightVO)));
 		}
 		private function view_lightAddCascadeShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateCascadeShadowMapMethod(view.data as LightVO)));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], assets.CreateCascadeShadowMapMethod(view.data as LightVO)));
 		}
 		private function view_lightAddDitheredShadowMapHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateDitheredShadowMapMethod(view.data as LightVO)));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], assets.CreateDitheredShadowMapMethod(view.data as LightVO)));
 		}
 		private function view_lightAddHardShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateHardShadowMapMethod(view.data as LightVO)));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], assets.CreateHardShadowMapMethod(view.data as LightVO)));
 		}
 		private function view_lightAddNearShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateNearShadowMapMethod(view.data as LightVO)));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], assets.CreateNearShadowMapMethod(view.data as LightVO)));
 		}
 		private function view_lightAddSoftShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], AssetFactory.CreateSoftShadowMapMethod(view.data as LightVO)));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD,[view.data], assets.CreateSoftShadowMapMethod(view.data as LightVO)));
 		}
 		
 		private function view_lightStepperChangeHandler(event:PropertyEditorEvent):void
@@ -302,12 +296,12 @@ package awaybuilder.view.mediators
 		
 		private function view_lightPickerAddDirectionalLightHandler(event:PropertyEditorEvent):void
 		{
-			var asset:LightVO = AssetFactory.CreateDirectionalLight();
+			var asset:LightVO = assets.CreateDirectionalLight();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		private function view_lightPickerAddPointLightHandler(event:PropertyEditorEvent):void
 		{
-			var asset:LightVO = AssetFactory.CreatePointLight();
+			var asset:LightVO = assets.CreatePointLight();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		
@@ -410,11 +404,10 @@ package awaybuilder.view.mediators
                 {
                     if( event.items[0] is MeshVO )
                     {
-						var t:Number = getTimer();
                         var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
                         for each( var subMesh:SubMeshVO in  mesh.subMeshes )
                         {
-                            subMesh.linkedMaterials = document.materials;
+                            subMesh.linkedMaterials = document.materials; // TODO
                         }
 						view.SetData(mesh);
 						view.showEditor( "mesh", event.newValue, event.oldValue );
@@ -453,6 +446,11 @@ package awaybuilder.view.mediators
 					else if( event.items[0] is EffectMethodVO )
 					{
 						view.showEditor( "effectMethod", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is CubeTextureVO )
+					{
+						view.showEditor( "cubeTexture", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
 //                    else if( event.items[0] is Geometry )

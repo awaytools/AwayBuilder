@@ -10,8 +10,8 @@
 	<fx:Script>
 		<![CDATA[
 			import away3d.library.assets.BitmapDataAsset;
-			import awaybuilder.model.vo.scene.DocumentVO;
-			import awaybuilder.utils.AssetFactory;
+			import awaybuilder.model.vo.DocumentVO;
+			import awaybuilder.utils.AssetUtil;
 			import away3d.tools.utils.TextureUtils;
 			import mx.collections.ArrayCollection;
 			import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;

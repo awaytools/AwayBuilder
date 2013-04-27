@@ -9,9 +9,9 @@ package awaybuilder.controller.scene
 	
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
@@ -23,7 +23,7 @@ package awaybuilder.controller.scene
 		public var event:SceneEvent;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		override public function execute():void
 		{

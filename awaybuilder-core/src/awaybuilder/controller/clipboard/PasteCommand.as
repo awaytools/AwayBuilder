@@ -5,12 +5,12 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.DocumentVO;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import mx.collections.ArrayCollection;
@@ -23,7 +23,7 @@ package awaybuilder.controller.clipboard
 		public var event:PasteEvent;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
 		
 		override public function execute():void
 		{
@@ -67,7 +67,7 @@ package awaybuilder.controller.clipboard
 			var objects:Vector.<AssetVO> = event.oldValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( AssetFactory(vo) as Mesh );
+					Scene3DManager.removeMesh( AssetUtil(vo) as Mesh );
 				}
 			}
 			removeItems( document.scene, objects );

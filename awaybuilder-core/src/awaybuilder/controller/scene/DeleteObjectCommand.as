@@ -5,13 +5,14 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.AssetsModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display3D.textures.Texture;
@@ -24,7 +25,10 @@ package awaybuilder.controller.scene
 		public var event:SceneEvent;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var assets:AssetsModel;
+		
+		[Inject]
+		public var document:DocumentModel;
 		
 		override public function execute():void
 		{
@@ -36,7 +40,7 @@ package awaybuilder.controller.scene
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( AssetFactory.GetObject(vo) as Mesh );
+					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
 				}
 			}
 			removeItemsFromDocument( objects );
@@ -54,7 +58,7 @@ package awaybuilder.controller.scene
 				{
 					if( vo is MeshVO ) 
 					{
-						Scene3DManager.addObject( AssetFactory.GetObject(vo) as Mesh );
+						Scene3DManager.addObject( assets.GetObject(vo) as Mesh );
 					}
 					document.scene.addItemAt( vo, 0 );
 				}

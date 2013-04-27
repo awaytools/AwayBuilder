@@ -3,7 +3,7 @@ package awaybuilder.desktop.controller
 	import awaybuilder.controller.events.DocumentRequestEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.WindowModel;
 	
 	import org.robotlegs.mvcs.Command;
@@ -14,7 +14,7 @@ package awaybuilder.desktop.controller
 		public var event:DocumentRequestEvent;
 		
 		[Inject]
-		public var documentModel:IDocumentModel;
+		public var documentModel:DocumentModel;
 		
 		[Inject]
 		public var windowModel:WindowModel;

@@ -10,17 +10,18 @@ package awaybuilder.view.mediators
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.events.DocumentRequestEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.AssetsModel;
+	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.DocumentVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.ScenegraphFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
@@ -42,7 +43,10 @@ package awaybuilder.view.mediators
 		public var view:LibraryPanel;
 		
 		[Inject]
-		public var document:IDocumentModel;
+		public var document:DocumentModel;
+		
+		[Inject]
+		public var assets:AssetsModel;
 		
 		private var _model:DocumentVO;
 		private var _scenegraphSelected:Vector.<Object>;
@@ -73,7 +77,7 @@ package awaybuilder.view.mediators
 		
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
 		{
-			var method:EffectMethodVO =  AssetFactory.CreateEffectMethod( event.data as String );
+			var method:EffectMethodVO = assets.CreateEffectMethod( event.data as String );
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, null, method));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
 		}
@@ -106,20 +110,20 @@ package awaybuilder.view.mediators
 		
 		private function view_addDirectionalLightHandler(event:LibraryPanelEvent):void
 		{
-			var asset:LightVO = AssetFactory.CreateDirectionalLight();
+			var asset:LightVO = assets.CreateDirectionalLight();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
 		private function view_addPointLightHandler(event:LibraryPanelEvent):void
 		{
-			var asset:LightVO = AssetFactory.CreatePointLight()
+			var asset:LightVO = assets.CreatePointLight()
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
 		
 		private function view_addLightPickerHandler(event:LibraryPanelEvent):void
 		{
-			var asset:LightPickerVO = AssetFactory.CreateLightPicker();
+			var asset:LightPickerVO = assets.CreateLightPicker();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHTPICKER,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}

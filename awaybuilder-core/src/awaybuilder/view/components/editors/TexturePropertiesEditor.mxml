@@ -5,13 +5,9 @@
     <fx:Declarations>
     </fx:Declarations>
     <fx:Script><![CDATA[
-		import away3d.materials.utils.DefaultMaterialManager;
-		
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.TextureVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
-		
-		import mx.collections.ArrayCollection;
 
 		[Bindable]
 		private var _asset:TextureVO;
@@ -24,9 +20,7 @@
 		
         private function name_changeHandler( event:Event ):void
         {
-//            var newValue:BitmapTextureVO = new BitmapTextureVO( _asset.linkedObject as BitmapTexture );
-//            newValue.name = nameInput.text;
-//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NAME_CHANGE, newValue, true));
+             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_STEPPER_CHANGE, _asset, true));
         }
 
 		protected function replaceButton_clickHandler(event:MouseEvent):void
@@ -49,7 +43,7 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="Texture Properties" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="Texture" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	

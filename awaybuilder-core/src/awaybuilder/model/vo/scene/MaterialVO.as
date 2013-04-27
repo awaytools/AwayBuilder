@@ -17,7 +17,7 @@ package awaybuilder.model.vo.scene
     
     import awaybuilder.model.vo.scene.interfaces.IDefaultable;
     import awaybuilder.model.vo.scene.interfaces.ITextured;
-    import awaybuilder.utils.AssetFactory;
+    import awaybuilder.utils.AssetUtil;
     
     import flash.display3D.textures.Texture;
     import flash.geom.ColorTransform;
@@ -62,55 +62,61 @@ package awaybuilder.model.vo.scene
 		
 		public var shadowMethod:ShadowMethodVO;
 		
-		public var effectMethods:ArrayCollection;
+		public var effectMethods:ArrayCollection = new ArrayCollection();
 		
         public function clone():MaterialVO
         {
             var vo:MaterialVO = new MaterialVO();
-			vo.name = this.name;
-			vo.alpha = this.alpha;
-			vo.alphaThreshold = this.alphaThreshold;
-			
-			vo.alphaPremultiplied = this.alphaPremultiplied;
-			vo.type = this.type;
-			vo.repeat = this.repeat;
-			vo.isDefault = this.isDefault;
-			
-			vo.bothSides = this.bothSides;
-			vo.extra = this.extra;
-			
-			vo.mipmap = this.mipmap;
-			vo.smooth = this.smooth;
-			vo.blendMode = this.blendMode;
-			
-			vo.alphaBlending = this.alphaBlending;
-			vo.colorTransform = this.colorTransform;
-			
-			vo.lightPicker = this.lightPicker;
-			vo.light = this.light;
-			vo.shadowMethod = this.shadowMethod;
-			
-			vo.normalTexture = this.normalTexture;
-			vo.normalMethodType = this.normalMethodType;
-			
-			vo.diffuseTexture = this.diffuseTexture;
-			vo.diffuseColor = this.diffuseColor;
-			vo.diffuseMethodType = this.diffuseMethodType;
-			
-			vo.ambientLevel = this.ambientLevel;
-			vo.ambientColor = this.ambientColor;
-			vo.ambientTexture = this.ambientTexture;
-			vo.ambientMethodType = this.ambientMethodType;
-			
-			vo.specularLevel = this.specularLevel;
-			vo.specularColor = this.specularColor;
-			vo.specularGloss = this.specularGloss;
-			vo.specularTexture = this.specularTexture;
-			vo.specularMethodType = this.specularMethodType;
-			
-			vo.id = this.id;
-			
+			vo.fillFromMaterial( this );
             return vo;
         }
+		
+		public function fillFromMaterial( asset:MaterialVO ):void
+		{
+			this.name = asset.name;
+			this.alpha = asset.alpha;
+			this.alphaThreshold = asset.alphaThreshold;
+			
+			this.alphaPremultiplied = asset.alphaPremultiplied;
+			this.type = asset.type;
+			this.repeat = asset.repeat;
+			this.isDefault = asset.isDefault;
+			
+			this.bothSides = asset.bothSides;
+			this.extra = asset.extra;
+			
+			this.mipmap = asset.mipmap;
+			this.smooth = asset.smooth;
+			this.blendMode = asset.blendMode;
+			
+			this.alphaBlending = asset.alphaBlending;
+			this.colorTransform = asset.colorTransform;
+			
+			this.lightPicker = asset.lightPicker;
+			this.light = asset.light;
+			this.shadowMethod = asset.shadowMethod;
+			
+			this.normalTexture = asset.normalTexture;
+			this.normalMethodType = asset.normalMethodType;
+			
+			this.diffuseTexture = asset.diffuseTexture;
+			this.diffuseColor = asset.diffuseColor;
+			this.diffuseMethodType = asset.diffuseMethodType;
+			
+			this.ambientLevel = asset.ambientLevel;
+			this.ambientColor = asset.ambientColor;
+			this.ambientTexture = asset.ambientTexture;
+			this.ambientMethodType = asset.ambientMethodType;
+			
+			this.specularLevel = asset.specularLevel;
+			this.specularColor = asset.specularColor;
+			this.specularGloss = asset.specularGloss;
+			this.specularTexture = asset.specularTexture;
+			this.specularMethodType = asset.specularMethodType;
+			
+			if( asset.effectMethods ) this.effectMethods = new ArrayCollection( asset.effectMethods.source );
+			
+			this.id = asset.id;
+		}
     }
 }

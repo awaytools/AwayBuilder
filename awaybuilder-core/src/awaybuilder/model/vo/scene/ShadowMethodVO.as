@@ -3,7 +3,7 @@ package awaybuilder.model.vo.scene
 	import away3d.materials.methods.ShadowMapMethodBase;
 	
 	import awaybuilder.model.vo.scene.interfaces.IDefaultable;
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;

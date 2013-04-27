@@ -73,19 +73,14 @@ package awaybuilder.model.vo.scene
 //		}
 		override public function clone():ObjectVO
 		{
-			var vo:LightVO = fill( new LightVO() ) as LightVO;
-			
+			var vo:LightVO = new LightVO();
+			vo.fillFromObject( this );
 			vo.type = this.type;
-			vo.name = this.name;
 			
 			vo.color = this.color;
 			vo.ambientColor = this.ambientColor;
 			vo.ambient = this.ambient;
 			vo.diffuse = this.diffuse;
-			
-			vo.x = this.x;
-			vo.y = this.y;
-			vo.z = this.z;
 			
 			vo.castsShadows = this.castsShadows;
 			
@@ -100,8 +95,6 @@ package awaybuilder.model.vo.scene
 			
 			vo.radius = this.radius;
 			vo.fallOff = this.fallOff;
-			
-			vo.id = this.id;
 			
 			return vo;
 		}

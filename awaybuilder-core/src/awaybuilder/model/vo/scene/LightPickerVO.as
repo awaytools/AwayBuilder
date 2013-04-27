@@ -3,7 +3,7 @@ package awaybuilder.model.vo.scene
 	import away3d.lights.LightBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	
-	import awaybuilder.utils.AssetFactory;
+	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.DataMerger;
 	
 	import mx.collections.ArrayCollection;

@@ -1,4 +1,4 @@
-package awaybuilder.model.vo.scene
+package awaybuilder.model.vo
 {
 	import mx.collections.ArrayCollection;
 

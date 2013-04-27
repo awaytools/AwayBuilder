@@ -1,7 +1,6 @@
 package awaybuilder
 {
 	import awaybuilder.controller.ReadDocumentDataFaultCommand;
-	import awaybuilder.controller.ResetDefaultSettingsCommand;
 	import awaybuilder.controller.StartupCommand;
 	import awaybuilder.controller.clipboard.CopyCommand;
 	import awaybuilder.controller.clipboard.PasteCommand;
@@ -26,7 +25,6 @@ package awaybuilder
 	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.history.RedoCommand;
 	import awaybuilder.controller.history.UndoCommand;
 	import awaybuilder.controller.history.UndoRedoEvent;
@@ -37,6 +35,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewShadowMethodCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.ChangeContainerCommand;
+	import awaybuilder.controller.scene.ChangeEffectMethodCommand;
 	import awaybuilder.controller.scene.ChangeLightCommand;
 	import awaybuilder.controller.scene.ChangeLightPickerCommand;
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
@@ -54,34 +53,23 @@ package awaybuilder
 	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
 	import awaybuilder.controller.scene.TranslateObjectCommand;
 	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.IDocumentModel;
-	import awaybuilder.model.ISettingsModel;
 	import awaybuilder.model.ProcessDataService;
-	import awaybuilder.model.SamplesModel;
-	import awaybuilder.model.SettingsModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.model.WindowModel;
-	import awaybuilder.view.components.ApplicationSettingsForm;
 	import awaybuilder.view.components.CoreEditor;
-	import awaybuilder.view.components.DocumentDefaultsSettingsForm;
 	import awaybuilder.view.components.DocumentSettingsForm;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.EditToolBar;
-	import awaybuilder.view.components.EditingSurfaceSettingsForm;
 	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.PropertiesPanel;
-	import awaybuilder.view.components.SamplePicker;
-	import awaybuilder.view.mediators.ApplicationSettingsFormMediator;
 	import awaybuilder.view.mediators.CoreEditorMediator;
-	import awaybuilder.view.mediators.DocumentDefaultsSettingsFormMediator;
 	import awaybuilder.view.mediators.DocumentSettingsFormMediator;
 	import awaybuilder.view.mediators.EditStatusBarMediator;
 	import awaybuilder.view.mediators.EditToolBarMediator;
-	import awaybuilder.view.mediators.EditingSurfaceSettingsFormMediator;
 	import awaybuilder.view.mediators.LibraryPanelMediator;
 	import awaybuilder.view.mediators.PropertiesPanelMediator;
-	import awaybuilder.view.mediators.SamplePickerMediator;
 	
 	import flash.display.DisplayObjectContainer;
 	
@@ -143,6 +131,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHT, ChangeLightCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHTPICKER, ChangeLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_METHOD, ChangeShadowMethodCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_EFFECT_METHOD, ChangeEffectMethodCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
@@ -157,31 +146,21 @@ package awaybuilder
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_COPY, CopyCommand);
 			this.commandMap.mapEvent(PasteEvent.CLIPBOARD_PASTE, PasteCommand);
 			
-			this.commandMap.mapEvent(SettingsEvent.RESET_DEFAULT_SETTINGS, ResetDefaultSettingsCommand);
-			
             commandMap.mapEvent( UndoRedoEvent.REDO, RedoCommand );
             commandMap.mapEvent( UndoRedoEvent.UNDO, UndoCommand );
 
-			this.injector.mapSingletonOf(IDocumentModel, DocumentModel);
-			this.injector.mapSingletonOf(ISettingsModel, SettingsModel);
+			this.injector.mapSingleton(DocumentModel);
+			this.injector.mapSingleton(AssetsModel);
 			this.injector.mapSingleton(UndoRedoModel);
 			this.injector.mapSingleton(ProcessDataService);
 			this.injector.mapSingleton(WindowModel);
-			this.injector.mapSingleton(SamplesModel);
-			this.injector.mapValue(SettingsModel, this.injector.getInstance(ISettingsModel));
 			
 			this.mediatorMap.mapView(CoreEditor, CoreEditorMediator);
             this.mediatorMap.mapView(PropertiesPanel, PropertiesPanelMediator);
 			this.mediatorMap.mapView(LibraryPanel, LibraryPanelMediator);
 			this.mediatorMap.mapView(EditToolBar, EditToolBarMediator);
 			this.mediatorMap.mapView(EditStatusBar, EditStatusBarMediator);
-			this.mediatorMap.mapView(ApplicationSettingsForm, ApplicationSettingsFormMediator);
 			this.mediatorMap.mapView(DocumentSettingsForm, DocumentSettingsFormMediator);
-			this.mediatorMap.mapView(EditingSurfaceSettingsForm, EditingSurfaceSettingsFormMediator);
-			this.mediatorMap.mapView(DocumentDefaultsSettingsForm, DocumentDefaultsSettingsFormMediator);
-			this.mediatorMap.mapView(SamplePicker, SamplePickerMediator);
-//			this.mediatorMap.mapView(SampleItemRenderer, SampleItemRendererMediator);
-//			this.mediatorMap.mapView(ShapePropertyEditor, RectanglePropertyEditorMediator);
 		}
 	}
 }

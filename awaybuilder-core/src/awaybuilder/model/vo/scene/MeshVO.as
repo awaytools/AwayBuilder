@@ -5,7 +5,7 @@ package awaybuilder.model.vo.scene
     import away3d.entities.Mesh;
     import away3d.materials.MaterialBase;
     
-    import awaybuilder.utils.AssetFactory;
+    import awaybuilder.utils.AssetUtil;
     
     import mx.collections.ArrayCollection;
 
@@ -19,50 +19,19 @@ package awaybuilder.model.vo.scene
 		
 		public var extras:ArrayCollection;
 		
-//		override public function apply():void
-//		{
-//			super.apply();
-//			var mesh:Mesh = Mesh( linkedObject );
-//			mesh.x = x;
-//			mesh.y = y;
-//			mesh.z = z;
-//			
-//			mesh.scaleX = scaleX;
-//			mesh.scaleY = scaleY;
-//			mesh.scaleZ = scaleZ;
-//			
-//			mesh.rotationX = rotationX;
-//			mesh.rotationY = rotationY;
-//			mesh.rotationZ = rotationZ;
-//			
-//			mesh.castsShadows = castsShadows;
-//			
-////			for (var i:int = 0; i < subMeshes.length; i++) 
-////			{
-////				var subMesh:SubMeshVO = subMeshes.getItemAt(i) as SubMeshVO;
-////				mesh.subMeshes[i].material = subMesh.material.linkedObject as MaterialBase;
-////			}
-//			
-//		}
-		
 		override public function clone():ObjectVO
         {
-			var m:MeshVO = fill( new MeshVO() ) as MeshVO;
-			m.x = this.x;
-			m.y = this.y;
-			m.z = this.z;
-			m.scaleX = this.scaleX;
-			m.scaleY = this.scaleY;
-			m.scaleZ = this.scaleZ;
-			m.rotationX = this.rotationX;
-			m.rotationY = this.rotationY;
-			m.rotationZ = this.rotationZ;
-			m.subMeshes = new ArrayCollection(this.subMeshes.source);
-			m.name = this.name;
-			m.castsShadows = this.castsShadows;
-			m.id = this.id;
+			var m:MeshVO = new MeshVO();
+			m.fillFromMesh( this );
             return m;
         }
+		
+		public function fillFromMesh( asset:MeshVO ):void
+		{
+			this.fillFromObject( asset );
+			this.subMeshes = new ArrayCollection(asset.subMeshes.source);
+			this.castsShadows = asset.castsShadows;
+		}
 		
 		
     }

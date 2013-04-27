@@ -5,38 +5,21 @@
 					xmlns:controls="awaybuilder.view.components.controls.*"
 					xmlns:mx="library://ns.adobe.com/flex/mx"
 					xmlns:editors="awaybuilder.view.components.editors.*" 
-					currentState="ColorMatrix">
+					currentState="{_asset.type}">
 	<editors:states>
-		<s:State name="AlphaMask"/>
-		<s:State name="ColorMatrix"/>
-		<s:State name="ColorTransform"/>
-		<s:State name="EnvMap"/>
-		<s:State name="Fog"/>
-		<s:State name="FresnelEnvMap"/>
-		<s:State name="FresnelPlanarReflection"/>
-		<s:State name="LightMap"/>
-		<s:State name="Outline"/>
-		<s:State name="PlanarReflection"/>
-		<s:State name="ProjectiveTexture"/>
-		<s:State name="RefractionEnvMap"/>
-		<s:State name="RimLight"/>
+		<s:State name="AlphaMaskMethod"/>
+		<s:State name="ColorMatrixMethod"/>
+		<s:State name="ColorTransformMethod"/>
+		<s:State name="EnvMapMethod"/>
+		<s:State name="FogMethod"/>
+		<s:State name="FresnelEnvMapMethod"/>
+		<s:State name="LightMapMethod"/>
+		<s:State name="OutlineMethod"/>
+		<s:State name="ProjectiveTextureMethod"/>
+		<s:State name="RefractionEnvMapMethod"/>
+		<s:State name="RimLightMethod"/>
 	</editors:states>
 	<fx:Declarations>
-		<s:ArrayList id="typeList">
-			<!--<fx:Object label="Alpha Mask" value="AlphaMask"/>-->
-			<fx:Object label="Color Matrix" value="ColorMatrix"/>
-			<fx:Object label="Color Transform" value="ColorTransform"/>
-			<!--<fx:Object label="Environment Map" value="EnvMap"/>-->
-			<fx:Object label="Fog" value="Fog"/>
-			<!--<fx:Object label="Fresnel Environment Map" value="FresnelEnvMap"/>
-			<fx:Object label="Fresnel Planar Reflection" value="FresnelPlanarReflection"/>
-			<fx:Object label="Light Map" value="LightMap"/>
-			<fx:Object label="Outline" value="Outline"/>
-			<fx:Object label="Planar Reflection" value="PlanarReflection"/>
-			<fx:Object label="Projective Texture" value="ProjectiveTexture"/>
-			<fx:Object label="Refraction Environment Map" value="RefractionEnvMap"/>
-			<fx:Object label="Rim Light" value="RimLight"/>-->
-		</s:ArrayList>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
 		import away3d.lights.shadowmaps.CascadeShadowMapper;
@@ -50,6 +33,7 @@
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.model.vo.scene.ShadowMethodVO;
+		import awaybuilder.model.vo.scene.TextureVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.collections.ArrayCollection;
@@ -62,11 +46,6 @@
 		
 		[Bindable]
 		private var _selectedLight:LightVO;
-		
-		protected function methodList_changeHandler(event:IndexChangeEvent):void
-		{
-			currentState = methodList.selectedItem.value;
-		}
 		
 		override protected function validate(asset:AssetVO):void
 		{
@@ -81,9 +60,13 @@
 		
 		private function name_changeHandler(event:Event):void 
 		{
-			_asset.name = nameInput.text;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, _asset, true));
 		}
+		private function colorTransformMethodStepper_changeHandler(event:Event):void 
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, _asset, true));
+		}
+		
 		
 		private function myFormatFunc(val:Number):String 
 		{ 
@@ -95,7 +78,20 @@
 			var stringVal:String = val.replace(",","."); 
 			return Number(stringVal);     
 		} 
+		private function dropDownIconFunction(item:TextureVO):Object 
+		{
+			return item.bitmapData;
+		}
 		
+		private function dropDownLabelFunction(item:TextureVO):Object 
+		{
+			return item.name.split("/").pop();
+		}
+		
+		protected function projectiveTextureMethod_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
+		}
 		
 	]]></fx:Script>
 	
@@ -109,106 +105,269 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="EffectMethod" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="{_asset.type}" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
-	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
-		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-			
-			<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
-			</s:FormItem>
-		</s:Form>
-		
-	</controls:CollapsiblePanel>
-	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="3" paddingBottom="3" width="100%">
-		<s:HGroup width="100%" verticalAlign="middle">
-			<s:Label text="type"/>
-			<controls:HorizontalFormSeparator width="100%"/>
+	
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
+		</s:FormItem>
+	</s:Form>
+	<s:Spacer height="6"/>
+	
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="AlphaMaskMethod" >
+		<s:FormItem label="Use Secondary UV" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:CheckBox id="useSecondaryUVBox" change="" selected="@{_asset.useSecondaryUV}" />
+		</s:FormItem>
+	</s:Form>
+	<s:VGroup width="100%" paddingLeft="10" includeIn="LightMapMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Blend Mode:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
-		<s:DropDownList id="methodList" requireSelection="true" width="100%" dataProvider="{typeList}" change="methodList_changeHandler(event)"/>
-		<controls:HorizontalFormSeparator/>
+		<s:DropDownList id="blendModeDropDownList" requireSelection="true" selectionColor="0x111111"
+						change="" width="100%"
+						selectedItem="@{_asset.mode}"
+						>
+			<s:dataProvider>
+				<s:ArrayList>
+					<fx:String>Add</fx:String>
+					<fx:String>Multiply</fx:String>
+				</s:ArrayList>
+			</s:dataProvider>
+		</s:DropDownList>
 	</s:VGroup>
-	<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="ColorMatrix">
+	<s:VGroup width="100%" paddingLeft="10" includeIn="LightMapMethod,AlphaMaskMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Texture:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{textures}" requireSelection="true"
+										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   newItemLabel="New Texture"
+										   change=""
+										   addNewItem=""
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:VGroup width="100%" paddingLeft="10" includeIn="ProjectiveTextureMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Mode:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:DropDownList id="modeDropDownList" requireSelection="true" selectionColor="0x111111"
+						change="projectiveTextureMethod_changeHandler(event)" width="100%"
+						selectedItem="@{_asset.mode}"
+						>
+			<s:dataProvider>
+				<s:ArrayList>
+					<fx:String>Add</fx:String>
+					<fx:String>Multiply</fx:String>
+					<fx:String>Mix</fx:String>
+				</s:ArrayList>
+			</s:dataProvider>
+		</s:DropDownList>
+		<s:HGroup width="100%">
+			<s:Label text="Texture Projector:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:DropDownList id="textureProjectorDropDownList" requireSelection="true" selectionColor="0x111111"
+						change="" width="100%"
+						>
+		</s:DropDownList>
+	</s:VGroup>
+	
+	<s:VGroup width="100%" paddingLeft="10" includeIn="ColorMatrixMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Color Transform:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rRStepper" value="@{_asset.r}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gRStepper" value="@{_asset.g}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bRStepper" value="@{_asset.b}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aRStepper" value="@{_asset.a}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rGStepper" value="@{_asset.rG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gGStepper" value="@{_asset.gG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bGStepper" value="@{_asset.bG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aGStepper" value="@{_asset.aG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rBStepper" value="@{_asset.rB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gBStepper" value="@{_asset.gB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bBStepper" value="@{_asset.bB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aBStepper" value="@{_asset.aB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rAStepper" value="@{_asset.rA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gAStepper" value="@{_asset.gA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bAStepper" value="@{_asset.bA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aAStepper" value="@{_asset.aA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rO1Stepper" value="@{_asset.rO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gO1Stepper" value="@{_asset.gO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bO1Stepper" value="@{_asset.bO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aO1Stepper" value="@{_asset.aO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:VGroup width="100%" paddingLeft="10" includeIn="ColorTransformMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Color Transform:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rMStepper" value="@{_asset.r}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gMStepper" value="@{_asset.g}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bMStepper" value="@{_asset.b}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aMStepper" value="@{_asset.a}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<controls:DragableNumericStepper id="rOStepper" value="@{_asset.rO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gOStepper" value="@{_asset.gO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bOStepper" value="@{_asset.bO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aOStepper" value="@{_asset.aO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
+											 change="colorTransformMethodStepper_changeHandler(event)" />
+		</s:HGroup>
+	</s:VGroup>
+	 
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="RimLightMethod" >
+		<s:FormItem label="Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<mx:ColorPicker id="colorPicker" selectedColor="@{_asset.color}" change=""/>
+		</s:FormItem>
+		<s:FormItem label="Strength " skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="strengthStepper" value="@{_asset.strength}"
+											 stepSize="0.1" snapInterval="0.001" minimum="0" maximum="1"
+											 change="" />
+		</s:FormItem>
+		<s:FormItem label="Power" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="powerStepper" value="@{_asset.power}"
+											 stepSize="1" snapInterval="0.01" minimum="0" maximum="10"
+											 change="" />
+		</s:FormItem>
+	</s:Form>
+	
+	<s:VGroup width="100%" paddingLeft="10" includeIn="RefractionEnvMapMethod,FresnelEnvMapMethod,EnvMapMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Environment Map" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="environmentMapDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{textures}" requireSelection="true"
+										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   newItemLabel="New Texture"
+										   change=""
+										   addNewItem=""
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+		</s:HGroup>
+	</s:VGroup>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="RefractionEnvMapMethod" >
+		<s:FormItem label="Refraction Index" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="refractionStepper" value="{_asset.refraction}" stepSize="0.1" snapInterval="0.001" minimum="0" maximum="1" width="40"
+											 change="" />
+		</s:FormItem>
+		<s:FormItem label="Dispersion " skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="dispersionRStepper" value="@{_asset.r}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%"
+											 change="" />
+			<controls:DragableNumericStepper id="dispersionGStepper" value="@{_asset.g}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%"
+											 change="" />
+			<controls:DragableNumericStepper id="dispersionBStepper" value="@{_asset.b}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%"
+											 change="" />
+		</s:FormItem>
+		<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="alphaStepper" value="{_asset.alpha}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="1" width="40"
+											 change="" />
+		</s:FormItem>
+	</s:Form>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="OutlineMethod" >
+		<s:FormItem label="Outline Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<mx:ColorPicker selectedColor="{_asset.color}" change=""/>
+		</s:FormItem>
 		
-		<s:FormItem label="Raw 1" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:layout>
-				<s:VerticalLayout/>
-			</s:layout>
-			<s:NumericStepper id="r1c1Stepper" minimum="0" maximum="1" value="0.2225" stepSize="0.0001" valueFormatFunction="myFormatFunc"/>
-			<s:NumericStepper id="r1c2Stepper" minimum="0" maximum="1" value="0.7169" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r1c3Stepper" minimum="0" maximum="1" value="0.0606" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r1c4Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r1c5Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		<s:FormItem label="Outline Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper value="{_asset.size}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="50"
+											 change="" />
 		</s:FormItem>
-		<s:FormItem label="Raw 2" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:layout>
-				<s:VerticalLayout/>
-			</s:layout>
-			<s:NumericStepper id="r2c1Stepper" minimum="0" maximum="1" value="0.2225" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r2c2Stepper" minimum="0" maximum="1" value="0.7169" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r2c3Stepper" minimum="0" maximum="1" value="0.0606" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r2c4Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r2c5Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		<s:FormItem label="Show Inner Lines" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:CheckBox selected="@{_asset.showInnerLines}" change="" />
 		</s:FormItem>
-		<s:FormItem label="Raw 3" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:layout>
-				<s:VerticalLayout/>
-			</s:layout>
-			<s:NumericStepper id="r3c1Stepper" minimum="0" maximum="1" value="0.2225" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r3c2Stepper" minimum="0" maximum="1" value="0.7169" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r3c3Stepper" minimum="0" maximum="1" value="0.0606" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r3c4Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r3c5Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Raw 4" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:layout>
-				<s:VerticalLayout/>
-			</s:layout>
-			<s:NumericStepper id="r4c1Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r4c2Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r4c3Stepper" minimum="0" maximum="1" value="0" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r4c4Stepper" minimum="0" maximum="1" value="1" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
-			<s:NumericStepper id="r4c5Stepper" minimum="0" maximum="1" value="1" stepSize="0.0001" valueFormatFunction="myFormatFunc" />
+		<s:FormItem label="Dedicated Mesh" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:CheckBox selected="@{_asset.dedicatedMesh}" change="" />
 		</s:FormItem>
 	</s:Form>
-	<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="ColorTransform">
-		<s:FormItem label="Red Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="redMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Green Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="greenMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Blue Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="blueMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Alpha Multiplyer" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="alphaMultiplyerStepper" minimum="0" maximum="1" value="1" stepSize="0.01" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Red Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="redOffsetStepper" minimum="-255" maximum="255" value="0" stepSize="1" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Green Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="greenOffsetStepper" minimum="-255" maximum="255" value="0" stepSize="1" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Blue Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="blueOffsetStepper" minimum="-255" maximum="255" value="0" stepSize="1" valueFormatFunction="myFormatFunc" />
-		</s:FormItem>
-		<s:FormItem label="Alpha Offset" skinClass="awaybuilder.view.skins.PropertyFormItemSkin"  width="100%">
-			<s:NumericStepper id="alphaOffsetStepper" minimum="-1" maximum="1" value="0" stepSize="0.01" valueFormatFunction="myFormatFunc" />
+	<s:VGroup width="100%" paddingLeft="10" includeIn="EnvMapMethod">
+		<s:HGroup width="100%">
+			<s:Label text="Mask:" fontWeight="bold"/>
+			<controls:HorizontalFormSeparator/>
+		</s:HGroup>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<controls:ExtendedDropDownList id="maskDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{textures}" requireSelection="true"
+										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   newItemLabel="New Texture"
+										   change=""
+										   addNewItem=""
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+		</s:HGroup>
+	</s:VGroup>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="FresnelEnvMapMethod,EnvMapMethod" >
+		<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper value="@{_asset.alpha}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="1" width="40"
+											 change="" />
 		</s:FormItem>
 	</s:Form>
-	<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="Fog">
+	 
+	<!--<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="FogMethod">
 		<s:FormItem label="Min Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:NumericStepper id="minDistanceStepper" minimum="0" maximum="1000" value="1" valueFormatFunction="myFormatFunc" />
 		</s:FormItem>
 		<s:FormItem label="Max Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:NumericStepper id="maxDistanceStepper" minimum="0" maximum="1000" value="1" valueFormatFunction="myFormatFunc" />
 		</s:FormItem>
-		<s:FormItem label="Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<mx:ColorPicker id="colorPicker"/>
-		</s:FormItem>		
-	</s:Form>
-		
-	
+	</s:Form>-->
+
 </editors:EditorBase>
