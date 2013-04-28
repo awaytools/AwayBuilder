@@ -624,7 +624,7 @@ package awaybuilder.view.mediators
 					else if( event.items[0] is LightVO )
 					{
 						var light:LightVO = event.items[0] as LightVO;
-						selectLightsScene( AssetFactory.GetObject( light ) as LightBase );
+						selectLightsScene( assets.GetObject( light ) as LightBase );
 					}
 					else {
                         Scene3DManager.unselectAll();
@@ -695,24 +695,13 @@ package awaybuilder.view.mediators
 				
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
-<<<<<<< HEAD
 				mesh = item as Mesh;
-				if( mesh ) {
-					if ((isLight = (mesh.parent as LightGizmo3D)))
-						asset = AssetFactory.GetAsset(isLight.light);
-					else
-						asset = AssetFactory.GetAsset(mesh);
-					if ( asset )
-=======
-				var mesh:Mesh = item as Mesh;
 				if( mesh ) 
 				{
-					var asset:AssetVO = assets.GetAsset(item);
-					
-					if( asset ) 
-					{
->>>>>>> ce0770e... effect methods added
-						selected.push(asset);
+					if ((isLight = (mesh.parent as LightGizmo3D)))
+						asset = assets.GetAsset(isLight.light);
+					else
+						asset = assets.GetAsset(mesh);
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));

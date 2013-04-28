@@ -1,6 +1,5 @@
 package awaybuilder.model
 {
-	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	import away3d.library.assets.BitmapDataAsset;
@@ -63,7 +62,7 @@ package awaybuilder.model
 		[Inject]
 		public var assetModel:AssetsModel
 		
-		private var _documentVO:DocumentVO;
+		private var _document:DocumentVO;
 		
 		private var _objects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
 		
@@ -71,7 +70,7 @@ package awaybuilder.model
 		
 		public function load( url:String, nextEvent:HistoryEvent ):void
 		{
-			_documentVO = new DocumentVO();
+			_document = new DocumentVO();
 			_nextEvent = nextEvent;
 			
 			AwayBuilderLoadErrorLogger.clearLog();
@@ -109,7 +108,7 @@ package awaybuilder.model
 			{
 				if( !o.parent )
 				{
-					_documentVO.scene.addItem( assetModel.GetAsset( o ) );
+					_document.scene.addItem( assetModel.GetAsset( o ) );
 				}
 			}
 			
@@ -117,7 +116,7 @@ package awaybuilder.model
 				dispatch( new ErrorLogEvent(ErrorLogEvent.LOG_ENTRY_MADE));
 			}
 			
-			_nextEvent.newValue = _documentVO;
+			_nextEvent.newValue = _document;
 			dispatch( _nextEvent );
 			
 			CursorManager.removeBusyCursor();
@@ -139,34 +138,34 @@ package awaybuilder.model
 				case AssetType.CONTAINER:
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
 					if (c.numChildren == 0) {
-						Scene3DManager.containers.push(c);
-						c.addChild(new ContainerGizmo3D(c));
+//						Scene3DManager.containers.push(c);
+//						c.addChild(new ContainerGizmo3D(c));
 					}
 					_objects.push( c );
 					break;
 				case AssetType.LIGHT:
-					_document.lights.addItem( AssetFactory.GetAsset( event.asset ) );
+					_document.lights.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.LIGHT_PICKER:
-					_document.lights.addItem( AssetFactory.GetAsset( event.asset ) );
+					_document.lights.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.MATERIAL:
-					_documentVO.materials.addItem( assetModel.GetAsset( event.asset ) );
+					_document.materials.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.TEXTURE:
-					_documentVO.textures.addItem( assetModel.GetAsset( event.asset ) );
+					_document.textures.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
-					_documentVO.geometry.addItem( assetModel.GetAsset( event.asset ) );
+					_document.geometry.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_SET:
 				case AssetType.ANIMATION_STATE:
 				case AssetType.ANIMATION_NODE:
-					_documentVO.animations.addItem( assetModel.GetAsset( event.asset ) );
+					_document.animations.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 				case AssetType.SKELETON:
 				case AssetType.SKELETON_POSE:
-					_documentVO.skeletons.addItem( assetModel.GetAsset( event.asset ) );
+					_document.skeletons.addItem( assetModel.GetAsset( event.asset ) );
 					break;
 			}
 		}

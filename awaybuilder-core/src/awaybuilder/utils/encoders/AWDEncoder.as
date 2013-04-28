@@ -24,7 +24,7 @@ package awaybuilder.utils.encoders
 	import away3d.textures.Texture2DBase;
 	import away3d.textures.TextureProxyBase;
 	
-	import awaybuilder.model.IDocumentModel;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
@@ -32,7 +32,6 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
-	import awaybuilder.utils.AssetFactory;
 	
 	import com.adobe.images.PNGEncoder;
 	
@@ -109,19 +108,18 @@ package awaybuilder.utils.encoders
 		}
 		
 		
-		public function encode(document : IDocumentModel, output : ByteArray) : Boolean
+		public function encode(document : DocumentModel, output : ByteArray) : Boolean
 		{
 			
 			_body = new ByteArray();
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
 			
-			var allAssetsDic:Dictionary=AssetFactory.assets;			
-			for (var object:Object in allAssetsDic)
+			for each (var asset:AssetVO in document)
 			{
-				if( object is ObjectContainer3D ) 
+				if( asset is ContainerVO ) 
 				{
-					_encodeChild(AssetFactory.GetAsset(object) as ContainerVO);
+					_encodeChild(asset as ContainerVO);
 				}
 			}
 			
@@ -267,16 +265,21 @@ package awaybuilder.utils.encoders
 		}
 		private function _encodeChild(vo : ContainerVO) : void
 		{
-			if (vo is MeshVO) {
-				_encodeMesh(AssetFactory.GetObject(vo) as Mesh);	
+			if (vo is MeshVO) 
+			{
+				// You have to encode MeshVO	
+				//_encodeMesh(AssetFactory.GetObject(vo) as Mesh);	
 			}
 				
-			else if (vo is ContainerVO) {
-				_encodeContainer3D(AssetFactory.GetObject(vo) as ObjectContainer3D);
+			else if (vo is ContainerVO) 
+			{
+				// You have to encode ContainerVO
+				//_encodeContainer3D(AssetFactory.GetObject(vo) as ObjectContainer3D);
 			}
 			var child : ContainerVO;
-			for each (child in vo.children) {
-					_encodeChild(child as ContainerVO);
+			for each (child in vo.children) 
+			{
+				_encodeChild(child as ContainerVO);
 			}
 		}
 		
