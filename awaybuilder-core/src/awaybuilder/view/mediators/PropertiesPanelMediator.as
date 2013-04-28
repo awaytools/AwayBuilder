@@ -379,9 +379,11 @@ package awaybuilder.view.mediators
         {
             var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
 
+			
             for each( var subMesh:SubMeshVO in  mesh.subMeshes )
             {
-                subMesh.linkedMaterials = document.materials;
+				
+                subMesh.linkedMaterials = view.materials;
             }
 
             view.SetData( mesh );
@@ -415,7 +417,7 @@ package awaybuilder.view.mediators
 			var mesh:MeshVO = subMesh.parentMesh as MeshVO;
 			for each( var o:SubMeshVO in mesh.subMeshes )
 			{
-				o.linkedMaterials = document.materials;
+				subMesh.linkedMaterials = view.materials;
 			}
 			
 			view.SetData(mesh);
@@ -455,7 +457,7 @@ package awaybuilder.view.mediators
                         var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
                         for each( var subMesh:SubMeshVO in  mesh.subMeshes )
                         {
-                            subMesh.linkedMaterials = document.materials; // TODO
+                            subMesh.linkedMaterials = view.materials; // TODO
                         }
 						view.SetData(mesh);
 						view.showEditor( "mesh", event.newValue, event.oldValue );
@@ -558,6 +560,14 @@ package awaybuilder.view.mediators
 			
 			var textures:ArrayCollection = new ArrayCollection();
 			textures.addItem( nullTextureItem );
+			
+			var cubeTextures:ArrayCollection = new ArrayCollection();
+			cubeTextures.addItem( nullTextureItem );
+			
+			
+			textures.addItemAt( assets.GetDefaultTexture(), 1 );
+			cubeTextures.addItemAt( assets.GetDefaultCubeTexture(), 1 );
+			
 			for each( asset in document.textures )
 			{
 				if( asset is TextureVO ) 
@@ -566,11 +576,16 @@ package awaybuilder.view.mediators
 				}
 				if( asset in CubeTextureVO )
 				{
-					textures.addItem( asset );
+					cubeTextures.addItem( asset );
 				}
 					
 			}
 			view.textures = textures;
+			view.cubeTextures = cubeTextures;
+			
+			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
+			materials.addItemAt( assets.GetDefaultMaterial(), 0 );
+			view.materials = materials;
 		}
     }
 }

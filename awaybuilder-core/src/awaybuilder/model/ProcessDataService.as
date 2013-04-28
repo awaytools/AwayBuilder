@@ -1,51 +1,25 @@
 package awaybuilder.model
 {
-	import away3d.animators.AnimationSetBase;
-	import away3d.animators.data.Skeleton;
-	import away3d.animators.data.SkeletonPose;
-	import away3d.animators.nodes.AnimationNodeBase;
-	import away3d.animators.states.AnimationStateBase;
 	import away3d.containers.ObjectContainer3D;
-	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.events.AssetEvent;
 	import away3d.events.LoaderEvent;
-	import away3d.events.ParserEvent;
 	import away3d.library.AssetLibrary;
 	import away3d.library.assets.AssetType;
 	import away3d.library.assets.BitmapDataAsset;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.MaterialBase;
-	import away3d.materials.TextureMaterial;
-	import away3d.materials.utils.DefaultMaterialManager;
-	import away3d.textures.BitmapTexture;
 	
-	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.ErrorLogEvent;
-	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.scene.AnimationNodeVO;
-	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.ContainerVO;
-	import awaybuilder.model.vo.scene.GeometryVO;
-	import awaybuilder.model.vo.scene.MaterialVO;
-	import awaybuilder.model.vo.scene.MeshVO;
-	import awaybuilder.model.vo.scene.SkeletonVO;
-	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
-	import awaybuilder.utils.logging.AwayBuilderLogger;
-	import awaybuilder.utils.scene.Scene3DManager;
-	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	
-	import flash.events.Event;
 	import flash.net.URLRequest;
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
-	import mx.managers.SystemManager;
 	
 	import org.robotlegs.mvcs.Actor;
 	

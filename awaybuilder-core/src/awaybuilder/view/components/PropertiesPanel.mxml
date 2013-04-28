@@ -74,6 +74,9 @@
 		public var textures:ArrayCollection;
 		
 		[Bindable]
+		public var materials:ArrayCollection;
+		
+		[Bindable]
 		public var cubeTextures:ArrayCollection;
 		
 		[Bindable]

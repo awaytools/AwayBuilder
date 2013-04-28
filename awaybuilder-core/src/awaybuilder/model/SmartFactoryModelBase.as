@@ -26,7 +26,6 @@ package awaybuilder.model
 	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.AlphaMaskMethod;
-	import away3d.materials.methods.BasicAmbientMethod;
 	import away3d.materials.methods.CascadeShadowMapMethod;
 	import away3d.materials.methods.ColorMatrixMethod;
 	import away3d.materials.methods.ColorTransformMethod;
