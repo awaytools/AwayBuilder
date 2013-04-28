@@ -117,7 +117,7 @@
 	
 	<controls:PanelImage id="panelImage" includeInLayout="false" width="0"/>
 	
-	<s:Scroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
+	<controls:CrutchScroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
 		<s:Group width="225">
 			
 			<s:VGroup includeIn="empty,initAll" paddingLeft="12" paddingRight="12" paddingTop="12" paddingBottom="12">
@@ -140,5 +140,5 @@
 			<editors:EffectMethodPropertyEditor id="effectMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
 			
 		</s:Group>
-	</s:Scroller>
+	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

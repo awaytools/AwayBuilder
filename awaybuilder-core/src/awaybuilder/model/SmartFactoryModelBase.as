@@ -66,7 +66,7 @@ package awaybuilder.model
 	
 	import mx.collections.ArrayCollection;
 
-	public class SmartModelBase
+	public class SmartFactoryModelBase
 	{
 		
 		public function GetAsset( obj:Object ):AssetVO
@@ -109,15 +109,12 @@ package awaybuilder.model
 					return asset;
 				case(item is Skeleton):
 					return fillAsset( new SkeletonVO(), item as Skeleton );
-					
 				case(item is ShadowMapMethodBase):
 					return  fillShadowMethod( new ShadowMethodVO(), item as ShadowMapMethodBase );
 				case(item is SubMesh):
 					return fillSubMesh( new SubMeshVO(), item as SubMesh );
 				case(item is EffectMethodBase):
-					asset = fillEffectMethod( new EffectMethodVO(), item as EffectMethodBase );
-					asset.name =  "EffectMethod " + AssetUtil.GetNextId("EffectMethod");
-					return asset;
+					return fillEffectMethod( new EffectMethodVO(), item as EffectMethodBase );
 				case(item is LightPickerBase):
 					return fillLightPicker( new LightPickerVO(),  item as StaticLightPicker );
 				case(item is BitmapCubeTexture):
@@ -199,7 +196,7 @@ package awaybuilder.model
 				case(item is FogMethod):
 					with (item as FogMethod) 
 					{ 
-						asset.color = color;
+						asset.color = fogColor;
 						asset.minDistance = minDistance;
 						asset.maxDistance = maxDistance;
 					}

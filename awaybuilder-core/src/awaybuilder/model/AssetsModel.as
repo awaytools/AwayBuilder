@@ -40,7 +40,7 @@ package awaybuilder.model
 	
 	import mx.utils.UIDUtil;
 
-	public class AssetsModel extends SmartModelBase
+	public class AssetsModel extends SmartFactoryModelBase
 	{
 		public function GetObjectsByType( type:Class, property:String=null, value:Object=null ):Vector.<Object> 
 		{
@@ -82,11 +82,7 @@ package awaybuilder.model
 			
 			var asset:AssetVO = createAsset( obj );
 			asset.id = UIDUtil.createUID();
-			if( !asset )
-			{
-				trace( obj +" has no VO" );
-				asset = new AssetVO();
-			}
+			
 			_assets[obj] = asset;
 			_objectsByAsset[asset] = obj;
 			return asset;
@@ -125,37 +121,48 @@ package awaybuilder.model
 			{
 				case "LightMapMethod":
 					method = new LightMapMethod(GetObject(_defaultTexture) as Texture2DBase);
+					method.name =  "LightMap " + AssetUtil.GetNextId("LightMapMethod");
 					break;
 				case "ProjectiveTextureMethod":
-					//					method = new ProjectiveTextureMethod();
+//					method = new ProjectiveTextureMethod();
+//					method.name =  "LightMapMethod " + AssetUtil.GetNextId("LightMapMethod");
 					break;
 				case "RimLightMethod":
 					method = new RimLightMethod();
+					method.name =  "RimLight " + AssetUtil.GetNextId("RimLightMethod");
 					break;
 				case "ColorTransformMethod":
 					method = new ColorTransformMethod();
 					ColorTransformMethod(method).colorTransform = new ColorTransform();
+					method.name =  "ColorTransform " + AssetUtil.GetNextId("ColorTransformMethod");
 					break;
 				case "AlphaMaskMethod":
 					method = new AlphaMaskMethod(GetObject(_defaultTexture) as Texture2DBase, false);
+					method.name =  "AlphaMask " + AssetUtil.GetNextId("AlphaMaskMethod");
 					break;
 				case "ColorMatrixMethod":
 					method = new ColorMatrixMethod([ 0.2225, 0.7169, 0.0606, 0, 0, 0.2225, 0.7169, 0.0606, 0, 0, 0.2225, 0.7169, 0.0606, 0, 0, 0, 0, 0, 1, 1]);
+					method.name =  "ColorMatrix " + AssetUtil.GetNextId("ColorMatrixMethod");
 					break;
 				case "RefractionEnvMapMethod":
 					method = new RefractionEnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
+					method.name =  "RefractionEnvMap " + AssetUtil.GetNextId("RefractionEnvMapMethod");
 					break;
 				case "OutlineMethod":
 					method = new OutlineMethod();
+					method.name =  "Outline " + AssetUtil.GetNextId("OutlineMethod");
 					break;
 				case "FresnelEnvMapMethod":
 					method = new FresnelEnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
+					method.name =  "FresnelEnvMap " + AssetUtil.GetNextId("FresnelEnvMapMethod");
 					break;
 				case "FogMethod":
 					method = new FogMethod(0,1000);
+					method.name =  "Fog " + AssetUtil.GetNextId("FogMethod");
 					break;
 				case "EnvMapMethod":
 					method = new EnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
+					method.name =  "EnvMap " + AssetUtil.GetNextId("EnvMapMethod");
 					break;
 			}
 			return GetAsset( method ) as EffectMethodVO;
@@ -163,7 +170,7 @@ package awaybuilder.model
 		public function CreateDirectionalLight():LightVO
 		{
 			var light:DirectionalLight = new DirectionalLight();
-			light.name = "Directional Light " + awaybuilder.utils.AssetUtil.GetNextId("directionalLight");
+			light.name = "DirectionalLight " + awaybuilder.utils.AssetUtil.GetNextId("directionalLight");
 			light.castsShadows = false;
 			var asset:LightVO = GetAsset( light ) as LightVO;
 			return asset;
@@ -171,7 +178,7 @@ package awaybuilder.model
 		public function CreatePointLight():LightVO
 		{
 			var light:PointLight = new PointLight();
-			light.name = "Point Light " + awaybuilder.utils.AssetUtil.GetNextId("pointLight");
+			light.name = "PointLight " + awaybuilder.utils.AssetUtil.GetNextId("pointLight");
 			light.castsShadows = false;
 			var asset:LightVO = GetAsset( light ) as LightVO;
 			return asset;
@@ -187,15 +194,15 @@ package awaybuilder.model
 		public function CreateFilteredShadowMapMethod( light:LightVO ):ShadowMethodVO
 		{
 			var method:FilteredShadowMapMethod = new FilteredShadowMapMethod( GetObject(light) as DirectionalLight );
+			method.name = "FilteredShadow " + awaybuilder.utils.AssetUtil.GetNextId("FilteredShadowMapMethod");
 			var asset:ShadowMethodVO = GetAsset( method ) as ShadowMethodVO;
-			asset.name = "FilteredShadow " + awaybuilder.utils.AssetUtil.GetNextId("FilteredShadowMapMethod");
 			return asset;
 		}
 		public function CreateDitheredShadowMapMethod( light:LightVO ):ShadowMethodVO
 		{
 			var method:DitheredShadowMapMethod = new DitheredShadowMapMethod( GetObject(light) as DirectionalLight );
+			method.name = "DitheredShadow " + awaybuilder.utils.AssetUtil.GetNextId("DitheredShadowMapMethod");
 			var asset:ShadowMethodVO = GetAsset( method ) as ShadowMethodVO;
-			asset.name = "DitheredShadow " + awaybuilder.utils.AssetUtil.GetNextId("DitheredShadowMapMethod");
 			return asset;
 		}
 		public function CreateSoftShadowMapMethod( light:LightVO ):ShadowMethodVO
@@ -208,24 +215,24 @@ package awaybuilder.model
 		public function CreateHardShadowMapMethod( light:LightVO ):ShadowMethodVO
 		{
 			var method:HardShadowMapMethod = new HardShadowMapMethod( GetObject(light) as DirectionalLight );
+			method.name = "HardShadow " + awaybuilder.utils.AssetUtil.GetNextId("HardShadowMapMethod");
 			var asset:ShadowMethodVO = GetAsset( method ) as ShadowMethodVO;
-			asset.name = "HardShadow " + awaybuilder.utils.AssetUtil.GetNextId("HardShadowMapMethod");
 			return asset;
 		}
 		public function CreateNearShadowMapMethod( light:LightVO ):ShadowMethodVO
 		{
 			var simple:SoftShadowMapMethod = new SoftShadowMapMethod( GetObject(light) as DirectionalLight );
 			var method:NearShadowMapMethod = new NearShadowMapMethod( simple );
+			method.name = "NearShadow " + awaybuilder.utils.AssetUtil.GetNextId("NearShadowMapMethod");
 			var asset:ShadowMethodVO = GetAsset( method ) as ShadowMethodVO;
-			asset.name = "NearShadow " + awaybuilder.utils.AssetUtil.GetNextId("NearShadowMapMethod");
 			return asset;
 		}
 		public function CreateCascadeShadowMapMethod( light:LightVO ):ShadowMethodVO
 		{
 			var simple:SoftShadowMapMethod = new SoftShadowMapMethod( GetObject(light) as DirectionalLight );
 			var method:CascadeShadowMapMethod = new CascadeShadowMapMethod( simple );
+			method.name = "CascadeShadow " + awaybuilder.utils.AssetUtil.GetNextId("CascadeShadowMapMethod");
 			var asset:ShadowMethodVO = GetAsset( method ) as ShadowMethodVO;
-			asset.name = "CascadeShadow " + awaybuilder.utils.AssetUtil.GetNextId("CascadeShadowMapMethod");
 			return asset;
 		}
 		

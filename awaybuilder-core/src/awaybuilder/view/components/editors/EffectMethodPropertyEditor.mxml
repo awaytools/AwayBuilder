@@ -22,21 +22,12 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
-		import away3d.lights.shadowmaps.CascadeShadowMapper;
-		import away3d.lights.shadowmaps.CubeMapShadowMapper;
-		import away3d.lights.shadowmaps.DirectionalShadowMapper;
-		import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
-		
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.EffectMethodVO;
 		import awaybuilder.model.vo.scene.LightVO;
-		import awaybuilder.model.vo.scene.MaterialVO;
-		import awaybuilder.model.vo.scene.MeshVO;
-		import awaybuilder.model.vo.scene.ShadowMethodVO;
 		import awaybuilder.model.vo.scene.TextureVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
-		import mx.collections.ArrayCollection;
 		import mx.events.ColorPickerEvent;
 		
 		import spark.events.IndexChangeEvent;
@@ -90,7 +81,17 @@
 		
 		protected function projectiveTextureMethod_changeHandler(event:IndexChangeEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
+		}
+		
+		protected function colorpicker_changeHandler(event:ColorPickerEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
+		}
+		
+		protected function valueStepper_changeHandler(event:Event):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, _asset, true));
 		}
 		
 	]]></fx:Script>
@@ -320,19 +321,28 @@
 											 change="" />
 		</s:FormItem>
 	</s:Form>
-	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="OutlineMethod" >
-		<s:FormItem label="Outline Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<mx:ColorPicker selectedColor="{_asset.color}" change=""/>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="FogMethod" >
+		<s:FormItem label="Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="minValueStepper" value="@{_asset.minDistance}" stepSize="1" snapInterval="0.01" minimum="1" maximum="1000" width="40"
+											 change="valueStepper_changeHandler(event)" />
+			<s:Label text=" - "/>
+			<controls:DragableNumericStepper id="maxValueStepper" value="@{_asset.maxDistance}" stepSize="1" snapInterval="0.01" minimum="{minValueStepper.value}" maximum="1000" width="40"
+											 change="valueStepper_changeHandler(event)" />
+		</s:FormItem>
+	</s:Form>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="Outline Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OutlineMethod,FogMethod" >
+			<mx:ColorPicker selectedColor="@{_asset.color}" change="colorpicker_changeHandler(event)"/>
 		</s:FormItem>
 		
-		<s:FormItem label="Outline Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<controls:DragableNumericStepper value="{_asset.size}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="50"
+		<s:FormItem label="Outline Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OutlineMethod" >
+			<controls:DragableNumericStepper value="@{_asset.size}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="50"
 											 change="" />
 		</s:FormItem>
-		<s:FormItem label="Show Inner Lines" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+		<s:FormItem label="Show Inner Lines" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OutlineMethod" >
 			<s:CheckBox selected="@{_asset.showInnerLines}" change="" />
 		</s:FormItem>
-		<s:FormItem label="Dedicated Mesh" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+		<s:FormItem label="Dedicated Mesh" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OutlineMethod" >
 			<s:CheckBox selected="@{_asset.dedicatedMesh}" change="" />
 		</s:FormItem>
 	</s:Form>
@@ -360,7 +370,7 @@
 											 change="" />
 		</s:FormItem>
 	</s:Form>
-	 
+	
 	<!--<s:Form skinClass="awaybuilder.view.skins.PropertyFormSkin" width="100%" includeIn="FogMethod">
 		<s:FormItem label="Min Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:NumericStepper id="minDistanceStepper" minimum="0" maximum="1000" value="1" valueFormatFunction="myFormatFunc" />

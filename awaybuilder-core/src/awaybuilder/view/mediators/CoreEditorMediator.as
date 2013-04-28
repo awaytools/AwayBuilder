@@ -1,6 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import awaybuilder.view.scene.controls.LightGizmo3D;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
@@ -17,15 +16,26 @@ package awaybuilder.view.mediators
     import away3d.materials.TextureMultiPassMaterial;
     import away3d.materials.lightpickers.LightPickerBase;
     import away3d.materials.lightpickers.StaticLightPicker;
+    import away3d.materials.methods.AlphaMaskMethod;
     import away3d.materials.methods.CascadeShadowMapMethod;
     import away3d.materials.methods.ColorMatrixMethod;
+    import away3d.materials.methods.ColorTransformMethod;
     import away3d.materials.methods.DitheredShadowMapMethod;
     import away3d.materials.methods.EffectMethodBase;
+    import away3d.materials.methods.EnvMapMethod;
     import away3d.materials.methods.FilteredShadowMapMethod;
+    import away3d.materials.methods.FogMethod;
+    import away3d.materials.methods.FresnelEnvMapMethod;
     import away3d.materials.methods.HardShadowMapMethod;
+    import away3d.materials.methods.LightMapMethod;
     import away3d.materials.methods.NearShadowMapMethod;
+    import away3d.materials.methods.OutlineMethod;
+    import away3d.materials.methods.ProjectiveTextureMethod;
+    import away3d.materials.methods.RefractionEnvMapMethod;
+    import away3d.materials.methods.RimLightMethod;
     import away3d.materials.methods.ShadowMapMethodBase;
     import away3d.materials.methods.SoftShadowMapMethod;
+    import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
     import awaybuilder.controller.scene.events.SceneEvent;
@@ -43,17 +53,18 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ObjectVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
-    import awaybuilder.utils.AssetUtil;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
     import awaybuilder.view.components.events.CoreEditorEvent;
+    import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
     import flash.events.ErrorEvent;
     import flash.events.KeyboardEvent;
     import flash.events.UncaughtErrorEvent;
+    import flash.geom.ColorTransform;
     import flash.geom.Vector3D;
     import flash.ui.Keyboard;
     
@@ -270,6 +281,55 @@ package awaybuilder.view.mediators
 				var colorMatrixMethod:ColorMatrixMethod = obj as ColorMatrixMethod;
 				colorMatrixMethod.colorMatrix = [ asset.r, asset.g, asset.b, asset.a, asset.rO, asset.rG, asset.gG, asset.bG, asset.aG, asset.gO,  asset.rB, asset.gB, asset.bB, asset.aB, asset.bO, asset.rA, asset.gA, asset.bA, asset.aA, asset.aO,];
 			}
+			else if( obj is FogMethod )
+			{
+				var fogMethod:FogMethod = obj as FogMethod;
+				fogMethod.fogColor = asset.color;
+				fogMethod.minDistance = asset.minDistance;
+				fogMethod.maxDistance = asset.maxDistance;
+			}
+			else if( obj is AlphaMaskMethod )
+			{
+				var alphaMaskMethod:AlphaMaskMethod = obj as AlphaMaskMethod;
+				alphaMaskMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
+				alphaMaskMethod.useSecondaryUV = asset.useSecondaryUV;
+			}
+			else if( obj is ColorTransformMethod )
+			{
+				var colorTransformMethod:ColorTransformMethod = obj as ColorTransformMethod;
+				colorTransformMethod.colorTransform = new ColorTransform( asset.r, asset.g, asset.b, asset.a, asset.rO, asset.gO, asset.bO, asset.aO );
+			}
+			else if( obj is EnvMapMethod )
+			{
+				var envMapMethod:EnvMapMethod = obj as EnvMapMethod;
+				envMapMethod.mask = assets.GetObject( asset.texture ) as Texture2DBase;
+				envMapMethod.alpha = asset.alpha;
+				envMapMethod.envMap = assets.GetObject( asset.cubeTexture ) as CubeTextureBase;
+			}
+			else if( obj is FresnelEnvMapMethod )
+			{
+				var fresnelEnvMapMethod:FresnelEnvMapMethod = obj as FresnelEnvMapMethod;
+			}
+			else if( obj is LightMapMethod )
+			{
+				var lightMapMethod:LightMapMethod = obj as LightMapMethod;
+			}
+			else if( obj is OutlineMethod )
+			{
+				var outlineMethod:OutlineMethod = obj as OutlineMethod;
+			}
+			else if( obj is ProjectiveTextureMethod )
+			{
+				var projectiveTextureMethod:ProjectiveTextureMethod = obj as ProjectiveTextureMethod;
+			}
+			else if( obj is RefractionEnvMapMethod )
+			{
+				var refractionEnvMapMethod:RefractionEnvMapMethod = obj as RefractionEnvMapMethod;
+			}
+			else if( obj is RimLightMethod )
+			{
+				var rimLightMethod:RimLightMethod = obj as RimLightMethod;
+			}
 		}
 		private function applyShadowMethod( asset:ShadowMethodVO ):void
 		{
@@ -338,6 +398,12 @@ package awaybuilder.view.mediators
 		private function applyLight( asset:LightVO ):void
 		{
 			var light:LightBase = assets.GetObject( asset ) as LightBase;
+			light.ambient = asset.ambient;
+			light.ambientColor = asset.ambientColor;
+			light.diffuse = asset.diffuse;
+			light.color = asset.color;
+			light.specular = asset.specular;
+			
 			applyObject( asset );
 			if( asset.type == LightVO.DIRECTIONAL ) 
 			{

@@ -27,66 +27,13 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			
 			var newAsset:LightVO = event.newValue as LightVO;
-			
 			var vo:LightVO = event.items[0] as LightVO;
 			
 			saveOldValue( event, vo.clone() );
 			
-			vo.name = newAsset.name;
-			vo.color = newAsset.color;
-			vo.type = newAsset.type;
-			vo.radius = newAsset.radius;
-			vo.fallOff = newAsset.fallOff;
+			vo.fillFromLight( newAsset );
 			
-			vo.ambientColor = newAsset.ambientColor;
-			vo.ambient = newAsset.ambient;
-			vo.diffuse = newAsset.diffuse;
-			
-			vo.diffuse = newAsset.diffuse;
-			vo.specular = newAsset.specular;
-			
-			vo.azimuthAngle = newAsset.azimuthAngle;
-			vo.elevationAngle = newAsset.elevationAngle;
-			
-			vo.castsShadows = newAsset.castsShadows;
-			
-			vo.shadowMapper = newAsset.shadowMapper;
-			
-			var linkedObjectChanged:Boolean = false;
-			
-			vo.shadowMethods = DataMerger.syncArrayCollections( vo.shadowMethods, newAsset.shadowMethods, "id" );
-			
-			if( event.isUndoAction )
-			{
-				if( !vo.equals( newAsset ) )
-				{
-					linkedObjectChanged = true;
-				}
-			}
-			else
-			{
-//				if( (newAsset.type == LightVO.POINT) && (vo.linkedObject is DirectionalLight) )
-//				{
-//					vo.linkedObject = new PointLight();
-//					linkedObjectChanged = true;
-//				}
-//				if( (newAsset.type == LightVO.DIRECTIONAL) && (vo.linkedObject is PointLight) )
-//				{
-//					vo.linkedObject = new DirectionalLight( newAsset.directionX, newAsset.directionY, newAsset.directionZ );
-//					linkedObjectChanged = true;
-//				}
-			}
-			
-			
-//			if( linkedObjectChanged ) // update all current
-//			{
-//				Scene3DManager.removeLight( oldLight );
-//				Scene3DManager.addLight(  AssetFactory.GetAsset(vo) as LightBase );
-//			}
-			
-			event.items = [vo];
 			addToHistory( event );
 		}
 	}

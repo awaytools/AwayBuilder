@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
       xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="112"
-      alpha.disabled="0.5" blendMode="normal"> 
+      alpha.disabled="0.5" blendMode="normal" xmlns:controls="awaybuilder.view.components.controls.*"> 
     
     <fx:Metadata>
     <![CDATA[ 
@@ -34,7 +34,7 @@
 	</fx:Declarations>
 	
 	<!--- The Scroller component to add scroll bars to the list. -->
-	<s:Scroller left="0" top="0" right="0" bottom="0" id="scroller" minViewportInset="1" hasFocusableChildren="false">
+	<controls:CrutchScroller left="0" top="0" right="0" bottom="0" id="scroller" minViewportInset="1" hasFocusableChildren="false">
 		<!--- @copy spark.components.SkinnableDataContainer#dataGroup -->
 		<s:DataGroup id="dataGroup" itemRenderer="awaybuilder.view.components.editors.renderers.ContanerChildrenItemRenderer">
 			<s:layout>
@@ -44,5 +44,5 @@
 				<s:VerticalLayout gap="0" horizontalAlign="contentJustify" paddingTop="4" paddingBottom="4"/>
 			</s:layout>
 		</s:DataGroup>
-	</s:Scroller>
+	</controls:CrutchScroller>
 </s:SparkSkin>

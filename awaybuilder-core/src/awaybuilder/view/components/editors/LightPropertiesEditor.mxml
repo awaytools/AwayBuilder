@@ -46,19 +46,11 @@
 		<s:State name="pointType"/>
 	</editors:states>
 	<fx:Script><![CDATA[
-		import away3d.core.math.Vector3DUtils;
-		import away3d.lights.shadowmaps.CascadeShadowMapper;
 		import away3d.lights.shadowmaps.CubeMapShadowMapper;
-		import away3d.lights.shadowmaps.DirectionalShadowMapper;
-		import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
 		
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightVO;
-		import awaybuilder.model.vo.scene.MaterialVO;
-		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
-		
-		import flash.utils.getTimer;
 		
 		import mx.collections.ArrayCollection;
 		import mx.events.ColorPickerEvent;
@@ -129,9 +121,8 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
 		}
 		
-		protected function specularStepper_changeHandler(event:Event):void
+		protected function stepper_changeHandler(event:Event):void
 		{
-			_asset.specular = specularStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
 		}
 		
@@ -302,24 +293,24 @@
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Ambient Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="ambientStepper" stepSize="0.1" snapInterval="0.001"
-												 width="40" value="{_asset.ambient}" minimum="0" maximum="100"
-												 change="ambientStepper_changeHandler(event)" />
+												 width="40" value="@{_asset.ambient}" minimum="0" maximum="100"
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Ambient Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<mx:ColorPicker id="ambientColorPicker" selectedColor="{_asset.ambientColor}" change="ambientColorPicker_changeHandler(event)"/>
+				<mx:ColorPicker id="ambientColorPicker" selectedColor="@{_asset.ambientColor}" change="ambientColorPicker_changeHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="diffuseStepper" stepSize="0.1" snapInterval="0.001"
-												 width="40" value="{_asset.diffuse}" minimum="0" maximum="100"
-												 change="diffuseStepper_changeHandler(event)" />
+												 width="40" value="@{_asset.diffuse}" minimum="0" maximum="100"
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<mx:ColorPicker id="colorPicker" selectedColor="{_asset.color}" change="colorPicker_changeHandler(event)"/>
+				<mx:ColorPicker id="colorPicker" selectedColor="@{_asset.color}" change="colorPicker_changeHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Specular Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="specularStepper" stepSize="0.1" snapInterval="0.001"
-												 width="40" value="{_asset.specular}" minimum="0" maximum="100"
-												 change="specularStepper_changeHandler(event)" />
+												 width="40" value="@{_asset.specular}" minimum="0" maximum="100"
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 		</s:Form>
 	</controls:CollapsiblePanel>

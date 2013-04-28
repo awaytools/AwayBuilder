@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled=".5">
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled=".5" xmlns:controls="awaybuilder.view.components.controls.*">
 
     <!-- host component -->
     <fx:Metadata>
@@ -112,14 +112,14 @@
             </s:Rect>
 
             <!--- @private -->
-            <s:Scroller id="scroller" left="0" top="0" right="0" bottom="0" hasFocusableChildren="false" minViewportInset="1">
+            <controls:CrutchScroller id="scroller" left="0" top="0" right="0" bottom="0" hasFocusableChildren="false" minViewportInset="1">
                 <!--- @copy spark.components.SkinnableDataContainer#dataGroup-->
                 <s:DataGroup id="dataGroup" itemRenderer="spark.skins.spark.DefaultItemRenderer" rollOverColor="0x222222" accentColor="0x000000">
                     <s:layout>
                         <s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedMinRowCount="1" requestedMaxRowCount="10"/>
                     </s:layout>
                 </s:DataGroup>
-            </s:Scroller>
+            </controls:CrutchScroller>
         </s:Group>
     </s:PopUpAnchor>
 
