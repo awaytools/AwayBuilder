@@ -13,7 +13,7 @@
 			<fx:Object label="Near Directional" value="NearDirectionalShadowMapper"/>
 		</s:ArrayCollection>
 		<s:ArrayCollection id="pointMappersList">
-			<fx:Object label="Cube Map" value="{CubeMapShadowMapper}"/>
+			<fx:Object label="Cube Map" value="CubeMapShadowMapper"/>
 		</s:ArrayCollection>
 		<fx:Component className="NewShadowMethodPopup">
 			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
@@ -75,28 +75,32 @@
 			_asset = LightVO(asset).clone() as LightVO;
 			
 			var o:Object;
-			for each( o in directionalMappersList )
+			if( _asset.shadowMapper ) 
 			{
-				if( _asset.shadowMapper == o.value )
+				trace(  _asset.shadowMapper +" _asset.shadowMapper = " + _asset.shadowMapper.type );
+				for each( o in directionalMappersList )
 				{
-					if( _directionalMappersSelectedItem != o )
-						_directionalMappersSelectedItem = o;
+					if( _asset.shadowMapper.type == o.value )
+					{
+						if( _directionalMappersSelectedItem != o )
+							_directionalMappersSelectedItem = o;
+					}
+				}
+				for each( o in pointMappersList )
+				{
+					if( _asset.shadowMapper.type == o.value )
+					{
+						if( _pointMappersSelectedItem != o )
+							_pointMappersSelectedItem = o;
+					}
 				}
 			}
-			for each( o in pointMappersList )
-			{
-				if( _asset.shadowMapper == o.value )
-				{
-					if( _pointMappersSelectedItem != o )
-						_pointMappersSelectedItem = o;
-				}
-			}
+			
 			
 		}
 		
 		private function name_changeHandler(event:Event):void 
 		{
-			_asset.name = nameInput.text;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
 		}
 		
@@ -158,20 +162,17 @@
 		
 		protected function directionalShadowMapperList_changeHandler(event:IndexChangeEvent):void
 		{
-			_asset.shadowMapper = directionalShadowMapperList.selectedItem.value;
-			_asset.shadowMethods = new ArrayCollection();
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_MAPPER_CHANGE, directionalShadowMapperList.selectedItem.value));
+			directionalShadowMapperList.selectedItem = _directionalMappersSelectedItem;
 		}
 		
 		protected function pointShadowMapperList_changeHandler(event:IndexChangeEvent):void
 		{
-			_asset.shadowMapper = pointShadowMapperList.selectedItem.value;
-			_asset.shadowMethods = new ArrayCollection();
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_MAPPER_CHANGE, pointShadowMapperList.selectedItem.value));
+			pointShadowMapperList.selectedItem = _pointMappersSelectedItem;
 		}
 		private function castShadowBox_changeHandler(event:Event):void 
 		{
-			_asset.castsShadows = castShadowBox.selected;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _asset));
 		}
 		
@@ -182,11 +183,11 @@
 		
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			if( _asset.shadowMapper == "CascadeShadowMapper" )
+			if( _asset.shadowMapper.type == "CascadeShadowMapper" )
 			{
 				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod ) );
 			}
-			else if( _asset.shadowMapper == "NearDirectionalShadowMapper" )
+			else if( _asset.shadowMapper.type == "NearDirectionalShadowMapper" )
 			{
 				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_NearShadowMapMethod ) );
 			}
@@ -229,6 +230,12 @@
 			
 		}
 		
+		protected function editMapperButton_clickHandler(event:Event):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.shadowMapper, true));
+		}
+		
+		
 	]]></fx:Script>
 	
 	<s:Group width="100%" top="0">
@@ -246,14 +253,14 @@
 	
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
 	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>
+				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
 			</s:FormItem>
 			<s:FormItem label="Radius" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="pointType">
 				<controls:DragableNumericStepper id="radiusStepper" stepSize="1" snapInterval="10" minimum="0" maximum="10000000"
@@ -330,6 +337,7 @@
 				<s:DropDownList id="pointShadowMapperList" includeIn="pointType" width="100%" requireSelection="true"
 								dataProvider="{pointMappersList}" selectedItem="{_pointMappersSelectedItem}"
 								change="pointShadowMapperList_changeHandler(event)"/>
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="editMapperButton_clickHandler(event)"/>
 			</s:HGroup>
 			<s:HGroup width="100%">
 				<s:Label text="Shadow Methods:" fontWeight="bold"/>

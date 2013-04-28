@@ -20,8 +20,9 @@ import flash.events.Event;
 		public static const CHANGE_LIGHT:String = "changeLight";
 		public static const CHANGE_LIGHTPICKER:String = "changeLightPicker";
 		
-		public static const CHANGE_SHADOW_METHOD:String = "changeShadowMethodPicker";
-		public static const CHANGE_EFFECT_METHOD:String = "changeEffectMethodPicker";
+		public static const CHANGE_SHADOW_METHOD:String = "changeShadowMethod";
+		public static const CHANGE_SHADOW_MAPPER:String = "changeShadowMapper";
+		public static const CHANGE_EFFECT_METHOD:String = "changeEffectMethod";
 		
 		public static const ADD_NEW_LIGHT:String = "addNewLight";
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";

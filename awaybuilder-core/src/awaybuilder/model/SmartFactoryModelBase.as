@@ -15,6 +15,9 @@ package awaybuilder.model
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
+	import away3d.lights.shadowmaps.CascadeShadowMapper;
+	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
+	import away3d.lights.shadowmaps.ShadowMapperBase;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.MaterialBase;
 	import away3d.materials.MultiPassMaterialBase;
@@ -23,6 +26,7 @@ package awaybuilder.model
 	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.AlphaMaskMethod;
+	import away3d.materials.methods.BasicAmbientMethod;
 	import away3d.materials.methods.CascadeShadowMapMethod;
 	import away3d.materials.methods.ColorMatrixMethod;
 	import away3d.materials.methods.ColorTransformMethod;
@@ -37,6 +41,7 @@ package awaybuilder.model
 	import away3d.materials.methods.ProjectiveTextureMethod;
 	import away3d.materials.methods.RefractionEnvMapMethod;
 	import away3d.materials.methods.RimLightMethod;
+	import away3d.materials.methods.ShadingMethodBase;
 	import away3d.materials.methods.ShadowMapMethodBase;
 	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.materials.utils.DefaultMaterialManager;
@@ -54,6 +59,8 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.model.vo.scene.ShadingMethodVO;
+	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
@@ -119,6 +126,10 @@ package awaybuilder.model
 					return fillLightPicker( new LightPickerVO(),  item as StaticLightPicker );
 				case(item is BitmapCubeTexture):
 					return fillCubeTexture( new CubeTextureVO(),  item as BitmapCubeTexture );
+				case(item is ShadowMapperBase):
+					return fillShadowMapper( new ShadowMapperVO(),  item as ShadowMapperBase );
+				case(item is ShadingMethodBase):
+					return fillShadingMethod( new ShadingMethodVO(),  item as ShadingMethodBase );
 			}
 			
 			return null;
@@ -137,7 +148,6 @@ package awaybuilder.model
 		private function fillEffectMethod( asset:EffectMethodVO, item:EffectMethodBase ):EffectMethodVO
 		{
 			asset.type = getQualifiedClassName( item ).split("::")[1];
-			trace( asset.type );
 			switch( true ) 
 			{
 				case(item is AlphaMaskMethod):
@@ -287,12 +297,12 @@ package awaybuilder.model
 			else if( item is CascadeShadowMapMethod )
 			{
 				var cascadeShadowMapMethod:CascadeShadowMapMethod = item as CascadeShadowMapMethod;
-				asset.baseMethod = getQualifiedClassName( cascadeShadowMapMethod.baseMethod ).split("::")[1];
+				asset.baseMethod = GetAsset( cascadeShadowMapMethod.baseMethod ) as ShadowMethodVO;
 			}
 			else if( item is NearShadowMapMethod )
 			{
 				var nearShadowMapMethod:NearShadowMapMethod = item as NearShadowMapMethod;
-				asset.baseMethod = getQualifiedClassName( cascadeShadowMapMethod.baseMethod ).split("::")[1];
+//				asset.baseMethod = GetAsset( nearShadowMapMethod.baseMethod ) as ShadowMethodVO;
 			}
 			return asset;
 		}
@@ -308,10 +318,7 @@ package awaybuilder.model
 			
 			asset.castsShadows = item.castsShadows;
 			
-			if( item.shadowMapper )
-			{
-				asset.shadowMapper = getQualifiedClassName(item.shadowMapper).split("::")[1];
-			}
+			asset.shadowMapper = GetAsset( item.shadowMapper ) as ShadowMapperVO;
 			
 			if( item is DirectionalLight ) 
 			{
@@ -343,6 +350,27 @@ package awaybuilder.model
 			return asset;
 		}
 		
+		private function fillShadingMethod( asset:ShadingMethodVO, obj:ShadingMethodBase ):ShadingMethodVO
+		{
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			return asset;
+		}
+		private function fillShadowMapper( asset:ShadowMapperVO, obj:ShadowMapperBase ):ShadowMapperVO
+		{
+			asset.depthMapSize = obj.depthMapSize;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			if( obj is NearDirectionalShadowMapper )
+			{
+				var nearDirectionalShadowMapper:NearDirectionalShadowMapper = obj as NearDirectionalShadowMapper;
+				asset.coverage = nearDirectionalShadowMapper.coverageRatio;
+			}
+			else if( obj is CascadeShadowMapper )
+			{
+				var cascadeShadowMapper:CascadeShadowMapper = obj as CascadeShadowMapper;
+				asset.numCascades = cascadeShadowMapper.numCascades;
+			}
+			return asset;
+		}
 		private function fillCubeTexture( asset:CubeTextureVO, item:BitmapCubeTexture ):CubeTextureVO
 		{
 			asset = fillAsset( asset, item ) as CubeTextureVO;
@@ -394,24 +422,24 @@ package awaybuilder.model
 				asset.alphaBlending = textureMaterial.alphaBlending;
 				asset.colorTransform = textureMaterial.colorTransform;
 				
-				asset.ambientLevel = textureMaterial.ambient;
+				asset.ambientLevel = textureMaterial.ambient; 
 				asset.ambientColor = textureMaterial.ambientColor;
 				asset.ambientTexture = GetAsset( textureMaterial.ambientTexture ) as TextureVO;
-				asset.ambientMethodType = getQualifiedClassName( textureMaterial.ambientMethod ).split("::")[1];
+				asset.ambientMethod = GetAsset( textureMaterial.ambientMethod ) as ShadingMethodVO;
 				
 				asset.diffuseColor= textureMaterial.diffuseMethod.diffuseColor;
 				asset.diffuseTexture = GetAsset( textureMaterial.texture ) as TextureVO;
-				asset.diffuseMethodType = getQualifiedClassName( textureMaterial.diffuseMethod ).split("::")[1];
+				asset.diffuseMethod = GetAsset( textureMaterial.diffuseMethod ) as ShadingMethodVO;
 				
 				asset.specularLevel = textureMaterial.specular;
 				asset.specularColor = textureMaterial.specularColor;
 				asset.specularGloss = textureMaterial.gloss;
 				asset.specularTexture = GetAsset( textureMaterial.specularMap ) as TextureVO;
-				asset.specularMethodType = getQualifiedClassName( textureMaterial.specularMethod ).split("::")[1];
+				asset.specularMethod = GetAsset( textureMaterial.specularMethod ) as ShadingMethodVO;
 				
-				//				asset.normalColor = textureMaterial.normalMethod.
+//				asset.normalColor = textureMaterial.normalMethod.
 				asset.normalTexture = GetAsset( textureMaterial.normalMap ) as TextureVO;
-				asset.normalMethodType = getQualifiedClassName( textureMaterial.normalMethod ).split("::")[1];
+				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
 				
 				
 				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;

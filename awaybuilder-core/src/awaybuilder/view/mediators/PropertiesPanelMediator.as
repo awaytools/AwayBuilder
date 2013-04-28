@@ -15,6 +15,8 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
+    import awaybuilder.model.vo.scene.ShadingMethodVO;
+    import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureVO;
@@ -26,6 +28,7 @@ package awaybuilder.view.mediators
     
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
+    import mx.events.CloseEvent;
     
     import org.robotlegs.mvcs.Mediator;
 
@@ -83,6 +86,11 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
 			
+			addViewListener( PropertyEditorEvent.SHADOWMAPPER_CHANGE, view_shadowmapperChangeHandler );
+			addViewListener( PropertyEditorEvent.SHADOWMAPPER_STEPPER_CHANGE, view_shadowmapperChangeStepperHandler );
+			
+			
+			
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, view_effectmethodChangeStepperHandler );
 			
@@ -91,6 +99,8 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.LIGHT_POSITION_CHANGE, view_lightPositionChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_STEPPER_CHANGE, view_lightStepperChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_CHANGE, view_lightChangeHandler );
+			addViewListener( PropertyEditorEvent.LIGHT_MAPPER_CHANGE, view_lightMapperChangeHandler );
+			
 			
 			addViewListener( PropertyEditorEvent.LIGHT_ADD_FilteredShadowMapMethod, view_lightAddFilteredShadowMapMethodHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod, view_lightAddCascadeShadowMapMethodHandler );
@@ -179,6 +189,16 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_EFFECT_METHOD,[view.data], event.data, true));
 		}
+		
+		private function view_shadowmapperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_MAPPER,[view.data], event.data));
+		}
+		private function view_shadowmapperChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_MAPPER,[view.data], event.data, true));
+		}
+		
 		private function view_shadowmethodChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_METHOD,[view.data], event.data));
@@ -254,6 +274,34 @@ package awaybuilder.view.mediators
 		private function view_lightChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], event.data));
+		}
+		
+		private var _storedLight:LightVO;
+		private function view_lightMapperChangeHandler(event:PropertyEditorEvent):void
+		{
+			_storedLight = LightVO(view.data).clone() as LightVO;
+			var mapper:ShadowMapperVO = assets.CreateShadowMapper( event.data.toString() );
+			_storedLight.shadowMapper = mapper;
+			if( LightVO(view.data).shadowMethods && LightVO(view.data).shadowMethods.length ) {
+				_storedLight.shadowMethods = new ArrayCollection();
+				view.callLater( alertCalledLater );
+			}
+			else
+			{
+				this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], _storedLight));
+			}
+			
+		}
+		private function alertCalledLater():void
+		{
+			Alert.show( "Assigned ShadowMethods will be removed (this operation cannot be undone)", "Warning", Alert.OK|Alert.CANCEL, null, lightMapperAlert_closeHandler )
+		}
+		private function lightMapperAlert_closeHandler(event:CloseEvent):void
+		{
+			if (event.detail == Alert.OK) 
+			{
+				this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], _storedLight));
+			}
 		}
 		private function view_lightAddFilteredShadowMapMethodHandler(event:PropertyEditorEvent):void
 		{
@@ -453,10 +501,16 @@ package awaybuilder.view.mediators
 						view.showEditor( "cubeTexture", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
-//                    else if( event.items[0] is Geometry )
-//                    {
-//                        view.currentState = "geometry";
-//                    }
+					else if( event.items[0] is ShadowMapperVO )
+					{
+						view.showEditor( "shadowMapper", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is ShadingMethodVO )
+					{
+						view.showEditor( "shadingMethod", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
                     else
                     {
 						view.showEditor( "empty", event.newValue, event.oldValue );
@@ -502,27 +556,19 @@ package awaybuilder.view.mediators
 			view.lightPickers = pickers;
 			view.lights = lights;
 			
-			var shadowMethods:ArrayCollection = new ArrayCollection();
-			shadowMethods.addItem( nullItem );
-			var ambientMethods:ArrayCollection = new ArrayCollection();
-			var normalMethods:ArrayCollection = new ArrayCollection();
-			var diffuseMethods:ArrayCollection = new ArrayCollection();
-			var specularMethods:ArrayCollection = new ArrayCollection();
-			for each( asset in document.methods )
-			{
-				if( asset is ShadowMethodVO ) shadowMethods.addItem( asset );
-			}
-			view.shadowMethods = shadowMethods;
-			view.normalMethods = normalMethods;
-			view.ambientMethods = ambientMethods;
-			view.diffuseMethods = diffuseMethods;
-			view.specularMethods = specularMethods;
-			
 			var textures:ArrayCollection = new ArrayCollection();
 			textures.addItem( nullTextureItem );
 			for each( asset in document.textures )
 			{
-				textures.addItem( asset );
+				if( asset is TextureVO ) 
+				{
+					textures.addItem( asset );
+				}
+				if( asset in CubeTextureVO )
+				{
+					textures.addItem( asset );
+				}
+					
 			}
 			view.textures = textures;
 		}

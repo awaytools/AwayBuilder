@@ -35,6 +35,7 @@ package awaybuilder.view.components.editors.events
 		public static const CONTAINER_STEPPER_CHANGE:String = "containerStepperChange";
 		
 		public static const LIGHT_CHANGE:String = "lightChange";
+		public static const LIGHT_MAPPER_CHANGE:String = "lightMapperChange";
 		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";
 		public static const LIGHT_POSITION_CHANGE:String = "lightPositionChange";
 		
@@ -45,8 +46,14 @@ package awaybuilder.view.components.editors.events
 		public static const LIGHT_ADD_NearShadowMapMethod:String = "lightAddNearShadowMapMethod";
 		public static const LIGHT_ADD_CascadeShadowMapMethod:String = "lightAddCascadeShadowMapMethod";
 		
+		public static const SHADINGMETHOD_CHANGE:String = "shadingmethodChange";
+		public static const SHADINGMETHOD_STEPPER_CHANGE:String = "shadingmethodStepperChange";
+		
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";
 		public static const SHADOWMETHOD_STEPPER_CHANGE:String = "shadowmethodStepperChange";
+		
+		public static const SHADOWMAPPER_CHANGE:String = "shadowMapperChange";
+		public static const SHADOWMAPPER_STEPPER_CHANGE:String = "shadowMapperStepperChange";
 		
 		public static const EFFECTMETHOD_CHANGE:String = "effectmethodChange";
 		public static const EFFECTMETHOD_STEPPER_CHANGE:String = "effectmethodStepperChange";

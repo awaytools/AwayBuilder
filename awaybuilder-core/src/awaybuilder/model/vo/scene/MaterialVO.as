@@ -44,21 +44,21 @@ package awaybuilder.model.vo.scene
 		public var ambientLevel:Number;
 		public var ambientColor:uint;
 		public var ambientTexture:TextureVO;
-		public var ambientMethodType:String;
+		public var ambientMethod:ShadingMethodVO;
 		
 		public var diffuseColor:uint;
 		public var diffuseTexture:TextureVO;
-		public var diffuseMethodType:String;
+		public var diffuseMethod:ShadingMethodVO;
 		
 		public var normalColor:uint;
 		public var normalTexture:TextureVO;
-		public var normalMethodType:String;
+		public var normalMethod:ShadingMethodVO;
 		
 		public var specularLevel:Number;
 		public var specularColor:uint;
 		public var specularTexture:TextureVO;
 		public var specularGloss:int;
-		public var specularMethodType:String;
+		public var specularMethod:ShadingMethodVO;
 		
 		public var shadowMethod:ShadowMethodVO;
 		
@@ -97,22 +97,22 @@ package awaybuilder.model.vo.scene
 			this.shadowMethod = asset.shadowMethod;
 			
 			this.normalTexture = asset.normalTexture;
-			this.normalMethodType = asset.normalMethodType;
+			this.normalMethod = asset.normalMethod;
 			
 			this.diffuseTexture = asset.diffuseTexture;
 			this.diffuseColor = asset.diffuseColor;
-			this.diffuseMethodType = asset.diffuseMethodType;
+			this.diffuseMethod = asset.diffuseMethod;
 			
 			this.ambientLevel = asset.ambientLevel;
 			this.ambientColor = asset.ambientColor;
 			this.ambientTexture = asset.ambientTexture;
-			this.ambientMethodType = asset.ambientMethodType;
+			this.ambientMethod = asset.ambientMethod;
 			
 			this.specularLevel = asset.specularLevel;
 			this.specularColor = asset.specularColor;
 			this.specularGloss = asset.specularGloss;
 			this.specularTexture = asset.specularTexture;
-			this.specularMethodType = asset.specularMethodType;
+			this.specularMethod = asset.specularMethod;
 			
 			if( asset.effectMethods ) this.effectMethods = new ArrayCollection( asset.effectMethods.source );
 			

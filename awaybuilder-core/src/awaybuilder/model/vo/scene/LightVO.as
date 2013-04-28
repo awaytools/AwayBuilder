@@ -28,7 +28,7 @@ package awaybuilder.model.vo.scene
 		
 		public var castsShadows:Boolean;
 		
-		public var shadowMapper:String;
+		public var shadowMapper:ShadowMapperVO;
 		
 		public var shadowMethods:ArrayCollection = new ArrayCollection();
 		

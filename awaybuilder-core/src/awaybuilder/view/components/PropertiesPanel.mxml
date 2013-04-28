@@ -22,6 +22,9 @@
 		<s:State name="shadowMethod"/>
 		<s:State name="effectMethod"/>
 		<s:State name="cubeTexture"/>
+		<s:State name="shadowMapper"/>
+		<s:State name="shadingMethod"/>
+		
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -71,25 +74,13 @@
 		public var textures:ArrayCollection;
 		
 		[Bindable]
+		public var cubeTextures:ArrayCollection;
+		
+		[Bindable]
 		public var lightPickers:ArrayCollection;
 		
 		[Bindable]
 		public var lights:ArrayCollection;
-		
-		[Bindable]
-		public var shadowMethods:ArrayCollection;
-		
-		[Bindable]
-		public var normalMethods:ArrayCollection;
-		
-		[Bindable]
-		public var ambientMethods:ArrayCollection;
-		
-		[Bindable]
-		public var diffuseMethods:ArrayCollection;
-		
-		[Bindable]
-		public var specularMethods:ArrayCollection;
 		
 		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean ):void
 		{
@@ -138,7 +129,8 @@
 			<editors:ContainerPropertiesEditor id="containerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
 			<editors:ShadowMethodPropertyEditor id="shadowMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
 			<editors:EffectMethodPropertyEditor id="effectMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
-			
+			<editors:ShadowMapperPropertyEditor id="effectMapperProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
+			<editors:ShadingPropertyEditor id="shadingMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

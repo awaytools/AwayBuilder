@@ -1,10 +1,5 @@
 package awaybuilder.model
 {
-	import awaybuilder.controller.events.ErrorLogEvent;
-	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
-	import away3d.library.assets.BitmapDataAsset;
-	import awaybuilder.utils.logging.AwayBuilderLogger;
-	import away3d.events.ParserEvent;
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.data.Skeleton;
 	import away3d.animators.data.SkeletonPose;
@@ -42,6 +37,7 @@ package awaybuilder.model
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	import awaybuilder.utils.scene.Scene3DManager;
+	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	
 	import flash.events.Event;
 	import flash.net.URLRequest;
@@ -56,11 +52,12 @@ package awaybuilder.model
 	import spark.components.Application;
 
 	// TODO move logic into command
+	// Do not interfere loading progress
 	public class ProcessDataService extends Actor 
 	{
 		
 		[Inject]
-		public var assetModel:AssetsModel
+		public var assets:AssetsModel
 		
 		private var _document:DocumentVO;
 		
@@ -108,7 +105,7 @@ package awaybuilder.model
 			{
 				if( !o.parent )
 				{
-					_document.scene.addItem( assetModel.GetAsset( o ) );
+					_document.scene.addItem( assets.GetAsset( o ) );
 				}
 			}
 			
@@ -131,41 +128,37 @@ package awaybuilder.model
 					var mesh:Mesh = event.asset as Mesh;
 					if( !mesh.material )
 					{
-						mesh.material = assetModel.GetObject(assetModel.GetDefaultMaterial()) as MaterialBase;
+						mesh.material = assets.GetObject(assets.GetDefaultMaterial()) as MaterialBase;
 					}
 					_objects.push( mesh  );
 					break;
 				case AssetType.CONTAINER:
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
-					if (c.numChildren == 0) {
-//						Scene3DManager.containers.push(c);
-//						c.addChild(new ContainerGizmo3D(c));
-					}
 					_objects.push( c );
 					break;
 				case AssetType.LIGHT:
-					_document.lights.addItem( assetModel.GetAsset( event.asset ) );
+					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.LIGHT_PICKER:
-					_document.lights.addItem( assetModel.GetAsset( event.asset ) );
+					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.MATERIAL:
-					_document.materials.addItem( assetModel.GetAsset( event.asset ) );
+					_document.materials.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.TEXTURE:
-					_document.textures.addItem( assetModel.GetAsset( event.asset ) );
+					_document.textures.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
-					_document.geometry.addItem( assetModel.GetAsset( event.asset ) );
+					_document.geometry.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.ANIMATION_SET:
 				case AssetType.ANIMATION_STATE:
 				case AssetType.ANIMATION_NODE:
-					_document.animations.addItem( assetModel.GetAsset( event.asset ) );
+					_document.animations.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.SKELETON:
 				case AssetType.SKELETON_POSE:
-					_document.skeletons.addItem( assetModel.GetAsset( event.asset ) );
+					_document.skeletons.addItem( assets.GetAsset( event.asset ) );
 					break;
 			}
 		}

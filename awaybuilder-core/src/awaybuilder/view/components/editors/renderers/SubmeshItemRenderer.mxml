@@ -13,8 +13,6 @@
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
-		import mx.controls.Alert;
-		
 		import spark.events.IndexChangeEvent;
 
         [Bindable]

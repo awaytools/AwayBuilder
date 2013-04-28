@@ -81,28 +81,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, null, method));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
 		}
-//		private function view_addShadowMethodHandler(event:LibraryPanelEvent):void
-//		{
-//			var availableLight:LightVO;
-//			for each( var asset:AssetVO in document.lights ) 
-//			{
-//				var light:LightVO = asset as LightVO;
-//				
-//				if( light && light.castsShadows ) 
-//				{
-//					availableLight = light;
-//					break;
-//				}
-//			}
-//			if( !availableLight )
-//			{
-//				Alert.show( "You have to create Light that casts shadow", "Operation Terminated");
-//				return;
-//			}
-//			var method:ShadowMethodVO = AssetFactory.CreateSahdowMapMethod( availableLight );
-//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, null, method));
-//			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
-//		}
 		private function view_addTextureHandler(event:LibraryPanelEvent):void
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));

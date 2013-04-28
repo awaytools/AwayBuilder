@@ -40,6 +40,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeLightPickerCommand;
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
 	import awaybuilder.controller.scene.ChangeMeshCommand;
+	import awaybuilder.controller.scene.ChangeShadowMapperCommand;
 	import awaybuilder.controller.scene.ChangeShadowMethodCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
 	import awaybuilder.controller.scene.ReplaceTextureCommand;
@@ -132,6 +133,8 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHTPICKER, ChangeLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_METHOD, ChangeShadowMethodCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_EFFECT_METHOD, ChangeEffectMethodCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_MAPPER, ChangeShadowMapperCommand);
+			
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);

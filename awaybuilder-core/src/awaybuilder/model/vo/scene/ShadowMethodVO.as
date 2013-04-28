@@ -18,7 +18,7 @@ package awaybuilder.model.vo.scene
 		public var samples:Number = 5;
 		public var range:Number = 1;
 		
-		public var baseMethod:String;
+		public var baseMethod:ShadowMethodVO;
 		
 		public var type:String;
 		

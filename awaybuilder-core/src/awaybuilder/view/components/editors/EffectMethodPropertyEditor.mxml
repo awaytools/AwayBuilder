@@ -59,16 +59,6 @@
 		}
 		
 		
-		private function myFormatFunc(val:Number):String 
-		{ 
-			return val.toString().replace(".",","); 
-		} 
-		
-		private function myParseFunc(val:String):Number 
-		{ 
-			var stringVal:String = val.replace(",","."); 
-			return Number(stringVal);     
-		} 
 		private function dropDownIconFunction(item:TextureVO):Object 
 		{
 			return item.bitmapData;

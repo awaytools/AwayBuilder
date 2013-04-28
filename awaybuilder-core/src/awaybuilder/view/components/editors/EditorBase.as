@@ -44,6 +44,17 @@ package awaybuilder.view.components.editors
 			validate( _data );
 		}
 		
+		private var _cubeTextures:ArrayCollection;
+		[Bindable]
+		public function get cubeTextures():ArrayCollection
+		{
+			return _cubeTextures;
+		}
+		public function set cubeTextures(value:ArrayCollection):void
+		{
+			_cubeTextures = value;
+		}
+		
 		private var _textures:ArrayCollection;
 		[Bindable]
 		public function get textures():ArrayCollection

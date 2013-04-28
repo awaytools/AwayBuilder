@@ -7,6 +7,11 @@ package awaybuilder.view.mediators
     import away3d.library.assets.NamedAssetBase;
     import away3d.lights.DirectionalLight;
     import away3d.lights.LightBase;
+    import away3d.lights.shadowmaps.CascadeShadowMapper;
+    import away3d.lights.shadowmaps.CubeMapShadowMapper;
+    import away3d.lights.shadowmaps.DirectionalShadowMapper;
+    import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
+    import away3d.lights.shadowmaps.ShadowMapperBase;
     import away3d.materials.ColorMaterial;
     import away3d.materials.ColorMultiPassMaterial;
     import away3d.materials.MaterialBase;
@@ -51,6 +56,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.scene.ObjectVO;
+    import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.utils.scene.CameraManager;
@@ -105,6 +111,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, eventDispatcher_changeShadowMethodHandler);
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, eventDispatcher_changeEffectMethodHandler);
+			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, eventDispatcher_changeShadowMapperHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
@@ -404,6 +411,8 @@ package awaybuilder.view.mediators
 			light.color = asset.color;
 			light.specular = asset.specular;
 			
+			light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
+			
 			applyObject( asset );
 			if( asset.type == LightVO.DIRECTIONAL ) 
 			{
@@ -648,6 +657,26 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applyEffectMethod( asset );
+			}
+		}
+		
+		private function eventDispatcher_changeShadowMapperHandler(event:SceneEvent):void
+		{
+			var asset:ShadowMapperVO = event.items[0] as ShadowMapperVO;
+			if( asset ) 
+			{
+				var obj:ShadowMapperBase = assets.GetObject( asset ) as ShadowMapperBase;
+				obj.depthMapSize = asset.depthMapSize;
+				if( obj is NearDirectionalShadowMapper )
+				{
+					var nearDirectionalShadowMapper:NearDirectionalShadowMapper = obj as NearDirectionalShadowMapper;
+					nearDirectionalShadowMapper.coverageRatio = asset.coverage;
+				}
+				else if( obj is CascadeShadowMapper )
+				{
+					var cascadeShadowMapper:CascadeShadowMapper = obj as CascadeShadowMapper;
+					cascadeShadowMapper.numCascades = asset.numCascades;
+				}
 			}
 		}
 		private function eventDispatcher_changeShadowMethodHandler(event:SceneEvent):void

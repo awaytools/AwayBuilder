@@ -667,11 +667,7 @@
 	
 	<controls:CollapsiblePanel width="100%" title="Lighting" collapsed="true">
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
-			<s:HGroup width="100%">
-				<s:Label text="Light Picker:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:HGroup width="100%" verticalAlign="middle">
+			<controls:PropertiesItemContainer label="Light Picker:" width="100%">
 				<controls:ExtendedDropDownList id="lightPickerDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
 											   dataProvider="{lightPickers}" selectedItem="{_selectedLightPicker}" requireSelection="true"
 											   labelFunction="{assetDropDownLabelFunction}"
@@ -681,67 +677,55 @@
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
 						  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{!lightPickerDropDownList.selectedItem.isNull}"/>
-			</s:HGroup>
-			<s:HGroup width="100%">
-				<s:Label text="Shadow Light:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:HGroup width="100%" verticalAlign="middle" enabled="{!lightPickerDropDownList.selectedItem.isNull}">
+			</controls:PropertiesItemContainer>
+			<controls:PropertiesItemContainer label="Shadow Light:" width="100%">
 				<s:DropDownList id="shadowLightDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" labelFunction="assetDropDownLabelFunction"
 								change="shadowLightDropDownList_changeHandler(event)" width="100%" requireSelection="true"
 								selectedItem="{_selectedLight}" dataProvider="{_lights}"/>
 				<s:Button styleName="editSharedObjectButtonStyle"
 						  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{!shadowLightDropDownList.selectedItem.isNull}"/>
-			</s:HGroup>
-			<s:HGroup width="100%">
-				<s:Label text="Shadow Method:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:HGroup width="100%" verticalAlign="middle" enabled="{!lightPickerDropDownList.selectedItem.isNull&amp;&amp;!_selectedLight.isNull}">
+			</controls:PropertiesItemContainer>
+			<controls:PropertiesItemContainer label="Shadow Method:" width="100%">
 				<s:DropDownList id="shadowMethodDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" requireSelection="true" labelFunction="assetDropDownLabelFunction"
 								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
 								selectedItem="{_selectedShadowMethod}" dataProvider="{_shadowMethods}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle"
 						  width="23" height="100%" click="editShadowMethodButton_clickHandler(event)" enabled="{!shadowMethodDropDownList.selectedItem.isNull}"/>
-			</s:HGroup>
+			</controls:PropertiesItemContainer>
 		</s:VGroup>
 	</controls:CollapsiblePanel>
 	
 	<controls:CollapsiblePanel width="100%" title="Shading" collapsed="true">
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
-			<s:HGroup width="100%">
-				<s:Label text="Ambient Method:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:DropDownList id="ambientMethodDropDownList" requireSelection="true" selectionColor="0x111111"
-							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-							selectedItem="{_asset.ambientMethodType}" dataProvider="{ambientList}"
-							/>
-			<s:HGroup width="100%">
-				<s:Label text="Diffuse Method:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:DropDownList id="diffuseMethodDropDownList" requireSelection="true" selectionColor="0x111111"
-							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-							selectedItem="{_asset.diffuseMethodType}" dataProvider="{diffuseList}"
-							/>
-			<s:HGroup width="100%">
-				<s:Label text="Specular Method:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:DropDownList id="specularMethodDropDownList" requireSelection="true" selectionColor="0x111111"
-							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-							selectedItem="{_asset.specularMethodType}" dataProvider="{specularList}"
-							/>
-			<s:HGroup width="100%">
-				<s:Label text="Normal Method:" fontWeight="bold"/>
-				<controls:HorizontalFormSeparator/>
-			</s:HGroup>
-			<s:DropDownList id="normalMethodDropDownList" requireSelection="true" selectionColor="0x111111"
-							change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-							selectedItem="{_asset.normalMethodType}" dataProvider="{normalList}"
-							/>
+			<controls:PropertiesItemContainer label="Ambient Method:" width="100%">
+				<s:DropDownList id="ambientMethodDropDownList" requireSelection="true"
+								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_asset.ambientMethod}" dataProvider="{ambientList}"
+								/>
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click=""/>
+			</controls:PropertiesItemContainer>
+			<controls:PropertiesItemContainer label="Diffuse Method:" width="100%">
+				<s:DropDownList id="diffuseMethodDropDownList" requireSelection="true"
+								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_asset.diffuseMethod}" dataProvider="{diffuseList}"
+								/>
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="" />
+			</controls:PropertiesItemContainer>
+			<controls:PropertiesItemContainer label="Specular Method:" width="100%">
+				<s:DropDownList id="specularMethodDropDownList" requireSelection="true"
+								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_asset.specularMethod}" dataProvider="{specularList}"
+								/>
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="" />
+			</controls:PropertiesItemContainer>
+			<controls:PropertiesItemContainer label="Normal Method:" width="100%">
+				<s:DropDownList id="normalMethodDropDownList" requireSelection="true"
+								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_asset.normalMethod}" dataProvider="{normalList}"
+								/>
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="" />
+			</controls:PropertiesItemContainer>
 		</s:VGroup>
 	</controls:CollapsiblePanel>
 	
