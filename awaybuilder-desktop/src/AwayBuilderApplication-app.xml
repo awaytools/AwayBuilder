@@ -27,7 +27,7 @@
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
 	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
-	<versionNumber>0.0.3</versionNumber>
+	<versionNumber>0.0.5</versionNumber>
 		         
 	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
 	<versionLabel>alpha1</versionLabel>
@@ -45,9 +45,6 @@
 		<!-- Note: In Flash Builder, the SWF reference is set automatically. -->
 		<content>[This value will be overwritten by Flash Builder in the output app.xml]</content>
 		
-		<!-- The title of the main window. Optional. -->
-		<!-- <title></title> -->
-
 		<!-- The type of system chrome to use (either "standard" or "none"). Optional. Default standard. -->
 		<!-- <systemChrome></systemChrome> -->
 
@@ -71,12 +68,6 @@
 
 		<!-- The window's initial height in pixels. Optional. -->
 		<!-- <height></height> -->
-
-		<!-- The window's initial x position. Optional. -->
-		<!-- <x></x> -->
-
-		<!-- The window's initial y position. Optional. -->
-		<!-- <y></y> -->
 
 		<!-- The window's minimum size, specified as a width/height pair in pixels, such as "400 200". Optional. -->
 		<!-- <minSize></minSize> -->

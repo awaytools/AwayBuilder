@@ -3,28 +3,39 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	showStatusBar="false"
-	frameRate="60"
-	invoke="invokeHandler(event)" minWidth="1000" minHeight="700" backgroundColor="0x333333"
-	preinitialize="preinitializeHandler(event)"  xmlns:components="awaybuilder.view.components.*">
+	xmlns:components="awaybuilder.view.components.*"
+	frameRate="60" backgroundFrameRate="5"
+	minWidth="1000" minHeight="720" 
+	backgroundColor="0x333333"
+	visible="false" showStatusBar="false"
+	invoke="invokeHandler(event)" 
+	preinitialize="preinitializeHandler(event)"
+	applicationComplete="applicationCompleteHandler(event)" resize="resizeHandler(event)"
+	>
 	
 	<fx:Declarations>
 	</fx:Declarations>
 	
 	<fx:Style source="desktop_styles.css"/>
 	
-	<components:CoreEditor id="awaybuilder" top="0" right="0" bottom="0" left="0"/>
+	<components:CoreEditor id="coreEditor" top="0" right="0" bottom="0" left="0"/>
 	
 	<fx:Script><![CDATA[
-        import mx.events.FlexEvent;
-
-        import awaybuilder.desktop.DesktopAppContext;
-        import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+		import awaybuilder.desktop.DesktopAppContext;
+		import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+		
+		import mx.events.FlexEvent;
+		import mx.events.ResizeEvent;
 
         private var _context:DesktopAppContext;
 
+		public var splashScreen:SplashScreen;
+		
         private function preinitializeHandler(event:FlexEvent):void
         {
+			splashScreen = new SplashScreen();
+			this.width = Capabilities.screenResolutionX;
+			this.height = Capabilities.screenResolutionY;
             this._context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
         }
 
@@ -41,6 +52,18 @@
                 }
             }
         }
-        ]]></fx:Script>
+		
+		protected function applicationCompleteHandler(event:FlexEvent):void
+		{
+//			this.visible = true;
+//			this.maximize();
+		}
+		
+		protected function resizeHandler(event:ResizeEvent):void
+		{
+			coreEditor.validateNow();
+		}
+		
+	]]></fx:Script>
 	
 </s:WindowedApplication>

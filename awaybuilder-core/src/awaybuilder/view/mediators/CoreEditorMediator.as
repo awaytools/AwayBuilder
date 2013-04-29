@@ -44,6 +44,7 @@ package awaybuilder.view.mediators
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
+    import awaybuilder.controller.events.SceneReadyEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
@@ -788,7 +789,7 @@ package awaybuilder.view.mediators
 		
 		private function scene_readyHandler(event:Scene3DManagerEvent):void
 		{
-			
+			this.dispatch(new SceneReadyEvent(SceneReadyEvent.READY));
 		}	
 		
 		private function scene_meshSelectedHandler(event:Scene3DManagerEvent):void

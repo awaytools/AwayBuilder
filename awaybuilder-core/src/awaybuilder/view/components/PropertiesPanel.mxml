@@ -114,7 +114,7 @@
 	<controls:CrutchScroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
 		<s:Group width="225">
 			
-			<editors:GlobalOptionsPropertyEditor data="{_data}" includeIn="global" />
+			<editors:GlobalOptionPropertiesEditor data="{_data}" includeIn="global" />
 			
 			<editors:MeshPropertyEditor id="meshProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
 			

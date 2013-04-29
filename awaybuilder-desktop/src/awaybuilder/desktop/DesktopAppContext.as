@@ -5,10 +5,12 @@ package awaybuilder.desktop
     import awaybuilder.controller.events.DocumentLoadEvent;
     import awaybuilder.controller.events.DocumentRequestEvent;
     import awaybuilder.controller.events.MessageBoxEvent;
+    import awaybuilder.controller.events.SceneReadyEvent;
     import awaybuilder.controller.events.SettingsEvent;
     import awaybuilder.desktop.controller.CloseDocumentCommand;
     import awaybuilder.desktop.controller.DocumentRequestCommand;
     import awaybuilder.desktop.controller.OpenFromInvokeCommand;
+    import awaybuilder.desktop.controller.SceneReadyCommand;
     import awaybuilder.desktop.controller.ShowAboutWindowCommand;
     import awaybuilder.desktop.controller.ShowDocumentLoadProgressWindowCommand;
     import awaybuilder.desktop.controller.ShowDocumentSettingsWindowCommand;
@@ -51,6 +53,8 @@ package awaybuilder.desktop
 		override public function startup():void
 		{
 			super.startup();
+			
+			this.commandMap.mapEvent(SceneReadyEvent.READY, SceneReadyCommand);
 			
 			this.commandMap.mapEvent(DocumentRequestEvent.REQUEST_NEW_DOCUMENT, DocumentRequestCommand);
 			this.commandMap.mapEvent(DocumentRequestEvent.REQUEST_OPEN_DOCUMENT, DocumentRequestCommand);
