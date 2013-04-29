@@ -410,6 +410,8 @@ package awaybuilder.utils.scene
 			scene.addChild(o);
 			
 			objects.addItem(o);
+
+//TODO: add the ContainerGizmo additions here!!!!!!!!
 		}
 		
 		public static function removeMesh(mesh:Mesh):void
@@ -492,15 +494,20 @@ package awaybuilder.utils.scene
 		
 		public static function unselectAll():void
 		{
+			var itemsDeselected:Boolean = false;
 			for(var i:int=0;i<selectedObjects.length;i++)
 			{
 				var m:Entity = selectedObjects.getItemAt(i) as Entity;
 				m.showBounds = false;
+				itemsDeselected = true;
 			}
 			
 			selectedObjects = new ArrayList();
 			selectedObject = null;
 			currentGizmo.hide();
+
+			if (itemsDeselected)
+				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}
 		
 		public static function unSelectObjectByName(meshName:String):void

@@ -797,6 +797,7 @@ package awaybuilder.view.mediators
 						asset = assets.GetAsset(isLight.light);
 					else
 						asset = assets.GetAsset(mesh);
+					selected.push(asset);
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
