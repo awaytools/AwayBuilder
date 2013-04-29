@@ -69,7 +69,7 @@
 		private var _pointMappersSelectedItem:Object;
 		
 		
-		override protected function validate(asset:AssetVO):void
+		override protected function validate(asset:Object):void
 		{
 			if( !(asset is LightVO) ) return;
 			_asset = LightVO(asset).clone() as LightVO;

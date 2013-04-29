@@ -68,6 +68,9 @@ package awaybuilder.view.components.editors.events
 		public static const SHOW_PARENT_MESH_PROPERTIES:String = "showParentMeshProperties";
 		public static const SHOW_PARENT_MATERIAL_PROPERTIES:String = "showParentTextureProperties";
 
+		public static const GLOBAL_OPTIONS_CHANGE:String = "globalOptionsChange";
+		public static const GLOBAL_OPTIONS_STEPPER_CHANGE:String = "globalOptionsStepperChange";
+		
         public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=true ) {
             super( type, bubbles, cancelable );
             this.data = data;

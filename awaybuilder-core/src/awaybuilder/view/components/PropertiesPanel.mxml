@@ -10,7 +10,7 @@
 
     <controls:states>
 		<s:State name="initAll"/>
-		<s:State name="empty"/>
+		<s:State name="global"/>
         <s:State name="group"/>
         <s:State name="mesh"/>
         <s:State name="material"/>
@@ -59,16 +59,16 @@
 		}
 		
 		[Bindable]
-		private var _data:AssetVO;
+		private var _data:Object;
 		
-		public function get data():AssetVO
+		public function get data():Object
 		{
-			return _data as AssetVO;
+			return _data as Object;
 		}
 		public function SetData( value:Object ):void
 		{
 			_data = null; //need refactor here
-			_data = value as AssetVO;
+			_data = value;
 		}
 		[Bindable]
 		public var textures:ArrayCollection;
@@ -114,26 +114,23 @@
 	<controls:CrutchScroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
 		<s:Group width="225">
 			
-			<s:VGroup includeIn="empty,initAll" paddingLeft="12" paddingRight="12" paddingTop="12" paddingBottom="12">
-				<s:Label text="General Settings"/><s:CheckBox label="Show Grid" enabled="false"/>
-				<s:Button label="Select All" enabled="false"/>
-			</s:VGroup>
+			<editors:GlobalOptionsPropertyEditor data="{_data}" includeIn="global" />
 			
 			<editors:MeshPropertyEditor id="meshProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
-			<editors:MaterialPropertiesEditor id="materialProperties" textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
-			<editors:TexturePropertiesEditor id="textureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
-			<editors:CubeTexturePropertiesEditor id="cubetextureProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="cubeTexture,initAll" />
-			<editors:LightPropertiesEditor id="lightProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
-			<editors:LightPickerPropertiesEditor id="lightPickerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
+			<editors:MaterialPropertiesEditor textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
+			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
+			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="cubeTexture,initAll" />
+			<editors:LightPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
+			<editors:LightPickerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
 			<s:Group includeIn="geometry,initAll"><s:Label text="Geometry Options"/></s:Group>
-			<editors:ContainerPropertiesEditor id="containerProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
-			<editors:ShadowMethodPropertyEditor id="shadowMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
-			<editors:EffectMethodPropertyEditor id="effectMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
-			<editors:ShadowMapperPropertyEditor id="effectMapperProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
-			<editors:ShadingPropertyEditor id="shadingMethodProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
+			<editors:ContainerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
+			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
+			<editors:EffectMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
+			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
+			<editors:ShadingPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

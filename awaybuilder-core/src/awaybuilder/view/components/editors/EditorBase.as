@@ -30,13 +30,13 @@ package awaybuilder.view.components.editors
 			return this._prevSelected;
 		}
 		
-		private var _data:AssetVO;
+		private var _data:Object;
 		[Bindable]
-		public function get data():AssetVO
+		public function get data():Object
 		{
 			return _data;
 		}
-		public function set data(value:AssetVO):void
+		public function set data(value:Object):void
 		{
 			if( value ) {
 				_data = value;
@@ -77,7 +77,7 @@ package awaybuilder.view.components.editors
 			_lightPickers = value;
 		}
 		
-		protected function validate( asset:AssetVO ):void 
+		protected function validate( asset:Object ):void 
 		{
 			
 		}

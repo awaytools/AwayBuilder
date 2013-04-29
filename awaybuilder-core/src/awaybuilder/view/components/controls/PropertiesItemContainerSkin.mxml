@@ -19,20 +19,5 @@
 			<s:HorizontalLayout/>
 		</s:layout>
 	</s:Group>
-		<!--<controls:ExtendedDropDownList id="lightPickerDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
-									   dataProvider="{lightPickers}" selectedItem="{_selectedLightPicker}" requireSelection="true"
-									   labelFunction="{assetDropDownLabelFunction}"
-									   newItemLabel="New LightPicker"
-									   change="lightPickerDropDownList_changeHandler(event)"
-									   addNewItem="lightPickerDropDownList_addNewItemHandler(event)"
-									   />
-		<s:Button styleName="editSharedObjectButtonStyle"
-				  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{!lightPickerDropDownList.selectedItem.isNull}"/>-->
-    
-    <!--
-        Note: setting the minimum size to 0 here so that changes to the host component's
-        size will not be thwarted by this skin part's minimum size.   This is a compromise,
-        more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
-    -->
 
 </s:Skin>

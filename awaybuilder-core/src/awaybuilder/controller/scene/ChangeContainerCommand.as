@@ -18,9 +18,7 @@ package awaybuilder.controller.scene
 			var mesh:ContainerVO = event.newValue as ContainerVO;
 			var vo:ContainerVO = event.items[0] as ContainerVO;
 			
-			if( !event.oldValue ) {
-				event.oldValue = vo.clone();
-			}
+			saveOldValue( event, vo.clone() );
 			
 			vo.name = mesh.name;
 			vo.pivotX = mesh.pivotX;

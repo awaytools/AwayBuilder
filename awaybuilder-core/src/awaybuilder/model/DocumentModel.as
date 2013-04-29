@@ -1,9 +1,10 @@
 package awaybuilder.model
 {
 	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.GlobalOptionsVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
-	import awaybuilder.model.vo.DocumentVO;
 	
 	import flash.display3D.textures.Texture;
 	
@@ -14,7 +15,7 @@ package awaybuilder.model
 
 	public class DocumentModel extends Actor
 	{
-		private var documentVO:DocumentVO = new DocumentVO();
+		private var _documentVO:DocumentVO = new DocumentVO();
 		
 		private var _empty:Boolean = true;
 		public function get empty():Boolean
@@ -76,76 +77,82 @@ package awaybuilder.model
 			this._selectedObjects = value;
 		}
 		
+		private var _globalOptions:GlobalOptionsVO = new GlobalOptionsVO();
+		public function get globalOptions():GlobalOptionsVO
+		{
+			return this._globalOptions;
+		}
+		
 		public function get animations():ArrayCollection
 		{
-			return documentVO.animations;
+			return _documentVO.animations;
 		}
 		public function set animations(value:ArrayCollection):void
 		{
-			documentVO.animations = value;
+			_documentVO.animations = value;
 		}
 		
 		public function get geometry():ArrayCollection
 		{
-			return documentVO.geometry;
+			return _documentVO.geometry;
 		}
 		public function set geometry(value:ArrayCollection):void
 		{
-			documentVO.geometry = value;
+			_documentVO.geometry = value;
 		}
 		
 		public function get materials():ArrayCollection
 		{
-			return documentVO.materials;
+			return _documentVO.materials;
 		}
 		public function set materials(value:ArrayCollection):void
 		{
-			documentVO.materials = value;
+			_documentVO.materials = value;
 		}
 		
 		public function get scene():ArrayCollection
 		{
-			return documentVO.scene;
+			return _documentVO.scene;
 		}
 		public function set scene(value:ArrayCollection):void
 		{
-			documentVO.scene = value;
+			_documentVO.scene = value;
 		}
 		
 		public function get skeletons():ArrayCollection
 		{
-			return documentVO.skeletons;
+			return _documentVO.skeletons;
 		}
 		public function set skeletons(value:ArrayCollection):void
 		{
-			documentVO.skeletons = value;
+			_documentVO.skeletons = value;
 		}
 		
 		public function get textures():ArrayCollection
 		{
-			return documentVO.textures;
+			return _documentVO.textures;
 		}
 		public function set textures(value:ArrayCollection):void
 		{
-			documentVO.textures = value;
+			_documentVO.textures = value;
 		}
 		
 		public function get lights():ArrayCollection
 		{
-			return documentVO.lights;
+			return _documentVO.lights;
 		}
 		public function set lights(value:ArrayCollection):void
 		{
-			documentVO.lights = value;
+			_documentVO.lights = value;
 		}
 		
 		public function get methods():ArrayCollection
 		{
-			return documentVO.methods;
+			return _documentVO.methods;
 		}
 		public function set methods(value:ArrayCollection):void
 		{
-			documentVO.methods = value;
+			_documentVO.methods = value;
 		}
 		
 		
@@ -162,7 +169,8 @@ package awaybuilder.model
 		
 		public function clear():void
 		{
-			documentVO = new DocumentVO();
+			_documentVO = new DocumentVO();
+			_globalOptions = new GlobalOptionsVO();
 			_selectedObjects = new Vector.<AssetVO>();
 			empty = true;
 		}

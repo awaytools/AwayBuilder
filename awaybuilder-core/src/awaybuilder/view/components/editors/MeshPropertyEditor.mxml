@@ -15,7 +15,7 @@
 		[Bindable]
 		private var _asset:MeshVO;
 		
-		override protected function validate(asset:AssetVO):void
+		override protected function validate(asset:Object):void
 		{
 			if( !(asset is MeshVO) ) return;
 			if( asset is MeshVO ) _asset = MeshVO(asset).clone() as MeshVO;

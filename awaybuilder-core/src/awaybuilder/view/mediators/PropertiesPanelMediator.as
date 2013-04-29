@@ -54,6 +54,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
             addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
+			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, eventDispatcher_changeGlobalOptionsHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
@@ -89,8 +90,6 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_CHANGE, view_shadowmapperChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_STEPPER_CHANGE, view_shadowmapperChangeStepperHandler );
 			
-			
-			
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, view_effectmethodChangeStepperHandler );
 			
@@ -114,13 +113,16 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_DIRECTIONAL_LIGHT, view_lightPickerAddDirectionalLightHandler );
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_POINT_LIGHT, view_lightPickerAddPointLightHandler );
 			
-			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
 			addViewListener( PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES, view_showParentMeshHandler );
 			addViewListener( PropertyEditorEvent.SHOW_PARENT_MATERIAL_PROPERTIES, view_showParentMaterialHandler );
 			
-			view.currentState = "empty";
+			addViewListener( PropertyEditorEvent.GLOBAL_OPTIONS_CHANGE, view_globalOptionsChangeHandler );
+			addViewListener( PropertyEditorEvent.GLOBAL_OPTIONS_STEPPER_CHANGE, view_globalOptionsStepperChangeHandler );
+			
+			view.currentState = "global";
+			view.SetData(document.globalOptions);
         }
 
         //----------------------------------------------------------------------
@@ -158,6 +160,14 @@ package awaybuilder.view.mediators
         {
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data, true));
         }
+		private function view_globalOptionsChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_GLOBAL_OPTIONS,[view.data], event.data));
+		}
+		private function view_globalOptionsStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_GLOBAL_OPTIONS,[view.data], event.data, true));
+		}
         private function view_meshSubmeshChangeHandler(event:PropertyEditorEvent):void
         {
             var vo:MeshVO = view.data as MeshVO;
@@ -374,7 +384,10 @@ package awaybuilder.view.mediators
 		{
 			view.SetData( event.items[0] );
 		}
-		
+		private function eventDispatcher_changeGlobalOptionsHandler(event:SceneEvent):void
+		{
+			view.SetData( event.items[0] );
+		}
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
             var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
@@ -444,8 +457,8 @@ package awaybuilder.view.mediators
 			
             if( !event.items || event.items.length == 0)
             {
-				view.showEditor( "empty", event.newValue, event.oldValue );
-				view.collapsed = true;
+				view.showEditor( "global", event.newValue, event.oldValue );
+				view.SetData(document.globalOptions);
                 return;
             }
             if( event.items.length )
@@ -515,7 +528,8 @@ package awaybuilder.view.mediators
 					}
                     else
                     {
-						view.showEditor( "empty", event.newValue, event.oldValue );
+						view.showEditor( "global", event.newValue, event.oldValue );
+						view.SetData(document.globalOptions);
                     }
                 }
                 else
@@ -526,7 +540,8 @@ package awaybuilder.view.mediators
             }
             else
             {
-				view.showEditor( "empty", event.newValue, event.oldValue );
+				view.showEditor( "global", event.newValue, event.oldValue );
+				view.SetData(document.globalOptions);
             }
 			//if event.oldValue is true it means that we just back from child
 			//if event.newValue is true it means that we select child

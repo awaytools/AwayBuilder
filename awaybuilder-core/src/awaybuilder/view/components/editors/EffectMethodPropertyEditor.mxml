@@ -38,7 +38,7 @@
 		[Bindable]
 		private var _selectedLight:LightVO;
 		
-		override protected function validate(asset:AssetVO):void
+		override protected function validate(asset:Object):void
 		{
 			if( !(asset is EffectMethodVO) ) return;
 			_asset = EffectMethodVO(asset).clone();

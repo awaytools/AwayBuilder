@@ -7,6 +7,7 @@ package awaybuilder
 	import awaybuilder.controller.clipboard.events.ClipboardEvent;
 	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.document.AppendDocumentCommand;
+	import awaybuilder.controller.document.ChangeGlobalOptionsCommand;
 	import awaybuilder.controller.document.ConcatenateDocumentDataCommand;
 	import awaybuilder.controller.document.ImportDocumentCommand;
 	import awaybuilder.controller.document.ImportTextureAndReplaceCommand;
@@ -125,6 +126,8 @@ package awaybuilder
 			
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_REPLACE, ImportTextureAndReplaceCommand);
 			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_REPLACE, LoadTextureAndRepalceCommand);
+			
+			commandMap.mapEvent(SceneEvent.CHANGE_GLOBAL_OPTIONS, ChangeGlobalOptionsCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CONTAINER, ChangeContainerCommand);

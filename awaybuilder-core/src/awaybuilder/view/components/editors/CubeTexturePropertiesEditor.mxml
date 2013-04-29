@@ -12,7 +12,7 @@
 		[Bindable]
 		private var _asset:CubeTextureVO;
 		
-		override protected function validate(asset:AssetVO):void
+		override protected function validate(asset:Object):void
 		{
 			if( !(asset is CubeTextureVO) ) return;
 			_asset = CubeTextureVO(asset).clone();

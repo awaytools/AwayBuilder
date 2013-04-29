@@ -32,7 +32,7 @@
 		[Bindable]
 		private var _asset:LightPickerVO;
 		
-		override protected function validate(asset:AssetVO):void
+		override protected function validate(asset:Object):void
 		{
 			if( !(asset is LightPickerVO) ) return;
 			_asset = LightPickerVO(asset).clone();

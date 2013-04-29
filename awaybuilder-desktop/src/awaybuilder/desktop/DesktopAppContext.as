@@ -18,7 +18,6 @@ package awaybuilder.desktop
     import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
     import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
     import awaybuilder.desktop.model.FileSystemDocumentService;
-    import awaybuilder.desktop.model.UpdateModel;
     import awaybuilder.desktop.view.components.AboutWindow;
     import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
     import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
@@ -70,7 +69,6 @@ package awaybuilder.desktop
 
 			this.commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
 			
-			this.injector.mapSingleton(UpdateModel);
 			this.injector.mapSingletonOf(IDocumentService, FileSystemDocumentService);
 			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);
 			

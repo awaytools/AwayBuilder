@@ -9,6 +9,7 @@ package awaybuilder.view.components.controls
 			super();
 		}
 		
+		[Bindable]
 		public var label:String;
 	}
 }

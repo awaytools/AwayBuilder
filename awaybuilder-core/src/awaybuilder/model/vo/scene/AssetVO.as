@@ -7,11 +7,6 @@ package awaybuilder.model.vo.scene
 	public class AssetVO
 	{
 		
-		public function AssetVO()
-		{
-			//Must be instantiate only for clonning or inside AssetsFactory.
-		}
-		
 		public var id:String; // unique ID to compare objects
 		
 		public var name:String = "undefined";

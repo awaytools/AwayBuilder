@@ -86,7 +86,7 @@
 		
 		[Bindable] private var _asset:MaterialVO;
 		
-		override protected function validate(asset:AssetVO):void
+		override protected function validate(asset:Object):void
 		{
 			if( !(asset is MaterialVO) ) return;
 			_asset = MaterialVO(asset).clone();
@@ -519,10 +519,6 @@
 		</s:HGroup>
 		<controls:HorizontalFormSeparator/>
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
-			<!--<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:NumericStepper id="alphaStepper" minimum="0" maximum="100" value="{_asset.diffuseAlpha*100}" width="100%"
-								  change="alphaStepper_changeHandler(event)" enabled="{!_isDefault}"/>
-			</s:FormItem>-->
 			<s:FormItem label="repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="repeatBox" change="basicProperties_changeHandler(event)" selected="{_asset.repeat}" />
 			</s:FormItem>
