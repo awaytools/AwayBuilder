@@ -1,5 +1,7 @@
 package awaybuilder.utils.scene
 {
+	import awaybuilder.controller.scene.events.SceneEvent;
+	import avmplus.getQualifiedClassName;
 	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	import away3d.lights.DirectionalLight;
 	import awaybuilder.utils.MathUtils;
@@ -43,7 +45,7 @@ package awaybuilder.utils.scene
 	public class Scene3DManager extends EventDispatcher
 	{
 		// Singleton instance declaration
-		public static const instance:Scene3DManager = new Scene3DManager();		
+		public static const instance : Scene3DManager = new Scene3DManager();
 		public function Scene3DManager() { if ( instance ) throw new Error("Scene3DManager is a singleton"); }		
 		
 		public static var active:Boolean = true;
@@ -60,6 +62,7 @@ package awaybuilder.utils.scene
 		public static var selectedObjects:ArrayList = new ArrayList();// TODO: Use vector
 		public static var selectedObject:Entity;
 		public static var multiSelection:Boolean = false;
+		public static var mouseSelection:ObjectContainer3D;
 		
 		public static var objects:ArrayList = new ArrayList(); // TODO: Use vector
 		public static var lights:ArrayList = new ArrayList();// TODO: Use vector
@@ -411,7 +414,10 @@ package awaybuilder.utils.scene
 			
 			objects.addItem(o);
 
-//TODO: add the ContainerGizmo additions here!!!!!!!!
+			if (getQualifiedClassName(o)=="away3d.containers::ObjectContainer3D" && o.numChildren == 0) {
+				Scene3DManager.containers.push(o);
+				o.addChild(new ContainerGizmo3D(o));
+			}
 		}
 		
 		public static function removeMesh(mesh:Mesh):void
@@ -470,12 +476,11 @@ package awaybuilder.utils.scene
 				var mesh:Mesh = toggleMeshBounds(selectedMesh);
 				if (selectedMesh.parent is LightGizmo3D) { 
 					selectedMesh = (selectedMesh.parent as LightGizmo3D).light;
-					if (mesh.showBounds) unSelectObjectByName(selectedMesh.name);
-					selectObjectByName(selectedMesh.name);	
+					mouseSelection = selectedMesh;
 				} else {
-					if (mesh.showBounds) unSelectObjectByName(mesh.name);
-					else selectObjectByName(mesh.name);	
-				}				
+					mouseSelection = mesh;
+				}
+				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED_FROM_VIEW));			
 			}
 		}
 
@@ -528,11 +533,12 @@ package awaybuilder.utils.scene
 		}		
 		
 		// TODO: Use mesh link instead of name
-		private static function selectObjectByName(meshName:String):void // Must be used internally only, otherwise use "selectObject", event must not be dispatched
-		{		
-			selectObject( meshName );
-			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
-		}
+//		private static function selectObjectByName(meshName:String):void // Must be used internally only, otherwise use "selectObject", event must not be dispatched
+//		{		
+//			//selectObject( meshName );
+//			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
+//			//instance.dispatchEvent(new SceneEvent(SceneEvent.SELECT, );
+//		}
 		
 		public static function selectObject(meshName:String):void 
 		{			

@@ -1,5 +1,6 @@
 package awaybuilder.view.mediators
 {
+    import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
@@ -122,6 +123,7 @@ package awaybuilder.view.mediators
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED_FROM_VIEW, scene_meshSelectedFromViewHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM, scene_transformHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM_RELEASE, scene_transformReleaseHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomToDistanceHandler);
@@ -411,7 +413,8 @@ package awaybuilder.view.mediators
 			light.color = asset.color;
 			light.specular = asset.specular;
 			
-			light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
+			if (asset.shadowMapper)
+				light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
 			
 			applyObject( asset );
 			if( asset.type == LightVO.DIRECTIONAL ) 
@@ -716,6 +719,13 @@ package awaybuilder.view.mediators
 						var mesh:MeshVO = event.items[0] as MeshVO;
 						selectObjectsScene( assets.GetObject( mesh ) as Object3D );
 					}
+					else if( event.items[0] is ContainerVO)
+					{
+						var container:ContainerVO = event.items[0] as ContainerVO;
+						var asset:ObjectContainer3D = assets.GetObject( container ) as ObjectContainer3D;
+						if (asset.numChildren == 1)
+							selectObjectsScene( (asset.getChildAt(0) as ContainerGizmo3D).containerGizmo );
+					}
 					else if( event.items[0] is LightVO )
 					{
 						var light:LightVO = event.items[0] as LightVO;
@@ -787,6 +797,7 @@ package awaybuilder.view.mediators
 			var mesh:Mesh;
 			var asset:AssetVO;
 			var isLight:LightGizmo3D;
+			var isContainer:ContainerGizmo3D;
 				
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
@@ -795,12 +806,25 @@ package awaybuilder.view.mediators
 				{
 					if ((isLight = (mesh.parent as LightGizmo3D)))
 						asset = assets.GetAsset(isLight.light);
+					else if ((isContainer = (mesh.parent as ContainerGizmo3D)))
+						asset = assets.GetAsset(isContainer.parent);
 					else
 						asset = assets.GetAsset(mesh);
 					selected.push(asset);
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
+		}
+
+		private function scene_meshSelectedFromViewHandler(event:Scene3DManagerEvent) : void {
+			if (Scene3DManager.mouseSelection) {
+				var asset:AssetVO;
+				if (Scene3DManager.mouseSelection.parent is ContainerGizmo3D)
+					asset = assets.GetAsset( (Scene3DManager.mouseSelection.parent as ContainerGizmo3D).container );
+				else 
+					asset = assets.GetAsset( Scene3DManager.mouseSelection );
+				this.dispatch(new SceneEvent(SceneEvent.SELECT, [ asset ]));
+			}
 		}
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
