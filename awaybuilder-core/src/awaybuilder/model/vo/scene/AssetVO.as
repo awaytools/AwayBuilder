@@ -12,6 +12,7 @@ package awaybuilder.model.vo.scene
 		public var name:String = "undefined";
 		
 		public var isDefault:Boolean = false;
+		
 		public var isNull:Boolean = false;
 		
 		public function equals( asset:AssetVO ):Boolean

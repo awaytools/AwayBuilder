@@ -74,9 +74,12 @@ package awaybuilder.model
 			{
 				if( object is type )
 				{
-					if( property && (object[property] == value) ) 
+					if( property )
 					{
-						objects.push( object );
+						if( (object[property] == value) ) 
+						{
+							objects.push( object );
+						}
 					}
 					else 
 					{
@@ -141,7 +144,7 @@ package awaybuilder.model
 			newMaterial.ambientMethod = base.ambientMethod;
 			newMaterial.normalMethod = base.normalMethod;
 			newMaterial.specularMethod = base.specularMethod;
-			newMaterial.name = base.name + "(copy)";
+			newMaterial.name = "Material " + AssetUtil.GetNextId("Material");
 			
 			return GetAsset(newMaterial) as MaterialVO;
 		}

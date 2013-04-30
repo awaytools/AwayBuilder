@@ -40,7 +40,7 @@ package awaybuilder.controller.scene
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
+//					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
 				}
 			}
 			removeItemsFromDocument( objects );
@@ -98,17 +98,27 @@ package awaybuilder.controller.scene
 		}
 		private function removeItems( source:ArrayCollection, items:Vector.<AssetVO> ):void
 		{
+			var isRemoved:Boolean = false;
 			for (var i:int = 0; i < source.length; i++) 
 			{
+				
 				var item:AssetVO = source[i] as AssetVO;
+				isRemoved = false;
 				for each( var oddItem:AssetVO in items ) 
 				{
 					if( item.equals( oddItem ) )
 					{
 						source.removeItemAt( i );
+						isRemoved = true;
 						i--;
 					}
 				}
+				var container:ContainerVO = item as ContainerVO;
+				if( container && !isRemoved )
+				{
+					removeItems( container.children, items );
+				}
+				
 			}
 		}
 		

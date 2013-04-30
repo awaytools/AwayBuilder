@@ -561,7 +561,7 @@ package awaybuilder.view.mediators
 				{
 					obj.material = m;
 					var vo:SubMeshVO = assets.GetAsset( obj ) as SubMeshVO;
-					vo.material = assets.GetAsset( obj ) as MaterialVO;
+					vo.material = assets.GetAsset( m ) as MaterialVO;
 				}
 			}
 			
@@ -721,8 +721,8 @@ package awaybuilder.view.mediators
 					{
 						var container:ContainerVO = event.items[0] as ContainerVO;
 						var asset:ObjectContainer3D = assets.GetObject( container ) as ObjectContainer3D;
-						if (asset.numChildren == 1)
-							selectObjectsScene( (asset.getChildAt(0) as ContainerGizmo3D).containerGizmo );
+//						if (asset.numChildren == 1)
+//							selectObjectsScene( (asset.getChildAt(0) as ContainerGizmo3D).containerGizmo );
 					}
 					else if( event.items[0] is LightVO )
 					{

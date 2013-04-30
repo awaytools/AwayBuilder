@@ -163,7 +163,7 @@
 			var shadowMehtods:Array = [];
 			var nullItem:AssetVO = new AssetVO();
 			nullItem.name = "Null";
-			nullItem.isNull = true;
+			nullItem.isDefault = true;
 			
 			lights.push( nullItem );
 			shadowMehtods.push( nullItem );
@@ -240,7 +240,7 @@
 
 		private function shadowMethodDropDownList_changeHandler(event:IndexChangeEvent):void 
 		{
-			if( !shadowMethodDropDownList.selectedItem.isNull) 
+			if( !shadowMethodDropDownList.selectedItem.isNull ) 
 			{
 				_asset.shadowMethod = shadowMethodDropDownList.selectedItem as ShadowMethodVO;
 			}
@@ -315,7 +315,6 @@
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES, prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
-		
 		
 		protected function blendModeList_changeHandler(event:IndexChangeEvent):void
 		{
@@ -604,7 +603,7 @@
 			<s:FormItem label="Alpha Blending" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="alphaBlendingBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaBlending}" />
 			</s:FormItem>
-			<s:FormItem label="Alpha Threshold" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{_asset.alphaBlending}" >
+			<s:FormItem label="Alpha Threshold" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="alphaThresholdStepper" value="{_asset.alphaThreshold}" width="38"
 												 minimum="0" maximum="1" stepSize="0.01" snapInterval="0.001"
 												 change="alphaThresholdStepper_changeHandler(event)" />
@@ -618,7 +617,6 @@
 								/>
 			</s:FormItem>
         </s:Form>
-		
     </controls:CollapsiblePanel>
 	
 	<controls:CollapsiblePanel width="100%" title="Colors &amp; Textures" collapsed="true" enabled="{!_asset.isDefault}">
@@ -647,7 +645,7 @@
 											   addNewItem="ambientTextureDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="ambientTextureDropDownListButton_clickHandler(event)" enabled="{!ambientTextureDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="ambientTextureDropDownListButton_clickHandler(event)" enabled="{!ambientTextureDropDownList.selectedItem.isNull&amp;&amp;!ambientTextureDropDownList.selectedItem.isDefault}"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
@@ -670,7 +668,7 @@
 											   addNewItem="textureDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="textureButton_clickHandler(event)" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="textureButton_clickHandler(event)" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
@@ -703,7 +701,7 @@
 											   addNewItem="specularDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="specularTextureButton_clickHandler(event)" enabled="{!specularDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="specularTextureButton_clickHandler(event)" enabled="{!specularDropDownList.selectedItem.isNull&amp;&amp;!specularDropDownList.selectedItem.isDefault}"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
@@ -721,7 +719,7 @@
 											   addNewItem="normalTextureDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="normalTexturButton_clickHandler(event)" enabled="{!normalTextureDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="normalTexturButton_clickHandler(event)" enabled="{!normalTextureDropDownList.selectedItem.isNull&amp;&amp;!normalTextureDropDownList.selectedItem.isDefault}"/>
 			</s:HGroup>
 		</s:VGroup>
 	</controls:CollapsiblePanel>
@@ -737,14 +735,14 @@
 											   addNewItem="lightPickerDropDownList_addNewItemHandler(event)"
 											   />
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{!lightPickerDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{!lightPickerDropDownList.selectedItem.isNull&amp;&amp;!lightPickerDropDownList.selectedItem.isDefault}"/>
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Shadow Light:" width="100%">
 				<s:DropDownList id="shadowLightDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" labelFunction="assetDropDownLabelFunction"
 								change="shadowLightDropDownList_changeHandler(event)" width="100%" requireSelection="true"
 								selectedItem="{_selectedLight}" dataProvider="{_lights}"/>
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{!shadowLightDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{!shadowLightDropDownList.selectedItem.isNull&amp;&amp;!shadowLightDropDownList.selectedItem.isDefault}"/>
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Shadow Method:" width="100%">
 				<s:DropDownList id="shadowMethodDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" requireSelection="true" labelFunction="assetDropDownLabelFunction"
@@ -752,7 +750,7 @@
 								selectedItem="{_selectedShadowMethod}" dataProvider="{_shadowMethods}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle"
-						  width="23" height="100%" click="editShadowMethodButton_clickHandler(event)" enabled="{!shadowMethodDropDownList.selectedItem.isNull}"/>
+						  width="23" height="100%" click="editShadowMethodButton_clickHandler(event)" enabled="{!shadowMethodDropDownList.selectedItem.isNull&amp;&amp;!shadowMethodDropDownList.selectedItem.isDefault}"/>
 			</controls:PropertiesItemContainer>
 		</s:VGroup>
 	</controls:CollapsiblePanel>

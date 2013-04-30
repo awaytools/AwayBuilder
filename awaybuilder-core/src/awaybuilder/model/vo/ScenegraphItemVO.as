@@ -1,11 +1,13 @@
 package awaybuilder.model.vo
 {
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.utils.DataMerger;
+	import awaybuilder.utils.interfaces.IMergeable;
 	
 	import mx.collections.ArrayCollection;
 	
 	[Bindable]
-	public class ScenegraphItemVO
+	public class ScenegraphItemVO implements IMergeable
 	{
 		
 		public static const LIGHT:String = "light";
@@ -42,5 +44,18 @@ package awaybuilder.model.vo
 		
 		public var type:String = "default";
 		
+		public function merge( item:Object ):void
+		{
+			var newItem:ScenegraphItemVO = item as ScenegraphItemVO;
+			if( newItem.children && this.children )
+			{
+				this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "item" );
+			}
+			else if( newItem.children )
+			{
+				this.children = new ArrayCollection( newItem.children.source.concat() );
+			}
+			
+		}
 	}
 }

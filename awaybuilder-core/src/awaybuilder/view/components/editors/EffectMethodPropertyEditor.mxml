@@ -144,7 +144,7 @@
 										   addNewItem=""
 										   />
 			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
 		</s:HGroup>
 	</s:VGroup>
 	
@@ -290,7 +290,7 @@
 										   addNewItem=""
 										   />
 			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
 		</s:HGroup>
 	</s:VGroup>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="RefractionEnvMapMethod" >
@@ -351,7 +351,7 @@
 										   addNewItem=""
 										   />
 			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull}"/>
+					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
 		</s:HGroup>
 	</s:VGroup>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="FresnelEnvMapMethod,EnvMapMethod" >

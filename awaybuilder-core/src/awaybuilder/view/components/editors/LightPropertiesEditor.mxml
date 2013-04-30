@@ -77,7 +77,6 @@
 			var o:Object;
 			if( _asset.shadowMapper ) 
 			{
-				trace(  _asset.shadowMapper +" _asset.shadowMapper = " + _asset.shadowMapper.type );
 				for each( o in directionalMappersList )
 				{
 					if( _asset.shadowMapper.type == o.value )

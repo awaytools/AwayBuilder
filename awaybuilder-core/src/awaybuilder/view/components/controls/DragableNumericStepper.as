@@ -1,11 +1,14 @@
 package awaybuilder.view.components.controls
 {
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
 	
+	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
 	
+	import spark.components.Application;
 	import spark.components.Label;
 	import spark.components.NumericStepper;
 	
@@ -41,7 +44,10 @@ package awaybuilder.view.components.controls
 			return Number(stringVal);     
 		} 
 		
-		
+		override protected function createChildren():void
+		{
+			this.addEventListener( Event.REMOVED_FROM_STAGE, removedFromStageHandler );
+		}
 		override protected function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
@@ -219,22 +225,32 @@ package awaybuilder.view.components.controls
 		}
 		
 		private function onFocusOutHandler(event:FocusEvent):void {
-			_isFocused = false;
-			invalidateSkinState();
-			stage.removeEventListener(MouseEvent.CLICK, childUpOutside);
-			editingMode = false;
+			if( stage )
+			{
+				_isFocused = false;
+				invalidateSkinState();
+				stage.removeEventListener(MouseEvent.CLICK, childUpOutside);
+				editingMode = false;
+			}
+			
 		}
 		
 		private function childUpOutside(event:MouseEvent):void
 		{
 			if( !hitTestPoint( event.stageX, event.stageY ) )
 			{
+				var s:Stage = Application(FlexGlobals.topLevelApplication).stage;
 				stage.focus = null;
 				stage.removeEventListener(MouseEvent.CLICK, childUpOutside);
 			}
 			
 		}
-
+		private function removedFromStageHandler(event:Event):void
+		{
+			var s:Stage = Application(FlexGlobals.topLevelApplication).stage;
+			s.removeEventListener(MouseEvent.CLICK, childUpOutside);
+		}
+		
 		override protected function getCurrentSkinState():String {
 			if( _isFocused ) 
 			{

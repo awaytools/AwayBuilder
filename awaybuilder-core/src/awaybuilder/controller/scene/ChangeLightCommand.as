@@ -51,10 +51,6 @@ package awaybuilder.controller.scene
 				}
 				newAsset.shadowMapper = assets.GetAsset( mapper ) as ShadowMapperVO;
 			}
-			if( newAsset.shadowMapper ) 
-			{
-				trace( newAsset.shadowMapper.type );
-			}
 			vo.fillFromLight( newAsset );
 			
 			addToHistory( event );
