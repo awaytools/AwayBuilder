@@ -74,9 +74,12 @@ package awaybuilder.model
 			{
 				if( object is type )
 				{
-					if( property && (object[property] == value) ) 
+					if( property )
 					{
-						objects.push( object );
+						if( (object[property] == value) ) 
+						{
+							objects.push( object );
+						}
 					}
 					else 
 					{
