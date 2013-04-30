@@ -27,10 +27,10 @@
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
 	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
-	<versionNumber>0.0.5</versionNumber>
+	<versionNumber>0.0.6</versionNumber>
 		         
 	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
-	<versionLabel>alpha1</versionLabel>
+	<versionLabel>alpha2</versionLabel>
 
 	<!-- Description, displayed in the AIR application installer.
 	May have multiple values for each language. See samples or xsd schema file. Optional. -->
@@ -121,23 +121,23 @@
 
 	<!-- The icon the system uses for the application. For at least one resolution,
 	specify the path to a PNG file included in the AIR package. Optional. -->
-	<!-- <icon>
-		<image16x16></image16x16>
-		<image29x29></image29x29>
-		<image32x32></image32x32>
-		<image36x36></image36x36>
-		<image48x48></image48x48>
-		<image50x50></image50x50>
-		<image57x57></image57x57>
-		<image58x58></image58x58>
-		<image72x72></image72x72>
-		<image100x100></image100x100>
-		<image114x114></image114x114>
-		<image128x128></image128x128>
-		<image144x144></image144x144>
-		<image512x512></image512x512>
-		<image1024x1024></image1024x1024>
-	</icon> -->
+	<icon>
+		<image16x16>assets/icon_AwayBuilder_16.png</image16x16>
+<!-- 		<image29x29></image29x29> -->
+		<image32x32>assets/icon_AwayBuilder_32.png</image32x32>
+<!-- 		<image36x36></image36x36> -->
+		<image48x48>assets/icon_AwayBuilder_48.png</image48x48>
+<!-- 		<image50x50>icon_AwayBuilder_16.png</image50x50> -->
+<!-- 		<image57x57>icon_AwayBuilder_16.png</image57x57> -->
+<!-- 		<image58x58>icon_AwayBuilder_16.png</image58x58> -->
+<!-- 		<image72x72>icon_AwayBuilder_16.png</image72x72> -->
+<!-- 		<image100x100>icon_AwayBuilder_16.png</image100x100> -->
+<!-- 		<image114x114>icon_AwayBuilder_16.png</image114x114> -->
+		<image128x128>assets/icon_AwayBuilder_128.png</image128x128>
+<!-- 		<image144x144>icon_AwayBuilder_16.png</image144x144> -->
+		<image512x512>assets/icon_AwayBuilder_512.png</image512x512>
+<!-- 		<image1024x1024>icon_AwayBuilder_16.png</image1024x1024> -->
+	</icon>
 
 	<!-- Whether the application handles the update when a user double-clicks an update version
 	of the AIR file (true), or the default AIR application installer handles the update (false).
@@ -168,10 +168,10 @@
 			
 			<!-- The icon to display for the file type. Optional. -->
  			<icon> 
- 				<image16x16>assets/hard-hat.png</image16x16>
-				<!-- <image32x32></image32x32>
-				<image48x48></image48x48>
-				<image128x128></image128x128> -->
+<!--  				<image16x16>assets/fileicon_AwayBuilder_16.jpg</image16x16> -->
+<!-- 				<image32x32>assets/fileicon_AwayBuilder_32.jpg</image32x32> -->
+<!--  				<image48x48>assets/fileicon_AwayBuilder_48.jpg</image48x48> -->
+<!-- 				<image128x128>assets/fileicon_AwayBuilder_128.jpg</image128x128> -->
  			</icon>
 			
 		</fileType>

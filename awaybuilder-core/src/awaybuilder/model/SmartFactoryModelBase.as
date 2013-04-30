@@ -579,6 +579,7 @@ package awaybuilder.model
 			asset = fillContainer( asset, item ) as MeshVO;
 			asset.castsShadows = item.castsShadows;
 			asset.subMeshes = new ArrayCollection();
+			asset.geometry = GetAsset(item.geometry) as GeometryVO;
 			for each( var subMesh:SubMesh in item.subMeshes )
 			{
 				var sm:SubMeshVO = GetAsset(subMesh) as SubMeshVO;

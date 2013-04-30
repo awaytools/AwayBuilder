@@ -19,6 +19,8 @@ package awaybuilder.model.vo.scene
 		
 		public var extras:ArrayCollection;
 		
+		public var geometry:GeometryVO;
+		
 		override public function clone():ObjectVO
         {
 			var m:MeshVO = new MeshVO();
@@ -31,6 +33,7 @@ package awaybuilder.model.vo.scene
 			this.fillFromObject( asset );
 			this.subMeshes = new ArrayCollection(asset.subMeshes.source);
 			this.castsShadows = asset.castsShadows;
+			this.geometry = asset.geometry;
 		}
 		
 		

@@ -1,6 +1,5 @@
 package awaybuilder.model.vo.scene
 {
-	import away3d.core.base.ISubGeometry;
 
 	public class SubGeometryVO extends AssetVO
 	{

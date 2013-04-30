@@ -9,6 +9,8 @@ package
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.system.Capabilities;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	import mx.core.BitmapAsset;
 	import mx.core.SpriteAsset;
@@ -16,7 +18,7 @@ package
 	
 	public class SplashScreen extends NativeWindow
 	{
-		[Embed("/assets/Logo.jpg")]
+		[Embed("/assets/Logo_AwayBuilder_240.png")]
 		private const Logo:Class;
 		
 		public function SplashScreen()
@@ -33,23 +35,33 @@ package
 			
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			this.stage.align = StageAlign.TOP_LEFT;
-			
+			this.alwaysInFront = true;
 			this.activate();
-			this.width = 500;
-			this.height = 250;
+			this.width = 480;
+			this.height = 310;
 			this.x = (Capabilities.screenResolutionX-this.width)/2;
 			this.y = (Capabilities.screenResolutionY-this.height)/2;
 			
 			var image:Sprite = new Sprite();
 			this.stage.addChild( image );
 			
-			image.graphics.beginFill(0x999999);
-			image.graphics.drawRect(0,0,500,250);
+			image.graphics.beginFill(0x323232);
+			image.graphics.lineStyle(0, 0xDDDDDD);
+			image.graphics.drawRect(0,0,this.width-1,this.height-1);
 			
+			var asset:BitmapAsset = new Logo();
+			image.addChild( asset );
+			asset.x = Math.round( (this.width - asset.width)/2 );
+			asset.y = Math.round( (this.height - asset.height)/2 );
 			
-//			var asset:BitmapAsset = new Logo();
-//			image.addChild( asset );
-			
+			var defaultTextFormat:TextFormat = new TextFormat("_sans", 10, 0xDDDDDD); 
+			var text:TextField = new TextField();
+			text.defaultTextFormat = defaultTextFormat;
+			text.text = "©2013 The Away Foundation";
+			text.width = text.textWidth+8;
+			image.addChild( text );
+			text.x = this.width - text.width - 10;
+			text.y = this.height-23;
 		}
 		
 	}
