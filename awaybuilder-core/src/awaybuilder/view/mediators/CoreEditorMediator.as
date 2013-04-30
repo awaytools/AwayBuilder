@@ -721,8 +721,8 @@ package awaybuilder.view.mediators
 					{
 						var container:ContainerVO = event.items[0] as ContainerVO;
 						var asset:ObjectContainer3D = assets.GetObject( container ) as ObjectContainer3D;
-						if (asset.numChildren == 1)
-							selectObjectsScene( (asset.getChildAt(0) as ContainerGizmo3D).containerGizmo );
+//						if (asset.numChildren == 1)
+//							selectObjectsScene( (asset.getChildAt(0) as ContainerGizmo3D).containerGizmo );
 					}
 					else if( event.items[0] is LightVO )
 					{

@@ -155,7 +155,6 @@ package awaybuilder.view.mediators
 		
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
-			
 			_scenegraphSelected = new Vector.<Object>();
 			updateAllSelectedItems( view.model.scene, event.items );
 			updateAllSelectedItems( view.model.materials, event.items );
@@ -230,7 +229,6 @@ package awaybuilder.view.mediators
 			{
 				view.model = new DocumentVO();
 			}
-			
 			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, ScenegraphFactory.CreateBranch( document.scene ), "item" );
 			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, ScenegraphFactory.CreateBranch( document.materials ), "item" );
 			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, ScenegraphFactory.CreateBranch( document.animations ), "item" );

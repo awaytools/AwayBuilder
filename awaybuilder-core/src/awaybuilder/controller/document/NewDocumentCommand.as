@@ -24,8 +24,6 @@ package awaybuilder.controller.document
 
 		override public function execute():void
 		{
-			AssetLibrary.removeAllAssets(true);
-			
 			assets.Clear();
 			undoRedo.clear();
 			Scene3DManager.clear();
@@ -35,6 +33,8 @@ package awaybuilder.controller.document
 			document.edited = false;
 			document.path = null;
 
+//			AssetLibrary.removeAllAssets(true);
+			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
 		
