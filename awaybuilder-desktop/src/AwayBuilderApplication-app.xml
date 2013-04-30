@@ -98,8 +98,8 @@
 		<!-- <softKeyboardBehavior></softKeyboardBehavior> -->
 
 	    <autoOrients>false</autoOrients>
-        <fullScreen>false</fullScreen>
-        <visible>false</visible>
+        <fullScreen>true</fullScreen>
+<!--         <visible>false</visible> -->
     </initialWindow>
 
 	<!-- We recommend omitting the supportedProfiles element, -->

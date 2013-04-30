@@ -57,7 +57,7 @@ package awaybuilder.model.vo.scene
 		public var specularLevel:Number;
 		public var specularColor:uint;
 		public var specularTexture:TextureVO;
-		public var specularGloss:int;
+		public var specularGloss:Number;
 		public var specularMethod:ShadingMethodVO;
 		
 		public var shadowMethod:ShadowMethodVO;

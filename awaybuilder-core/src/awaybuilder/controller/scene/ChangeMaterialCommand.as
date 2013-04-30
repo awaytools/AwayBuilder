@@ -39,6 +39,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromMaterial( newMaterial );
 			
+			trace( vo.specularGloss );
 	        addToHistory( event );
 	    }
 	}

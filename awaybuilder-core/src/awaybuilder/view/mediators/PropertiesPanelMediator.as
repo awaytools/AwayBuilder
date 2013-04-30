@@ -78,7 +78,10 @@ package awaybuilder.view.mediators
 			
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
             addViewListener( PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, view_materialNameChangeHandler );
-			
+			addViewListener( PropertyEditorEvent.MATERIAL_AMBIENT_METHOD_CHANGE, view_materialAmbientMethodHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_DIFFUSE_METHOD_CHANGE, view_materialDiffuseMethodHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_NORMAL_METHOD_CHANGE, view_materialNormalMethodHandler );
+			addViewListener( PropertyEditorEvent.MATERIAL_SPECULAR_METHOD_CHANGE, view_materialSpecularMethodHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_TEXTURE, view_materialAddNewTextureHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, view_materialAddEffectMetodHandler );
 			addViewListener( PropertyEditorEvent.MATERIAL_ADD_LIGHTPICKER, view_materialAddLightpickerHandler );
@@ -189,6 +192,34 @@ package awaybuilder.view.mediators
         {
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data, true));
         }
+		private function view_materialAmbientMethodHandler(event:PropertyEditorEvent):void
+		{
+			var newMaterial:MaterialVO = MaterialVO(view.data).clone() as MaterialVO;
+			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
+			newMaterial.ambientMethod = method;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
+		}
+		private function view_materialDiffuseMethodHandler(event:PropertyEditorEvent):void
+		{
+			var newMaterial:MaterialVO = MaterialVO(view.data).clone() as MaterialVO;
+			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
+			newMaterial.diffuseMethod = method;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
+		}
+		private function view_materialNormalMethodHandler(event:PropertyEditorEvent):void
+		{
+			var newMaterial:MaterialVO = MaterialVO(view.data).clone() as MaterialVO;
+			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
+			newMaterial.normalMethod = method;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
+		}
+		private function view_materialSpecularMethodHandler(event:PropertyEditorEvent):void
+		{
+			var newMaterial:MaterialVO = MaterialVO(view.data).clone() as MaterialVO;
+			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
+			newMaterial.specularMethod = method;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
+		}
 		
 		
 		private function view_effectmethodChangeHandler(event:PropertyEditorEvent):void
@@ -578,7 +609,6 @@ package awaybuilder.view.mediators
 			
 			var cubeTextures:ArrayCollection = new ArrayCollection();
 			cubeTextures.addItem( nullTextureItem );
-			
 			
 			textures.addItemAt( assets.GetDefaultTexture(), 1 );
 			cubeTextures.addItemAt( assets.GetDefaultCubeTexture(), 1 );

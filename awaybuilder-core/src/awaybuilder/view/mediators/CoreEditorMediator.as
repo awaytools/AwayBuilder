@@ -1,6 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
@@ -66,6 +65,7 @@ package awaybuilder.view.mediators
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
     import awaybuilder.view.components.events.CoreEditorEvent;
+    import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
@@ -553,13 +553,10 @@ package awaybuilder.view.mediators
 			
 			if( oldMaterial ) 
 			{
-				assets.RemoveObject( oldMaterial );
-				var newAsset:MaterialVO = assets.GetAsset( m ) as MaterialVO;
-				newAsset.fillFromMaterial( asset );
+				assets.ReplaceObject( oldMaterial, m );
 				
 				// TODO use document, not assets
-				var subMeshes:Vector.<SubMesh> = assets.GetObjectsByType( SubMesh, "material", oldMaterial ) as Vector.<SubMesh>;
-				
+				var subMeshes:Vector.<Object> = assets.GetObjectsByType( SubMesh, "material", oldMaterial ) as Vector.<Object>;
 				for each(var obj:SubMesh in subMeshes)
 				{
 					obj.material = m;

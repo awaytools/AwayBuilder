@@ -15,19 +15,19 @@
 			<fx:Object label="GradientDiffuseMethod" value="GradientDiffuseMethod"/>
 			<fx:Object label="WrapDiffuseMethod" value="WrapDiffuseMethod"/>
 			<fx:Object label="LightMapDiffuseMethod" value="LightMapDiffuseMethod"/>
-			<fx:Object label="CellDiffuseMethod" value="CellDiffuseMethod"/>
-			<fx:Object label="SubsurfaceScatterDiffuseMethod" value="SubsurfaceScatterDiffuseMethod"/>
+			<fx:Object label="CelDiffuseMethod" value="CellDiffuseMethod"/>
+			<fx:Object label="SubsurfaceScatteringDiffuse" value="SubsurfaceScatteringDiffuseMethod"/>
 		</s:ArrayCollection>
 		<s:ArrayCollection id="specularList">
 			<fx:Object label="BasicSpecularMethod" value="BasicSpecularMethod"/>
 			<fx:Object label="AnisotropicSpecularMethod" value="AnisotropicSpecularMethod"/>
 			<fx:Object label="PhongSpecularMethod" value="PhongSpecularMethod"/>
-			<fx:Object label="CellSpecularMethod" value="CellSpecularMethod"/>
+			<fx:Object label="CelSpecularMethod" value="CellSpecularMethod"/>
 			<fx:Object label="FresnelSpecularMethod" value="FresnelSpecularMethod"/>
 		</s:ArrayCollection>
 		<s:ArrayCollection id="normalList">
 			<fx:Object label="BasicNormalMethod" value="BasicNormalMethod"/>
-			<fx:Object label="HeightMapNormalMethod" value="HeightMapNormalMethod"/>
+			<!--<fx:Object label="HeightMapNormalMethod" value="HeightMapNormalMethod"/>-->
 			<fx:Object label="SimpleWaterNormalMethod" value="SimpleWaterNormalMethod"/>
 		</s:ArrayCollection>
 		<fx:Component className="NewEffectPopup">
@@ -82,8 +82,10 @@
 		[Bindable] private var _shadowMethods:ArrayCollection;
 		[Bindable] private var _selectedShadowMethod:AssetVO;
 		
-//		[Bindable] private var _selectedDiffuse:TextureVO;
-//		[Bindable] private var _selectedTexture:TextureVO;
+		[Bindable] private var _selectedDiffuseMethod:Object;
+		[Bindable] private var _selectedAmbientMethod:Object;
+		[Bindable] private var _selectedNormalMethod:Object;
+		[Bindable] private var _selectedSpecularMethod:Object;
 		
 		[Bindable] private var _asset:MaterialVO;
 		
@@ -92,10 +94,6 @@
 			if( !(asset is MaterialVO) ) return;
 			_asset = MaterialVO(asset).clone();
 			
-//			for each(var texture:TextureVO in textures) 
-//			{
-//				if( texture.equals( _asset.diffuseTexture ) ) _selectedTexture = texture;
-//			}
 			if( _asset.normalTexture )
 			{
 				normalTextureDropDownList.selectedItem = _asset.normalTexture;
@@ -131,6 +129,33 @@
 			{
 				textureDropDownList.selectedIndex = 0;
 			}
+			
+			var item:Object;
+			for each(item in ambientList) 
+			{
+				if( item.value == _asset.ambientMethod.type ) {
+					_selectedAmbientMethod = item;
+				}
+			}
+			for each(item in specularList) 
+			{
+				if( item.value == _asset.specularMethod.type ) {
+					_selectedSpecularMethod = item;
+				}
+			}
+			for each(item in normalList) 
+			{
+				if( item.value == _asset.normalMethod.type ) {
+					_selectedNormalMethod = item;
+				}
+			}
+			for each(item in diffuseList) 
+			{
+				if( item.value == _asset.diffuseMethod.type ) {
+					_selectedDiffuseMethod = item;
+				}
+			}
+			
 			
 			var a:AssetVO;
 			
@@ -419,9 +444,8 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
-		protected function specularLevelStepper_changeHandler(event:Event):void
+		protected function stepper_changeHandler(event:Event):void
 		{
-			_asset.ambientLevel = ambientLevelStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
@@ -489,6 +513,46 @@
 				_asset.normalTexture = normalTextureDropDownList.selectedItem;
 			}
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
+		}
+		
+		protected function normalMethod_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.normalMethod, true));
+		}
+		
+		protected function specularMethod_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.specularMethod, true));
+		}
+		
+		protected function diffuseMethod_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.diffuseMethod, true));
+		}
+		
+		protected function ambientMethod_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.ambientMethod, true));
+		}
+		
+		protected function ambientMethodDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_AMBIENT_METHOD_CHANGE, ambientMethodDropDownList.selectedItem.value));
+		}
+		
+		protected function diffuseMethodDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_DIFFUSE_METHOD_CHANGE, diffuseMethodDropDownList.selectedItem.value));
+		}
+		
+		protected function specularMethodDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_SPECULAR_METHOD_CHANGE, specularMethodDropDownList.selectedItem.value));
+		}
+		
+		protected function normalMethodDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_NORMAL_METHOD_CHANGE, normalMethodDropDownList.selectedItem.value));
 		}
 		
 	]]></fx:Script>
@@ -611,14 +675,14 @@
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
 			<s:FormItem label="Specular Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-				<controls:DragableNumericStepper id="specularLevelStepper" value="{_asset.specularLevel}"
+				<controls:DragableNumericStepper id="specularLevelStepper" value="@{_asset.specularLevel}"
 												 stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1"
-												 change="specularLevelStepper_changeHandler(event)" />
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Specular Gloss" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-				<controls:DragableNumericStepper id="specularGlossStepper" value="{_asset.specularGloss}"
+				<controls:DragableNumericStepper id="specularGlossStepper" value="@{_asset.specularGloss}"
 												 stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1"
-												 change="specularGlossStepper_changeHandler(event)" />
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Specular Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<mx:ColorPicker id="specularColorPicker" selectedColor="{_asset.specularColor}" change="specularColorPicker_changeHandler(event)"/>
@@ -697,31 +761,31 @@
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
 			<controls:PropertiesItemContainer label="Ambient Method:" width="100%">
 				<s:DropDownList id="ambientMethodDropDownList" requireSelection="true"
-								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_asset.ambientMethod}" dataProvider="{ambientList}"
+								change="ambientMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_selectedAmbientMethod}" dataProvider="{ambientList}"
 								/>
-				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click=""/>
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="ambientMethod_clickHandler(event)"/>
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Diffuse Method:" width="100%">
 				<s:DropDownList id="diffuseMethodDropDownList" requireSelection="true"
-								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_asset.diffuseMethod}" dataProvider="{diffuseList}"
+								change="diffuseMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_selectedDiffuseMethod}" dataProvider="{diffuseList}"
 								/>
-				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="" />
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="diffuseMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Specular Method:" width="100%">
 				<s:DropDownList id="specularMethodDropDownList" requireSelection="true"
-								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_asset.specularMethod}" dataProvider="{specularList}"
+								change="specularMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_selectedSpecularMethod}" dataProvider="{specularList}"
 								/>
-				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="" />
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="specularMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Normal Method:" width="100%">
 				<s:DropDownList id="normalMethodDropDownList" requireSelection="true"
-								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_asset.normalMethod}" dataProvider="{normalList}"
+								change="normalMethodDropDownList_changeHandler(event)" width="100%"
+								selectedItem="{_selectedNormalMethod}" dataProvider="{normalList}"
 								/>
-				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="" />
+				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="normalMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
 		</s:VGroup>
 	</controls:CollapsiblePanel>

@@ -7,10 +7,11 @@
 	frameRate="60" backgroundFrameRate="5"
 	minWidth="1000" minHeight="720" 
 	backgroundColor="0x333333"
-	visible="false" showStatusBar="false"
+	showStatusBar="false"
+	usePreloader="false"
 	invoke="invokeHandler(event)" 
 	preinitialize="preinitializeHandler(event)"
-	applicationComplete="applicationCompleteHandler(event)" resize="resizeHandler(event)"
+	applicationComplete="applicationCompleteHandler(event)"
 	>
 	
 	<fx:Declarations>
@@ -18,7 +19,7 @@
 	
 	<fx:Style source="desktop_styles.css"/>
 	
-	<components:CoreEditor id="coreEditor" top="0" right="0" bottom="0" left="0"/>
+	<components:CoreEditor id="coreEditor" width="100%" height="100%"/>
 	
 	<fx:Script><![CDATA[
 		import awaybuilder.desktop.DesktopAppContext;
@@ -34,8 +35,6 @@
         private function preinitializeHandler(event:FlexEvent):void
         {
 			splashScreen = new SplashScreen();
-			this.width = Capabilities.screenResolutionX;
-			this.height = Capabilities.screenResolutionY;
             this._context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
         }
 
@@ -55,14 +54,8 @@
 		
 		protected function applicationCompleteHandler(event:FlexEvent):void
 		{
-//			this.visible = true;
-//			this.maximize();
 		}
 		
-		protected function resizeHandler(event:ResizeEvent):void
-		{
-			coreEditor.validateNow();
-		}
 		
 	]]></fx:Script>
 	

@@ -2,9 +2,11 @@ package awaybuilder.desktop.controller
 {
 	import awaybuilder.controller.events.SceneReadyEvent;
 	
+	import flash.system.Capabilities;
 	import flash.utils.setTimeout;
 	
 	import mx.core.FlexGlobals;
+	import mx.events.ResizeEvent;
 	
 	import org.robotlegs.mvcs.Command;
 
@@ -19,9 +21,9 @@ package awaybuilder.desktop.controller
 		{
 			_app = FlexGlobals.topLevelApplication as AwayBuilderApplication;
 			_app.splashScreen.close();
-			_app.maximize();
 			_app.visible = true;
 		}
+		
 		
 	}
 }

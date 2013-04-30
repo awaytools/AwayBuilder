@@ -26,23 +26,39 @@ package awaybuilder.model
 	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.AlphaMaskMethod;
+	import away3d.materials.methods.AnisotropicSpecularMethod;
+	import away3d.materials.methods.BasicAmbientMethod;
+	import away3d.materials.methods.BasicDiffuseMethod;
+	import away3d.materials.methods.BasicNormalMethod;
+	import away3d.materials.methods.BasicSpecularMethod;
 	import away3d.materials.methods.CascadeShadowMapMethod;
+	import away3d.materials.methods.CelDiffuseMethod;
+	import away3d.materials.methods.CelSpecularMethod;
 	import away3d.materials.methods.ColorMatrixMethod;
 	import away3d.materials.methods.ColorTransformMethod;
 	import away3d.materials.methods.DitheredShadowMapMethod;
 	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.EnvMapAmbientMethod;
 	import away3d.materials.methods.EnvMapMethod;
 	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.FresnelEnvMapMethod;
+	import away3d.materials.methods.FresnelSpecularMethod;
+	import away3d.materials.methods.GradientDiffuseMethod;
+	import away3d.materials.methods.HeightMapNormalMethod;
+	import away3d.materials.methods.LightMapDiffuseMethod;
 	import away3d.materials.methods.LightMapMethod;
 	import away3d.materials.methods.NearShadowMapMethod;
 	import away3d.materials.methods.OutlineMethod;
+	import away3d.materials.methods.PhongSpecularMethod;
 	import away3d.materials.methods.ProjectiveTextureMethod;
 	import away3d.materials.methods.RefractionEnvMapMethod;
 	import away3d.materials.methods.RimLightMethod;
 	import away3d.materials.methods.ShadingMethodBase;
 	import away3d.materials.methods.ShadowMapMethodBase;
+	import away3d.materials.methods.SimpleWaterNormalMethod;
 	import away3d.materials.methods.SoftShadowMapMethod;
+	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
+	import away3d.materials.methods.WrapDiffuseMethod;
 	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.textures.BitmapCubeTexture;
 	import away3d.textures.BitmapTexture;
@@ -71,6 +87,7 @@ package awaybuilder.model
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
+
 
 	public class SmartFactoryModelBase
 	{
@@ -271,7 +288,7 @@ package awaybuilder.model
 		{
 			asset.name = "SubMesh";
 			asset.material = GetAsset( item.material ) as MaterialVO;
-			//			this.subGeometry = AssetFactory.GetAsset( object.subGeometry ) as SubGeometryVO;
+//			this.subGeometry = AssetFactory.GetAsset( object.subGeometry ) as SubGeometryVO;
 			return asset;
 		}
 		private function fillShadowMethod( asset:ShadowMethodVO, item:ShadowMapMethodBase ):ShadowMethodVO
@@ -342,16 +359,89 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, item ) as GeometryVO;
 			asset.subGeometries = new ArrayCollection();
-			//			for each( var sub:ISubGeometry in item.subGeometries )
-			//			{
-			//				asset.subGeometries.addItem(new SubGeometryVO());
-			//			}
+//			for each( var sub:ISubGeometry in item.subGeometries )
+//			{
+//				asset.subGeometries.addItem(new SubGeometryVO());
+//			}
 			return asset;
 		}
 		
 		private function fillShadingMethod( asset:ShadingMethodVO, obj:ShadingMethodBase ):ShadingMethodVO
 		{
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			switch( true ) 
+			{	
+				case(obj is EnvMapAmbientMethod):
+				{
+					var envMapAmbientMethod:EnvMapAmbientMethod = obj as EnvMapAmbientMethod;
+					asset.envMap = GetAsset( envMapAmbientMethod.envMap ) as CubeTextureVO;
+					break;
+				}
+				case(obj is GradientDiffuseMethod):
+				{
+					var gradientDiffuseMethod:GradientDiffuseMethod = obj as GradientDiffuseMethod;
+					asset.texture = GetAsset( gradientDiffuseMethod.gradient ) as TextureVO;
+					break;
+				}
+				case(obj is WrapDiffuseMethod):
+				{
+					var wrapDiffuseMethod:WrapDiffuseMethod = obj as WrapDiffuseMethod;
+					asset.value = wrapDiffuseMethod.wrapFactor;
+					break;
+				}
+				case(obj is LightMapDiffuseMethod):
+				{
+					var lightMapDiffuseMethod:LightMapDiffuseMethod = obj as LightMapDiffuseMethod;
+					asset.blendMode = lightMapDiffuseMethod.blendMode;
+					asset.texture = GetAsset( lightMapDiffuseMethod.texture ) as TextureVO;
+					asset.baseMethod = GetAsset( lightMapDiffuseMethod.baseMethod ) as ShadingMethodVO;
+					break;
+				}
+				case(obj is CelDiffuseMethod):
+				{
+					var celDiffuseMethod:CelDiffuseMethod = obj as CelDiffuseMethod;
+					asset.value = celDiffuseMethod.levels;
+					asset.smoothness = celDiffuseMethod.smoothness;
+					asset.baseMethod = GetAsset( celDiffuseMethod.baseMethod ) as ShadingMethodVO;
+					break;
+				}
+				case(obj is SubsurfaceScatteringDiffuseMethod):
+				{
+					var subsurfaceScatterDiffuseMethod:SubsurfaceScatteringDiffuseMethod = obj as SubsurfaceScatteringDiffuseMethod;
+					asset.scattering = subsurfaceScatterDiffuseMethod.scattering;
+					asset.translucency = subsurfaceScatterDiffuseMethod.translucency;
+					asset.baseMethod = GetAsset( subsurfaceScatterDiffuseMethod.baseMethod ) as ShadingMethodVO;
+					break;
+				}
+				case(obj is CelSpecularMethod):
+				{
+					var celSpecularMethod:CelSpecularMethod = obj as CelSpecularMethod;
+					asset.value = celSpecularMethod.specularCutOff;
+					asset.smoothness = celSpecularMethod.smoothness;
+					asset.baseMethod = GetAsset( fresnelSpecularMethod.baseMethod ) as ShadingMethodVO;
+					break;
+				}
+				case(obj is FresnelSpecularMethod):
+				{
+					var fresnelSpecularMethod:FresnelSpecularMethod = obj as FresnelSpecularMethod;
+					asset.basedOnSurface = fresnelSpecularMethod.basedOnSurface;
+					asset.value = fresnelSpecularMethod.fresnelPower;
+					asset.baseMethod = GetAsset( fresnelSpecularMethod.baseMethod ) as ShadingMethodVO;
+					break;
+				}
+				case(obj is HeightMapNormalMethod):
+				{
+					var heightMapNormalMethod:HeightMapNormalMethod = obj as HeightMapNormalMethod;
+					break;
+				}
+				case(obj is SimpleWaterNormalMethod):
+				{
+					var simpleWaterNormalMethod:SimpleWaterNormalMethod = obj as SimpleWaterNormalMethod;
+					asset.texture = GetAsset( simpleWaterNormalMethod.secondaryNormalMap ) as TextureVO;
+					break;
+				}
+			}
+					
 			return asset;
 		}
 		private function fillShadowMapper( asset:ShadowMapperVO, obj:ShadowMapperBase ):ShadowMapperVO
@@ -436,18 +526,11 @@ package awaybuilder.model
 				asset.specularTexture = GetAsset( textureMaterial.specularMap ) as TextureVO;
 				asset.specularMethod = GetAsset( textureMaterial.specularMethod ) as ShadingMethodVO;
 				
-//				asset.normalColor = textureMaterial.normalMethod.
 				asset.normalTexture = GetAsset( textureMaterial.normalMap ) as TextureVO;
 				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
 				
-				
 				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
 				
-				
-//				asset.ambientMethod = AssetFactory.GetAsset( textureMaterial.ambientMethod ) as AmbientMethodVO;
-//				asset.diffuseMethod = AssetFactory.GetAsset( textureMaterial.diffuseMethod ) as DiffuseMethodVO;
-//				asset.normalMethod = AssetFactory.GetAsset( textureMaterial.normalMethod ) as NormalMethodVO;
-//				asset.specularMethod = AssetFactory.GetAsset( textureMaterial.specularMethod ) as SpecularMethodVO;
 			}
 			else if( item is ColorMaterial )
 			{
@@ -518,13 +601,6 @@ package awaybuilder.model
 		
 		protected function createDefaults():void 
 		{
-			if( !_defaultMaterial )
-			{
-				var material:TextureMaterial = DefaultMaterialManager.getDefaultMaterial();
-				material.name = "Default"
-				_defaultMaterial = GetAsset( material ) as MaterialVO;
-				_defaultMaterial.isDefault = true;
-			}
 			if( !_defaultTexture )
 			{
 				var texture:BitmapTexture = DefaultMaterialManager.getDefaultTexture();
@@ -532,6 +608,15 @@ package awaybuilder.model
 				_defaultTexture = GetAsset( texture ) as TextureVO;
 				_defaultTexture.isDefault = true;
 			}
+			if( !_defaultMaterial )
+			{
+				var material:TextureMaterial = DefaultMaterialManager.getDefaultMaterial();
+				material.name = "Default";
+				material.texture = DefaultMaterialManager.getDefaultTexture();
+				_defaultMaterial = GetAsset( material ) as MaterialVO;
+				_defaultMaterial.isDefault = true;
+			}
+			
 			if( !_defaultCubeTexture )
 			{
 				var bitmap:BitmapData = new BitmapData(8, 8, false, 0x0);

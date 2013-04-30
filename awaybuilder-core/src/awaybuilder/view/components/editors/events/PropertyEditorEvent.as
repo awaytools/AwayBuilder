@@ -15,6 +15,10 @@ package awaybuilder.view.components.editors.events
 		
 		public static const MATERIAL_CHANGE:String = "materialChange";
 //		public static const MATERIAL_ADD_SHADOWMETHOD:String = "materialAddShadowMethod";
+		public static const MATERIAL_AMBIENT_METHOD_CHANGE:String = "materialAmbientMethodChange";
+		public static const MATERIAL_DIFFUSE_METHOD_CHANGE:String = "materialDiffuseMethodChange";
+		public static const MATERIAL_NORMAL_METHOD_CHANGE:String = "materialNormalMethodChange";
+		public static const MATERIAL_SPECULAR_METHOD_CHANGE:String = "materialSpecularMethodChange";
 		public static const MATERIAL_ADD_TEXTURE:String = "materialAddTexture";
 		public static const MATERIAL_ADD_LIGHTPICKER:String = "materialAddLightPicker";
 		public static const MATERIAL_ADD_EFFECT_METHOD:String = "materialAddEffectMethod";

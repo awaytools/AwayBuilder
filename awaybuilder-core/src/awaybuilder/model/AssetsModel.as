@@ -11,22 +11,40 @@ package awaybuilder.model
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.AlphaMaskMethod;
+	import away3d.materials.methods.AnisotropicSpecularMethod;
+	import away3d.materials.methods.BasicAmbientMethod;
+	import away3d.materials.methods.BasicDiffuseMethod;
+	import away3d.materials.methods.BasicNormalMethod;
+	import away3d.materials.methods.BasicSpecularMethod;
 	import away3d.materials.methods.CascadeShadowMapMethod;
+	import away3d.materials.methods.CelDiffuseMethod;
+	import away3d.materials.methods.CelSpecularMethod;
 	import away3d.materials.methods.ColorMatrixMethod;
 	import away3d.materials.methods.ColorTransformMethod;
 	import away3d.materials.methods.DitheredShadowMapMethod;
 	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.EnvMapAmbientMethod;
 	import away3d.materials.methods.EnvMapMethod;
 	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.FresnelEnvMapMethod;
+	import away3d.materials.methods.FresnelSpecularMethod;
+	import away3d.materials.methods.GradientDiffuseMethod;
 	import away3d.materials.methods.HardShadowMapMethod;
+	import away3d.materials.methods.HeightMapNormalMethod;
+	import away3d.materials.methods.LightMapDiffuseMethod;
 	import away3d.materials.methods.LightMapMethod;
 	import away3d.materials.methods.NearShadowMapMethod;
 	import away3d.materials.methods.OutlineMethod;
+	import away3d.materials.methods.PhongSpecularMethod;
 	import away3d.materials.methods.RefractionEnvMapMethod;
 	import away3d.materials.methods.RimLightMethod;
+	import away3d.materials.methods.ShadingMethodBase;
+	import away3d.materials.methods.SimpleWaterNormalMethod;
 	import away3d.materials.methods.SoftShadowMapMethod;
+	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
+	import away3d.materials.methods.WrapDiffuseMethod;
+	import away3d.textures.BitmapCubeTexture;
 	import away3d.textures.CubeTextureBase;
 	import away3d.textures.Texture2DBase;
 	
@@ -36,6 +54,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.ShadingMethodVO;
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.TextureVO;
@@ -72,8 +91,15 @@ package awaybuilder.model
 			var asset:AssetVO = _assets[obj] as AssetVO;
 			delete _objectsByAsset[asset];
 			delete _assets[obj];
+		}
+		public function ReplaceObject( oldObject:Object, newObject:Object ):void 
+		{
+			var asset:AssetVO = _assets[oldObject];
 			
-			trace( _assets[obj] );
+			_objectsByAsset[asset] = newObject;
+			_assets[newObject] = asset;
+			
+			delete _assets[oldObject];
 		}
 		public function GetObject( asset:AssetVO ):Object 
 		{
@@ -234,9 +260,68 @@ package awaybuilder.model
 			method.name = "CascadeShadow " + awaybuilder.utils.AssetUtil.GetNextId("CascadeShadowMapMethod");
 			return GetAsset( method ) as ShadowMethodVO;
 		}
+		public function CreateShadingMethod( type:String ):ShadingMethodVO
+		{
+			var baseMethod:ShadingMethodBase;
+			var method:ShadingMethodBase;
+			switch( type )
+			{
+				case "EnvMapAmbientMethod":
+					method = new EnvMapAmbientMethod(GetObject(_defaultCubeTexture) as CubeTextureBase);
+					break;
+				case "BasicDiffuseMethod":
+					method = new BasicDiffuseMethod();
+					break;
+				case "GradientDiffuseMethod":
+					method = new GradientDiffuseMethod(GetObject(_defaultTexture) as Texture2DBase);
+					break;
+				case "WrapDiffuseMethod":
+					method = new WrapDiffuseMethod();
+					break;
+				case "LightMapDiffuseMethod":
+					baseMethod = new BasicDiffuseMethod();
+					method = new LightMapDiffuseMethod(GetObject(_defaultTexture) as Texture2DBase,"multiply",false, baseMethod as BasicDiffuseMethod);
+					break;
+				case "CelDiffuseMethod":
+					baseMethod = new BasicDiffuseMethod();
+					method = new CelDiffuseMethod(3,baseMethod as BasicDiffuseMethod);
+					break;
+				case "SubsurfaceScatteringDiffuseMethod":
+					baseMethod = new BasicDiffuseMethod();
+					method = new SubsurfaceScatteringDiffuseMethod();
+					SubsurfaceScatteringDiffuseMethod(method).baseMethod = baseMethod as BasicDiffuseMethod;
+					break;
+				case "BasicSpecularMethod":
+					method = new BasicSpecularMethod();
+					break;
+				case "AnisotropicSpecularMethod":
+					method = new AnisotropicSpecularMethod();
+					break;
+				case "PhongSpecularMethod":
+					method = new PhongSpecularMethod();
+					break;
+				case "CelSpecularMethod":
+					method = new CelSpecularMethod();
+					break;
+				case "FresnelSpecularMethod":
+					baseMethod = new BasicSpecularMethod();
+					method = new FresnelSpecularMethod( true, baseMethod as BasicSpecularMethod );
+					break;
+				case "BasicNormalMethod":
+					method = new BasicNormalMethod();
+					break;
+				case "HeightMapNormalMethod":
+					method = new HeightMapNormalMethod(GetObject(_defaultTexture) as Texture2DBase,5,5,5);
+					break;
+				case "SimpleWaterNormalMethod":
+					method = new SimpleWaterNormalMethod(GetObject(_defaultTexture) as Texture2DBase,GetObject(_defaultTexture) as Texture2DBase);
+					break;
+				
+			}
+			return GetAsset( method ) as ShadingMethodVO;
+		}
 		public function CreateShadowMapper( type:String ):ShadowMapperVO
 		{
-			trace( "type = " + type );
 			var mapper:ShadowMapperBase;
 			switch( type )
 			{
