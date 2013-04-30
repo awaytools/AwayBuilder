@@ -265,7 +265,7 @@ package awaybuilder.view.scene.controls
 			var dx:Number = Scene3DManager.stage.mouseX - click.x;
 			var dy:Number = -(Scene3DManager.stage.mouseY - click.y);
 			
-			var trans:Number = ((dx+dy)/2);					
+			var trans:Number = ((dx+dy)/2) * (CameraManager.radius / 500);					
 			
 			var mScale:Vector3D = new Vector3D();
 			mScale.x = actualMesh.scaleX;

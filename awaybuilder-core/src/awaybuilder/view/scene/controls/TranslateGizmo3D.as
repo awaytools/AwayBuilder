@@ -220,7 +220,7 @@ package awaybuilder.view.scene.controls
 			var dx:Number = Scene3DManager.stage.mouseX - click.x;
 			var dy:Number = -(Scene3DManager.stage.mouseY - click.y);
 			
-			var trans:Number = ((dx+dy)/2) * (this.scaleX+1);
+			var trans:Number = ((dx+dy)/2) * (this.scaleX+1) * (CameraManager.radius / 1000);
 			
 			switch(currentAxis)
 			{

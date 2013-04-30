@@ -56,6 +56,7 @@ package awaybuilder.utils.scene
 		public static var mode:String;
 		public static var view:View3D;
 		public static var directionalLightView:View3D;
+		public static var gizmoView : View3D;
 		public static var scene:Scene3D;
 		public static var camera:Camera3D;
 		
@@ -111,34 +112,41 @@ package awaybuilder.utils.scene
 			directionalLightView.stage3DProxy = stage3DProxy;	
 			directionalLightView.mousePicker = PickingType.RAYCAST_BEST_HIT;
 			directionalLightView.camera.lens.near = 1;
-			directionalLightView.camera.lens.far = 100000;
+			directionalLightView.camera.lens.far = 100000;			
 			scope.addChild(directionalLightView);
-			
-			//Create Gizmos
-			translateGizmo = new TranslateGizmo3D();
-			translateGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
-			translateGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
-			scene.addChild(translateGizmo);
-			rotateGizmo = new RotateGizmo3D();
-			rotateGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
-			rotateGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
-			scene.addChild(rotateGizmo);
-			scaleGizmo = new ScaleGizmo3D();
-			scaleGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
-			scaleGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
-			scene.addChild(scaleGizmo);	
-			
-			//assing default gizmo
-			currentGizmo = translateGizmo;
-			
-			
+
 			//Create OrientationTool			
 			orientationTool = new OrientationTool();
 			scope.addChild(orientationTool);
 			scope.name = "scope";
 			orientationTool.name = "orientationTool";
 			view.name = "view";
+
+			gizmoView = new View3D();
+			gizmoView.shareContext = true;
+			gizmoView.stage3DProxy = stage3DProxy;	
+			gizmoView.layeredView = true;
+			gizmoView.mousePicker = PickingType.RAYCAST_BEST_HIT;
+			gizmoView.camera = camera;
+			scope.addChild(gizmoView);
 			
+			//Create Gizmos
+			translateGizmo = new TranslateGizmo3D();
+			translateGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
+			translateGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
+			gizmoView.scene.addChild(translateGizmo);
+			rotateGizmo = new RotateGizmo3D();
+			rotateGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
+			rotateGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
+			gizmoView.scene.addChild(rotateGizmo);
+			scaleGizmo = new ScaleGizmo3D();
+			scaleGizmo.addEventListener(Gizmo3DEvent.MOVE, handleGizmoAction);
+			scaleGizmo.addEventListener(Gizmo3DEvent.RELEASE, handleGizmoActionRelease);
+			gizmoView.scene.addChild(scaleGizmo);	
+			
+			//assing default gizmo
+			currentGizmo = translateGizmo;
+						
 			
 			//Create Grid
 			grid = new WireframePlane(10000, 10000, 100, 100, 0x000000, 1, "xz");
@@ -175,14 +183,15 @@ package awaybuilder.utils.scene
 		}
 		
 		private function loop(e:Event):void 
-		{
-			orientationTool.update();
+		{			
 			currentGizmo.update();
 			updateLights();
 			updateContainerGizmos();
 			
 			view.render();			
 			updateDirectionalLightView();
+			orientationTool.update();
+			gizmoView.render();
 		}
 
 		private function updateDirectionalLightView() : void {
@@ -249,10 +258,8 @@ package awaybuilder.utils.scene
 			stage3DProxy.width = scope.width;
 			stage3DProxy.height = scope.height;			
 			
-			view.width = scope.width;
-			view.height = scope.height;
-			directionalLightView.width = scope.width;
-			directionalLightView.height = scope.height;
+			view.width = directionalLightView.width = gizmoView.width = scope.width;
+			view.height = directionalLightView.height = gizmoView.height = scope.height;
 		}
 		
 		// Mouse Events *************************************************************************************************************************************************
@@ -266,8 +273,9 @@ package awaybuilder.utils.scene
 		{
 			if (active)
 			{
-				if (!CameraManager.hasMoved && !multiSelection && !currentGizmo.active) unselectAll();	
-			}	
+				if (!CameraManager.hasMoved && !multiSelection && !currentGizmo.active && !orientationTool.orientationClicked) unselectAll();	
+			}
+			orientationTool.orientationClicked = false;
 		}			
 		
 		//Change gizmo mode to transform the selected mesh

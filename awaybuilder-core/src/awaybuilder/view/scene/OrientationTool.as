@@ -43,7 +43,8 @@ package awaybuilder.view.scene
 		
 		public var cube:Mesh;
 		public var currentOrientation:String = "front";
-		private var view:View3D;
+		private var view : View3D;
+		private var _orientationClicked : Boolean;
 		
 		
 		public function OrientationTool()
@@ -59,6 +60,7 @@ package awaybuilder.view.scene
 			view.mousePicker = PickingType.RAYCAST_BEST_HIT;			
 			view.stage3DProxy = Scene3DManager.stage3DProxy;
 			view.shareContext = true;
+			view.layeredView = true;
 			view.antiAlias = 4;
 			view.camera.position = new Vector3D(0, 0, -200);
 			view.camera.lens.near = 50;
@@ -156,7 +158,7 @@ package awaybuilder.view.scene
 		{
 			currentOrientation = e.target.name;
 			
-			trace("CameraManager._yDeg= " + CameraManager._yDeg);
+			_orientationClicked = true;
 			
 			switch(e.target.name)
 			{
@@ -199,6 +201,17 @@ package awaybuilder.view.scene
 			
 			return v;
 		}				
-				
+
+		/**
+		 * Indicates if the orientation cube was clicked, to allow other views to process 
+		 * mouseevent3d events accordingly
+		 */
+		public function get orientationClicked() : Boolean {
+			return _orientationClicked;
+		}
+
+		public function set orientationClicked(orientationClicked : Boolean) : void {
+			_orientationClicked = orientationClicked;
+		}				
 	}
 }
