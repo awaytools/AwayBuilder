@@ -103,7 +103,6 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.LIGHT_CHANGE, view_lightChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_MAPPER_CHANGE, view_lightMapperChangeHandler );
 			
-			
 			addViewListener( PropertyEditorEvent.LIGHT_ADD_FilteredShadowMapMethod, view_lightAddFilteredShadowMapMethodHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod, view_lightAddCascadeShadowMapMethodHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_ADD_DitheredShadowMapMethod, view_lightAddDitheredShadowMapHandler );
@@ -221,7 +220,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
 		}
 		
-		
 		private function view_effectmethodChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_EFFECT_METHOD,[view.data], event.data));
@@ -257,9 +255,7 @@ package awaybuilder.view.mediators
 		
 		private function view_showParentMeshHandler(event:PropertyEditorEvent):void
 		{
-			
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],false,false,true));
-			
 		}
 		private function view_showParentMaterialHandler(event:PropertyEditorEvent):void
 		{
@@ -467,7 +463,6 @@ package awaybuilder.view.mediators
 			view.SetData(mesh);
 		}
 		
-		
 		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length )
@@ -485,7 +480,6 @@ package awaybuilder.view.mediators
         }
         private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
         {
-			
             if( !event.items || event.items.length == 0)
             {
 				view.showEditor( "global", event.newValue, event.oldValue );
@@ -515,7 +509,6 @@ package awaybuilder.view.mediators
                     {
 						view.SetData(event.items[0]);
 						view.showEditor( "material", event.newValue, event.oldValue );
-						
                     }
                     else if( event.items[0] is TextureVO )
                     {

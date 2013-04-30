@@ -561,7 +561,7 @@ package awaybuilder.view.mediators
 				{
 					obj.material = m;
 					var vo:SubMeshVO = assets.GetAsset( obj ) as SubMeshVO;
-					vo.material = assets.GetAsset( obj ) as MaterialVO;
+					vo.material = assets.GetAsset( m ) as MaterialVO;
 				}
 			}
 			
