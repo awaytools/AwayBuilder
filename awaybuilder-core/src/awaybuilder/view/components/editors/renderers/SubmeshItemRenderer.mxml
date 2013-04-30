@@ -81,8 +81,7 @@
 									   change="dropDownList1_changeHandler(event)"
 									   iconFunction="{dropDownIconFunction}" labelField="name" newItemLabel="New Material"
 									   addNewItem="dropDownList_addNewItemHandler(event)"/>
-		<s:Button id="editSubmeshMaterialButton" styleName="editSharedObjectButtonStyle"
-				  width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>
+		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)" enabled="{!_selectedMaterial.isDefault}"/>
 	</s:HGroup>
 	<controls:HorizontalFormSeparator/>
 </s:ItemRenderer>
