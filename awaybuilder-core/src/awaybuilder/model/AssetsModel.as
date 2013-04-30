@@ -144,7 +144,7 @@ package awaybuilder.model
 			newMaterial.ambientMethod = base.ambientMethod;
 			newMaterial.normalMethod = base.normalMethod;
 			newMaterial.specularMethod = base.specularMethod;
-			newMaterial.name = base.name + "(copy)";
+			newMaterial.name = "Material " + AssetUtil.GetNextId("Material");
 			
 			return GetAsset(newMaterial) as MaterialVO;
 		}

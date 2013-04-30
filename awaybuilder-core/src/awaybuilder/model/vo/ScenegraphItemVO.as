@@ -47,7 +47,15 @@ package awaybuilder.model.vo
 		public function merge( item:Object ):void
 		{
 			var newItem:ScenegraphItemVO = item as ScenegraphItemVO;
-			this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "item" );
+			if( newItem.children && this.children )
+			{
+				this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "item" );
+			}
+			else if( newItem.children )
+			{
+				this.children = new ArrayCollection( newItem.children.source.concat() );
+			}
+			
 		}
 	}
 }
