@@ -7,6 +7,7 @@ package awaybuilder.model
 	import away3d.animators.states.AnimationStateBase;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
+	import away3d.core.base.ISubGeometry;
 	import away3d.core.base.Object3D;
 	import away3d.core.base.SubMesh;
 	import away3d.entities.Entity;
@@ -78,6 +79,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.SubGeometryVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.AssetUtil;
@@ -115,6 +117,9 @@ package awaybuilder.model
 					return fillTexture( new TextureVO(), item as BitmapTexture );
 				case(item is Geometry):
 					return fillGeometry( new GeometryVO(), item as Geometry );
+				case(item is ISubGeometry):
+					return fillSubGeometry( new SubGeometryVO(), item as ISubGeometry );
+					
 				case(item is AnimationNodeBase):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					return asset;
@@ -288,7 +293,7 @@ package awaybuilder.model
 		{
 			asset.name = "SubMesh";
 			asset.material = GetAsset( item.material ) as MaterialVO;
-//			this.subGeometry = AssetFactory.GetAsset( object.subGeometry ) as SubGeometryVO;
+			asset.subGeometry = GetAsset( item.subGeometry ) as SubGeometryVO;
 			return asset;
 		}
 		private function fillShadowMethod( asset:ShadowMethodVO, item:ShadowMapMethodBase ):ShadowMethodVO
@@ -355,14 +360,33 @@ package awaybuilder.model
 			}
 			return asset;
 		}
+		
+		private function fillSubGeometry( asset:SubGeometryVO, item:ISubGeometry ):SubGeometryVO
+		{
+			asset = fillAsset( asset, item ) as SubGeometryVO;
+			asset.vertexData = item.vertexData;
+			asset.vertexOffset = item.vertexOffset;
+			asset.vertexStride = item.vertexStride;
+			asset.UVData = item.UVData;
+			asset.UVStride = item.UVStride;
+			asset.UVOffset = item.UVOffset;
+			asset.vertexNormalData = item.vertexNormalData;
+			asset.vertexNormalOffset = item.vertexNormalOffset;
+			asset.vertexNormalStride = item.vertexNormalStride;
+			asset.vertexTangentData = item.vertexTangentData;
+			asset.vertexTangentOffset = item.vertexTangentOffset;
+			asset.vertexTangentStride = item.vertexTangentStride;
+			asset.indexData = item.indexData;
+			return asset;
+		}
 		private function fillGeometry( asset:GeometryVO, item:Geometry ):GeometryVO
 		{
 			asset = fillAsset( asset, item ) as GeometryVO;
 			asset.subGeometries = new ArrayCollection();
-//			for each( var sub:ISubGeometry in item.subGeometries )
-//			{
-//				asset.subGeometries.addItem(new SubGeometryVO());
-//			}
+			for each( var sub:ISubGeometry in item.subGeometries )
+			{
+				asset.subGeometries.addItem( GetAsset(sub) );
+			}
 			return asset;
 		}
 		
