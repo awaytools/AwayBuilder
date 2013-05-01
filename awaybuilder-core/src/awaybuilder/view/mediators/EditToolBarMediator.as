@@ -49,7 +49,6 @@ package awaybuilder.view.mediators
             addViewListener( ToolBarEvent.REDO, toolBar_redoHandler);
 
             addViewListener( ToolBarEvent.APPLICATION_SETTINGS, toolBar_applicationSettingsHandler);
-            addViewListener( ToolBarEvent.DOCUMENT_SETTINGS, toolBar_documentSettingsHandler);
 
             addViewListener( ToolBarEvent.CLIPBOARD_CUT, toolBar_clipboardCutHandler);
             addViewListener( ToolBarEvent.CLIPBOARD_COPY, toolBar_clipboardCopyHandler);
@@ -77,7 +76,7 @@ package awaybuilder.view.mediators
         }
 		private function context_clipboardChangeHandler(event:DocumentModelEvent):void
 		{
-			toolBar.pasteButton.enabled = document.selectedObjects?true:false;
+			toolBar.pasteButton.enabled = document.selectedAssets?true:false;
 		}
 		
 		private function eventDispatcher_switchToScaleHandler(event:SceneEvent):void
@@ -140,7 +139,7 @@ package awaybuilder.view.mediators
 		
 		private function toolBar_deleteSelectionHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, document.selectedObjects));
+			this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, document.selectedAssets));
 		}
 		
 		private function toolBar_focusObjectHandler(event:ToolBarEvent):void
@@ -208,11 +207,6 @@ package awaybuilder.view.mediators
 		private function toolBar_applicationSettingsHandler(event:ToolBarEvent):void
 		{
 			this.dispatch(new SettingsEvent(SettingsEvent.SHOW_APPLICATION_SETTINGS));
-		}
-		
-		private function toolBar_documentSettingsHandler(event:ToolBarEvent):void
-		{
-			this.dispatch(new SettingsEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS));
 		}
 		
 	}

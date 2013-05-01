@@ -15,10 +15,6 @@ package awaybuilder.controller.events
 		
 		public static const SHOW_OBJECT_PICKER_CHANGE:String = "showObjectPickerChange";
 		
-		//document settings events
-		
-		public static const SHOW_DOCUMENT_SETTINGS:String = "showDocumentSettings";
-		
 		public function SettingsEvent(type:String)
 		{
 			super(type, false, false);

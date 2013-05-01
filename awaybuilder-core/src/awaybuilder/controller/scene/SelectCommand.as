@@ -24,7 +24,7 @@ package awaybuilder.controller.scene
 				if( selectedAsset.isDefault ) continue;
 				items.push( selectedAsset );
 			}
-			document.selectedObjects = items;
+			document.selectedAssets = items;
 			
 		}
 	}

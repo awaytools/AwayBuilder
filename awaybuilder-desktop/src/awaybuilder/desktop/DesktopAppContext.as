@@ -13,7 +13,6 @@ package awaybuilder.desktop
     import awaybuilder.desktop.controller.SceneReadyCommand;
     import awaybuilder.desktop.controller.ShowAboutWindowCommand;
     import awaybuilder.desktop.controller.ShowDocumentLoadProgressWindowCommand;
-    import awaybuilder.desktop.controller.ShowDocumentSettingsWindowCommand;
     import awaybuilder.desktop.controller.ShowMessageBoxCommand;
     import awaybuilder.desktop.controller.ShowTextureSizeErrorsCommand;
     import awaybuilder.desktop.controller.events.AboutEvent;
@@ -66,7 +65,6 @@ package awaybuilder.desktop
 			this.commandMap.mapEvent(DocumentEvent.CLOSE_DOCUMENT, CloseDocumentCommand);
 			
 			this.commandMap.mapEvent(MessageBoxEvent.SHOW_MESSAGE_BOX, ShowMessageBoxCommand);
-			this.commandMap.mapEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS, ShowDocumentSettingsWindowCommand);
 			this.commandMap.mapEvent(AboutEvent.SHOW_ABOUT, ShowAboutWindowCommand);
 			
 			this.commandMap.mapEvent(DocumentLoadEvent.SHOW_DOCUMENT_LOAD_PROGRESS, ShowDocumentLoadProgressWindowCommand);
