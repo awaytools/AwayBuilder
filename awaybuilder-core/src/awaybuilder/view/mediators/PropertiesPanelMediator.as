@@ -578,10 +578,10 @@ package awaybuilder.view.mediators
 		{
 			var nullItem:AssetVO = new AssetVO();
 			nullItem.name = "Null";
-			nullItem.isDefault = true;
+			nullItem.isNull = true;
 			var nullTextureItem:TextureVO = new TextureVO();
 			nullTextureItem.name = "Null";
-			nullTextureItem.isDefault = true;
+			nullTextureItem.isNull = true;
 			var asset:AssetVO;
 			var lights:ArrayCollection = new ArrayCollection();
 			var pickers:ArrayCollection = new ArrayCollection();

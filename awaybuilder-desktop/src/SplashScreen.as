@@ -1,6 +1,6 @@
 package
 {
-	import awaybuilder.utils.VersionUtil;
+	import awaybuilder.AwayBuilder;
 	
 	import flash.display.Bitmap;
 	import flash.display.NativeWindow;
@@ -62,13 +62,12 @@ package
 			text.text = "©2013 The Away Foundation";
 			text.width = text.textWidth+8;
 			image.addChild( text );
-			text.x = this.width - text.width - 10;
+			text.x = this.width - text.width - 7;
 			text.y = this.height-23;
-			
 			
 			var versionText:TextField = new TextField();
 			versionText.defaultTextFormat = defaultTextFormat;
-			versionText.text = "Ver " + VersionUtil.versionString;
+			versionText.text = "Ver " + AwayBuilder.MAJOR_VERSION + "." + AwayBuilder.MINOR_VERSION + "." + AwayBuilder.REVISION + " " + AwayBuilder.SUFFIX;
 			versionText.width = text.textWidth+8;
 			image.addChild( versionText );
 			versionText.x = 10;

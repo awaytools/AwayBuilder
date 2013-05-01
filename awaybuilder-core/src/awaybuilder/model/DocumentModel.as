@@ -17,8 +17,6 @@ package awaybuilder.model
 	{
 		private var _documentVO:DocumentVO = new DocumentVO();
 		
-		public var versionString:String;
-		
 		private var _empty:Boolean = true;
 		public function get empty():Boolean
 		{
@@ -69,14 +67,14 @@ package awaybuilder.model
 			this._savedNativePath = value;
 		}
 		
-		private var _selectedObjects:Vector.<AssetVO> = new Vector.<AssetVO>();
-		public function get selectedObjects():Vector.<AssetVO>
+		private var _selectedAssets:Vector.<AssetVO> = new Vector.<AssetVO>();
+		public function get selectedAssets():Vector.<AssetVO>
 		{
-			return this._selectedObjects;
+			return this._selectedAssets;
 		}
-		public function set selectedObjects(value:Vector.<AssetVO>):void
+		public function set selectedAssets(value:Vector.<AssetVO>):void
 		{
-			this._selectedObjects = value;
+			this._selectedAssets = value;
 		}
 		
 		private var _globalOptions:GlobalOptionsVO = new GlobalOptionsVO();
@@ -173,7 +171,7 @@ package awaybuilder.model
 		{
 			_documentVO = new DocumentVO();
 			_globalOptions = new GlobalOptionsVO();
-			_selectedObjects = new Vector.<AssetVO>();
+			_selectedAssets = new Vector.<AssetVO>();
 			empty = true;
 		}
 		

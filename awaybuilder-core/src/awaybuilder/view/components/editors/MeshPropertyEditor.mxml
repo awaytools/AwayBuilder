@@ -57,26 +57,10 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset, true));
         }
 
-        private function materialButton_clickHandler(event:MouseEvent):void 
-		{
-//            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_MATERIAL_PROPERTIES, _asset.material, true));
-        }
-
 		private function editParentObjectButton_clickHandler(event:MouseEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
-		
-		private function stepperFormatFunc(val:Number):String 
-		{ 
-			return val.toString().replace(".",","); 
-		} 
-		
-		private function stepperParseFunc(val:String):Number 
-		{ 
-			var stringVal:String = val.replace(",","."); 
-			return Number(stringVal);     
-		} 
 		
         ]]></fx:Script>
 
@@ -119,24 +103,24 @@
     <controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
             <s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <controls:DragableNumericStepper id="xStepper" stepSize="0.01" snapInterval="0.01"
+                <controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001"
                                    width="100%" value="{_asset.x}"
                                   change="position_commitHandler(event)" />
-                <controls:DragableNumericStepper id="yStepper"  stepSize="0.01" snapInterval="0.01"
+                <controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001"
                                   width="100%" value="{_asset.y}"
                                   change="position_commitHandler(event)"/>
-                <controls:DragableNumericStepper id="zStepper" stepSize="0.01" snapInterval="0.01"
+                <controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001"
                                    width="100%" value="{_asset.z}"
                                   change="position_commitHandler(event)"/>
             </s:FormItem>
 			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="pivotXStepper" stepSize="0.01" snapInterval="0.01"
+				<controls:DragableNumericStepper id="pivotXStepper" stepSize="1" snapInterval="0.001"
 								   width="100%" value="{_asset.pivotX}"
 								  change="pivot_commitHandler(event)" />
-				<controls:DragableNumericStepper id="pivotYStepper" stepSize="0.01" snapInterval="0.01"
+				<controls:DragableNumericStepper id="pivotYStepper" stepSize="1" snapInterval="0.001"
 								  width="100%" value="{_asset.pivotY}"
 								  change="pivot_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="pivotZStepper"  stepSize="0.01" snapInterval="0.01"
+				<controls:DragableNumericStepper id="pivotZStepper" stepSize="1" snapInterval="0.001"
 								 width="100%" value="{_asset.pivotZ}" 
 								  change="pivot_commitHandler(event)"/>
 			</s:FormItem>

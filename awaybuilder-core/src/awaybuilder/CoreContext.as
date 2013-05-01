@@ -61,13 +61,11 @@ package awaybuilder
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.model.WindowModel;
 	import awaybuilder.view.components.CoreEditor;
-	import awaybuilder.view.components.DocumentSettingsForm;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.PropertiesPanel;
 	import awaybuilder.view.mediators.CoreEditorMediator;
-	import awaybuilder.view.mediators.DocumentSettingsFormMediator;
 	import awaybuilder.view.mediators.EditStatusBarMediator;
 	import awaybuilder.view.mediators.EditToolBarMediator;
 	import awaybuilder.view.mediators.LibraryPanelMediator;
@@ -166,7 +164,6 @@ package awaybuilder
 			this.mediatorMap.mapView(LibraryPanel, LibraryPanelMediator);
 			this.mediatorMap.mapView(EditToolBar, EditToolBarMediator);
 			this.mediatorMap.mapView(EditStatusBar, EditStatusBarMediator);
-			this.mediatorMap.mapView(DocumentSettingsForm, DocumentSettingsFormMediator);
 		}
 	}
 }

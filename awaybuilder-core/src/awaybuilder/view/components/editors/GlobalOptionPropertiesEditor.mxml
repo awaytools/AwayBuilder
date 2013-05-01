@@ -55,7 +55,7 @@
 		</s:HGroup>
 	</s:Group>
 	<s:Spacer height="6"/>
-	<s:VGroup width="100%" paddingLeft="10" paddingRight="8">
+	<s:VGroup width="100%" paddingLeft="10" paddingRight="8" gap="8">
 		<controls:PropertiesItemContainer label="Matrix Storage" width="100%">
 			<s:RadioButton label="Size" group="{matrixGroup}"/>
 			<s:RadioButton label="Precision" group="{matrixGroup}"/>

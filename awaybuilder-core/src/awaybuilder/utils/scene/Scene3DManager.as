@@ -1,10 +1,7 @@
 package awaybuilder.utils.scene
 {
-	import awaybuilder.controller.scene.events.SceneEvent;
 	import avmplus.getQualifiedClassName;
-	import awaybuilder.view.scene.controls.ContainerGizmo3D;
-	import away3d.lights.DirectionalLight;
-	import awaybuilder.utils.MathUtils;
+	
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.Scene3D;
@@ -17,12 +14,16 @@ package awaybuilder.utils.scene
 	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
 	import away3d.events.Stage3DEvent;
+	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.primitives.WireframePlane;
 	
+	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.utils.MathUtils;
 	import awaybuilder.utils.scene.modes.GizmoMode;
 	import awaybuilder.view.scene.OrientationTool;
+	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	import awaybuilder.view.scene.controls.Gizmo3DBase;
 	import awaybuilder.view.scene.controls.LightGizmo3D;
 	import awaybuilder.view.scene.controls.RotateGizmo3D;
@@ -159,8 +160,8 @@ package awaybuilder.utils.scene
 			
 			
 			//handle stage events
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
-			stage.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
+			scope.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
+			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
 			//scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);
 			//scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
 			
@@ -273,7 +274,7 @@ package awaybuilder.utils.scene
 		{
 			if (active)
 			{
-				if (!CameraManager.hasMoved && !multiSelection && !currentGizmo.active && !orientationTool.orientationClicked) unselectAll();	
+				if (!CameraManager.hasMoved && !multiSelection && !currentGizmo.active && !orientationTool.orientationClicked) deselectAndDispatch();	
 			}
 			orientationTool.orientationClicked = false;
 		}			
@@ -505,7 +506,7 @@ package awaybuilder.utils.scene
 			return m;
 		}
 		
-		public static function unselectAll():void
+		public static function unselectAll():Boolean
 		{
 			var itemsDeselected:Boolean = false;
 			for(var i:int=0;i<selectedObjects.length;i++)
@@ -518,9 +519,11 @@ package awaybuilder.utils.scene
 			selectedObjects = new ArrayList();
 			selectedObject = null;
 			currentGizmo.hide();
-
-			if (itemsDeselected)
-				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
+			return itemsDeselected;
+		}
+		private static function deselectAndDispatch():void
+		{
+			if (unselectAll()) instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}
 		
 		public static function unSelectObjectByName(meshName:String):void
@@ -536,7 +539,7 @@ package awaybuilder.utils.scene
 					break;
 				}
 			}	
-			
+			trace( "unSelectObjectByName" );
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}		
 		

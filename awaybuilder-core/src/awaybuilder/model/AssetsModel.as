@@ -126,26 +126,9 @@ package awaybuilder.model
 		public function CreateMaterial( material:MaterialVO ):MaterialVO
 		{
 			var newMaterial:SinglePassMaterialBase;
-			
-			//			if( material.type == MaterialVO.TEXTURE )
-			//			{
-			var textureMaterial:TextureMaterial = GetObject(material) as TextureMaterial;
+			var textureMaterial:TextureMaterial = GetObject(GetDefaultMaterial()) as TextureMaterial;
 			newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
-			//			}
-			//			else
-			//			{
-			//				var colorMaterial:ColorMaterial = GetObject(material) as ColorMaterial;
-			//				newMaterial = new ColorMaterial( colorMaterial.color, colorMaterial.alpha );
-			//			}
-			var base:SinglePassMaterialBase = GetObject(material) as SinglePassMaterialBase;
-			newMaterial.diffuseMethod = base.diffuseMethod;
-			
-			newMaterial.shadowMethod = base.shadowMethod;
-			newMaterial.ambientMethod = base.ambientMethod;
-			newMaterial.normalMethod = base.normalMethod;
-			newMaterial.specularMethod = base.specularMethod;
 			newMaterial.name = "Material " + AssetUtil.GetNextId("Material");
-			
 			return GetAsset(newMaterial) as MaterialVO;
 		}
 		

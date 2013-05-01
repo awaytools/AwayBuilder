@@ -484,20 +484,15 @@ package awaybuilder.desktop.view.mediators
 				}
 				case MENU_DELETE:
 				{
-					if(this.documentModel.selectedObjects.length > 0)
+					if(this.documentModel.selectedAssets.length > 0)
 					{
-						this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, documentModel.selectedObjects));
+						this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, documentModel.selectedAssets));
 					}
 					break;
 				}
 				case MENU_APPLICATION_SETTINGS:
 				{
 					this.dispatch(new SettingsEvent(SettingsEvent.SHOW_APPLICATION_SETTINGS));
-					break;
-				}
-				case MENU_DOCUMENT_SETTINGS:
-				{
-					this.dispatch(new SettingsEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS));
 					break;
 				}
 				//tools

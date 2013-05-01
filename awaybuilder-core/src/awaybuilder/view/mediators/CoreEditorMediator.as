@@ -636,10 +636,12 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
 		{
-			var asset:MaterialVO = event.items[0] as MaterialVO;
-			if( asset ) 
-			{
-				applyMaterial( asset );
+			if( event.items && event.items.length ) {
+				var asset:MaterialVO = event.items[0] as MaterialVO;
+				if( asset ) 
+				{
+					applyMaterial( asset );
+				}
 			}
 		}
 		
@@ -811,6 +813,7 @@ package awaybuilder.view.mediators
 					selected.push(asset);
 				}
 			} 
+			trace( "select" );
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
 		}
 

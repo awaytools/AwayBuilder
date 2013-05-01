@@ -24,13 +24,13 @@ package awaybuilder.controller.clipboard
 		
 		override public function execute():void
 		{
-			if( !document.selectedObjects || (document.selectedObjects.length == 0))
+			if( !document.selectedAssets || (document.selectedAssets.length == 0))
 			{
 				return;
 			}
 			
 			var copiedObjects:Vector.<AssetVO> = new Vector.<AssetVO>();
-			for each( var vo:AssetVO in document.selectedObjects )
+			for each( var vo:AssetVO in document.selectedAssets )
 			{
 				var meshVO:MeshVO = vo as MeshVO;
 				if( meshVO )
@@ -44,7 +44,7 @@ package awaybuilder.controller.clipboard
 			document.copiedObjects = copiedObjects;
 			if(event.type == ClipboardEvent.CLIPBOARD_CUT)
 			{
-				this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, [], document.selectedObjects.concat() ));
+				this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, [], document.selectedAssets.concat() ));
 			}
 		}
 	}
