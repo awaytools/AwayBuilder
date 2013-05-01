@@ -21,9 +21,9 @@
 	<components:CoreEditor id="coreEditor" width="100%" height="100%"/>
 	
 	<fx:Script><![CDATA[
+		import awaybuilder.AwayBuilder;
 		import awaybuilder.desktop.DesktopAppContext;
 		import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-		import awaybuilder.utils.VersionUtil;
 		
 		import mx.events.FlexEvent;
 		import mx.events.ResizeEvent;
@@ -34,13 +34,6 @@
 		
         private function preinitializeHandler(event:FlexEvent):void
         {
-			var appXml:XML = NativeApplication.nativeApplication.applicationDescriptor;
-			var ns:Namespace = appXml.namespace();
-			var versionNumber:String = appXml.ns::versionNumber[0];
-			var versionLabel:String = appXml.ns::versionLabel[0];
-			
-			VersionUtil.versionString = versionNumber + " " + versionLabel;
-			
 			splashScreen = new SplashScreen();
             this._context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
         }

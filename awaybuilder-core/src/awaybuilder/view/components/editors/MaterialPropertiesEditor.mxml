@@ -89,6 +89,8 @@
 		
 		[Bindable] private var _asset:MaterialVO;
 		
+		[Bindable] private var _isColorMaterial:Boolean;
+		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is MaterialVO) ) return;
@@ -124,12 +126,13 @@
 			if( _asset.diffuseTexture )
 			{
 				textureDropDownList.selectedItem = _asset.diffuseTexture;
+				_isColorMaterial = false;
 			}
 			else
 			{
 				textureDropDownList.selectedIndex = 0;
+				_isColorMaterial = true;
 			}
-			
 			var item:Object;
 			for each(item in ambientList) 
 			{
@@ -649,7 +652,7 @@
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
-			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{textureDropDownList.selectedItem.isNull}">
+			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{_isColorMaterial}">
 				<mx:ColorPicker id="diffuseColorPicker" selectedColor="{_asset.diffuseColor}" change="diffuseColorPicker_changeHandler(event)"/>
 			</s:FormItem>
 		</s:Form>

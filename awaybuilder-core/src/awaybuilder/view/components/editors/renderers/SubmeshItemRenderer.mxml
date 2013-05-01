@@ -3,7 +3,7 @@
                 xmlns:controls="awaybuilder.view.components.controls.*" autoDrawBackground="false">
 
     <s:layout>
-        <s:VerticalLayout verticalAlign="middle"/>
+        <s:VerticalLayout verticalAlign="middle" gap="0"/>
     </s:layout>
     <fx:Script><![CDATA[
 		import away3d.core.base.SubMesh;
@@ -75,7 +75,7 @@
 				  width="23" height="100%" click="editSubmeshMaterialButton_clickHandler(event)"/>
 	</s:HGroup>-->
 	
-	<s:HGroup width="100%">
+	<s:HGroup width="100%" paddingBottom="0" paddingTop="2">
 		<controls:ExtendedDropDownList id="dropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
 									   dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}" requireSelection="true"
 									   change="dropDownList1_changeHandler(event)"

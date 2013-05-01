@@ -8,16 +8,6 @@
 	<fx:Metadata>
 		[Event(name="zoom",type="awaybuilder.view.components.events.ToolBarZoomEvent")]
 	</fx:Metadata>
-	<s:Label text="Ver " fontWeight="bold" fontSize="10" color="0x777777">
-		<s:filters>
-			<s:DropShadowFilter angle="-125" distance="1" blurX="1" blurY="1"/>
-		</s:filters>
-	</s:Label>
-	<s:Label text="{VersionUtil.versionString}" fontSize="10" color="0x777777">
-		<s:filters>
-			<s:DropShadowFilter angle="-125" distance="1" blurX="1" blurY="1"/>
-		</s:filters>
-	</s:Label>
 	<s:Spacer width="100%"/>
 	
 	<s:Button id="zoomOutButton" styleName="toolbarButton" toolTip="Zoom Out" autoRepeat="true"
@@ -31,7 +21,6 @@
 	
 	<fx:Script>
 	<![CDATA[
-		import awaybuilder.utils.VersionUtil;
 		import awaybuilder.utils.scene.CameraManager;
 		import awaybuilder.view.components.events.ToolBarZoomEvent;
 		
