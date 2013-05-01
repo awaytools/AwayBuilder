@@ -20,10 +20,11 @@ package awaybuilder.controller.scene
 			var subMesh:SubMeshVO = event.items[0] as SubMeshVO;
 			
 			var newMaterial:MaterialVO = event.newValue as MaterialVO;
-			
-			saveOldValue( event, subMesh.material.clone() );
-			
-			subMesh.material = newMaterial;
+			if( subMesh ) 
+			{
+				saveOldValue( event, subMesh.material.clone() );
+				subMesh.material = newMaterial;
+			}
 			
 			if( event.isUndoAction )
 			{

@@ -155,6 +155,10 @@
 				var pos:Point = button.localToGlobal( new Point() );
 				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
 			}
+			protected function materialsPanel_addNewItemHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_MATERIAL ) );
+			}
 			
 			private function newTexturePopup_closeHandler(event:PopUpEvent):void 
 			{
@@ -236,13 +240,15 @@
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel  id="materialsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
-									title="Materials" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+									title="Materials" height="24" width="100%" collapsed="true" addEnabled="true"
+									collapsedChange="panel_collapsedChangeHandler(event)"
+									addNewItem="materialsPanel_addNewItemHandler(event)">
 			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedItems}"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="texturesPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
-								   title="Textures" height="24" width="100%" collapsed="true"  addEnabled="true"
+								   title="Textures" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
 			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedItems}"

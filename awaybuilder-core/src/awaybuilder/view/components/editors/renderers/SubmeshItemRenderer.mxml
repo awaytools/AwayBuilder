@@ -40,9 +40,6 @@
 			{
 				_selectedMaterial = null;
 			}
-			if( _selectedMaterial ) {
-				trace( "_subMesh.name" + _selectedMaterial.name );
-			}
         }
 
         private function dropDownList1_changeHandler(event:IndexChangeEvent):void 

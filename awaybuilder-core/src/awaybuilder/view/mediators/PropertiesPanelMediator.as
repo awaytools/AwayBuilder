@@ -295,8 +295,7 @@ package awaybuilder.view.mediators
 		
 		private function view_submeshAddNewMaterialHandler(event:PropertyEditorEvent):void
 		{
-			var newValue:SubMeshVO = SubMeshVO(event.data);
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[newValue], assets.CreateMaterial( newValue.material )));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[event.data], assets.CreateMaterial()));
 		}
 		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
 		{
@@ -453,14 +452,18 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
 		{
-			var subMesh:SubMeshVO = SubMeshVO( event.items[0] );
-			var mesh:MeshVO = subMesh.parentMesh as MeshVO;
-			for each( var o:SubMeshVO in mesh.subMeshes )
+			if( event.items && event.items.length )
 			{
-				subMesh.linkedMaterials = view.materials;
+				var subMesh:SubMeshVO = SubMeshVO( event.items[0] );
+				var mesh:MeshVO = subMesh.parentMesh as MeshVO;
+				for each( var o:SubMeshVO in mesh.subMeshes )
+				{
+					subMesh.linkedMaterials = view.materials;
+				}
+				
+				view.SetData(mesh);
 			}
 			
-			view.SetData(mesh);
 		}
 		
 		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void

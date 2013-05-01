@@ -123,10 +123,14 @@ package awaybuilder.model
 			return asset;
 		}
 		
-		public function CreateMaterial( material:MaterialVO ):MaterialVO
+		public function CreateMaterial( clone:MaterialVO = null ):MaterialVO
 		{
+			if( !clone )
+			{
+				clone = GetDefaultMaterial();
+			}
 			var newMaterial:SinglePassMaterialBase;
-			var textureMaterial:TextureMaterial = GetObject(GetDefaultMaterial()) as TextureMaterial;
+			var textureMaterial:TextureMaterial = GetObject(clone) as TextureMaterial;
 			newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
 			newMaterial.name = "Material " + AssetUtil.GetNextId("Material");
 			return GetAsset(newMaterial) as MaterialVO;

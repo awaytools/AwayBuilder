@@ -19,6 +19,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.utils.AssetUtil;
@@ -59,6 +60,7 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
+			addViewListener(LibraryPanelEvent.ADD_MATERIAL, view_addMaterialHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
@@ -75,6 +77,13 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
+		
+		private function view_addMaterialHandler(event:LibraryPanelEvent):void
+		{
+			var m:MaterialVO = assets.CreateMaterial()
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[], m));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[m]));
+		}
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
 		{
 			var method:EffectMethodVO = assets.CreateEffectMethod( event.data as String );

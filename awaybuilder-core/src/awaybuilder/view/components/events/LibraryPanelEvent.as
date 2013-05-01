@@ -8,6 +8,7 @@ package awaybuilder.view.components.events
 		
 		public static const ADD_TEXTURE:String = "addTexture";
 		public static const ADD_CUBE_TEXTURE:String = "addCubeTexture";
+		public static const ADD_MATERIAL:String = "addMaterial";
 		
 		public static const ADD_EFFECTMETHOD:String = "addEffectMethod";
 		

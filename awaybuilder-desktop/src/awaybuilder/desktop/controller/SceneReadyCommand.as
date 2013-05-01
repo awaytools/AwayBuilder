@@ -22,6 +22,8 @@ package awaybuilder.desktop.controller
 			_app = FlexGlobals.topLevelApplication as AwayBuilderApplication;
 			_app.splashScreen.close();
 			_app.visible = true;
+			_app.alwaysInFront = true;
+			_app.alwaysInFront = false;
 		}
 		
 		
