@@ -5,6 +5,8 @@ package awaybuilder
 	 */
 	public class AwayBuilder
 	{
+		public static const WEBSITE_URL:String = "http://www.away3d.com/awaybuilder";
+		
 		public static const MAJOR_VERSION:uint = 0;
 		
 		public static const MINOR_VERSION:uint = 9;
