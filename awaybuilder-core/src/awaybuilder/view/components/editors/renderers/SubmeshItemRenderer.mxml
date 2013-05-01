@@ -26,6 +26,7 @@
             super.data = value;
 			if( !value ) return;
             _subMesh = value as SubMeshVO;
+			_selectedMaterial = null;
 			var materialPresent:Boolean = false;
             for each(var material:MaterialVO in _subMesh.linkedMaterials) 
 			{
@@ -38,6 +39,9 @@
 			if( !materialPresent )
 			{
 				_selectedMaterial = null;
+			}
+			if( _selectedMaterial ) {
+				trace( "_subMesh.name" + _selectedMaterial.name );
 			}
         }
 
