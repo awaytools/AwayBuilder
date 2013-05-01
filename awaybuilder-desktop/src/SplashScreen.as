@@ -1,5 +1,7 @@
 package
 {
+	import awaybuilder.utils.VersionUtil;
+	
 	import flash.display.Bitmap;
 	import flash.display.NativeWindow;
 	import flash.display.NativeWindowInitOptions;
@@ -62,6 +64,15 @@ package
 			image.addChild( text );
 			text.x = this.width - text.width - 10;
 			text.y = this.height-23;
+			
+			
+			var versionText:TextField = new TextField();
+			versionText.defaultTextFormat = defaultTextFormat;
+			versionText.text = "Ver " + VersionUtil.versionString;
+			versionText.width = text.textWidth+8;
+			image.addChild( versionText );
+			versionText.x = 10;
+			versionText.y = this.height-23;
 		}
 		
 	}

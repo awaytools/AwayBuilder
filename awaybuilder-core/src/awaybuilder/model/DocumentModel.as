@@ -17,6 +17,8 @@ package awaybuilder.model
 	{
 		private var _documentVO:DocumentVO = new DocumentVO();
 		
+		public var versionString:String;
+		
 		private var _empty:Boolean = true;
 		public function get empty():Boolean
 		{

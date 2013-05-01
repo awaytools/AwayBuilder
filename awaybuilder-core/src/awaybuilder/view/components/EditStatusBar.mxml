@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx">
-	
+	xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 	</fx:Declarations>
 	
 	<fx:Metadata>
 		[Event(name="zoom",type="awaybuilder.view.components.events.ToolBarZoomEvent")]
 	</fx:Metadata>
-	
+	<s:Label text="Ver " fontWeight="bold" fontSize="10" color="0x777777">
+		<s:filters>
+			<s:DropShadowFilter angle="-125" distance="1" blurX="1" blurY="1"/>
+		</s:filters>
+	</s:Label>
+	<s:Label text="{VersionUtil.versionString}" fontSize="10" color="0x777777">
+		<s:filters>
+			<s:DropShadowFilter angle="-125" distance="1" blurX="1" blurY="1"/>
+		</s:filters>
+	</s:Label>
 	<s:Spacer width="100%"/>
 	
 	<s:Button id="zoomOutButton" styleName="toolbarButton" toolTip="Zoom Out" autoRepeat="true"
@@ -23,10 +31,14 @@
 	
 	<fx:Script>
 	<![CDATA[
+		import awaybuilder.utils.VersionUtil;
 		import awaybuilder.utils.scene.CameraManager;
 		import awaybuilder.view.components.events.ToolBarZoomEvent;
 		
+		import mx.core.FlexGlobals;
 		import mx.events.FlexEvent;
+		
+		import spark.components.Application;
 		
 
 		public function get zoom():Number
@@ -69,6 +81,13 @@
 			this.dispatchEvent(new ToolBarZoomEvent(ToolBarZoomEvent.ZOOM_TO, this.zoom));
 		}
 
+		protected function creationCompleteHandler(event:FlexEvent):void
+		{
+//			var appXml:XML = spark.components.WindowedApplication(FlexGlobals.topLevelApplication).nativeApplication.applicationDescriptor;
+//			var ns:Namespace = appXml.namespace();
+//			versionLabel.text = "Ver " + appXml.ns::versionNumber + " " appXml.ns::name;
+		}
+		
 	]]>
 	</fx:Script>
 </s:SkinnableContainer>

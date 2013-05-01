@@ -11,7 +11,6 @@
 	usePreloader="false"
 	invoke="invokeHandler(event)" 
 	preinitialize="preinitializeHandler(event)"
-	applicationComplete="applicationCompleteHandler(event)"
 	>
 	
 	<fx:Declarations>
@@ -24,6 +23,7 @@
 	<fx:Script><![CDATA[
 		import awaybuilder.desktop.DesktopAppContext;
 		import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+		import awaybuilder.utils.VersionUtil;
 		
 		import mx.events.FlexEvent;
 		import mx.events.ResizeEvent;
@@ -34,6 +34,13 @@
 		
         private function preinitializeHandler(event:FlexEvent):void
         {
+			var appXml:XML = NativeApplication.nativeApplication.applicationDescriptor;
+			var ns:Namespace = appXml.namespace();
+			var versionNumber:String = appXml.ns::versionNumber[0];
+			var versionLabel:String = appXml.ns::versionLabel[0];
+			
+			VersionUtil.versionString = versionNumber + " " + versionLabel;
+			
 			splashScreen = new SplashScreen();
             this._context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
         }
@@ -51,11 +58,6 @@
                 }
             }
         }
-		
-		protected function applicationCompleteHandler(event:FlexEvent):void
-		{
-		}
-		
 		
 	]]></fx:Script>
 	

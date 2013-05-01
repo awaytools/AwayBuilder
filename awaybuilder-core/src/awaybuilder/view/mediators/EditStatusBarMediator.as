@@ -1,14 +1,21 @@
 package awaybuilder.view.mediators
 {
-	import awaybuilder.view.scene.events.Scene3DManagerEvent;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.events.ToolBarZoomEvent;
+	import awaybuilder.view.scene.events.Scene3DManagerEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
 	public class EditStatusBarMediator extends Mediator
 	{
+		[Inject]
+		public var view:EditStatusBar;
+		
+		[Inject]
+		public var document:DocumentModel;
+		
 		[Inject]
 		public var statusBar:EditStatusBar;
 		
