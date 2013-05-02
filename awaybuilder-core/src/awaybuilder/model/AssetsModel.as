@@ -157,6 +157,8 @@ package awaybuilder.model
 		{
 			var light:PointLight = new PointLight();
 			light.name = "PointLight " + AssetUtil.GetNextId("pointLight");
+			light.radius = 1000;
+			light.fallOff = 3000;
 			light.castsShadows = false;
 			return GetAsset( light ) as LightVO;
 		}
