@@ -173,9 +173,9 @@
 		
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			if( _asset.shadowMapper.type == "CascadeShadowMapper" )
+			if( _asset.shadowMapper.type == "CubeMapShadowMapper" )
 			{
-				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod ) );
+				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_HardShadowMapMethod ) );
 			}
 			else if( _asset.shadowMapper.type == "NearDirectionalShadowMapper" )
 			{

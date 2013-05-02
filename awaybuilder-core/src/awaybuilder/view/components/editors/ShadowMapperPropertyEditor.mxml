@@ -69,7 +69,7 @@
 	</s:Group>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Depth Map Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="DirectionalShadowMapper,NearDirectionalShadowMapper,CascadeShadowMapper,CubeMapShadowMapper">
-			<s:DropDownList id="depthDropDownList" requireSelection="true" enabled="false" selectedItem="{_asset.depthMapSize}"
+			<s:DropDownList id="depthDropDownList" requireSelection="true" selectedItem="{_asset.depthMapSize}"
 							width="100%" change="depthDropDownList_changeHandler(event)"
 							>
 				<s:dataProvider>
@@ -82,7 +82,7 @@
 			</s:DropDownList>
 		</s:FormItem>
 		<s:FormItem label="Number of Cascasdes" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CascadeShadowMapper">
-			<s:DropDownList id="numCascadesDropdownList" requireSelection="true" enabled="false" selectedItem="{_asset.numCascades}"
+			<s:DropDownList id="numCascadesDropdownList" requireSelection="true" selectedItem="{_asset.numCascades}"
 							width="100%" change="numCascadesDropdownList_changeHandler(event)"
 							>
 				<s:dataProvider>
