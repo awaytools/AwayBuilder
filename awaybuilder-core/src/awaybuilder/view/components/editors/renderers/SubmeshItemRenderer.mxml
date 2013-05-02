@@ -45,6 +45,7 @@
         private function dropDownList1_changeHandler(event:IndexChangeEvent):void 
 		{
 			_subMesh.material = dropDownList.selectedItem as MaterialVO;
+			// TODO check why it fires twice
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, _subMesh, true));
         }
 

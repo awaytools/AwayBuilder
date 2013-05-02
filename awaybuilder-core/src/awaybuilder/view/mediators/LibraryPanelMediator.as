@@ -16,6 +16,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -59,6 +60,8 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_POINT_LIGHT, view_addPointLightHandler);
 			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
+			addViewListener(LibraryPanelEvent.ADD_CUBE_TEXTURE, view_addCubeTextureHandler);
+			
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_MATERIAL, view_addMaterialHandler);
 			
@@ -94,6 +97,13 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));
 		}
+		private function view_addCubeTextureHandler(event:LibraryPanelEvent):void
+		{
+			var asset:CubeTextureVO = assets.CreateCubeTexture();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		
 		
 		private function view_addDirectionalLightHandler(event:LibraryPanelEvent):void
 		{

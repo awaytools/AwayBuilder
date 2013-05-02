@@ -66,6 +66,7 @@
 		}
 		public function SetData( value:Object ):void
 		{
+			trace( "value = " + value );
 			_data = null; //need refactor here
 			_data = value;
 		}

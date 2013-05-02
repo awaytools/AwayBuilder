@@ -30,7 +30,6 @@ package awaybuilder.controller.scene
 			}
 			
 			vo.bitmapData = newTexture.bitmapData;
-//			BitmapTexture(vo.linkedObject).bitmapData = newTexture.bitmapData;
 
 			addToHistory( event );
 		}

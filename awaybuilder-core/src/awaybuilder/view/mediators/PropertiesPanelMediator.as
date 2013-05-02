@@ -109,6 +109,7 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, view_effectmethodChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
+			addViewListener( PropertyEditorEvent.REPLACE_CUBE_TEXTURE, view_replaceCubeTextureHandler );
 			
 			addViewListener( PropertyEditorEvent.LIGHT_POSITION_CHANGE, view_lightPositionChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_STEPPER_CHANGE, view_lightStepperChangeHandler );
@@ -193,16 +194,19 @@ package awaybuilder.view.mediators
 		}
         private function view_meshSubmeshChangeHandler(event:PropertyEditorEvent):void
         {
-            var vo:MeshVO = view.data as MeshVO;
-            var newValue:MeshVO = vo.clone() as MeshVO;
-            for each( var subMesh:SubMeshVO in newValue.subMeshes )
-            {
-                if( subMesh.equals( AssetVO(event.data) ) )
-                {
-                    subMesh.material = SubMeshVO(event.data).material;
-                }
-            }
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], newValue));
+			if( view.data )
+			{
+				var vo:MeshVO = view.data as MeshVO;
+				var newValue:MeshVO = vo.clone() as MeshVO;
+				for each( var subMesh:SubMeshVO in newValue.subMeshes )
+				{
+					if( subMesh.equals( AssetVO(event.data) ) )
+					{
+						subMesh.material = SubMeshVO(event.data).material;
+					}
+				}
+				this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], newValue));
+			}
         }
         private function view_materialChangeHandler(event:PropertyEditorEvent):void
         {
@@ -329,6 +333,10 @@ package awaybuilder.view.mediators
 		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_REPLACE,[event.data]));
+		}
+		private function view_replaceCubeTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_REPLACE,[view.data],event.data));
 		}
 		
 		private function view_lightPositionChangeHandler(event:PropertyEditorEvent):void

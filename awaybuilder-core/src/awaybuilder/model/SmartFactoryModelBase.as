@@ -657,18 +657,21 @@ package awaybuilder.model
 			
 			if( !_defaultCubeTexture )
 			{
-				var bitmap:BitmapData = new BitmapData(8, 8, false, 0x0);
-				
-				for( var i:uint=0; i<8*8; i+=2 ) //create chekerboard
-				{
-					bitmap.setPixel(i%8 + Math.floor(i/8)%2, Math.floor(i/8), 0XFFFFFF);
-				}
-				
+				var bitmap:BitmapData = getChekerboard();
 				var cubeTexture:BitmapCubeTexture = new BitmapCubeTexture( bitmap, bitmap, bitmap, bitmap, bitmap, bitmap );
 				cubeTexture.name = "CubeDefault";
 				_defaultCubeTexture = GetAsset( cubeTexture ) as CubeTextureVO;
 				_defaultCubeTexture.isDefault = true;
 			}
+		}
+		protected function getChekerboard( color:uint = 0xFFFFFF ):BitmapData
+		{
+			var bitmap:BitmapData = new BitmapData(8, 8, false, 0x0);
+			for( var i:uint=0; i<8*8; i+=2 ) //create chekerboard
+			{
+				bitmap.setPixel(i%8 + Math.floor(i/8)%2, Math.floor(i/8), color);
+			}
+			return bitmap;
 		}
 		
 		protected var _assets:Dictionary = new Dictionary();

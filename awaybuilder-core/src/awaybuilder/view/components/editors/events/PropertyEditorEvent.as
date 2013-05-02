@@ -35,6 +35,7 @@ package awaybuilder.view.components.editors.events
 		public static const CUBETEXTURE_STEPPER_CHANGE:String = "cubetextureStepperChange";
 		
 		public static const REPLACE_TEXTURE:String = "replaceTexture";
+		public static const REPLACE_CUBE_TEXTURE:String = "replaceCubeTexture";
 
         public static const MESH_SUBMESH_CHANGE:String = "meshSubmeshChange";
 

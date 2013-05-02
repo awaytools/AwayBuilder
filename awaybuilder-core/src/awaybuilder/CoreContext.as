@@ -29,6 +29,7 @@ package awaybuilder
 	import awaybuilder.controller.history.RedoCommand;
 	import awaybuilder.controller.history.UndoCommand;
 	import awaybuilder.controller.history.UndoRedoEvent;
+	import awaybuilder.controller.scene.AddNewCubeTextureCommand;
 	import awaybuilder.controller.scene.AddNewEffectMethodCommand;
 	import awaybuilder.controller.scene.AddNewLightCommand;
 	import awaybuilder.controller.scene.AddNewLightPickerCommand;
@@ -140,12 +141,12 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_GEOMETRY, ChangeGeometryCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADING_METHOD, ChangeShadingMethodCommand);
 			
-			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHT, AddNewLightCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHTPICKER, AddNewLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, AddNewShadowMethodCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE, AddNewCubeTextureCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, AddNewEffectMethodCommand);
 			
 			commandMap.mapEvent(SceneEvent.REPLACE_TEXTURE, ReplaceTextureCommand);
