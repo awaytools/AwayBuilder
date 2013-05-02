@@ -74,6 +74,7 @@ package awaybuilder.utils.encoders
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix3D;
+	import flash.geom.Orientation3D;
 	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -82,10 +83,13 @@ package awaybuilder.utils.encoders
 	import mx.collections.ArrayCollection;
 	import mx.core.Container;
 	import mx.graphics.codec.JPEGEncoder;
+
+	// to do: check if any imports can be removed
+	
 	
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
-		//change "_debug" to true to have some traces in the console...but this traces are not well structured yet
+		// set debug to true to get some traces in the console
 		private var _debug:Boolean=false;
 		private var _body : ByteArray;
 		private var _blockCache : Dictionary;
@@ -134,6 +138,7 @@ package awaybuilder.utils.encoders
 			super();
 			_blockCache = new Dictionary();
 			_elemSizeOffsets = new Vector.<uint>();
+			// to do: check if this blendModeDic works for all blendMode-strings in the Scene
 			blendModeDic=new Dictionary();
 			blendModeDic[BlendMode.NORMAL]=0;
 			blendModeDic[BlendMode.ADD]=1;
@@ -153,21 +158,20 @@ package awaybuilder.utils.encoders
 			blendModeDic[BlendMode.OVERLAY]=15;
 		}
 		
-		
+		// this function is called from the app...
+		// to do: check how to get the _global-properties
 		public function encode(document : DocumentModel, output : ByteArray) : Boolean
 		{
 			
 			_body = new ByteArray();
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
-			
-			// to do: change Order of exported AWDBlocks.
-			
+						
 			// to do: implement Encoder-options.
-			// atm - the AWDEncoder will not make use of any options. Again i will add this as soon as the Encoder works stabil with default-settings.	
+			// atm - the AWDEncoder will not make use of any options. 
+			// I will add this as soon as the Encoder works stabil with default-settings.	
 			
 			if(_debug)trace("start encoding");
-			// encode all textureBlocks
 			
 			//create a AWDBlock class for all supported Assets
 			_createAwdBlocks(document.textures);
@@ -175,8 +179,9 @@ package awaybuilder.utils.encoders
 			_createAwdBlocks(document.lights);
 			_createAwdBlocks(document.materials);
 			_createAwdBlocks(document.geometry);
+			// to do: add export of Animations
 			
-			// recursive encode all Scene-graph objects (ObjectContainer3d / Mesh)
+			// recursive encode all Scene-graph objects (ObjectContainer3d / Mesh) and their dependencies
 			var scene:ArrayCollection = document.scene;
 			for each ( var vo:AssetVO in scene )
 			{
@@ -185,12 +190,13 @@ package awaybuilder.utils.encoders
 				
 			}
 			
-			//create a AWDBlock class for all supported Assets
+			//_encode all supported Assets that are not encodet yet
 			_encodeAddionalBlocks(document.textures);
 			_encodeAddionalBlocks(document.methods);
 			_encodeAddionalBlocks(document.lights);
 			_encodeAddionalBlocks(document.materials);
 			_encodeAddionalBlocks(document.geometry);
+			// to do: add export of Animations
 			
 			// Header
 			output.endian = Endian.LITTLE_ENDIAN;
@@ -205,11 +211,11 @@ package awaybuilder.utils.encoders
 			
 			_finalize();
 			
-			// SUCCESS!
+			if(_debug)trace("SUCCESS");
 			return true;
 		}
 		
-		// creates the AWDBlock for a list of Assets
+		// encodes all assets in a ArrayCollection, if they have not allready been _encodet
 		private function _encodeAddionalBlocks(assetList:ArrayCollection) : void
 		{			
 			for each ( var asset:AssetVO in assetList )
@@ -232,7 +238,7 @@ package awaybuilder.utils.encoders
 				
 			}
 		}
-		// creates the AWDBlock for a list of Assets
+		// creates AWDBlocks for a list of Assets
 		private function _createAwdBlocks(assetList:ArrayCollection) : void
 		{
 			for each ( var asset:AssetVO in assetList )
@@ -252,19 +258,19 @@ package awaybuilder.utils.encoders
 						_blockCache[asset]=newBlock;
 						break;
 				}	
-					
+				
 			}
 		}
-
+		
 		// gets the AWDBlock-ID for a Asset. Blocks that have not been encoded will get encoded here		
 		private function _getBlockIDorEncodeAsset(asset:AssetVO) : uint
 		{
 			if (!asset){
-				trace("assetNotFound");
+				if(_debug)trace("assetNotFound");
 				return 0;
 			}
 			if (asset.isDefault){
-				trace("AssetisDefault");
+				if(_debug)trace("AssetisDefault");
 				return 0;
 			}
 			var thisBlock:AWDBlock=_blockCache[asset];
@@ -427,36 +433,16 @@ package awaybuilder.utils.encoders
 			var i : uint;
 			var geomId : uint;
 			var materialIds : Vector.<uint>;
-			var hasSubMaterials : Boolean;
 			var returnID:uint;
 			// for this function to work, we need MeshVO.material and MeshVO.geometry
 			
 			geomId = _getBlockIDorEncodeAsset(mesh.geometry);
-			
-			
-			for (i=0; i<mesh.subMeshes.length; i++) {
-				if (mesh.subMeshes[i].material != mesh.material) {
-					hasSubMaterials = true;
-					break;
-				}
+			materialIds=new Vector.<uint>;
+			var subMeshVo:SubMeshVO;
+			for each (subMeshVo in mesh.subMeshes) {
+				materialIds.push( _getBlockIDorEncodeAsset(subMeshVo.material));
 			}
-			
-			materialIds = new Vector.<uint>();
-			if (hasSubMaterials) {
-				for (i=0; i<mesh.subMeshes.length; i++) {
-					var sub : SubMeshVO = mesh.subMeshes[i];
-					materialIds[i] = _getBlockIDorEncodeAsset(sub.material);
-				}
-			}
-				
-			else if (mesh.material) {
-				materialIds[0] = _getBlockIDorEncodeAsset(mesh.material);
-			}
-			else {
-				materialIds[0] = 0;
-			}
-			
-			
+						
 			returnID=_encodeBlockHeader(23);
 			_beginElement(); // Block
 			
@@ -493,12 +479,7 @@ package awaybuilder.utils.encoders
 			var fallOff:Number;
 			
 			
-			// if the lights will be part of the sceneGraph, we will need to get its parentID 
-			//	if (_light.parent){
-			//		if (_blockCache[_light.parent]){
-			//			parentId = _blockCache[_light.parent];					
-			//			}
-			//		}			
+			// if the lights will be part of the sceneGraph, we will need to get its parentID 		
 			
 			
 			var shadowMethodsIDs:Vector.<uint>=new Vector.<uint>;
@@ -524,12 +505,12 @@ package awaybuilder.utils.encoders
 				if(_debug)trace("start encode PointLight = "+light.name);
 				if(light.radius!=90000)	radius=light.radius;
 				if(light.fallOff!=100000)	fallOff=light.fallOff;
-				}
+			}
 			if (light.type==LightVO.DIRECTIONAL){
 				if(_debug)trace("start encode DirectionalLight = "+light.name);	
 				lightType=2;
-				}					
-						
+			}					
+			
 			_body.writeByte(lightType);	//lightType	
 			_body.writeByte(methodLength);	//num of ShadowMethods	
 			
@@ -773,7 +754,7 @@ package awaybuilder.utils.encoders
 		}
 		
 		
-				
+		
 		// creates a new SharedBlock for a ShadowMethod.
 		private function _encodeShadowMethod(methVO:ShadowMethodVO) : uint
 		{
@@ -836,9 +817,9 @@ package awaybuilder.utils.encoders
 					returnID=_encodeSharedMethodBlock(methVO.name,404, [1124,100], [methVO.mode,texID], [10,0], [UINT8,BADDR]);
 					break;
 				//case EffectMethodVO.PROJECTIVE_TEXTURE:
-					//texProjectorID=_getBlockIDorEncodeAsset(methVO.textureProjector);
-					//returnID=_encodeSharedMethodBlock(methVO.name,405, [1124,102], [methVO.mode,texProjectorID], [10,0], [UINT8,BADDR]);
-					//break;
+				//texProjectorID=_getBlockIDorEncodeAsset(methVO.textureProjector);
+				//returnID=_encodeSharedMethodBlock(methVO.name,405, [1124,102], [methVO.mode,texProjectorID], [10,0], [UINT8,BADDR]);
+				//break;
 				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
 					returnID=_encodeSharedMethodBlock(methVO.name,406, [1,1107,1106], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,FLOAT32,FLOAT32]);
 					break;
@@ -913,7 +894,7 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("diffuseMethVO = "+diffuseMethVO.type);
 			var texID:uint;
 			switch(diffuseMethVO.type){ 
-						
+				
 				case "LightMapDiffuseMethod":
 					_encodeDiffuseMethod(diffuseMethVO.baseMethod,materialMethods);
 					var lightMapBlendMode1:uint=blendModeDic[diffuseMethVO.blendMode];
@@ -981,9 +962,9 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("normalMethVO = "+normalMethVO.type);
 			switch(normalMethVO.type){ 
 				/*case "HeightMapNormalMethod":
-					//var worldSize:Vector3D=HeightMapNormalMethod(normalMeth).worldSize;
-					//materialMethods.push(new AWDmethod(151, [1108,1109,1110], [worldSize.x, worldSize.y,worldSize.z], [5,5,5], [FLOAT32,FLOAT32,FLOAT32]));
-					break;*/
+				//var worldSize:Vector3D=HeightMapNormalMethod(normalMeth).worldSize;
+				//materialMethods.push(new AWDmethod(151, [1108,1109,1110], [worldSize.x, worldSize.y,worldSize.z], [5,5,5], [FLOAT32,FLOAT32,FLOAT32]));
+				break;*/
 				case "SimpleWaterNormalMethod":
 					materialMethods.push(new AWDmethod(152, [103], [normalMethVO.texture], [0], [BADDR]));
 					break;
@@ -1047,32 +1028,32 @@ package awaybuilder.utils.encoders
 			_beginElement(); // Block
 			var materialMethods:Vector.<AWDmethod>=new Vector.<AWDmethod>;
 			switch(true){ 
-				case(_primitive is PlaneGeometry):
-					var _plane:PlaneGeometry=PlaneGeometry(_primitive)
-					materialMethods.push([1,2,7,8,12], [_plane.width,_plane.height,_plane.segmentsW,_plane.segmentsH,_plane.yUp], [100,100,1,1,true], [FLOAT32,FLOAT32,UINT16,UINT16,BOOL]);
-					break;
-				case(_primitive is CubeGeometry):
-					var _cube:CubeGeometry=CubeGeometry(_primitive)
-					materialMethods.push([1,2,3,7,8,9,12], [_cube.width,_cube.height,_cube.depth,_cube.segmentsW,_cube.segmentsH,_cube.segmentsD,_cube.tile6], [100,100,100,1,1,1,true], [FLOAT32,FLOAT32,FLOAT32,UINT16,UINT16,UINT16,BOOL]);	
-					break;
-					
-				case(_primitive is SphereGeometry):
-					var _sphere:SphereGeometry=SphereGeometry(_primitive)
-					materialMethods.push([4,7,8,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH,_sphere.yUp], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]);
-					break;
-				case(_primitive is CylinderGeometry):
-					//var _cylinder:CylinderGeometry=CylinderGeometry(_primitive)
-					//materialMethods.push([2,4,5,6,7,8,10,11,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]));
-				case(_primitive is ConeGeometry):
-					var _sphere:SphereGeometry=SphereGeometry(_primitive)
-					materialMethods.push([4,7,8,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]);
-					materialMethods.push(new AWDmethod(101, [], [], [], []));
-					break;
-				case(_primitive is CapsuleGeometry):
-					materialMethods.push(new AWDmethod(102, [], [], [], []));
-				case(_primitive is TorusGeometry):
-					materialMethods.push(new AWDmethod(102, [], [], [], []));
-					break;
+			case(_primitive is PlaneGeometry):
+			var _plane:PlaneGeometry=PlaneGeometry(_primitive)
+			materialMethods.push([1,2,7,8,12], [_plane.width,_plane.height,_plane.segmentsW,_plane.segmentsH,_plane.yUp], [100,100,1,1,true], [FLOAT32,FLOAT32,UINT16,UINT16,BOOL]);
+			break;
+			case(_primitive is CubeGeometry):
+			var _cube:CubeGeometry=CubeGeometry(_primitive)
+			materialMethods.push([1,2,3,7,8,9,12], [_cube.width,_cube.height,_cube.depth,_cube.segmentsW,_cube.segmentsH,_cube.segmentsD,_cube.tile6], [100,100,100,1,1,1,true], [FLOAT32,FLOAT32,FLOAT32,UINT16,UINT16,UINT16,BOOL]);	
+			break;
+			
+			case(_primitive is SphereGeometry):
+			var _sphere:SphereGeometry=SphereGeometry(_primitive)
+			materialMethods.push([4,7,8,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH,_sphere.yUp], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]);
+			break;
+			case(_primitive is CylinderGeometry):
+			//var _cylinder:CylinderGeometry=CylinderGeometry(_primitive)
+			//materialMethods.push([2,4,5,6,7,8,10,11,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]));
+			case(_primitive is ConeGeometry):
+			var _sphere:SphereGeometry=SphereGeometry(_primitive)
+			materialMethods.push([4,7,8,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]);
+			materialMethods.push(new AWDmethod(101, [], [], [], []));
+			break;
+			case(_primitive is CapsuleGeometry):
+			materialMethods.push(new AWDmethod(102, [], [], [], []));
+			case(_primitive is TorusGeometry):
+			materialMethods.push(new AWDmethod(102, [], [], [], []));
+			break;
 			}
 			
 			_beginElement(); // Attr list
@@ -1156,7 +1137,7 @@ package awaybuilder.utils.encoders
 			vectorComps.push(new Vector3D(Asset.x,Asset.y,Asset.z));
 			vectorComps.push(new Vector3D(Asset.rotationX,Asset.rotationY,Asset.rotationZ));
 			vectorComps.push(new Vector3D(Asset.scaleX,Asset.scaleY,Asset.scaleZ));
-			transformMatrix.recompose(vectorComps);
+			transformMatrix.recompose(vectorComps);//,Orientation3D.AXIS_ANGLE);
 			return transformMatrix;
 		}
 		
@@ -1333,7 +1314,7 @@ package awaybuilder.utils.encoders
 			
 		}
 		
-
+		
 		
 	}
 }
@@ -1367,7 +1348,7 @@ internal class AWDmethod
 	public var _defaultValues: Array;
 	public var _types: Array;
 	public function AWDmethod(id : uint,ids : Array,values: Array,defaultValues: Array,types:Array) {
-	
+		
 		_id=id;
 		_ids=ids;
 		_values=values;
