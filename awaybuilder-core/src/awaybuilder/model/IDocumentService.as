@@ -7,5 +7,7 @@ package awaybuilder.model
 		function save(data:Object, path:String):void;
 		function saveAs(data:Object, defaultName:String):void;
 		function open( type:String, event:ReadDocumentEvent ):void;
+		
+		function openBitmap( event:ReadDocumentEvent ):void;
 	}
 }

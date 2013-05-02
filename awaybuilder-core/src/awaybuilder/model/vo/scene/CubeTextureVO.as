@@ -18,16 +18,21 @@ package awaybuilder.model.vo.scene
 		public function clone():CubeTextureVO
 		{
 			var vo:CubeTextureVO = new CubeTextureVO();
-			vo.isDefault = this.isDefault;
-			vo.id = this.id;
-			vo.name = this.name;
-			vo.positiveX = this.positiveX;
-			vo.negativeX = this.negativeX;
-			vo.positiveY = this.positiveY;
-			vo.negativeY = this.negativeY;
-			vo.positiveZ = this.positiveZ;
-			vo.negativeZ = this.negativeZ;
+			vo.fillFromCubeTexture( this );
 			return vo;
+		}
+		
+		public function fillFromCubeTexture( asset:CubeTextureVO ):void
+		{
+			this.isDefault = asset.isDefault;
+			this.id = asset.id;
+			this.name = asset.name;
+			this.positiveX = asset.positiveX;
+			this.negativeX = asset.negativeX;
+			this.positiveY = asset.positiveY;
+			this.negativeY = asset.negativeY;
+			this.positiveZ = asset.positiveZ;
+			this.negativeZ = asset.negativeZ;
 		}
 		
 	}

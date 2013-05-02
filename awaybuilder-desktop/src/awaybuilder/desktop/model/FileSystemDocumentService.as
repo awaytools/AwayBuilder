@@ -24,9 +24,20 @@ package awaybuilder.desktop.model
 		private static const FILE_EXTENSION : String = '.awd';
 		
 		private var _fileToData:Dictionary = new Dictionary();
-		private var _filesToOpen:Vector.<File> = new Vector.<File>;
 		
 		private var _nextEvent:ReadDocumentEvent;
+		
+		public function openBitmap( event:ReadDocumentEvent ):void
+		{
+			_nextEvent = event;
+			var file:File = new File();
+			file.addEventListener(Event.SELECT, bitmapFile_open_selectHandler);
+			file.addEventListener(Event.CANCEL, bitmapFile_open_cancelHandler);
+			var filters:Array = [];
+			var title:String = "Import Bitmap";
+			filters.push( new FileFilter("Bitmap (*.png, *.jpg)", "*.png;*.jpg") );
+			file.browseForOpen(title, filters);
+		}
 		
 		public function open( type:String, event:ReadDocumentEvent ):void
 		{
@@ -34,7 +45,6 @@ package awaybuilder.desktop.model
 			var file:File = new File();
 			file.addEventListener(Event.SELECT, file_open_selectHandler);
 			file.addEventListener(Event.CANCEL, file_open_cancelHandler);
-			this._filesToOpen.push(file);
 			var filters:Array = [];
 			var title:String;
 			switch( type ) 
@@ -142,12 +152,27 @@ package awaybuilder.desktop.model
 			delete this._fileToData[file];
 		}
 		
+		private function bitmapFile_open_selectHandler(event:Event):void
+		{
+			var file:File = File(event.currentTarget);
+			file.removeEventListener(Event.SELECT, file_open_selectHandler);
+			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
+			_nextEvent.name = file.name;
+			_nextEvent.path = file.url;
+			dispatch(_nextEvent);
+		}
+		private function bitmapFile_open_cancelHandler(event:Event):void
+		{
+			var file:File = File(event.currentTarget);
+			file.removeEventListener(Event.SELECT, file_open_selectHandler);
+			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
+		}
+		
 		private function file_open_selectHandler(event:Event):void
 		{
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
 			
 			_nextEvent.name = file.name;
 			_nextEvent.path = file.url;
@@ -159,7 +184,6 @@ package awaybuilder.desktop.model
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			this._filesToOpen.splice(this._filesToOpen.indexOf(file), 1);
 		}
 		
 	}

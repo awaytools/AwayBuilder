@@ -22,6 +22,8 @@ import flash.events.Event;
         public static const CHANGE_MATERIAL:String = "changeMaterial";
 		public static const CHANGE_LIGHT:String = "changeLight";
 		public static const CHANGE_LIGHTPICKER:String = "changeLightPicker";
+		public static const CHANGE_CUBE_TEXTURE:String = "changeCubeTexture";
+		public static const CHANGE_TEXTURE:String = "changeTexture";
 		
 		public static const CHANGE_SHADING_METHOD:String = "changeShadingMethod";
 		

@@ -60,6 +60,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SHADING_METHOD, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -107,6 +108,9 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, view_effectmethodChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.TEXTURE_STEPPER_CHANGE, view_textureChangeStepperHandler );
+			addViewListener( PropertyEditorEvent.CUBETEXTURE_STEPPER_CHANGE, view_cubetextureChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			addViewListener( PropertyEditorEvent.REPLACE_CUBE_TEXTURE, view_replaceCubeTextureHandler );
@@ -253,6 +257,14 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_EFFECT_METHOD,[view.data], event.data, true));
 		}
+		private function view_textureChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_TEXTURE,[view.data], event.data, true));
+		}
+		private function view_cubetextureChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CUBE_TEXTURE,[view.data], event.data, true));
+		}
 		
 		private function view_shadowmapperChangeHandler(event:PropertyEditorEvent):void
 		{
@@ -336,7 +348,7 @@ package awaybuilder.view.mediators
 		}
 		private function view_replaceCubeTextureHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_REPLACE,[view.data],event.data));
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE,[view.data],event.data));
 		}
 		
 		private function view_lightPositionChangeHandler(event:PropertyEditorEvent):void

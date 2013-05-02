@@ -6,6 +6,9 @@ package awaybuilder.controller.document.events
 
 	public class ImportTextureEvent extends ReadDocumentEvent
 	{
+		public static const IMPORT_AND_BITMAP_REPLACE:String = "importBitmapAndRplace";
+		public static const LOAD_AND_BITMAP_REPLACE:String = "loadBitmapAndRplace";
+		
 		public static const IMPORT_AND_REPLACE:String = "importTextureAndRplace";
 		public static const LOAD_AND_REPLACE:String = "loadTextureAndRplace";
 		

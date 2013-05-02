@@ -9,9 +9,11 @@ package awaybuilder
 	import awaybuilder.controller.document.AppendDocumentCommand;
 	import awaybuilder.controller.document.ChangeGlobalOptionsCommand;
 	import awaybuilder.controller.document.ConcatenateDocumentDataCommand;
+	import awaybuilder.controller.document.ImportBitmapCommand;
 	import awaybuilder.controller.document.ImportDocumentCommand;
 	import awaybuilder.controller.document.ImportTextureAndReplaceCommand;
 	import awaybuilder.controller.document.ImportTextureForMaterialCommand;
+	import awaybuilder.controller.document.LoadBitmapAndReplaceCommand;
 	import awaybuilder.controller.document.LoadTextureAndRepalceCommand;
 	import awaybuilder.controller.document.LoadTextureForMaterialCommand;
 	import awaybuilder.controller.document.NewDocumentCommand;
@@ -37,6 +39,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewShadowMethodCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.ChangeContainerCommand;
+	import awaybuilder.controller.scene.ChangeCubeTextureCommand;
 	import awaybuilder.controller.scene.ChangeEffectMethodCommand;
 	import awaybuilder.controller.scene.ChangeGeometryCommand;
 	import awaybuilder.controller.scene.ChangeLightCommand;
@@ -46,6 +49,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeShadingMethodCommand;
 	import awaybuilder.controller.scene.ChangeShadowMapperCommand;
 	import awaybuilder.controller.scene.ChangeShadowMethodCommand;
+	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
 	import awaybuilder.controller.scene.ReplaceTextureCommand;
 	import awaybuilder.controller.scene.RotateObjectCommand;
@@ -125,6 +129,9 @@ package awaybuilder
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_ADD, ImportTextureForMaterialCommand);
 			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_ADD, LoadTextureForMaterialCommand);
 			
+			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE, ImportBitmapCommand);
+			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_BITMAP_REPLACE, LoadBitmapAndReplaceCommand);
+			
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_REPLACE, ImportTextureAndReplaceCommand);
 			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_REPLACE, LoadTextureAndRepalceCommand);
 			
@@ -140,6 +147,8 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_MAPPER, ChangeShadowMapperCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_GEOMETRY, ChangeGeometryCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADING_METHOD, ChangeShadingMethodCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_CUBE_TEXTURE, ChangeCubeTextureCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE, ChangeTextureCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
