@@ -286,7 +286,7 @@
 		</s:Form>
 	</controls:CollapsiblePanel>
 	
-	<controls:CollapsiblePanel width="100%" title="Color" collapsed="true" includeIn="directionalType">
+	<controls:CollapsiblePanel width="100%" title="Color" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Ambient Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="ambientStepper" stepSize="0.1" snapInterval="0.001"
