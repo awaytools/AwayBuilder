@@ -6,6 +6,7 @@ package awaybuilder.utils.encoders
 	import away3d.core.base.ISubGeometry;
 	import away3d.core.base.SkinnedSubGeometry;
 	import away3d.core.base.SubMesh;
+	import away3d.core.math.MathConsts;
 	import away3d.core.math.Matrix3DUtils;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
@@ -159,17 +160,25 @@ package awaybuilder.utils.encoders
 		}
 		
 		// this function is called from the app...
-		// to do: check how to get the _global-properties
 		public function encode(document : DocumentModel, output : ByteArray) : Boolean
 		{
 			
 			_body = new ByteArray();
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
-						
+			
 			// to do: implement Encoder-options.
 			// atm - the AWDEncoder will not make use of any options. 
 			// I will add this as soon as the Encoder works stabil with default-settings.	
+			/*
+			_streaming=document.globalOptions.streaming	
+			_compression=document.globalOptions.compression	
+			_embedtextures=document.globalOptions.embedTextures
+			_geomStoragePrecision=document.globalOptions.geometryStorage	
+			_matrixStoragePrecision=document.globalOptions.matrixStorage
+			_exportNormals=document.globalOptions.includeNormal	
+			_exportTangents=document.globalOptions.includeTangent	
+			*/
 			
 			if(_debug)trace("start encoding");
 			
@@ -1135,7 +1144,7 @@ package awaybuilder.utils.encoders
 			var transformMatrix:Matrix3D=new Matrix3D();
 			var vectorComps:Vector.<Vector3D>=new Vector.<Vector3D>();
 			vectorComps.push(new Vector3D(Asset.x,Asset.y,Asset.z));
-			vectorComps.push(new Vector3D(Asset.rotationX,Asset.rotationY,Asset.rotationZ));
+			vectorComps.push(new Vector3D(Asset.rotationX * MathConsts.DEGREES_TO_RADIANS,Asset.rotationY* MathConsts.DEGREES_TO_RADIANS,Asset.rotationZ* MathConsts.DEGREES_TO_RADIANS));
 			vectorComps.push(new Vector3D(Asset.scaleX,Asset.scaleY,Asset.scaleZ));
 			transformMatrix.recompose(vectorComps);//,Orientation3D.AXIS_ANGLE);
 			return transformMatrix;
