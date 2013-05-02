@@ -31,10 +31,8 @@
 			<fx:Object label="SimpleWaterNormalMethod" value="SimpleWaterNormalMethod"/>
 		</s:ArrayCollection>
 		<fx:Component className="NewEffectPopup">
-			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
-									   chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();"
-									   >
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb"
+									   mouseDownOutside="close();">
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
@@ -247,7 +245,7 @@
 			{
 				_asset.shadowMethod = null;
 			}
-			
+			trace( "_asset.shadowMethod = " +_asset.shadowMethod );
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		private function lightPickerDropDownList_changeHandler(event:IndexChangeEvent):void 

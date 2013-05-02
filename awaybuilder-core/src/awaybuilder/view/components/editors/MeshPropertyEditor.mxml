@@ -148,7 +148,7 @@
             <s:FormItem label="Animator" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
                 <s:DropDownList width="100%"/>
             </s:FormItem>
-            <s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
+            <s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
                 <s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
             </s:FormItem>
 

@@ -39,6 +39,8 @@ package awaybuilder.controller.scene
 			vo.pivotY = mesh.pivotY;
 			vo.pivotZ = mesh.pivotZ;
 			
+			vo.castsShadows = mesh.castsShadows;
+			
 			var e:Array = new Array();
 			for each( var extra:ExtraItemVO in mesh.extras )
 			{

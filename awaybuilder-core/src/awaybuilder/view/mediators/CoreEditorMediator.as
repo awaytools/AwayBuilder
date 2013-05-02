@@ -587,12 +587,10 @@ package awaybuilder.view.mediators
 			// TODO: check why we cannot set null
 			
 			m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
-			
+			trace( "m.lightPicker = " + m.lightPicker );
 			m.mipmap = asset.mipmap;
 			m.smooth = asset.smooth;
 			m.blendMode = asset.blendMode;
-			
-			
 			
 			if( m is ColorMaterial )
 			{
@@ -606,7 +604,7 @@ package awaybuilder.view.mediators
 				var tm:TextureMaterial = m as TextureMaterial;
 				
 				tm.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
-				
+				trace( tm.shadowMethod );
 				tm.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
 				
 				tm.alpha = asset.alpha;
@@ -689,6 +687,7 @@ package awaybuilder.view.mediators
 			{
 				var obj:Mesh = assets.GetObject( item ) as Mesh;
 				applyContainer( item );
+				obj.castsShadows = item.castsShadows;
 				for each( var sub:SubMeshVO in item.subMeshes )
 				{
 					applySubMesh( sub );
