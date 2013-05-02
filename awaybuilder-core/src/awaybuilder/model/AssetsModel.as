@@ -1,69 +1,20 @@
 package awaybuilder.model
 {
-	import away3d.lights.DirectionalLight;
-	import away3d.lights.PointLight;
-	import away3d.lights.shadowmaps.CascadeShadowMapper;
-	import away3d.lights.shadowmaps.CubeMapShadowMapper;
-	import away3d.lights.shadowmaps.DirectionalShadowMapper;
-	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
-	import away3d.lights.shadowmaps.ShadowMapperBase;
-	import away3d.materials.SinglePassMaterialBase;
-	import away3d.materials.TextureMaterial;
-	import away3d.materials.lightpickers.StaticLightPicker;
-	import away3d.materials.methods.AlphaMaskMethod;
-	import away3d.materials.methods.AnisotropicSpecularMethod;
-	import away3d.materials.methods.BasicDiffuseMethod;
-	import away3d.materials.methods.BasicNormalMethod;
-	import away3d.materials.methods.BasicSpecularMethod;
-	import away3d.materials.methods.CascadeShadowMapMethod;
-	import away3d.materials.methods.CelDiffuseMethod;
-	import away3d.materials.methods.CelSpecularMethod;
-	import away3d.materials.methods.ColorMatrixMethod;
-	import away3d.materials.methods.ColorTransformMethod;
-	import away3d.materials.methods.DitheredShadowMapMethod;
-	import away3d.materials.methods.EffectMethodBase;
-	import away3d.materials.methods.EnvMapAmbientMethod;
-	import away3d.materials.methods.EnvMapMethod;
-	import away3d.materials.methods.FilteredShadowMapMethod;
-	import away3d.materials.methods.FogMethod;
-	import away3d.materials.methods.FresnelEnvMapMethod;
-	import away3d.materials.methods.FresnelSpecularMethod;
-	import away3d.materials.methods.GradientDiffuseMethod;
-	import away3d.materials.methods.HardShadowMapMethod;
-	import away3d.materials.methods.HeightMapNormalMethod;
-	import away3d.materials.methods.LightMapDiffuseMethod;
-	import away3d.materials.methods.LightMapMethod;
-	import away3d.materials.methods.NearShadowMapMethod;
-	import away3d.materials.methods.OutlineMethod;
-	import away3d.materials.methods.PhongSpecularMethod;
-	import away3d.materials.methods.RefractionEnvMapMethod;
-	import away3d.materials.methods.RimLightMethod;
-	import away3d.materials.methods.ShadingMethodBase;
-	import away3d.materials.methods.SimpleWaterNormalMethod;
-	import away3d.materials.methods.SoftShadowMapMethod;
-	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
-	import away3d.materials.methods.WrapDiffuseMethod;
-	import away3d.textures.BitmapCubeTexture;
-	import away3d.textures.CubeTextureBase;
-	import away3d.textures.Texture2DBase;
+	import away3d.lights.*;
+	import away3d.lights.shadowmaps.*;
+	import away3d.materials.*;
+	import away3d.materials.lightpickers.*;
+	import away3d.materials.methods.*;
+	import away3d.textures.*;
 	
-	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
-	import awaybuilder.model.vo.scene.LightPickerVO;
-	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.model.vo.scene.MaterialVO;
-	import awaybuilder.model.vo.scene.ShadingMethodVO;
-	import awaybuilder.model.vo.scene.ShadowMapperVO;
-	import awaybuilder.model.vo.scene.ShadowMethodVO;
-	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.AssetUtil;
+	import flash.display.*;
+	import flash.geom.*;
+	import flash.utils.*;
 	
-	import flash.display.BitmapData;
-	import flash.geom.ColorTransform;
-	import flash.utils.Dictionary;
+	import mx.utils.*;
 	
-	import mx.utils.UIDUtil;
+	import awaybuilder.model.vo.scene.*;
+	import awaybuilder.utils.*;
 
 	public class AssetsModel extends SmartFactoryModelBase
 	{
@@ -236,7 +187,7 @@ package awaybuilder.model
 		}
 		public function CreateHardShadowMapMethod( light:LightVO ):ShadowMethodVO
 		{
-			var method:HardShadowMapMethod = new HardShadowMapMethod( GetObject(light) as DirectionalLight );
+			var method:HardShadowMapMethod = new HardShadowMapMethod( GetObject(light) as LightBase );
 			method.name = "HardShadow " + AssetUtil.GetNextId("HardShadowMapMethod");
 			return GetAsset( method ) as ShadowMethodVO;
 		}
