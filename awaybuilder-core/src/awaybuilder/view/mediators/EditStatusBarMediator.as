@@ -25,12 +25,19 @@ package awaybuilder.view.mediators
 			this.eventMap.mapListener(this.statusBar, ToolBarZoomEvent.ZOOM_OUT, statusBar_zoomOutHandler);
 			this.eventMap.mapListener(this.statusBar, ToolBarZoomEvent.ZOOM_TO, statusBar_zoomToHandler);
 			
-			addContextListener( Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomChangeHandler);
+			addContextListener( Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, eventDispatcher_zoomChangeHandler);
+			addContextListener( Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomSetHandler);
 		}
 		
 		private function eventDispatcher_zoomChangeHandler(event:Scene3DManagerEvent):void
 		{
 			statusBar.zoom += event.currentValue.x*8;
+			CameraManager.radius = CameraManager.zoomFunction(statusBar.zoom);
+		}
+
+		private function eventDispatcher_zoomSetHandler(event:Scene3DManagerEvent):void
+		{
+			statusBar.zoom = CameraManager.distanceFunction(event.currentValue.x);
 			CameraManager.radius = CameraManager.zoomFunction(statusBar.zoom);
 		}
 		

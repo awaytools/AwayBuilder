@@ -1,5 +1,6 @@
 package awaybuilder.utils.scene
 {
+	import away3d.library.AssetLibrary;
 	import avmplus.getQualifiedClassName;
 	
 	import away3d.cameras.Camera3D;
@@ -397,13 +398,23 @@ package awaybuilder.utils.scene
 		
 		public static function clear(disposeMaterials:Boolean=false):void
 		{
+			if (currentGizmo) {
+				currentGizmo.active = false;
+				currentGizmo.hide();
+			}
+			
+			AssetLibrary.removeAllAssets(true);
+			
 			for each(var o:ObjectContainer3D in objects.source)
 			{
 				if (o is Mesh)
 				{
 					if (Mesh(o).material && disposeMaterials) Mesh(o).material.dispose();
 				}
-				scene.removeChild(o);
+				if (o && o.parent) {
+					scene.removeChild(o);
+					o.dispose();
+				}
 			}
 			
 			for each(var l:LightBase in lights.source)
@@ -413,6 +424,26 @@ package awaybuilder.utils.scene
 			
 			lights.removeAll();
 			objects.removeAll();
+		}
+		
+		public static function get sceneBounds() : Vector.<Number> {
+			var min:Vector3D = new Vector3D(Infinity, Infinity, Infinity);
+			var max:Vector3D = new Vector3D(-Infinity, -Infinity, -Infinity);
+			
+			for each(var o:ObjectContainer3D in objects.source) {
+				if (o.minX < min.x) min.x = o.minX;
+				if (o.minY < min.y) min.y = o.minY;
+				if (o.minZ < min.z) min.z = o.minZ;
+				if (o.maxX > max.x) max.x = o.maxX;
+				if (o.maxY > max.y) max.y = o.maxY;
+				if (o.maxZ > max.z) max.z = o.maxZ;
+			}
+
+			var v:Vector.<Number> = Vector.<Number>([min.x, min.y, min.z, max.x, max.y, max.z]);
+			if (min.x==Infinity || min.y==Infinity || min.z==Infinity || max.x==-Infinity || max.y==-Infinity || max.z==-Infinity)
+				v = Vector.<Number>([-500, 0, 0, 500, 0, 0]);
+
+			return v;
 		}
 		
 		public static function addObject(o:ObjectContainer3D):void
@@ -591,8 +622,12 @@ package awaybuilder.utils.scene
 			}
 		}
 		
-		public static function zoomToDistance(delta:Number) : void {
-			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ZOOM_TO_DISTANCE, "", null, new Vector3D(delta, 0, 0)));
+		public static function zoomDistanceDelta(delta:Number) : void {
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, "", null, new Vector3D(delta, 0, 0)));
+		}
+
+		public static function zoomToDistance(distance:Number) : void {
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ZOOM_TO_DISTANCE, "", null, new Vector3D(distance, 0, 0)));
 		}
 	}
 }

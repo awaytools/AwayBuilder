@@ -239,33 +239,59 @@ package awaybuilder.utils.scene
 		
 		
 		
-		public static function focusTarget(t:ObjectContainer3D):void
-		{			
+		public static function focusTarget(t:ObjectContainer3D = null):void
+		{	
+			var tr:Number;
+			var bmin:Vector3D;
+			var bmax:Vector3D;
+			var sx:Number = 1;
+			var sy:Number = 1;
+			var sz:Number = 1;		
 			if (t is Mesh)
 			{
-				var sx:Number = Math.abs(Mesh(t).scaleX);
-				var sy:Number = Math.abs(Mesh(t).scaleY);
-				var sz:Number = Math.abs(Mesh(t).scaleZ);
+				sx = Math.abs(Mesh(t).scaleX);
+				sy = Math.abs(Mesh(t).scaleY);
+				sz = Math.abs(Mesh(t).scaleZ);
 				
-				var bmax:Vector3D = Mesh(t).bounds.max.clone();
-				
-				bmax.x *= sx;
-				bmax.y *= sy;
-				bmax.z *= sz;				
-				
-				var tr:Number = bmax.length * 2;				
-												
-				TweenMax.to(CameraManager, 0.5, {radius:tr, onComplete:instance.calculateWheelSpeed, onCompleteParams:[t]});
+				bmin = Mesh(t).bounds.min.clone();
+				bmax = Mesh(t).bounds.max.clone();
+			} else {
+				var vec:Vector.<Number> = Scene3DManager.sceneBounds;
+				bmin = new Vector3D(vec[0], vec[1], vec[2]);
+				bmax = new Vector3D(vec[3], vec[4], vec[5]);
 			}
 			
-			TweenMax.to(instance.poi, 0.5, {x:t.scenePosition.x, y:t.scenePosition.y, z:t.scenePosition.z});
+				
+			bmin.x *= sx;
+			bmin.y *= sy;
+			bmin.z *= sz;				
+
+			bmax.x *= sx;
+			bmax.y *= sy;
+			bmax.z *= sz;				
+			
+			var center:Vector3D = bmax.subtract(bmin);
+			tr = center.length;	
+			center.x /= 2;
+			center.y /= 2;
+			center.z /= 2;
+			center = center.add(bmin);
+			
+			
+			if (t && t.parent) {
+				center.add(t.scenePosition);
+			}
+			
+			TweenMax.to(CameraManager, 0.5, {radius:tr, onComplete:instance.calculateWheelSpeed, onCompleteParams:[tr, center]});
+			TweenMax.to(instance.poi, 0.5, {x:center.x, y:center.y, z:center.z});
 		}
 		
-		private function calculateWheelSpeed(t:ObjectContainer3D):void
+		private function calculateWheelSpeed(radius:Number, pos:Vector3D):void
 		{
 			//adjust mouseWheel speed according size and scale of the mesh;
-			var dist:Vector3D = camera.scenePosition.subtract(t.scenePosition);
+			var dist:Vector3D = camera.scenePosition.subtract(pos);
 			wheelSpeed = dist.length/60; 
+			Scene3DManager.zoomToDistance(radius);
 		}
 		
 		
@@ -377,7 +403,7 @@ package awaybuilder.utils.scene
 				switch(mode)
 				{
 					case CameraMode.TARGET: {
-						Scene3DManager.zoomToDistance(event.delta / 500);
+						Scene3DManager.zoomDistanceDelta(event.delta / 500);
 						break;
 					}
 					case CameraMode.FREE: {
@@ -436,6 +462,11 @@ package awaybuilder.utils.scene
 		{
 			return Math.pow(2, 8-x);
 			//return 16-Math.log(x)/(Math.LN2);
+		}
+
+		public static function distanceFunction(x:Number):Number
+		{
+			return 8 - Math.log(x)/Math.log(2);
 		}
 	}
 

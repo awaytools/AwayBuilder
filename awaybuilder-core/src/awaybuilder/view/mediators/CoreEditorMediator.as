@@ -145,6 +145,7 @@ package awaybuilder.view.mediators
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED_FROM_VIEW, scene_meshSelectedFromViewHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM, scene_transformHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM_RELEASE, scene_transformReleaseHandler);
+			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, eventDispatcher_zoomDistanceDeltaHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomToDistanceHandler);
 			Scene3DManager.init( view.viewScope );
 			
@@ -883,6 +884,11 @@ package awaybuilder.view.mediators
             CameraManager.focusTarget( Scene3DManager.selectedObject );
         }
 		
+		private function eventDispatcher_zoomDistanceDeltaHandler(event:Scene3DManagerEvent):void
+        {
+            this.dispatch( new Scene3DManagerEvent( Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, "", null, event.currentValue ) );
+        }
+
 		private function eventDispatcher_zoomToDistanceHandler(event:Scene3DManagerEvent):void
         {
             this.dispatch( new Scene3DManagerEvent( Scene3DManagerEvent.ZOOM_TO_DISTANCE, "", null, event.currentValue ) );

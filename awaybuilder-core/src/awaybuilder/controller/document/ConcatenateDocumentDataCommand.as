@@ -1,5 +1,6 @@
 package awaybuilder.controller.document
 {
+	import awaybuilder.utils.scene.CameraManager;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
 	
@@ -121,14 +122,14 @@ package awaybuilder.controller.document
 				
 				
 				Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
+				CameraManager.focusTarget();
 				return;
 			}
 			for (var i:int = 0; i < 10; i++) 
 			{
 				addObject( _sceneObjects.shift() );
 			}
-			CursorManager.removeBusyCursor();
-			
+			CursorManager.removeBusyCursor();			
 		}
 		private function addObject( value:Object ):void
 		{

@@ -31,7 +31,7 @@ package awaybuilder.model
 	{
 		
 		[Inject]
-		public var assets:AssetsModel
+		public var assets:AssetsModel;
 		
 		private var _document:DocumentVO;
 		
@@ -42,6 +42,7 @@ package awaybuilder.model
 		public function load( url:String, nextEvent:HistoryEvent ):void
 		{
 			_document = new DocumentVO();
+			_objects.length = 0;
 			_nextEvent = nextEvent;
 			
 			AwayBuilderLoadErrorLogger.clearLog();

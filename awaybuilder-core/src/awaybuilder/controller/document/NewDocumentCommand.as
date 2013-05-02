@@ -1,5 +1,6 @@
 package awaybuilder.controller.document
 {
+	import awaybuilder.utils.scene.CameraManager;
 	import away3d.library.AssetLibrary;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
@@ -32,8 +33,8 @@ package awaybuilder.controller.document
 			document.name = "Untitled Library " + AssetUtil.GetNextId("document");
 			document.edited = false;
 			document.path = null;
-
-//			AssetLibrary.removeAllAssets(true);
+			
+			if (Scene3DManager.scene) CameraManager.focusTarget();
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 		}
