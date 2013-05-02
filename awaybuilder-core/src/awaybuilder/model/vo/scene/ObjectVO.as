@@ -2,6 +2,8 @@ package awaybuilder.model.vo.scene
 {
 	import away3d.core.base.Object3D;
 	import away3d.entities.Entity;
+	
+	import mx.collections.ArrayCollection;
 
 	[Bindable]
 	public class ObjectVO extends AssetVO
@@ -22,6 +24,8 @@ package awaybuilder.model.vo.scene
 		public var pivotX:Number;
 		public var pivotY:Number;
 		public var pivotZ:Number;
+		
+		public var extras:ArrayCollection;
 		
 		public function clone():ObjectVO
 		{
@@ -45,6 +49,13 @@ package awaybuilder.model.vo.scene
 			this.pivotZ = asset.pivotZ;
 			this.name = asset.name;
 			this.id = asset.id;
+			
+			var e:Array = new Array();
+			for each( var extra:ExtraItemVO in asset.extras )
+			{
+				e.push(extra.clone());
+			}
+			this.extras = new ArrayCollection( e );
 		}
 	}
 }

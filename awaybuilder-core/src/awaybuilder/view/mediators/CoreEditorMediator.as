@@ -52,6 +52,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
+    import awaybuilder.model.vo.scene.ExtraItemVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
@@ -387,6 +388,13 @@ package awaybuilder.view.mediators
 			var obj:ObjectContainer3D = assets.GetObject( asset ) as ObjectContainer3D;
 			applyName( obj, asset );
 			obj.pivotPoint = new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ );
+			
+			obj.extra = new Object();
+			
+			for each( var extra:ExtraItemVO in asset.extras )
+			{
+				obj.extra[extra.name] = extra.value;
+			}
 		}
 		private function applyObject( asset:ObjectVO ):void
 		{

@@ -8,9 +8,19 @@
 		import away3d.entities.Mesh;
 		
 		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.ExtraItemVO;
 		import awaybuilder.model.vo.scene.MeshVO;
+		import awaybuilder.model.vo.scene.ObjectVO;
 		import awaybuilder.model.vo.scene.SubMeshVO;
+		import awaybuilder.utils.AssetUtil;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		
+		import mx.collections.ArrayCollection;
+		import mx.controls.Alert;
+		import mx.events.FlexEvent;
+		import mx.utils.NameUtil;
+		
+		import spark.events.GridItemEditorEvent;
 
 		[Bindable]
 		private var _asset:MeshVO;
@@ -24,7 +34,7 @@
         private function position_commitHandler(event:Event):void 
 		{
             var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue, true));
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
         }
 		private function pivot_commitHandler(event:Event):void {
 			_asset.pivotX = pivotXStepper.value;
@@ -35,26 +45,25 @@
         private function rotation_commitHandler(event:Event):void 
 		{
             var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue));
         }
 
         private function scale_commitHandler(event:Event):void 
 		{
             var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue));
         }
 
         private function name_changeHandler(event:Event):void 
 		{
             var newValue:MeshVO = _asset.clone() as MeshVO;
             newValue.name = nameInput.text;
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, newValue, true));
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, newValue));
         }
 
         private function castShadowBox_changeHandler(event:Event):void 
 		{
-            _asset.castsShadows = castShadowBox.selected;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
         }
 
 		private function editParentObjectButton_clickHandler(event:MouseEvent):void
@@ -62,7 +71,59 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
 		
-        ]]></fx:Script>
+		private function addExtraButton_clickHandler(event:MouseEvent):void
+		{
+			var extra:ExtraItemVO = new ExtraItemVO();
+			var i:int = 0;
+			while( !isCorrectName( "key"+i ) )
+			{
+				i++
+			}
+			extra.name = "key"+i;
+			_asset.extras.addItem(extra);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
+		}
+		private function deleteExtraButton_clickHandler(event:MouseEvent):void
+		{
+			if( extrasGrid.selectedIndex>-1 )
+			{
+				_asset.extras.removeItemAt( extrasGrid.selectedIndex );
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
+		}
+		
+		protected function extrasGrid_gridItemEditorSessionSaveHandler(event:GridItemEditorEvent):void
+		{
+			var extra:ExtraItemVO = _asset.extras.getItemAt( event.rowIndex ) as ExtraItemVO;
+			if( event.column.dataField == "name" )
+			{
+				if( !isCorrectExtra(extra) )
+				{
+					Alert.show("Name must be unique", "Warning");
+					_asset.extras = ObjectVO(data).clone().extras;
+					return;
+				}
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
+		}
+		private function isCorrectExtra( extra:ExtraItemVO ):Boolean
+		{
+			for each( var item:ExtraItemVO in _asset.extras )
+			{
+				if( (extra.name == item.name) && (extra != item) ) return false;
+			}
+			return true;
+		}
+		private function isCorrectName( extra:String ):Boolean
+		{
+			for each( var item:ExtraItemVO in _asset.extras )
+			{
+				if( extra == item.name ) return false;
+			}
+			return true;
+		}
+		
+	]]></fx:Script>
 
 	
 	<s:Group width="100%" top="0">
@@ -95,7 +156,7 @@
                 <s:DropDownList width="100%"/>
             </s:FormItem>
             <s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="false">
-                <s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="{_asset.castsShadows}"/>
+                <s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
             </s:FormItem>
 
         </s:Form>
@@ -153,6 +214,22 @@
         <s:List dataProvider="{_asset.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
     </controls:CollapsiblePanel>
 	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
+		<s:DataGrid width="100%" id="extrasGrid" dataProvider="{_asset.extras}" focusEnabled="false"
+					editable="true" requestedMinRowCount="4" requestedMaxRowCount="6"
+					selectionColor="0x111111" rollOverColor="0x222222" 
+					gridItemEditorSessionSave="extrasGrid_gridItemEditorSessionSaveHandler(event)">
+			<s:columns> 
+				<s:ArrayList>
+					<s:GridColumn headerText="Name" dataField="name" editable="true"/> 
+					<s:GridColumn headerText="Value" dataField="value" editable="true"/> 
+				</s:ArrayList>
+			</s:columns> 
+		</s:DataGrid>
+		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
+			<s:Button id="addButton" toolTip="Add New" styleName="addButton" click="addExtraButton_clickHandler(event)" height="22" width="22"/>
+			<s:Button id="deleteButton" enabled="{extrasGrid.selectedIndex>-1}" toolTip="Remove" styleName="removeButton"
+					  click="deleteExtraButton_clickHandler(event)" height="22" width="22"/>
+		</s:HGroup>
 	</controls:CollapsiblePanel>
 	
 </editors:EditorBase>

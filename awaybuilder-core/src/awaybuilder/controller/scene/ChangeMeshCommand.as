@@ -8,10 +8,13 @@ package awaybuilder.controller.scene
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.DocumentModel;
+    import awaybuilder.model.vo.scene.ExtraItemVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.utils.AssetUtil;
+    
+    import mx.collections.ArrayCollection;
 
     public class ChangeMeshCommand extends HistoryCommandBase
     {
@@ -36,16 +39,13 @@ package awaybuilder.controller.scene
 			vo.pivotY = mesh.pivotY;
 			vo.pivotZ = mesh.pivotZ;
 			
-//            var subMeshes:Vector.<SubMesh> = new Vector.<SubMesh>();
-//            var newSubMeshes:Array = new Array();
-//
-//            for( var i:int = 0; i < mesh.subMeshes.length; i++ )
-//            {
-//                var updatedSubMesh:SubMeshVO = mesh.subMeshes[i] as SubMeshVO;
-//                var subMesh:SubMeshVO = vo.subMeshes[i] as SubMeshVO;
-//                subMesh.material = updatedSubMesh.material;
-//            }
-
+			var e:Array = new Array();
+			for each( var extra:ExtraItemVO in mesh.extras )
+			{
+				e.push(extra.clone());
+			}
+			vo.extras = new ArrayCollection( e );
+			
             addToHistory( event );
         }
     }

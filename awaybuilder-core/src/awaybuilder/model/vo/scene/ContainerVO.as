@@ -18,7 +18,7 @@ package awaybuilder.model.vo.scene
 		{
 			var clone:ContainerVO = new ContainerVO()
 			clone.fillFromObject( this );
-			clone.children = new ArrayCollection( children.source );
+			clone.children = new ArrayCollection( children.source.concat() );
 			return clone;
 		}
 	}

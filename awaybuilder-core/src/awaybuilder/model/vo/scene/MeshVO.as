@@ -17,8 +17,6 @@ package awaybuilder.model.vo.scene
 
         public var subMeshes:ArrayCollection;
 		
-		public var extras:ArrayCollection;
-		
 		public var geometry:GeometryVO;
 		
 		override public function clone():ObjectVO

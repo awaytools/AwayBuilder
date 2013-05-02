@@ -799,8 +799,8 @@
 									  dropped="effectMethodsList_droppedHandler(event)"/>
 		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
 			
-			<s:Button id="addEffectMethodButton" toolTip="New Effect Method" styleName="addButton" click="addEffectMethodButton_clickHandler(event)"/>
-			<s:Button id="deleteEffectMethodButton" enabled="{effectMethodsList.selectedItem}" toolTip="Remove" styleName="removeButton" click="deleteEffectMethodButton_clickHandler(event)" />
+			<s:Button id="addEffectMethodButton" toolTip="New Effect Method" styleName="addButton" click="addEffectMethodButton_clickHandler(event)" height="22" width="22"/>
+			<s:Button id="deleteEffectMethodButton" enabled="{effectMethodsList.selectedItem}" toolTip="Remove" styleName="removeButton" click="deleteEffectMethodButton_clickHandler(event)"  height="22" width="22"/>
 		</s:HGroup>
 	</controls:CollapsiblePanel>
 </editors:EditorBase>

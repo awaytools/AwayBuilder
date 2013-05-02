@@ -69,6 +69,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.ExtraItemVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -592,6 +593,7 @@ package awaybuilder.model
 		{
 			asset = fillObject( asset, item ) as ContainerVO;
 			asset.children = new ArrayCollection();
+			
 			for (var i:int = 0; i < item.numChildren; i++) 
 			{
 				asset.children.addItem(GetAsset( item.getChildAt(i) ) );
@@ -613,6 +615,17 @@ package awaybuilder.model
 			asset.rotationX = item.rotationX;
 			asset.rotationY = item.rotationY;
 			asset.rotationZ = item.rotationZ;
+			
+			asset.extras = new ArrayCollection();
+			
+			for( var name:String in item.extra )
+			{
+				var extra:ExtraItemVO = new ExtraItemVO();
+				extra.name = name;
+				extra.value = item.extra[name];
+				asset.extras.addItem( extra );
+			}
+				
 			return asset;
 		}
 		private function fillAsset( asset:AssetVO, item:Object ):AssetVO

@@ -51,6 +51,7 @@ package awaybuilder.view.mediators
             addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
             addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
             addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
+			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
             addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
@@ -414,17 +415,18 @@ package awaybuilder.view.mediators
 		{
 			view.SetData( event.items[0] );
 		}
+		
+		private function eventDispatcher_changeContainerHandler(event:SceneEvent):void
+		{
+			view.SetData( event.items[0] );
+		}
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
             var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
-
-			
             for each( var subMesh:SubMeshVO in  mesh.subMeshes )
             {
-				
                 subMesh.linkedMaterials = view.materials;
             }
-
             view.SetData( mesh );
         }
 		
