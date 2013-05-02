@@ -443,7 +443,7 @@ package awaybuilder.model
 					var celSpecularMethod:CelSpecularMethod = obj as CelSpecularMethod;
 					asset.value = celSpecularMethod.specularCutOff;
 					asset.smoothness = celSpecularMethod.smoothness;
-					asset.baseMethod = GetAsset( fresnelSpecularMethod.baseMethod ) as ShadingMethodVO;
+					asset.baseMethod = GetAsset( celSpecularMethod.baseMethod ) as ShadingMethodVO;
 					break;
 				}
 				case(obj is FresnelSpecularMethod):

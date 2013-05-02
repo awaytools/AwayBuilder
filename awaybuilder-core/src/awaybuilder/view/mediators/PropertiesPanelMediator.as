@@ -46,18 +46,21 @@ package awaybuilder.view.mediators
 
         override public function onRegister():void
         {
-            addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
-            addContextListener(SceneEvent.CHANGING, eventDispatcher_changingHandler);
-            addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_translateHandler);
-            addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
-            addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
-            addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
-			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
-			addContextListener(SceneEvent.CHANGE_GEOMETRY, eventDispatcher_changeGeometryHandler);
-			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
-            addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
-			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
-			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, eventDispatcher_changeGlobalOptionsHandler);
+            addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
+            addContextListener(SceneEvent.CHANGING, context_simpleUpdateHandler);
+            addContextListener(SceneEvent.TRANSLATE_OBJECT, context_simpleUpdateHandler);
+            addContextListener(SceneEvent.SCALE_OBJECT, context_simpleUpdateHandler);
+            addContextListener(SceneEvent.ROTATE_OBJECT, context_simpleUpdateHandler);
+            addContextListener(SceneEvent.CHANGE_MESH, context_changeMeshHandler);
+			addContextListener(SceneEvent.CHANGE_CONTAINER, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_GEOMETRY, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHT, context_simpleUpdateHandler);
+            addContextListener(SceneEvent.CHANGE_MATERIAL, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_SHADING_METHOD, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
@@ -95,6 +98,9 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.SHADINGMETHOD_CHANGE, view_shadingmethodChangeHandler );
+			addViewListener( PropertyEditorEvent.SHADINGMETHOD_STEPPER_CHANGE, view_shadingmethodChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_CHANGE, view_shadowmapperChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_STEPPER_CHANGE, view_shadowmapperChangeStepperHandler );
@@ -261,6 +267,14 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_METHOD,[view.data], event.data, true));
 		}
+		private function view_shadingmethodChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADING_METHOD,[view.data], event.data));
+		}
+		private function view_shadingmethodChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADING_METHOD,[view.data], event.data, true));
+		}
 		
 		private function view_showChildObjectPropertiesHandler(event:PropertyEditorEvent):void
 		{
@@ -412,34 +426,12 @@ package awaybuilder.view.mediators
         //----------------------------------------------------------------------
 
 		
-		private function eventDispatcher_translateHandler(event:SceneEvent):void
+		private function context_simpleUpdateHandler(event:SceneEvent):void
 		{
 			view.SetData( event.items[0] );
 		}
 		
-		private function eventDispatcher_changeLightHandler(event:SceneEvent):void
-		{
-			view.SetData( event.items[0] );
-		}
-		private function eventDispatcher_changeLightPickerHandler(event:SceneEvent):void
-		{
-			view.SetData( event.items[0] );
-		}
-		private function eventDispatcher_changeGlobalOptionsHandler(event:SceneEvent):void
-		{
-			view.SetData( event.items[0] );
-		}
-		
-		private function eventDispatcher_changeContainerHandler(event:SceneEvent):void
-		{
-			view.SetData( event.items[0] );
-		}
-		private function eventDispatcher_changeGeometryHandler(event:SceneEvent):void
-		{
-			view.SetData( event.items[0] );
-		}
-		
-        private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
+        private function context_changeMeshHandler(event:SceneEvent):void
         {
             var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
             for each( var subMesh:SubMeshVO in  mesh.subMeshes )
@@ -484,7 +476,6 @@ package awaybuilder.view.mediators
 				
 				view.SetData(mesh);
 			}
-			
 		}
 		
 		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
@@ -494,15 +485,7 @@ package awaybuilder.view.mediators
 				view.SetData(event.items[0]);
 			}
 		}
-        private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
-        {
-			view.SetData(event.items[0]);
-        }
-        private function eventDispatcher_changingHandler(event:SceneEvent):void
-        {
-			view.SetData( event.items[0] );
-        }
-        private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void
+        private function context_itemsSelectHandler(event:SceneEvent):void
         {
             if( !event.items || event.items.length == 0)
             {

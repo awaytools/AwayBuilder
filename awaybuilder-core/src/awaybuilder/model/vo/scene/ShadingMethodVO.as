@@ -42,6 +42,8 @@ package awaybuilder.model.vo.scene
 			
 			this.envMap = asset.envMap;
 			
+			this.value = asset.value;
+			
 			this.blendMode = asset.blendMode;
 			this.baseMethod = asset.baseMethod;
 			

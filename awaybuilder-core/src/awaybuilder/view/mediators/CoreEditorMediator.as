@@ -22,24 +22,37 @@ package awaybuilder.view.mediators
     import away3d.materials.lightpickers.LightPickerBase;
     import away3d.materials.lightpickers.StaticLightPicker;
     import away3d.materials.methods.AlphaMaskMethod;
+    import away3d.materials.methods.BasicDiffuseMethod;
+    import away3d.materials.methods.BasicSpecularMethod;
     import away3d.materials.methods.CascadeShadowMapMethod;
+    import away3d.materials.methods.CelDiffuseMethod;
+    import away3d.materials.methods.CelSpecularMethod;
     import away3d.materials.methods.ColorMatrixMethod;
     import away3d.materials.methods.ColorTransformMethod;
     import away3d.materials.methods.DitheredShadowMapMethod;
     import away3d.materials.methods.EffectMethodBase;
+    import away3d.materials.methods.EnvMapAmbientMethod;
     import away3d.materials.methods.EnvMapMethod;
     import away3d.materials.methods.FilteredShadowMapMethod;
     import away3d.materials.methods.FogMethod;
     import away3d.materials.methods.FresnelEnvMapMethod;
+    import away3d.materials.methods.FresnelSpecularMethod;
+    import away3d.materials.methods.GradientDiffuseMethod;
     import away3d.materials.methods.HardShadowMapMethod;
+    import away3d.materials.methods.HeightMapNormalMethod;
+    import away3d.materials.methods.LightMapDiffuseMethod;
     import away3d.materials.methods.LightMapMethod;
     import away3d.materials.methods.NearShadowMapMethod;
     import away3d.materials.methods.OutlineMethod;
     import away3d.materials.methods.ProjectiveTextureMethod;
     import away3d.materials.methods.RefractionEnvMapMethod;
     import away3d.materials.methods.RimLightMethod;
+    import away3d.materials.methods.ShadingMethodBase;
     import away3d.materials.methods.ShadowMapMethodBase;
+    import away3d.materials.methods.SimpleWaterNormalMethod;
     import away3d.materials.methods.SoftShadowMapMethod;
+    import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
+    import away3d.materials.methods.WrapDiffuseMethod;
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
@@ -58,6 +71,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
     import awaybuilder.model.vo.scene.ObjectVO;
+    import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
@@ -70,6 +84,7 @@ package awaybuilder.view.mediators
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
+    import flash.display3D.textures.TextureBase;
     import flash.events.ErrorEvent;
     import flash.events.KeyboardEvent;
     import flash.events.UncaughtErrorEvent;
@@ -79,6 +94,7 @@ package awaybuilder.view.mediators
     
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
+    import mx.controls.Text;
     import mx.core.FlexGlobals;
     
     import org.robotlegs.mvcs.Mediator;
@@ -113,6 +129,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
 			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, eventDispatcher_changeShadowMethodHandler);
+			addContextListener(SceneEvent.CHANGE_SHADING_METHOD, eventDispatcher_changeShadingMethodHandler);
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, eventDispatcher_changeEffectMethodHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, eventDispatcher_changeShadowMapperHandler);
 			
@@ -340,6 +357,83 @@ package awaybuilder.view.mediators
 			else if( obj is RimLightMethod )
 			{
 				var rimLightMethod:RimLightMethod = obj as RimLightMethod;
+			}
+		}
+		
+		private function applyShadingMethod( asset:ShadingMethodVO ):void
+		{
+			var obj:ShadingMethodBase = assets.GetObject( asset ) as ShadingMethodBase;
+			switch( true ) 
+			{	
+				case(obj is EnvMapAmbientMethod):
+				{
+					var envMapAmbientMethod:EnvMapAmbientMethod = obj as EnvMapAmbientMethod;
+					envMapAmbientMethod.envMap = assets.GetObject( asset.envMap ) as CubeTextureBase;
+					break;
+				}
+				case(obj is GradientDiffuseMethod):
+				{
+					var gradientDiffuseMethod:GradientDiffuseMethod = obj as GradientDiffuseMethod;
+					gradientDiffuseMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
+					break;
+				}
+				case(obj is WrapDiffuseMethod):
+				{
+					var wrapDiffuseMethod:WrapDiffuseMethod = obj as WrapDiffuseMethod;
+					wrapDiffuseMethod.wrapFactor = asset.value;
+					break;
+				}
+				case(obj is LightMapDiffuseMethod):
+				{
+					var lightMapDiffuseMethod:LightMapDiffuseMethod = obj as LightMapDiffuseMethod;
+					lightMapDiffuseMethod.blendMode = asset.blendMode;
+					lightMapDiffuseMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
+					lightMapDiffuseMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicDiffuseMethod;
+					break;
+				}
+				case(obj is CelDiffuseMethod):
+				{
+					var celDiffuseMethod:CelDiffuseMethod = obj as CelDiffuseMethod;
+					celDiffuseMethod.levels = asset.value;
+					celDiffuseMethod.smoothness = asset.smoothness;
+					celDiffuseMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicDiffuseMethod;
+					break;
+				}
+				case(obj is SubsurfaceScatteringDiffuseMethod):
+				{
+					var subsurfaceScatterDiffuseMethod:SubsurfaceScatteringDiffuseMethod = obj as SubsurfaceScatteringDiffuseMethod;
+					subsurfaceScatterDiffuseMethod.scattering = asset.scattering;
+					subsurfaceScatterDiffuseMethod.translucency = asset.translucency;
+					subsurfaceScatterDiffuseMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicDiffuseMethod;
+					break;
+				}
+				case(obj is CelSpecularMethod):
+				{
+					var celSpecularMethod:CelSpecularMethod = obj as CelSpecularMethod;
+					celSpecularMethod.specularCutOff = asset.value;
+					celSpecularMethod.smoothness = asset.smoothness;
+					celSpecularMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicSpecularMethod;
+					break;
+				}
+				case(obj is FresnelSpecularMethod):
+				{
+					var fresnelSpecularMethod:FresnelSpecularMethod = obj as FresnelSpecularMethod;
+					fresnelSpecularMethod.basedOnSurface = asset.basedOnSurface;
+					fresnelSpecularMethod.fresnelPower = asset.value;
+					fresnelSpecularMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicSpecularMethod;
+					break;
+				}
+				case(obj is HeightMapNormalMethod):
+				{
+					var heightMapNormalMethod:HeightMapNormalMethod = obj as HeightMapNormalMethod;
+					break;
+				}
+				case(obj is SimpleWaterNormalMethod):
+				{
+					var simpleWaterNormalMethod:SimpleWaterNormalMethod = obj as SimpleWaterNormalMethod;
+					simpleWaterNormalMethod.normalMap = assets.GetObject( asset.texture ) as Texture2DBase;
+					break;
+				}
 			}
 		}
 		private function applyShadowMethod( asset:ShadowMethodVO ):void
@@ -688,6 +782,14 @@ package awaybuilder.view.mediators
 					var cascadeShadowMapper:CascadeShadowMapper = obj as CascadeShadowMapper;
 					cascadeShadowMapper.numCascades = asset.numCascades;
 				}
+			}
+		}
+		private function eventDispatcher_changeShadingMethodHandler(event:SceneEvent):void
+		{
+			var asset:ShadingMethodVO = event.items[0] as ShadingMethodVO;
+			if( asset ) 
+			{
+				applyShadingMethod( asset );
 			}
 		}
 		private function eventDispatcher_changeShadowMethodHandler(event:SceneEvent):void

@@ -23,6 +23,8 @@ import flash.events.Event;
 		public static const CHANGE_LIGHT:String = "changeLight";
 		public static const CHANGE_LIGHTPICKER:String = "changeLightPicker";
 		
+		public static const CHANGE_SHADING_METHOD:String = "changeShadingMethod";
+		
 		public static const CHANGE_SHADOW_METHOD:String = "changeShadowMethod";
 		public static const CHANGE_SHADOW_MAPPER:String = "changeShadowMapper";
 		public static const CHANGE_EFFECT_METHOD:String = "changeEffectMethod";
@@ -60,7 +62,9 @@ import flash.events.Event;
 
 		override public function clone():Event
 		{
-			return new SceneEvent( this.type, this.items, this.newValue, this.canBeCombined, oldValue );
+			var event:SceneEvent = new SceneEvent( this.type, this.items, this.newValue, this.canBeCombined, oldValue );
+			event.options = options;
+			return event;
 		}
 	}
 }

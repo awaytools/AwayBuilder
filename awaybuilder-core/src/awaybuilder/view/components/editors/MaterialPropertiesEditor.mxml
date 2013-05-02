@@ -15,14 +15,14 @@
 			<fx:Object label="GradientDiffuseMethod" value="GradientDiffuseMethod"/>
 			<fx:Object label="WrapDiffuseMethod" value="WrapDiffuseMethod"/>
 			<fx:Object label="LightMapDiffuseMethod" value="LightMapDiffuseMethod"/>
-			<fx:Object label="CelDiffuseMethod" value="CellDiffuseMethod"/>
+			<fx:Object label="CelDiffuseMethod" value="CelDiffuseMethod"/>
 			<fx:Object label="SubsurfaceScatteringDiffuse" value="SubsurfaceScatteringDiffuseMethod"/>
 		</s:ArrayCollection>
 		<s:ArrayCollection id="specularList">
 			<fx:Object label="BasicSpecularMethod" value="BasicSpecularMethod"/>
 			<fx:Object label="AnisotropicSpecularMethod" value="AnisotropicSpecularMethod"/>
 			<fx:Object label="PhongSpecularMethod" value="PhongSpecularMethod"/>
-			<fx:Object label="CelSpecularMethod" value="CellSpecularMethod"/>
+			<fx:Object label="CelSpecularMethod" value="CelSpecularMethod"/>
 			<fx:Object label="FresnelSpecularMethod" value="FresnelSpecularMethod"/>
 		</s:ArrayCollection>
 		<s:ArrayCollection id="normalList">
@@ -159,7 +159,6 @@
 				}
 			}
 			
-			
 			var a:AssetVO;
 			
 			var lights:Array = [];
@@ -190,7 +189,6 @@
 			
 			if( _asset.light && _asset.lightPicker )
 			{
-				
 				for each(var light:AssetVO in lights ) 
 				{
 					if( light.equals( _asset.light ) ) _selectedLight = light;
@@ -200,7 +198,6 @@
 				{
 					shadowMehtods.push( a );
 				}
-				
 			}
 			else 
 			{
@@ -213,7 +210,6 @@
 				{
 					if( method.equals( _asset.shadowMethod ) ) _selectedShadowMethod = method;
 				}
-				
 			}
 			else 
 			{
@@ -545,6 +541,7 @@
 		protected function specularMethodDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_SPECULAR_METHOD_CHANGE, specularMethodDropDownList.selectedItem.value));
+			trace( "specularMethodDropDownList_changeHandler " + specularMethodDropDownList.selectedItem.value );
 		}
 		
 		protected function normalMethodDropDownList_changeHandler(event:IndexChangeEvent):void
