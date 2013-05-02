@@ -25,6 +25,9 @@ package awaybuilder.view.components.editors.events
 		public static const MATERIAL_REMOVE_EFFECT_METHOD:String = "materialRemoveEffectMethod";
 		public static const MATERIAL_STEPPER_CHANGE:String = "materialStepperChange";
 		
+		public static const GEOMETRY_CHANGE:String = "geometryChange";
+		public static const GEOMETRY_STEPPER_CHANGE:String = "geometryStepperChange";
+		
 		public static const TEXTURE_CHANGE:String = "textureChange";
 		public static const TEXTURE_STEPPER_CHANGE:String = "textureStepperChange";
 		

@@ -24,7 +24,6 @@
 		<s:State name="cubeTexture"/>
 		<s:State name="shadowMapper"/>
 		<s:State name="shadingMethod"/>
-		
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -125,12 +124,12 @@
 			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="cubeTexture,initAll" />
 			<editors:LightPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
 			<editors:LightPickerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
-			<s:Group includeIn="geometry,initAll"><s:Label text="Geometry Options"/></s:Group>
 			<editors:ContainerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
 			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
 			<editors:EffectMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
 			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
 			<editors:ShadingPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
+			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="geometry,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

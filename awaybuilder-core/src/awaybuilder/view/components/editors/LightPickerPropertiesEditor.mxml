@@ -21,7 +21,6 @@
 		</fx:Component>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
-		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightPickerVO;
 		import awaybuilder.view.components.controls.events.DroppedEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
@@ -40,12 +39,7 @@
 		
 		private function name_changeHandler(event:Event):void 
 		{
-			_asset.name = nameInput.text;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHTPICKER_STEPPER_CHANGE, _asset, true));
-		}
-		private function editParentObjectButton_clickHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
 		
 		protected function lightsList_droppedHandler(event:DroppedEvent):void
@@ -97,7 +91,7 @@
 		</s:HGroup>
 	</s:Group>
 	<s:FormItem label="Name:" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-		<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+		<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
 	</s:FormItem>
 	<s:VGroup width="100%" paddingLeft="10" paddingRight="6" paddingTop="8">
 		<s:HGroup width="100%">

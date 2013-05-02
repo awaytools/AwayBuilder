@@ -11,5 +11,20 @@ package awaybuilder.model.vo.scene
 		
 		public var subGeometries:ArrayCollection;
 		
+		public function clone():GeometryVO
+		{
+			var vo:GeometryVO = new GeometryVO();
+			vo.fillFromGeometry( this );
+			return vo;
+		}
+		
+		public function fillFromGeometry( asset:GeometryVO ):void
+		{
+			this.name = asset.name;
+			
+			this.subGeometries = asset.subGeometries;
+			
+			this.id = asset.id;
+		}
 	}
 }

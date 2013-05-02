@@ -2,6 +2,9 @@ package awaybuilder.view.components.editors
 {
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+	
+	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -85,6 +88,11 @@ package awaybuilder.view.components.editors
 		public function Update():void 
 		{
 			validate( _data );
+		}
+		
+		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
 	}
 }

@@ -11,6 +11,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
+    import awaybuilder.model.vo.scene.GeometryVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
@@ -52,6 +53,7 @@ package awaybuilder.view.mediators
             addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
             addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
 			addContextListener(SceneEvent.CHANGE_CONTAINER, eventDispatcher_changeContainerHandler);
+			addContextListener(SceneEvent.CHANGE_GEOMETRY, eventDispatcher_changeGeometryHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
             addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
@@ -76,6 +78,9 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.CONTAINER_CHANGE, view_containerChangeHandler );
 			addViewListener( PropertyEditorEvent.CONTAINER_STEPPER_CHANGE, view_containerStepperChangeHandler );
+			
+			addViewListener( PropertyEditorEvent.GEOMETRY_CHANGE, view_geometryChangeHandler );
+			addViewListener( PropertyEditorEvent.GEOMETRY_STEPPER_CHANGE, view_geometryStepperChangeHandler );
 			
             addViewListener( PropertyEditorEvent.MATERIAL_CHANGE, view_materialChangeHandler );
             addViewListener( PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, view_materialNameChangeHandler );
@@ -155,6 +160,15 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CONTAINER,[view.data], event.data, true));
 		}
+		private function view_geometryChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_GEOMETRY,[view.data], event.data));
+		}
+		private function view_geometryStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_GEOMETRY,[view.data], event.data, true));
+		}
+		
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data));
@@ -420,6 +434,11 @@ package awaybuilder.view.mediators
 		{
 			view.SetData( event.items[0] );
 		}
+		private function eventDispatcher_changeGeometryHandler(event:SceneEvent):void
+		{
+			view.SetData( event.items[0] );
+		}
+		
         private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
         {
             var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
@@ -553,6 +572,11 @@ package awaybuilder.view.mediators
 					else if( event.items[0] is ShadingMethodVO )
 					{
 						view.showEditor( "shadingMethod", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is GeometryVO )
+					{
+						view.showEditor( "geometry", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
                     else

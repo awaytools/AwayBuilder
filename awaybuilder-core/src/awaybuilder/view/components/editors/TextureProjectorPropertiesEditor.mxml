@@ -63,10 +63,6 @@
 			var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
 		}
-		private function editParentObjectButton_clickHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
-		}
 		
 	]]></fx:Script>
 	

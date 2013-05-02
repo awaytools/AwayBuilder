@@ -33,11 +33,6 @@
 			_asset = ShadowMethodVO(asset).clone();
 		}
 		
-		private function editParentObjectButton_clickHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
-		}
-		
 		private function name_changeHandler(event:Event):void 
 		{
 			_asset.name = nameInput.text;

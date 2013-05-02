@@ -17,6 +17,7 @@ import flash.events.Event;
 		public static const CHANGE_GLOBAL_OPTIONS:String = "changeGlobalOptions";
 		
 		public static const CHANGE_CONTAINER:String = "changeContainer";
+		public static const CHANGE_GEOMETRY:String = "changeGeometry";
         public static const CHANGE_MESH:String = "changeMesh";
         public static const CHANGE_MATERIAL:String = "changeMaterial";
 		public static const CHANGE_LIGHT:String = "changeLight";
