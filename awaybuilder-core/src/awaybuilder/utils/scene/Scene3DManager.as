@@ -312,12 +312,12 @@ package awaybuilder.utils.scene
 		{
 			var gizmo:LightGizmo3D = new LightGizmo3D(light); 
 			gizmo.cone.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);
-			light.addChild(gizmo);
 			lightGizmos.push(gizmo);
 			objects.addItem(light);
 			
-			if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.addChild(light);
-			else scene.addChild(light);
+			if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.addChild(gizmo);
+			else scene.addChild(gizmo);
+			scene.addChild(light);
 			
 			lights.addItem(light);
 		}
@@ -599,7 +599,10 @@ package awaybuilder.utils.scene
 
 			if (o is LightBase) {
 				var lB:LightBase = o as LightBase;
-				m = (lB.getChildAt(0) as LightGizmo3D).cone;
+				for each (var lG:LightGizmo3D in lightGizmos) {
+					if (lG.light == lB)
+						m = lG.cone;
+				}
 			}
 			
 			if (m && m.name == meshName)

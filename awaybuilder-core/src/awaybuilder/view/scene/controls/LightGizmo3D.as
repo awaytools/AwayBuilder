@@ -58,7 +58,8 @@ package awaybuilder.view.scene.controls
 
 		public function updateLight() : void {
 			if (type == DIRECTIONAL_LIGHT) {
-				//TODO: any additional processing per frame
+				cone.eulers = light.eulers.clone();
+				cone.rotationX -= 90;
 			} else {
 				cone.eulers = CameraManager.camera.eulers.clone();
 				cone.rotationX -= 90;
