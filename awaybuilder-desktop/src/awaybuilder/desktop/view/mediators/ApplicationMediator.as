@@ -739,11 +739,11 @@ package awaybuilder.desktop.view.mediators
 			this._panToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "F", []);
 			this._panToolItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
-			this._translateItem = this.createMenuItem("Translate Transform Mode", TRANSLATE_MODE, toolsMenu, -1, "T");
+			this._translateItem = this.createMenuItem("Translate Transform Mode", TRANSLATE_MODE, toolsMenu, -1, "t", [Keyboard.ALTERNATE]);
 			this._translateItem.checked = true;
-			this._rotateItem = this.createMenuItem("Rotate Transform Mode", ROTATE_MODE, toolsMenu, -1, "R" );
+			this._rotateItem = this.createMenuItem("Rotate Transform Mode", ROTATE_MODE, toolsMenu, -1, "r",  [Keyboard.ALTERNATE]);
 			this._rotateItem.checked = false;
-			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "S" );
+			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "s",  [Keyboard.ALTERNATE]);
 			this._scaleItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
 //			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);
