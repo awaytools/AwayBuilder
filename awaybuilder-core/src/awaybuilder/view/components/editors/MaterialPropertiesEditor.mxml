@@ -2,7 +2,12 @@
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
           xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
-		  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" >
+		  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" 
+		  currentState="{_asset.type}">
+	<editors:states>
+		<s:State name="singlepass"/>
+		<s:State name="multipass"/>
+	</editors:states>
     <fx:Declarations>
 		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
 		<s:ArrayCollection id="ambientList">
@@ -245,7 +250,6 @@
 			{
 				_asset.shadowMethod = null;
 			}
-			trace( "_asset.shadowMethod = " +_asset.shadowMethod );
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		private function lightPickerDropDownList_changeHandler(event:IndexChangeEvent):void 
@@ -398,7 +402,6 @@
 		
 		protected function alphaStepper_changeHandler(event:Event):void
 		{
-			_asset.alpha = alphaStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
 		}
 		protected function alphaThresholdStepper_changeHandler(event:Event):void
@@ -406,17 +409,6 @@
 			_asset.alphaThreshold = alphaThresholdStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
 		}
-		
-		private function stepperFormatFunc(val:Number):String 
-		{ 
-			return val.toString().replace(".",","); 
-		} 
-		
-		private function stepperParseFunc(val:String):Number 
-		{ 
-			var stringVal:String = val.replace(",","."); 
-			return Number(stringVal);     
-		} 
 		
 		protected function editLightButton_clickHandler(event:MouseEvent):void
 		{
@@ -539,7 +531,6 @@
 		protected function specularMethodDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_SPECULAR_METHOD_CHANGE, specularMethodDropDownList.selectedItem.value));
-			trace( "specularMethodDropDownList_changeHandler " + specularMethodDropDownList.selectedItem.value );
 		}
 		
 		protected function normalMethodDropDownList_changeHandler(event:IndexChangeEvent):void
@@ -588,8 +579,8 @@
 			<s:FormItem label="both sides" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="bothSidesBox" change="basicProperties_changeHandler(event)" selected="{_asset.bothSides}" />
 			</s:FormItem>
-			<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="alphaStepper" value="{_asset.alpha}" width="38"
+			<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" excludeFrom="multipass">
+				<controls:DragableNumericStepper id="alphaStepper" value="@{_asset.alpha}" width="38"
 												 minimum="0" maximum="1" stepSize="0.01" snapInterval="0.001"
 												 change="alphaStepper_changeHandler(event)" />
 			</s:FormItem>
@@ -665,14 +656,14 @@
 			</s:HGroup>
 		</s:VGroup>
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
-			<s:FormItem label="Specular Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
+			<s:FormItem label="Specular Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{specularDropDownList.selectedItem.isNull}">
 				<controls:DragableNumericStepper id="specularLevelStepper" value="@{_asset.specularLevel}"
 												 stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1"
 												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
-			<s:FormItem label="Specular Gloss" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
+			<s:FormItem label="Specular Gloss" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" enabled="{specularDropDownList.selectedItem.isNull}">
 				<controls:DragableNumericStepper id="specularGlossStepper" value="@{_asset.specularGloss}"
-												 stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1"
+												 stepSize="1" snapInterval="1" minimum="0" maximum="1000"
 												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Specular Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">

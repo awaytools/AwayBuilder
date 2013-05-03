@@ -29,7 +29,7 @@ package awaybuilder.model.vo.scene
     {
 		
 		public static const SINGLEPASS:String = "singlepass";
-		public static const MULTIPASS:String = "multipass ";
+		public static const MULTIPASS:String = "multipass";
 		
 		public var type:String;
 		

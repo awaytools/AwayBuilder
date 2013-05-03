@@ -20,10 +20,12 @@ package awaybuilder.model
 	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
 	import away3d.lights.shadowmaps.ShadowMapperBase;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.ColorMultiPassMaterial;
 	import away3d.materials.MaterialBase;
 	import away3d.materials.MultiPassMaterialBase;
 	import away3d.materials.SinglePassMaterialBase;
 	import away3d.materials.TextureMaterial;
+	import away3d.materials.TextureMultiPassMaterial;
 	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.AlphaMaskMethod;
@@ -120,7 +122,6 @@ package awaybuilder.model
 					return fillGeometry( new GeometryVO(), item as Geometry );
 				case(item is ISubGeometry):
 					return fillSubGeometry( new SubGeometryVO(), item as ISubGeometry );
-					
 				case(item is AnimationNodeBase):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					return asset;
@@ -516,21 +517,11 @@ package awaybuilder.model
 			asset.smooth = item.smooth;
 			asset.blendMode = item.blendMode;
 			
-			if( item is MultiPassMaterialBase )
-			{
-				asset.type = MaterialVO.MULTIPASS;
-				var multiPassMaterialBase:MultiPassMaterialBase = item as MultiPassMaterialBase;
-				asset.alphaThreshold = multiPassMaterialBase.alphaThreshold;
-			}
-			else
-			{
-				asset.type = MaterialVO.SINGLEPASS;
-			}
-			
 			if( item is TextureMaterial )
 			{
+				asset.type = MaterialVO.SINGLEPASS;
 				var textureMaterial:TextureMaterial = item as TextureMaterial;
-				
+				asset.alphaThreshold = textureMaterial.alphaThreshold;
 				asset.alpha = textureMaterial.alpha;
 				
 				asset.alphaBlending = textureMaterial.alphaBlending;
@@ -559,8 +550,44 @@ package awaybuilder.model
 			}
 			else if( item is ColorMaterial )
 			{
+				asset.type = MaterialVO.SINGLEPASS;
 				var colorMaterial:ColorMaterial = item as ColorMaterial;
 				asset.alpha = colorMaterial.alpha;
+				asset.alphaThreshold = colorMaterial.alphaThreshold;
+			}
+			else if( item is TextureMultiPassMaterial )
+			{
+				asset.type = MaterialVO.MULTIPASS;
+				var textureMultiPassMaterial:TextureMultiPassMaterial = item as TextureMultiPassMaterial;
+				asset.alphaThreshold = textureMultiPassMaterial.alphaThreshold;
+				asset.alphaBlending = textureMaterial.alphaBlending;
+				asset.colorTransform = textureMaterial.colorTransform;
+				
+				asset.ambientLevel = textureMaterial.ambient; 
+				asset.ambientColor = textureMaterial.ambientColor;
+				asset.ambientTexture = GetAsset( textureMaterial.ambientTexture ) as TextureVO;
+				asset.ambientMethod = GetAsset( textureMaterial.ambientMethod ) as ShadingMethodVO;
+				
+				asset.diffuseColor= textureMaterial.diffuseMethod.diffuseColor;
+				asset.diffuseTexture = GetAsset( textureMaterial.texture ) as TextureVO;
+				asset.diffuseMethod = GetAsset( textureMaterial.diffuseMethod ) as ShadingMethodVO;
+				
+				asset.specularLevel = textureMaterial.specular;
+				asset.specularColor = textureMaterial.specularColor;
+				asset.specularGloss = textureMaterial.gloss;
+				asset.specularTexture = GetAsset( textureMaterial.specularMap ) as TextureVO;
+				asset.specularMethod = GetAsset( textureMaterial.specularMethod ) as ShadingMethodVO;
+				
+				asset.normalTexture = GetAsset( textureMaterial.normalMap ) as TextureVO;
+				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
+				
+				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
+			}
+			else if( item is ColorMultiPassMaterial )
+			{
+				asset.type = MaterialVO.MULTIPASS;
+				var colorMultiPassMaterial:ColorMultiPassMaterial = item as ColorMultiPassMaterial;
+				asset.alphaThreshold = colorMultiPassMaterial.alphaThreshold;
 			}
 			
 			asset.effectMethods = new ArrayCollection();

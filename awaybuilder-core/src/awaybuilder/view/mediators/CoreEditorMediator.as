@@ -518,7 +518,10 @@ package awaybuilder.view.mediators
 			light.color = asset.color;
 			light.specular = asset.specular;
 			
-			light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
+			if(  asset.shadowMapper )
+			{
+				light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
+			}
 			
 			applyObject( asset );
 			if( asset.type == LightVO.DIRECTIONAL ) 
@@ -591,46 +594,39 @@ package awaybuilder.view.mediators
 			m.bothSides = asset.bothSides;
 			m.extra = asset.extra;
 			
-			// TODO: check why we cannot set null
-			
 			m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
-			trace( "m.lightPicker = " + m.lightPicker );
 			m.mipmap = asset.mipmap;
 			m.smooth = asset.smooth;
 			m.blendMode = asset.blendMode;
 			
-			if( m is ColorMaterial )
-			{
-				var cm:ColorMaterial = m as ColorMaterial;
-				cm.color = asset.diffuseColor;
-				cm.alpha = asset.alpha;
-				
-			}
-			else if( m is TextureMaterial )
-			{
-				var tm:TextureMaterial = m as TextureMaterial;
-				
-				tm.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
-				trace( tm.shadowMethod );
-				tm.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
-				
-				tm.alpha = asset.alpha;
-				tm.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
-				tm.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
-				tm.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
-//				tm.diffuseMethod.diffuseAlpha = diffuseAlpha;
-//				tm.diffuseMethod.diffuseColor = diffuseColor;
-				
-//				if( specularMap )
-//					tm.specularMethod.texture = specularMap.linkedObject as Texture2DBase;
-				
-//				if( ambientTexture )
-//					tm.ambientMethod.texture = ambientTexture.linkedObject as Texture2DBase;
-			}
 			var effect:EffectMethodVO;
 			var singlePassMaterialBase:SinglePassMaterialBase = m as SinglePassMaterialBase;
 			if( singlePassMaterialBase ) 
 			{
+				
+				if( m is ColorMaterial )
+				{
+					var colorMaterial:ColorMaterial = m as ColorMaterial;
+					colorMaterial.color = asset.diffuseColor;
+					colorMaterial.alpha = asset.alpha;
+				}
+				else if( m is TextureMaterial )
+				{
+					var textureMaterial:TextureMaterial = m as TextureMaterial;
+					
+					textureMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					textureMaterial.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
+					textureMaterial.alpha = asset.alpha;
+					textureMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					textureMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+					textureMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					textureMaterial.ambient = asset.ambientLevel;
+					textureMaterial.ambientColor = asset.ambientColor;
+					textureMaterial.specular = asset.specularLevel;
+					textureMaterial.specularColor = asset.specularColor;
+					textureMaterial.gloss = asset.specularGloss;
+				}
+				
 				var i:int;
 				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
 				while( singlePassMaterialBase.numMethods )
@@ -646,6 +642,31 @@ package awaybuilder.view.mediators
 			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
 			if( multiPassMaterialBase ) 
 			{
+				if( m is ColorMultiPassMaterial )
+				{
+					var colorMultiPassMaterial:ColorMultiPassMaterial = m as ColorMultiPassMaterial;
+					colorMultiPassMaterial.color = asset.diffuseColor;
+//					colorMultiPassMaterial.alpha = asset.alpha;
+					
+				}
+				else if( m is TextureMultiPassMaterial )
+				{
+					var textureMultiPassMaterial:TextureMultiPassMaterial = m as TextureMultiPassMaterial;
+					
+					textureMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					textureMultiPassMaterial.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
+					
+//					textureMultiPassMaterial.alpha = asset.alpha;
+					textureMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					textureMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+					textureMultiPassMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					textureMultiPassMaterial.ambient = asset.ambientLevel;
+					textureMultiPassMaterial.ambientColor = asset.ambientColor;
+					textureMultiPassMaterial.specular = asset.specularLevel;
+					textureMultiPassMaterial.specularColor = asset.specularColor;
+					textureMultiPassMaterial.gloss = asset.specularGloss;
+				}
+				
 				multiPassMaterialBase.alphaThreshold = asset.alphaThreshold;
 				while( multiPassMaterialBase.numMethods )
 				{

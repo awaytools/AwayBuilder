@@ -84,6 +84,7 @@ package awaybuilder.model
 			var textureMaterial:TextureMaterial = GetObject(clone) as TextureMaterial;
 			newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
 			newMaterial.name = "Material " + AssetUtil.GetNextId("Material");
+			newMaterial.gloss = 50;
 			return GetAsset(newMaterial) as MaterialVO;
 		}
 		
