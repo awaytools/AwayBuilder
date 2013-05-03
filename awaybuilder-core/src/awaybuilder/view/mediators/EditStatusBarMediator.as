@@ -31,7 +31,7 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_zoomChangeHandler(event:Scene3DManagerEvent):void
 		{
-			statusBar.zoom += event.currentValue.x*8;
+			statusBar.zoom += event.currentValue.x*CameraManager.ZOOM_MULTIPLIER;
 			CameraManager.radius = CameraManager.zoomFunction(statusBar.zoom);
 		}
 
@@ -48,14 +48,16 @@ package awaybuilder.view.mediators
 		
 		private function statusBar_zoomInHandler(event:ToolBarZoomEvent):void
 		{
-			statusBar.zoom += 0.05;
+			statusBar.zoom += CameraManager.ZOOM_DELTA_VALUE;
 			CameraManager.radius = CameraManager.zoomFunction(statusBar.zoom);
 		}
 		
 		private function statusBar_zoomOutHandler(event:ToolBarZoomEvent):void
 		{
-			statusBar.zoom -= 0.05;
+			statusBar.zoom -= CameraManager.ZOOM_DELTA_VALUE;
 			CameraManager.radius = CameraManager.zoomFunction(statusBar.zoom);
+			
+			
 		}
 	}
 }

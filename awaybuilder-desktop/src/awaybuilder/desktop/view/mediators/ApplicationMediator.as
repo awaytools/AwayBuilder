@@ -18,6 +18,8 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.utils.scene.CameraManager;
+	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.desktop.NativeApplication;
 	import flash.display.DisplayObject;
@@ -163,8 +165,6 @@ package awaybuilder.desktop.view.mediators
   
             addContextListener( ErrorLogEvent.LOG_ENTRY_MADE, eventDispatcher_errorLogHandler);
           
-//			this.eventMap.mapListener(this._propertiesWindow, AIREvent.WINDOW_ACTIVATE, propertiesWindow_windowActivateHandler);
-			
 			addViewListener( Event.CLOSE, awaybuilder_closeHandler );
 			addViewListener( Event.CLOSING, awaybuilder_closingHandler );
 			addViewListener( AIREvent.WINDOW_ACTIVATE, awaybuilder_windowActivateHandler );
@@ -328,7 +328,6 @@ package awaybuilder.desktop.view.mediators
 					const extensions:Vector.<String> = new <String>["awd","3ds","obj","md2","png","jpg","atf","dae","md5"];
 					for each(var file:File in fileList)
 					{
-						trace( file.extension );
 						if(file.exists && extensions.indexOf(file.extension) >= 0)
 						{
 							DragManager.acceptDragDrop(this.app);
@@ -514,12 +513,12 @@ package awaybuilder.desktop.view.mediators
 				//view
 				case MENU_ZOOM_OUT:
 				{
-					//this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
+					Scene3DManager.zoomDistanceDelta( -CameraManager.ZOOM_DELTA_VALUE );
 					break;
 				}
 				case MENU_ZOOM_IN:
 				{
-					//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
+					Scene3DManager.zoomDistanceDelta( CameraManager.ZOOM_DELTA_VALUE );
 					break;
 				}
 				case FOCUS_SELECTED:
@@ -561,12 +560,22 @@ package awaybuilder.desktop.view.mediators
 			{
 //				this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_ONLINE_HELP));
 			}
-			else if(event.ctrlKey && String.fromCharCode(event.charCode) == "=")
+			else if(String.fromCharCode(event.charCode) == "+")
 			{
+				trace(event.charCode);
+				Scene3DManager.zoomDistanceDelta( CameraManager.ZOOM_DELTA_VALUE );
 				//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
 			}
-			else if(event.ctrlKey && String.fromCharCode(event.charCode) == "-")
+			else if(String.fromCharCode(event.charCode) == "=")
 			{
+				trace(event.charCode);
+				Scene3DManager.zoomDistanceDelta( CameraManager.ZOOM_DELTA_VALUE );
+				//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
+			}
+			else if(String.fromCharCode(event.charCode) == "-")
+			{
+				trace(event.charCode);
+				Scene3DManager.zoomDistanceDelta( -CameraManager.ZOOM_DELTA_VALUE );
 				//this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
 			}
 //			if(this.editorModel.selectedObjects.length > 0)
@@ -711,15 +720,15 @@ package awaybuilder.desktop.view.mediators
 			
 			this._viewMenuItem = new NativeMenuItem("View");
 			var viewMenu:NativeMenu = new NativeMenu();
-			this.createMenuItem("Zoom In", MENU_ZOOM_IN, viewMenu, -1, "+");
-			this.createMenuItem("Zoom Out", MENU_ZOOM_OUT, viewMenu, -1, "-");
+			this.createMenuItem("Zoom In", MENU_ZOOM_IN, viewMenu, -1, "+", []);
+			this.createMenuItem("Zoom Out", MENU_ZOOM_OUT, viewMenu, -1, "-", []);
 			viewMenu.addItem(new NativeMenuItem("", true));
 			_focusItem = createMenuItem("Focus Selected", FOCUS_SELECTED, viewMenu);
             _focusItem.enabled = false;
 			viewMenu.addItem(new NativeMenuItem("", true));
 //			this._snapToGridItem = this.createMenuItem("Snap To Grid", MENU_SNAP_TO_GRID, viewMenu);
 //			this._snapToGridItem.checked = this.settingsModel.snapToGrid;
-			this._showGridItem = this.createMenuItem("Show Grid", MENU_SHOW_GRID, viewMenu);
+//			this._showGridItem = this.createMenuItem("Show Grid", MENU_SHOW_GRID, viewMenu);
 			this._viewMenuItem.submenu = viewMenu;
 			this._mainMenu.addItem(this._viewMenuItem);
 			

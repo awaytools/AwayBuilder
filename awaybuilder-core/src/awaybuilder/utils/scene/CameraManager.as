@@ -25,6 +25,10 @@ package awaybuilder.utils.scene
 	 */
 	public class CameraManager
 	{
+		
+		public static const ZOOM_DELTA_VALUE:Number = .05;
+		public static const ZOOM_MULTIPLIER:Number = 8;
+		
 		// Singleton instance declaration
 		private static const self:CameraManager = new CameraManager();		
 		public static function get instance():CameraManager { return self; }			
@@ -342,8 +346,6 @@ package awaybuilder.utils.scene
 			
 			return v;
 		}				
-		
-		
 		
 		
 		// Mouse Events **********************************************************************************************************************
