@@ -219,7 +219,7 @@ package awaybuilder.desktop.view.mediators
 
 		private function updatePageTitle():void
 		{
-			var newTitle:String = "Away3D Builder - " + this.documentModel.name;
+			var newTitle:String = "Away Builder - " + this.documentModel.name;
 			if(this.documentModel.edited)
 			{
 				newTitle += " *";
