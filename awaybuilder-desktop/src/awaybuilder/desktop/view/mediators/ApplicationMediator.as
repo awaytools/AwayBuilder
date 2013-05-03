@@ -674,16 +674,14 @@ package awaybuilder.desktop.view.mediators
 			this._fileMenuItem = new NativeMenuItem("File");
 			var fileMenu:NativeMenu = new NativeMenu();
 			
-			this.createMenuItem("New Library", MENU_NEW, fileMenu, -1, "n");
-			this.createMenuItem("Open Away3D Library...", MENU_OPEN, fileMenu, -1, "o");
+			this.createMenuItem("New", MENU_NEW, fileMenu, -1, "n");
+			this.createMenuItem("Open...", MENU_OPEN, fileMenu, -1, "o");
 			fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Import 3D or Texture", MENU_IMPORT, fileMenu, -1, "i");
+			this.createMenuItem("Import...", MENU_IMPORT, fileMenu, -1, "i");
 			
 			fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Save Library", MENU_SAVE, fileMenu, -1, "s");
-			this.createMenuItem("Save Library As...", MENU_SAVE_AS, fileMenu, -1, "S");
-			/*fileMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Print...", MENU_PRINT, fileMenu, -1, "p");*/
+			this.createMenuItem("Save", MENU_SAVE, fileMenu, -1, "s");
+			this.createMenuItem("Save As...", MENU_SAVE_AS, fileMenu, -1, "S");
 			
 			if(!NativeApplication.supportsMenu)
 			{
@@ -710,11 +708,7 @@ package awaybuilder.desktop.view.mediators
 			this.createMenuItem("Select All", MENU_SELECT_ALL, editMenu, -1, "a");
 			this.createMenuItem("Select None", MENU_SELECT_NONE, editMenu, -1, "A");
 			editMenu.addItem(new NativeMenuItem("", true));
-			if(!NativeApplication.supportsMenu)
-			{
-				this.createMenuItem("Application Settings...", MENU_APPLICATION_SETTINGS, editMenu);
-			}
-			this.createMenuItem("Document Settings...", MENU_DOCUMENT_SETTINGS, editMenu);
+			this.createMenuItem("Document Settings", MENU_DOCUMENT_SETTINGS, editMenu);
 			this._editMenuItem.submenu = editMenu;
 			this._mainMenu.addItem(this._editMenuItem);
 			
@@ -725,7 +719,6 @@ package awaybuilder.desktop.view.mediators
 			viewMenu.addItem(new NativeMenuItem("", true));
 			_focusItem = createMenuItem("Focus Selected", FOCUS_SELECTED, viewMenu);
             _focusItem.enabled = false;
-			viewMenu.addItem(new NativeMenuItem("", true));
 //			this._snapToGridItem = this.createMenuItem("Snap To Grid", MENU_SNAP_TO_GRID, viewMenu);
 //			this._snapToGridItem.checked = this.settingsModel.snapToGrid;
 //			this._showGridItem = this.createMenuItem("Show Grid", MENU_SHOW_GRID, viewMenu);
@@ -745,7 +738,6 @@ package awaybuilder.desktop.view.mediators
 			this._rotateItem.checked = false;
 			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "s",  [Keyboard.ALTERNATE]);
 			this._scaleItem.checked = false;
-			toolsMenu.addItem(new NativeMenuItem("", true));
 //			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);
 //			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
 			this._toolsMenuItem.submenu = toolsMenu;
@@ -754,16 +746,11 @@ package awaybuilder.desktop.view.mediators
 			this._helpMenuItem = new NativeMenuItem("Help");
 			var helpMenu:NativeMenu = new NativeMenu();
 //			this.createMenuItem("Contents...", MENU_HELP_CONTENTS, helpMenu);
-			this.createMenuItem("Samples...", MENU_SAMPLES, helpMenu);
-			helpMenu.addItem(new NativeMenuItem("", true));
 //			this.createMenuItem("Report a Bug...", MENU_REPORT_BUG, helpMenu);
-			helpMenu.addItem(new NativeMenuItem("", true));
-			this.createMenuItem("Check for Updates...", MENU_CHECK_UPDATE, helpMenu);
 			
 			if(!NativeApplication.supportsMenu)
 			{
-				helpMenu.addItem(new NativeMenuItem("", true));
-				this.createMenuItem("About awaybuilder...", MENU_ABOUT, helpMenu);
+				this.createMenuItem("About", MENU_ABOUT, helpMenu);
 			}
 			this._helpMenuItem.submenu = helpMenu;
 			this._mainMenu.addItem(this._helpMenuItem);
