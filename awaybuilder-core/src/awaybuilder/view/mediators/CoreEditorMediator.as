@@ -7,6 +7,7 @@ package awaybuilder.view.mediators
     import away3d.library.assets.NamedAssetBase;
     import away3d.lights.DirectionalLight;
     import away3d.lights.LightBase;
+    import away3d.lights.PointLight;
     import away3d.lights.shadowmaps.CascadeShadowMapper;
     import away3d.lights.shadowmaps.CubeMapShadowMapper;
     import away3d.lights.shadowmaps.DirectionalShadowMapper;
@@ -517,8 +518,7 @@ package awaybuilder.view.mediators
 			light.color = asset.color;
 			light.specular = asset.specular;
 			
-			if (asset.shadowMapper)
-				light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
+			light.shadowMapper = assets.GetObject( asset.shadowMapper ) as ShadowMapperBase;
 			
 			applyObject( asset );
 			if( asset.type == LightVO.DIRECTIONAL ) 
@@ -527,7 +527,13 @@ package awaybuilder.view.mediators
 				var y:Number = -Math.sin( asset.elevationAngle*Math.PI/180);
 				var x:Number =  Math.sin(Math.PI/2 - asset.elevationAngle*Math.PI/180)*Math.sin( asset.azimuthAngle*Math.PI/180);
 				var z:Number =  Math.sin(Math.PI/2 - asset.elevationAngle*Math.PI/180)*Math.cos( asset.azimuthAngle*Math.PI/180);
-				dl.direction = new Vector3D( x, y, z); // tested
+				dl.direction = new Vector3D( x, y, z);
+			}
+			else if( asset.type == LightVO.POINT ) 
+			{
+				var pointLight:PointLight = light as PointLight;
+				pointLight.radius = asset.radius;
+				pointLight.fallOff = asset.fallOff;
 			}
 			
 		}
