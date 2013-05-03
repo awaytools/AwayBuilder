@@ -1349,9 +1349,15 @@ package awaybuilder.utils.encoders
 			var len  : uint;
 			var flen : uint;
 			var type:uint=AWDSTRING;
-			var copy:*=value
-			if(Number(copy))type=FLOAT32;
-			if(int(copy))type=INT32;
+			var copy:*=value;
+			if(int(copy)){
+				type=INT32;
+				value=int(copy);
+			}
+			if(Number(copy)){
+				type=FLOAT32;
+				value=Number(copy);
+			}
 			if (type==AWDSTRING){
 				if(copy=="false"){
 					type=BOOL;
