@@ -51,6 +51,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.ExtraItemVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -84,7 +85,7 @@ package awaybuilder.utils.encoders
 	import mx.collections.ArrayCollection;
 	import mx.core.Container;
 	import mx.graphics.codec.JPEGEncoder;
-
+	
 	// to do: check if any imports can be removed
 	
 	
@@ -110,7 +111,7 @@ package awaybuilder.utils.encoders
 		private static const COLOR : uint = 22;
 		private static const BADDR : uint = 23;		
 		
-		//public static const AWD_FIELD_STRING : uint = 31;
+		public static const AWDSTRING : uint = 31;
 		//public static const AWD_FIELD_BYTEARRAY : uint = 32;
 		
 		//public static const AWD_FIELD_VECTOR2x1 : uint = 41;
@@ -120,7 +121,7 @@ package awaybuilder.utils.encoders
 		//public static const AWD_FIELD_MTX3x3 : uint = 45;
 		//public static const AWD_FIELD_MTX4x3 : uint = 46;
 		
-		private static const AWD_FIELD_MTX4x4 : uint = 47;
+		private static const MTX4x4 : uint = 47;
 		
 		private var blendModeDic:Dictionary;
 		
@@ -132,6 +133,8 @@ package awaybuilder.utils.encoders
 		private var _matrixStoragePrecision:Boolean=false; 
 		private var _embedtextures:Boolean=true; 
 		
+		private var _depthSizeDic:Dictionary=new Dictionary();
+		private var _shadowMethodsToLightsDic:Dictionary=new Dictionary();
 		
 		
 		public function AWDEncoder()
@@ -139,6 +142,7 @@ package awaybuilder.utils.encoders
 			super();
 			_blockCache = new Dictionary();
 			_elemSizeOffsets = new Vector.<uint>();
+			_shadowMethodsToLightsDic=new Dictionary();
 			// to do: check if this blendModeDic works for all blendMode-strings in the Scene
 			blendModeDic=new Dictionary();
 			blendModeDic[BlendMode.NORMAL]=0;
@@ -157,6 +161,10 @@ package awaybuilder.utils.encoders
 			blendModeDic[BlendMode.SCREEN]=13;
 			blendModeDic[BlendMode.SHADER]=14;
 			blendModeDic[BlendMode.OVERLAY]=15;
+			
+			_depthSizeDic[256]=0;
+			_depthSizeDic[512]=1;
+			_depthSizeDic[2048]=2;
 		}
 		
 		// this function is called from the app...
@@ -252,6 +260,15 @@ package awaybuilder.utils.encoders
 		{
 			for each ( var asset:AssetVO in assetList )
 			{
+				
+				if (asset is LightVO){
+					for each (var shadowMeth:ShadowMethodVO in LightVO(asset).shadowMethods){
+						if (_shadowMethodsToLightsDic[shadowMeth]){
+							trace("unexpected issue: Shadowmethod is used by more than 1 light. Please let us know on Github (https://github.com/awaytools/AwayBuilder) that this had happened");
+						}
+						_shadowMethodsToLightsDic[shadowMeth]=asset;
+					}
+				}
 				if (asset.isDefault)return;
 				switch(true){
 					case (asset is TextureVO):
@@ -426,8 +443,13 @@ package awaybuilder.utils.encoders
 			// to do: add encoding of pivot.x/.y/.z + visibility + userData
 			
 			_beginElement(); // Prop list
+			if(container.pivotX!=0)_encodeProperty(1,container.pivotX,  FLOAT32);
+			if(container.pivotY!=0)_encodeProperty(2,container.pivotY,  FLOAT32);
+			if(container.pivotZ!=0)_encodeProperty(3,container.pivotZ,  FLOAT32);
 			_endElement(); // Prop list
+			
 			_beginElement(); // Attr list
+			_endoceExtraProperties(container.extras);
 			_endElement(); // Attr list
 			
 			_endElement(); // Block
@@ -451,7 +473,7 @@ package awaybuilder.utils.encoders
 			for each (subMeshVo in mesh.subMeshes) {
 				materialIds.push( _getBlockIDorEncodeAsset(subMeshVo.material));
 			}
-						
+			
 			returnID=_encodeBlockHeader(23);
 			_beginElement(); // Block
 			
@@ -466,8 +488,15 @@ package awaybuilder.utils.encoders
 			}
 			
 			_beginElement(); // Prop list
+			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  FLOAT32);
+			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  FLOAT32);
+			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  FLOAT32);
+			if(mesh.castsShadows==true)_encodeProperty(5,mesh.pivotZ,  BOOL);
 			_endElement(); // Prop list
+			
+			
 			_beginElement(); // Attr list
+			_endoceExtraProperties(mesh.extras);
 			_endElement(); // Attr list
 			
 			_endElement(); // Block
@@ -476,6 +505,16 @@ package awaybuilder.utils.encoders
 			
 		}
 		
+		// encode LightBlock (id=41)
+		private function _endoceExtraProperties(extraObject:Object) : void
+		{
+			trace("EncodeProperties");
+			for each (var object:ExtraItemVO in extraObject){
+				trace("valueName = "+object.name);
+				trace("valueValue = "+object.value);
+				_encodeAttribute(object.name, object.value)
+			}
+		}
 		
 		// encode LightBlock (id=41)
 		private function _encodeLight(light:LightVO) : uint
@@ -490,18 +529,6 @@ package awaybuilder.utils.encoders
 			
 			// if the lights will be part of the sceneGraph, we will need to get its parentID 		
 			
-			
-			var shadowMethodsIDs:Vector.<uint>=new Vector.<uint>;
-			var shadowMethodsDics:Dictionary=new Dictionary(); // use Dictionary to make shure we do not list a Method twice (Composite-Methods)
-			for each (var shadowMethVo:AssetVO in light.shadowMethods){
-				var newMethodID:uint=_getBlockIDorEncodeAsset(shadowMethVo);
-				if(!shadowMethodsDics[newMethodID.toString()]){
-					shadowMethodsIDs.push(newMethodID)
-					shadowMethodsDics[newMethodID.toString()]=0;					
-				}				
-			}
-			var methodLength:uint=shadowMethodsIDs.length;
-			if(light.shadowMapper)methodLength+=1;
 			
 			
 			returnID=_encodeBlockHeader(41);
@@ -521,24 +548,42 @@ package awaybuilder.utils.encoders
 			}					
 			
 			_body.writeByte(lightType);	//lightType	
-			_body.writeByte(methodLength);	//num of ShadowMethods	
 			
-			_beginElement(); // prop list			
+			_beginElement(); // start lights-prop list
+			
 			if(radius){_encodeProperty(1,radius, FLOAT32);}//radius
 			if(fallOff){_encodeProperty(2,fallOff, FLOAT32);}//fallOff
 			if(light.color!=0xffffff){_encodeProperty(3,light.color, COLOR);}//color
 			if(light.specular!=1){_encodeProperty(4,light.specular, FLOAT32);}//specular
 			if(light.diffuse!=1){_encodeProperty(5,light.diffuse, FLOAT32);}//diffuse
-			if(light.castsShadows!=false){_encodeProperty(6,light.castsShadows, BOOL);}//castsShadows
 			if(light.ambientColor!=0xffffff){_encodeProperty(7,light.ambientColor, COLOR);}//ambientColor
 			if(light.ambient!=0){_encodeProperty(8,light.ambient, FLOAT32);}//color
+			// just add the shadowmapper as max 3 light-properties (shadowMapper-Type + shadowmapper-properties)	
+			if((light.castsShadows)&&(light.shadowMapper)){		
+				var mapperVO:ShadowMapperVO=light.shadowMapper;
+				switch(mapperVO.type){ 
+					case "NearDirectionalShadowMapper":
+						_encodeProperty(9,1, UINT8);
+						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
+						if(mapperVO.coverage!=0.5)_encodeProperty(11,mapperVO.coverage, FLOAT32);
+						break;
+					case "DirectionalShadowMapper":
+						_encodeProperty(9,2, UINT8);
+						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
+						break;
+					case "CascadeShadowMapper":
+						_encodeProperty(9,3, UINT8);
+						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
+						if(mapperVO.numCascades!=3)_encodeProperty(12,mapperVO.numCascades, UINT16);
+						break;
+					case "CubeMapShadowMapper":
+						_encodeProperty(9,4, UINT8);
+						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
+						break;
+				}
+			}			
 			_endElement(); // prop list
-			// to do: encode shadowMapper and list of ShadowMethods				
 			
-			if(light.shadowMapper)_encodeShadowMapper(light.shadowMapper);//shadowMapper is not encoded as a own Block, but included as a method;
-			for (var i:int=0;i<shadowMethodsIDs.length;i++){
-				_encodeMethod(999, [1130] , [shadowMethodsIDs[i]], [0], [BADDR]);
-			}		
 			
 			_beginElement(); // Attr list
 			_endElement(); // Attr list
@@ -764,6 +809,32 @@ package awaybuilder.utils.encoders
 		
 		
 		
+		
+		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
+		private function _encodeShadowMapMethodBlock(methVO:ShadowMethodVO, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
+		{
+			var lightID:uint=0;
+			if (!_shadowMethodsToLightsDic[methVO]){
+				trace("unexpected error, could not find light for Shadowmethod");
+			}
+			else{
+				lightID=_getBlockIDorEncodeAsset(_shadowMethodsToLightsDic[methVO]);
+			}
+			var returnID:uint=_encodeBlockHeader(92);
+			_beginElement(); // Block			
+			_body.writeUTF(methVO.name);				
+			_body.writeUnsignedInt(lightID);			
+			
+			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_endElement(); // Block
+			
+			if(_debug)trace("ShadowMethod = "+ methVO.name + " has been encoded successfully!");
+			return returnID
+		}
 		// creates a new SharedBlock for a ShadowMethod.
 		private function _encodeShadowMethod(methVO:ShadowMethodVO) : uint
 		{
@@ -772,87 +843,29 @@ package awaybuilder.utils.encoders
 			switch(methVO.type)
 			{ 				
 				case ShadowMethodVO.FILTERED_SHADOW_MAP_METHOD:		
-					returnID=_encodeSharedMethodBlock(methVO.name, 1101, [3,1114], [methVO.alpha,methVO.epsilon], [1,0.002], [FLOAT32,FLOAT32]);			
+					returnID=_encodeShadowMapMethodBlock(methVO, 1101, [101,102], [methVO.alpha,methVO.epsilon], [1,0.002], [FLOAT32,FLOAT32]);			
 					break;	
 				case ShadowMethodVO.DITHERED_SHADOW_MAP_METHOD:	
-					returnID=_encodeSharedMethodBlock(methVO.name, 1102, [3,1114,1127,1119], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [FLOAT32,FLOAT32,UINT32,FLOAT32]);				
+					returnID=_encodeShadowMapMethodBlock(methVO, 1102, [101,102,201,103], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [FLOAT32,FLOAT32,UINT32,FLOAT32]);				
 					break;
 				case ShadowMethodVO.SOFT_SHADOW_MAP_METHOD:		
-					returnID=_encodeSharedMethodBlock(methVO.name,1103, [3,1114,1127,1119], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [FLOAT32,FLOAT32,UINT32,FLOAT32]);				
+					returnID=_encodeShadowMapMethodBlock(methVO,1103, [101,102,201,103], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [FLOAT32,FLOAT32,UINT32,FLOAT32]);				
 					break;
 				case ShadowMethodVO.HARD_SHADOW_MAP_METHOD:		
-					returnID=_encodeSharedMethodBlock(methVO.name,1104, [3,1114], [methVO.alpha,methVO.epsilon], [1,0.002], [FLOAT32,FLOAT32]);			
+					returnID=_encodeShadowMapMethodBlock(methVO,1104, [101,102], [methVO.alpha,methVO.epsilon], [1,0.002], [FLOAT32,FLOAT32]);			
 					break;	
 				case ShadowMethodVO.CASCADE_SHADOW_MAP_METHOD:		
 					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
-					returnID=_encodeSharedMethodBlock(methVO.name,1001, [1130], [baseID], [0], [BADDR]);
+					returnID=_encodeShadowMapMethodBlock(methVO,1001, [1], [baseID], [0], [BADDR]);
 					break;
 				case ShadowMethodVO.NEAR_SHADOW_MAP_METHOD:		
 					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
-					returnID=_encodeSharedMethodBlock(methVO.name,1002, [1130], [baseID], [0], [BADDR]);
+					returnID=_encodeShadowMapMethodBlock(methVO,1002, [1], [baseID], [0], [BADDR]);
 					break;
 			}	
 			return returnID;
 		}
 		
-		
-		
-		
-		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
-		{
-			var returnID:uint=0;
-			var cubeTexID:uint;
-			var texID:uint;
-			var texProjectorID:uint;
-			if(_debug)trace("methVO.type = "+methVO.type);
-			switch(methVO.type)
-			{ 
-				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
-					var colorMatrixAsVector:Vector.<Number>= new Vector.<Number>;// to do: fill this vector with the colorTransform
-					var colorMatrixAsVectorDefault:Vector.<Number>= new Vector.<Number>;// to do: fill this vector with the default ColorTranform
-					returnID=_encodeSharedMethodBlock(methVO.name,401, [1001], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [FLOAT32]);
-					break;
-				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
-					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
-					returnID=_encodeSharedMethodBlock(methVO.name,402, [1101,1102,1103,1104,1105], [methVO.a,methVO.r,methVO.g,methVO.b,offSetColor], [1,1,1,1,0x00000000], [FLOAT32,FLOAT32,FLOAT32,FLOAT32,COLOR]);
-					break;
-				case "EnvMapMethod"://EffectMethodVO.ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,403, [101,3,1146], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,FLOAT32,BADDR]);
-					break;
-				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,404, [1124,100], [methVO.mode,texID], [10,0], [UINT8,BADDR]);
-					break;
-				//case EffectMethodVO.PROJECTIVE_TEXTURE:
-				//texProjectorID=_getBlockIDorEncodeAsset(methVO.textureProjector);
-				//returnID=_encodeSharedMethodBlock(methVO.name,405, [1124,102], [methVO.mode,texProjectorID], [10,0], [UINT8,BADDR]);
-				//break;
-				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
-					returnID=_encodeSharedMethodBlock(methVO.name,406, [1,1107,1106], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,FLOAT32,FLOAT32]);
-					break;
-				case "AlphaMaskMethod"://EffectMethodVO.ALPHA_MASK:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,407, [203,100], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
-					break;
-				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
-					returnID=_encodeSharedMethodBlock(methVO.name,408, [101,1129,1111,1143,1144,3], [methVO.cubeTexture,methVO.refraction,methVO.r,methVO.g,methVO.b,methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
-					break;
-				case "OutlineMethod"://EffectMethodVO.OUTLINE:
-					returnID=_encodeSharedMethodBlock(methVO.name,409, [2,1121,202,201], [methVO.color,methVO.size,methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
-					break;
-				case "FresnelEnvMapoMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
-					returnID=_encodeSharedMethodBlock(methVO.name,410, [101,3], [methVO.cubeTexture,methVO.alpha], [2048,1], [0,1]);
-					break;
-				case "FogMethod"://EffectMethodVO.FOG:
-					returnID=_encodeSharedMethodBlock(methVO.name,411, [1122,1145,1], [methVO.minDistance,methVO.maxDistance, methVO.color], [0,1000,0x808080], [FLOAT32,FLOAT32,COLOR]);
-					break;
-				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
-				//EffectMethodVO.PLANAR_REFLECTION
-			}	
-			return returnID;
-		}
 		
 		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
 		private function _encodeSharedMethodBlock(name:String, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
@@ -873,25 +886,66 @@ package awaybuilder.utils.encoders
 			return returnID
 		}
 		
-		// encode the ShadowMapper as single method
-		private function _encodeShadowMapper(mapperVO:ShadowMapperVO) : void
+		
+		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
 		{
-			
-			switch(mapperVO.type){ 
-				case "NearDirectionalShadowMapper":
-					_encodeMethod(1502, [1125,1120], [mapperVO.depthMapSize,mapperVO.coverage], [2048,0.5], [UINT8,FLOAT32]);
+			var returnID:uint=0;
+			var cubeTexID:uint;
+			var texID:uint;
+			var texProjectorID:uint;
+			if(_debug)trace("methVO.type = "+methVO.type);
+			switch(methVO.type)
+			{ 
+				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
+					var colorMatrixAsVector:Vector.<Number>= new Vector.<Number>;// to do: fill this vector with the colorTransform
+					var colorMatrixAsVectorDefault:Vector.<Number>= new Vector.<Number>;// to do: fill this vector with the default ColorTranform
+					returnID=_encodeSharedMethodBlock(methVO.name,401, [801], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [MTX4x4]);
 					break;
-				case "DirectionalShadowMappe":
-					_encodeMethod(1501, [1125], [mapperVO.depthMapSize], [2048], [UINT8]);
+				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
+					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
+					returnID=_encodeSharedMethodBlock(methVO.name,402, [101,102,103,104,601], [methVO.a,methVO.r,methVO.g,methVO.b,offSetColor], [1,1,1,1,0x00000000], [FLOAT32,FLOAT32,FLOAT32,FLOAT32,COLOR]);
 					break;
-				case "CascadeShadowMapper":
-					_encodeMethod(1503, [1125,1128], [mapperVO.depthMapSize,mapperVO.numCascades], [2048,3], [UINT8,UINT32]);
+				case "EnvMapMethod"://EffectMethodVO.ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,403, [1,101,2], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,FLOAT32,BADDR]);
 					break;
-				case "CubeMapShadowMapper":
-					_encodeMethod(1504, [1125], [mapperVO.depthMapSize], [2048], [UINT8]);
+				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
+					texID=_getBlockIDorEncodeAsset(methVO.texture);					
+					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
 					break;
-			}
+				case EffectMethodVO.PROJECTIVE_TEXTURE:
+					if(_debug)trace("textureProjectors are not implemented yet!");
+					texProjectorID=0;//_getBlockIDorEncodeAsset(methVO.textureProjector);
+					returnID=_encodeSharedMethodBlock(methVO.name,405, [401,1], [blendModeDic[methVO.mode],texProjectorID], [10,0], [UINT8,BADDR]);
+					break;
+				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
+					returnID=_encodeSharedMethodBlock(methVO.name,406, [601,101,102], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,FLOAT32,FLOAT32]);
+					break;
+				case "AlphaMaskMethod"://EffectMethodVO.ALPHA_MASK:
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
+					break;
+				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
+					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [methVO.cubeTexture,methVO.refraction,methVO.r,methVO.g,methVO.b,methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
+					break;
+				case "OutlineMethod"://EffectMethodVO.OUTLINE:
+					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color,methVO.size,methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
+					break;
+				case "FresnelEnvMapoMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
+					returnID=_encodeSharedMethodBlock(methVO.name,410, [1,3], [methVO.cubeTexture,methVO.alpha], [2048,1], [0,1]);
+					break;
+				case "FogMethod"://EffectMethodVO.FOG:
+					returnID=_encodeSharedMethodBlock(methVO.name,411, [101,102,601], [methVO.minDistance,methVO.maxDistance, methVO.color], [0,1000,0x808080], [FLOAT32,FLOAT32,COLOR]);
+					break;
+				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
+				//EffectMethodVO.PLANAR_REFLECTION
+			}	
+			return returnID;
 		}
+		
+		
+		
 		
 		
 		
@@ -909,19 +963,18 @@ package awaybuilder.utils.encoders
 					var lightMapBlendMode1:uint=blendModeDic[diffuseMethVO.blendMode];
 					if ((lightMapBlendMode1!=1)&&(lightMapBlendMode1!=10))lightMapBlendMode1=10;
 					texID=_getBlockIDorEncodeAsset(diffuseMethVO.texture);
-					materialMethods.push(new AWDmethod(54, [1124,105], [ lightMapBlendMode1, texID], [10], [UINT8,BADDR]));
+					materialMethods.push(new AWDmethod(54, [401,1], [ lightMapBlendMode1, texID], [10], [UINT8,BADDR]));
 					break;
 				case "CelDiffuseMethod":
 					_encodeDiffuseMethod(diffuseMethVO.baseMethod,materialMethods);
-					materialMethods.push(new AWDmethod(55, [1123,1117], ["diffuseMethVO.levels", diffuseMethVO.smoothness], [], [UINT8,FLOAT32]));
+					materialMethods.push(new AWDmethod(55, [401,101], [diffuseMethVO.value, diffuseMethVO.smoothness], [3,0.1], [UINT8,FLOAT32]));
 					break;
 				case "SubsurfaceScatteringDiffuseMethod":
 					_encodeDiffuseMethod(diffuseMethVO.baseMethod,materialMethods);
-					materialMethods.push(new AWDmethod(56, [1140,1141,1142], [diffuseMethVO.scattering,diffuseMethVO.translucency,diffuseMethVO.scatterColor], [0.2,1,0xffffff], [FLOAT32,FLOAT32,COLOR]));
+					materialMethods.push(new AWDmethod(56, [101,102,601], [diffuseMethVO.scattering,diffuseMethVO.translucency,diffuseMethVO.scatterColor], [0.2,1,0xffffff], [FLOAT32,FLOAT32,COLOR]));
 					break;
 				case "WrapDiffuseMethod":
-					// to do: figured out which parameter of the ShadingMethodVO represents the "wrapFactor" !!!
-					materialMethods.push(new AWDmethod(53, [1118], ["diffuseMethVO.wrapFactor"], [0.5], [FLOAT32]));
+					materialMethods.push(new AWDmethod(53, [101], [diffuseMethVO.value], [0.5], [FLOAT32]));
 					break;
 				case "DepthDiffuseMethod":
 					materialMethods.push(new AWDmethod(51, [], [], [], []));
@@ -940,12 +993,12 @@ package awaybuilder.utils.encoders
 			switch(speculareMethVO.type){ 
 				case "CelSpecularMethod":	
 					_encodeSpecularMethod(speculareMethVO.baseMethod,materialMethods);
-					materialMethods.push(new AWDmethod(103, [1115,1117], [speculareMethVO.value, speculareMethVO.smoothness], [0.5,0.1], [FLOAT32,FLOAT32]));
+					materialMethods.push(new AWDmethod(103, [101,102], [speculareMethVO.value, speculareMethVO.smoothness], [0.5,0.1], [FLOAT32,FLOAT32]));
 					break;
 				case "FresnelSpecularMethod":	
 					_encodeSpecularMethod(speculareMethVO.baseMethod,materialMethods);
-					// to do: speculareMethVO.normalPower is not mapped
-					materialMethods.push(new AWDmethod(104, [204,1106,1113], [speculareMethVO.basedOnSurface, speculareMethVO.fresnelPower,"speculareMethVO.normalPower"], [true,0.5,0.1], [BOOL,FLOAT32,FLOAT32]));
+					// to do: speculareMethVO.normalPower is not mapped - it is allways set to 0.1 = default
+					materialMethods.push(new AWDmethod(104, [701,101,102], [speculareMethVO.basedOnSurface, speculareMethVO.fresnelPower,0.1], [true,0.5,0.1], [BOOL,FLOAT32,FLOAT32]));
 					break;
 				case "AnisotropicSpecularMethod":	
 					materialMethods.push(new AWDmethod(101, [], [], [], []));
@@ -961,7 +1014,7 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("ambientMethVO = "+ambientMethVO.type);
 			switch(ambientMethVO.type){ 
 				case "EnvMapAmbientMethod":
-					materialMethods.push(new AWDmethod(1, [101], [ambientMethVO.envMap], [0], [BADDR]));
+					materialMethods.push(new AWDmethod(1, [1], [_getBlockIDorEncodeAsset(ambientMethVO.envMap)], [0], [BADDR]));
 					break;
 			}
 		}
@@ -970,13 +1023,13 @@ package awaybuilder.utils.encoders
 		{
 			if(_debug)trace("normalMethVO = "+normalMethVO.type);
 			switch(normalMethVO.type){ 
+				case "SimpleWaterNormalMethod":
+					materialMethods.push(new AWDmethod(152, [1], [_getBlockIDorEncodeAsset(normalMethVO.texture)], [0], [BADDR]));
+					break;
 				/*case "HeightMapNormalMethod":
 				//var worldSize:Vector3D=HeightMapNormalMethod(normalMeth).worldSize;
 				//materialMethods.push(new AWDmethod(151, [1108,1109,1110], [worldSize.x, worldSize.y,worldSize.z], [5,5,5], [FLOAT32,FLOAT32,FLOAT32]));
 				break;*/
-				case "SimpleWaterNormalMethod":
-					materialMethods.push(new AWDmethod(152, [103], [normalMethVO.texture], [0], [BADDR]));
-					break;
 			}
 		}
 		
@@ -984,14 +1037,14 @@ package awaybuilder.utils.encoders
 		{
 			var materialMethods:Vector.<AWDmethod>=new Vector.<AWDmethod>;
 			
-			//_encodeDiffuseMethod(mat.diffuseMethod,materialMethods);
-			//_encodeSpecularMethod(mat.specularMethod,materialMethods);
-			//_encodeAmbientMethod(mat.ambientMethod,materialMethods);
-			//_encodeNormalMethod(mat.normalMethod,materialMethods);
+			_encodeDiffuseMethod(mat.diffuseMethod,materialMethods);
+			_encodeSpecularMethod(mat.specularMethod,materialMethods);
+			_encodeAmbientMethod(mat.ambientMethod,materialMethods);
+			_encodeNormalMethod(mat.normalMethod,materialMethods);
 			
-			if (mat.shadowMethod)materialMethods.push(new AWDmethod(999, [1130], [_getBlockIDorEncodeAsset(mat.shadowMethod)], [0], [BADDR]));
+			if (mat.shadowMethod)materialMethods.push(new AWDmethod(998, [1], [_getBlockIDorEncodeAsset(mat.shadowMethod)], [0], [BADDR]));
 			for each (var effectMethVO:EffectMethodVO in mat.effectMethods){
-				materialMethods.push(new AWDmethod(999, [1130], [_getBlockIDorEncodeAsset(effectMethVO)], [0], [BADDR]));// to do - check the correct id for a "shared methdod block"-method 
+				materialMethods.push(new AWDmethod(999, [1], [_getBlockIDorEncodeAsset(effectMethVO)], [0], [BADDR]));// to do - check the correct id for a "shared methdod block"-method 
 			}
 			return materialMethods;
 		}
@@ -1284,6 +1337,77 @@ package awaybuilder.utils.encoders
 						break;
 				}
 			}
+		}
+		
+		private function _encodeAttribute(name:String, value : *) : void
+		{
+			// to do: better way to get the acctual value type ?
+			
+			// to do: improve by supporting a list of values (all same type) for each attribute instead of a single value.
+			
+			var i : uint;
+			var len  : uint;
+			var flen : uint;
+			var type:uint=AWDSTRING;
+			var copy:*=value
+			if(Number(copy))type=FLOAT32;
+			if(int(copy))type=INT32;
+			if (type==AWDSTRING){
+				if(copy=="false"){
+					type=BOOL;
+					value=false;
+				}
+				if(copy=="true"){
+					type=BOOL;
+					value=true;
+				}
+			}			
+			_body.writeByte(0);//NameSpace			
+			_body.writeUTF(name);//Attribute name
+			_body.writeByte(type);//NameSpace		
+			
+			switch (type) {
+				case INT8:
+				case UINT8:	
+				case BOOL:
+					_body.writeUnsignedInt(1);
+					_body.writeByte(value);
+					break;
+				
+				case INT16:
+				case UINT16:
+					_body.writeUnsignedInt(2);
+					_body.writeShort(value);
+					break;
+				
+				case INT32:
+					_body.writeUnsignedInt(4);
+					_body.writeInt(value);
+					break;
+					
+				case UINT32:
+				case COLOR:
+				case BADDR:
+					_body.writeUnsignedInt(4);
+					_body.writeUnsignedInt(value);
+					break;
+					
+				case FLOAT32:
+					_body.writeUnsignedInt(4);
+					_body.writeFloat(value);
+					break;
+					
+				case FLOAT64:
+					_body.writeUnsignedInt(8);
+					_body.writeDouble(value);
+					break;
+				
+				case AWDSTRING:
+					_body.writeUnsignedInt(value.length);
+					_body.writeUTFBytes(value);
+					break;
+				}
+			
 		}
 		
 		
