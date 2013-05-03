@@ -6,7 +6,7 @@ package awaybuilder.controller.events
 	{
 		//application settings events
 		
-		public static const SHOW_APPLICATION_SETTINGS:String = "showApplicationSettings";
+		public static const SHOW_DOCUMENT_SETTINGS:String = "showDocumentSettings";
 		public static const SHOW_APPLICATION_SETTINGS_DOCUMENT_DEFAULTS:String = "showApplicationSettingsDocumentDefaults";
 		
 		public static const GRID_SIZE_CHANGE:String = "gridSizeChange";

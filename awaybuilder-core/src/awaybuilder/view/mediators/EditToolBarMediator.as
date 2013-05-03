@@ -11,6 +11,11 @@ package awaybuilder.view.mediators
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.utils.scene.CameraManager;
+	import awaybuilder.utils.scene.Scene3DManager;
+	import awaybuilder.utils.scene.modes.CameraMode;
 	import awaybuilder.view.components.EditToolBar;
 	import awaybuilder.view.components.events.ToolBarEvent;
 	
@@ -48,7 +53,7 @@ package awaybuilder.view.mediators
             addViewListener( ToolBarEvent.UNDO, toolBar_undoHandler);
             addViewListener( ToolBarEvent.REDO, toolBar_redoHandler);
 
-            addViewListener( ToolBarEvent.APPLICATION_SETTINGS, toolBar_applicationSettingsHandler);
+            addViewListener( ToolBarEvent.DOCUMENT_SETTINGS, toolBar_documentSettingsHandler);
 
             addViewListener( ToolBarEvent.CLIPBOARD_CUT, toolBar_clipboardCutHandler);
             addViewListener( ToolBarEvent.CLIPBOARD_COPY, toolBar_clipboardCopyHandler);
@@ -109,12 +114,20 @@ package awaybuilder.view.mediators
 		{
             if( event.items && event.items.length > 0)
             {
-                this.toolBar.deleteButton.enabled = true;
-                this.toolBar.focusButton.enabled = true;
-				this.toolBar.copyButton.enabled = true;
-				this.toolBar.cutButton.enabled = true;
+				var isSceneItemsSelected:Boolean = true;
+				for each( var asset:AssetVO in event.items )
+				{
+					if( !(asset is ObjectVO) )
+						isSceneItemsSelected = false;
+				}
+					
+                this.toolBar.deleteButton.enabled = isSceneItemsSelected;
+                this.toolBar.focusButton.enabled = isSceneItemsSelected;
+				this.toolBar.copyButton.enabled = isSceneItemsSelected;
+				this.toolBar.cutButton.enabled = isSceneItemsSelected;
             }
-            else {
+            else 
+			{
                 this.toolBar.deleteButton.enabled = false;
                 this.toolBar.focusButton.enabled = false;
 				this.toolBar.copyButton.enabled = false;
@@ -178,7 +191,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new DocumentRequestEvent(DocumentRequestEvent.REQUEST_NEW_DOCUMENT));
 		}
 		
-		
 		private function toolBar_importDocumentHandler(event:ToolBarEvent):void
 		{
 			this.dispatch(new DocumentEvent(DocumentEvent.IMPORT_DOCUMENT));
@@ -204,9 +216,9 @@ package awaybuilder.view.mediators
             this.dispatch(new UndoRedoEvent(UndoRedoEvent.REDO));
 		}
 		
-		private function toolBar_applicationSettingsHandler(event:ToolBarEvent):void
+		private function toolBar_documentSettingsHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new SettingsEvent(SettingsEvent.SHOW_APPLICATION_SETTINGS));
+			this.dispatch(new SettingsEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS));
 		}
 		
 	}

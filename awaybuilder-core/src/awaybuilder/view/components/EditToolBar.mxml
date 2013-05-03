@@ -19,13 +19,13 @@
 	</fx:Declarations>
 	
 	<!-- document -->
-	<s:Button id="newDocumentButton" styleName="toolbarButton" toolTip="New Document"
+	<s:Button id="newDocumentButton" styleName="toolbarButton" toolTip="New"
 		click="newDocumentButton_clickHandler(event)"/>
-	<s:Button id="openDocumentButton" styleName="toolbarButton" toolTip="Open Document..."
+	<s:Button id="openDocumentButton" styleName="toolbarButton" toolTip="Open..."
 		click="openDocumentButton_clickHandler(event)"/>
 	<s:Button id="importDocumentButton" styleName="toolbarButton" toolTip="Import..."
 			  click="importDocumentButton_clickHandler(event)"/>
-	<s:Button id="saveDocumentButton" styleName="toolbarButton" toolTip="Save Document"
+	<s:Button id="saveDocumentButton" styleName="toolbarButton" toolTip="Save"
 		click="saveDocumentButton_clickHandler(event)"/>
 	
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
@@ -77,22 +77,14 @@
 			  toolTip="Delete Selected Object"
 			  enabled="false"
 			  click="deleteButton_clickHandler(event)"/>
-	<!--<s:Button id="rotateCounterClockwiseButton" styleName="toolbarButton"
-				toolTip="Rotate Counter-Clockwise"
-				enabled="false"
-				click="rotateCounterClockwiseButton_clickHandler(event)"/>
-		<s:Button id="rotateClockwiseButton" styleName="toolbarButton"
-				toolTip="Rotate Clockwise"
-				enabled="false"
-				click="rotateClockwiseButton_clickHandler(event)"/>-->
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
 	<mx:Spacer width="100%"/>
-	<!--<s:Button id="documentSettingsButton" styleName="toolbarButton" toolTip="Document Settings..."
+	<s:Button id="documentSettingsButton" styleName="toolbarButton" toolTip="Document Settings..."
 		click="documentSettingsButton_clickHandler(event)"/>
-	<s:Button id="applicationSettingsButton" styleName="toolbarButton" toolTip="Application Settings..."
-		click="applicationSettingsButton_clickHandler(event)"/>-->
-<!--	<s:Button id="helpButton" styleName="toolbarButton" toolTip="Help"
+	<!--	<s:Button id="applicationSettingsButton" styleName="toolbarButton" toolTip="Application Settings..."
+		click="applicationSettingsButton_clickHandler(event)"/>
+	<s:Button id="helpButton" styleName="toolbarButton" toolTip="Help"
 		click="helpButton_clickHandler(event)"/>
 	<s:Button id="reportBugButton" styleName="toolbarButton" toolTip="Report a Bug..."
 		visible="{showBugReportButton}" includeInLayout="{showBugReportButton}"

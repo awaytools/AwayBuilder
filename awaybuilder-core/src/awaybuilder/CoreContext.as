@@ -22,12 +22,14 @@ package awaybuilder
 	import awaybuilder.controller.document.SaveDocumentCommand;
 	import awaybuilder.controller.document.SaveDocumentFailCommand;
 	import awaybuilder.controller.document.SaveDocumentSuccessCommand;
+	import awaybuilder.controller.document.ShowDocumentSettingsCommand;
 	import awaybuilder.controller.document.events.ImportTextureEvent;
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.history.RedoCommand;
 	import awaybuilder.controller.history.UndoCommand;
 	import awaybuilder.controller.history.UndoRedoEvent;
@@ -163,6 +165,8 @@ package awaybuilder
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_COPY, CopyCommand);
 			this.commandMap.mapEvent(PasteEvent.CLIPBOARD_PASTE, PasteCommand);
+			
+			commandMap.mapEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS, ShowDocumentSettingsCommand);
 			
             commandMap.mapEvent( UndoRedoEvent.REDO, RedoCommand );
             commandMap.mapEvent( UndoRedoEvent.UNDO, UndoCommand );

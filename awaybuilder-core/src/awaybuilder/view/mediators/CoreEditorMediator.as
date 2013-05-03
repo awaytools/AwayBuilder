@@ -78,6 +78,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
+    import awaybuilder.utils.scene.modes.CameraMode;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
     import awaybuilder.view.components.events.CoreEditorEvent;
@@ -609,11 +610,19 @@ package awaybuilder.view.mediators
 					var colorMaterial:ColorMaterial = m as ColorMaterial;
 					colorMaterial.color = asset.diffuseColor;
 					colorMaterial.alpha = asset.alpha;
+					colorMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					colorMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					colorMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+//					colorMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					colorMaterial.ambient = asset.ambientLevel;
+					colorMaterial.ambientColor = asset.ambientColor;
+					colorMaterial.specular = asset.specularLevel;
+					colorMaterial.specularColor = asset.specularColor;
+					colorMaterial.gloss = asset.specularGloss;
 				}
 				else if( m is TextureMaterial )
 				{
 					var textureMaterial:TextureMaterial = m as TextureMaterial;
-					
 					textureMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 					textureMaterial.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
 					textureMaterial.alpha = asset.alpha;
@@ -647,6 +656,15 @@ package awaybuilder.view.mediators
 					var colorMultiPassMaterial:ColorMultiPassMaterial = m as ColorMultiPassMaterial;
 					colorMultiPassMaterial.color = asset.diffuseColor;
 //					colorMultiPassMaterial.alpha = asset.alpha;
+					colorMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					colorMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					colorMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+//					colorMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					colorMaterial.ambient = asset.ambientLevel;
+					colorMaterial.ambientColor = asset.ambientColor;
+					colorMaterial.specular = asset.specularLevel;
+					colorMaterial.specularColor = asset.specularColor;
+					colorMaterial.gloss = asset.specularGloss;
 					
 				}
 				else if( m is TextureMultiPassMaterial )
@@ -908,6 +926,10 @@ package awaybuilder.view.mediators
 		}
         private function eventDispatcher_itemsFocusHandler(event:SceneEvent):void
         {
+			if( CameraManager.mode == CameraMode.FREE )
+			{
+				this.dispatch(new SceneEvent(SceneEvent.SWITCH_CAMERA_TO_TARGET));
+			}
             CameraManager.focusTarget( Scene3DManager.selectedObject );
         }
 		

@@ -18,6 +18,8 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ObjectVO;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
@@ -98,9 +100,6 @@ package awaybuilder.desktop.view.mediators
 		
 		[Inject]
 		public var undoRedoModel:UndoRedoModel;
-		
-		[Inject(name="version")]
-		public var version:String;
 		
 		private var _propertiesWindow:ObjectPropertiesWindow;
 		
@@ -261,15 +260,23 @@ package awaybuilder.desktop.view.mediators
 		
 		private function context_itemSelectHandler(event:SceneEvent):void
 		{
-            if( event.items && event.items.length > 0)
-            {
-                _focusItem.enabled = true;
-                _deleteItem.enabled = true;
-            }
-            else {
-                _focusItem.enabled = false;
-                _deleteItem.enabled = false;
-            }
+			if( event.items && event.items.length > 0)
+			{
+				var isSceneItemsSelected:Boolean = true;
+				for each( var asset:AssetVO in event.items )
+				{
+					if( !(asset is ObjectVO) )
+						isSceneItemsSelected = false;
+				}
+				
+				_focusItem.enabled = isSceneItemsSelected;
+				_deleteItem.enabled = true;
+			}
+			else 
+			{
+				_focusItem.enabled = false;
+				_deleteItem.enabled = false;
+			}
 		}
 		
 		private function eventDispatcher_showGridChangeHandler(event:Event):void
@@ -489,9 +496,9 @@ package awaybuilder.desktop.view.mediators
 					}
 					break;
 				}
-				case MENU_APPLICATION_SETTINGS:
+				case MENU_DOCUMENT_SETTINGS:
 				{
-					this.dispatch(new SettingsEvent(SettingsEvent.SHOW_APPLICATION_SETTINGS));
+					this.dispatch(new SettingsEvent(SettingsEvent.SHOW_DOCUMENT_SETTINGS));
 					break;
 				}
 				//tools

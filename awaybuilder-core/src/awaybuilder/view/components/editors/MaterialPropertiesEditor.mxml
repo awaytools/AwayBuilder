@@ -614,7 +614,7 @@
 				<mx:ColorPicker id="ambientColorPicker" selectedColor="{_asset.ambientColor}" change="ambientColorPicker_changeHandler(event)"/>
 			</s:FormItem>
 		</s:Form>
-		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
+		<s:VGroup width="100%" paddingLeft="10" enabled="{!_isColorMaterial}">
 			<s:HGroup width="100%">
 				<s:Label text="Ambient Texture:" fontWeight="bold"/>
 				<controls:HorizontalFormSeparator/>

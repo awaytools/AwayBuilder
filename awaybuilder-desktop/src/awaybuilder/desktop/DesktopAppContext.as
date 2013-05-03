@@ -71,12 +71,9 @@ package awaybuilder.desktop
 
 			this.commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
 			
+			
 			this.injector.mapSingletonOf(IDocumentService, FileSystemDocumentService);
 			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);
-			
-			var descriptor:XML = NativeApplication.nativeApplication.applicationDescriptor;
-			var ns:Namespace = descriptor.namespace();
-			this.injector.mapValue(String, descriptor.ns::versionNumber, "version");
 			
 			this.mediatorMap.mapView(AwayBuilderApplication, ApplicationMediator);
 			this.mediatorMap.mapView(EditedDocumentWarningWindow, EditedDocumentWarningWindowMediator);
