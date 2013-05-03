@@ -301,9 +301,11 @@ package awaybuilder.utils.scene
 					break;													
 			}
 			
-			var isLightGizmo:LightGizmo3D = selectedObject.parent as LightGizmo3D;
-			if (selectedObject && (!isLightGizmo || isLightGizmo.type==LightGizmo3D.POINT_LIGHT || Scene3DManager.currentGizmo==rotateGizmo))
-				currentGizmo.show(selectedObject);			
+			if (selectedObject) {
+				var isLightGizmo:LightGizmo3D = selectedObject.parent as LightGizmo3D;
+			 	if (!isLightGizmo || isLightGizmo.type==LightGizmo3D.POINT_LIGHT || Scene3DManager.currentGizmo==rotateGizmo)
+					currentGizmo.show(selectedObject);			
+			}
 		}
 		
 		// Lights Handling *********************************************************************************************************************************************
