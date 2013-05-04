@@ -168,10 +168,10 @@
 			
 			<!-- The icon to display for the file type. Optional. -->
  			<icon> 
-<!--  				<image16x16>assets/fileicon_AwayBuilder_16.jpg</image16x16> -->
-<!-- 				<image32x32>assets/fileicon_AwayBuilder_32.jpg</image32x32> -->
-<!--  				<image48x48>assets/fileicon_AwayBuilder_48.jpg</image48x48> -->
-<!-- 				<image128x128>assets/fileicon_AwayBuilder_128.jpg</image128x128> -->
+ 				<image16x16>assets/fileicon_AwayBuilder_16.png</image16x16>
+				<image32x32>assets/fileicon_AwayBuilder_32.png</image32x32>
+ 				<image48x48>assets/fileicon_AwayBuilder_48.png</image48x48>
+				<image128x128>assets/fileicon_AwayBuilder_128.png</image128x128>
  			</icon>
 			
 		</fileType>
