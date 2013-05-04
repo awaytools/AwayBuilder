@@ -1344,11 +1344,13 @@ package awaybuilder.utils.encoders
 			// to do: better way to get the acctual value type ?
 			
 			// to do: improve by supporting a list of values (all same type) for each attribute instead of a single value.
-			
 			var i : uint;
 			var len  : uint;
 			var flen : uint;
 			var type:uint=AWDSTRING;
+			
+			if (!value)value="";
+			
 			var copy:*=value;
 			if(int(copy)){
 				type=INT32;
