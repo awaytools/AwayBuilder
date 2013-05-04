@@ -114,7 +114,12 @@ package awaybuilder.model.vo.scene
 			this.specularTexture = asset.specularTexture;
 			this.specularMethod = asset.specularMethod;
 			
-			if( asset.effectMethods ) this.effectMethods = new ArrayCollection( asset.effectMethods.source );
+			var effects:Array = [];
+			for each( var effect:EffectMethodVO in asset.effectMethods )
+			{
+				effects.push( effect );
+			}
+			this.effectMethods = new ArrayCollection( effects );
 			
 			this.id = asset.id;
 		}

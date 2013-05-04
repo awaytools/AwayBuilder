@@ -319,6 +319,11 @@ package awaybuilder.view.mediators
 		}
 		private function view_materialAddEffectMetodHandler(event:PropertyEditorEvent):void
 		{
+			if( event.data == "ProjectiveTextureMethod" )
+			{
+				Alert.show( "TextureProjector is missing", "Warning" );
+				return;
+			}
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], assets.CreateEffectMethod( event.data as String )));
 			
 		}

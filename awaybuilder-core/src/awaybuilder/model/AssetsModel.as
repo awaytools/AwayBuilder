@@ -99,7 +99,7 @@ package awaybuilder.model
 					break;
 				case "ProjectiveTextureMethod":
 //					method = new ProjectiveTextureMethod();
-//					method.name =  "LightMapMethod " + AssetUtil.GetNextId("LightMapMethod");
+//					method.name =  "ProjectiveTexture " + AssetUtil.GetNextId("ProjectiveTexture");
 					break;
 				case "RimLightMethod":
 					method = new RimLightMethod();

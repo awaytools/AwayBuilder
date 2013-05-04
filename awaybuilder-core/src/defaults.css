@@ -452,3 +452,7 @@ controls|PropertiesItemContainer
 {
 	skinClass: ClassReference("awaybuilder.view.components.controls.PropertiesItemContainerSkin");
 }
+controls|SparkColorPicker
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ColorPickerListSkin");
+}

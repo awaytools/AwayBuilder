@@ -12,7 +12,7 @@ package awaybuilder.model.vo.scene
 		
 		public var texture:TextureVO;
 		public var cubeTexture:CubeTextureVO;
-		public var textureProjector:String;
+		public var textureProjector:TextureProjectorVO;
 		
 		public var refraction:Number;
 		public var alpha:Number;
@@ -43,7 +43,7 @@ package awaybuilder.model.vo.scene
 		public var power:Number;
 		public var useSecondaryUV:Boolean;
 		
-		
+		public var normalReflectance:Number;
 		
 		public var showInnerLines:Boolean;
 		public var dedicatedMesh:Boolean;
@@ -72,6 +72,8 @@ package awaybuilder.model.vo.scene
 			this.texture = asset.texture;
 			this.cubeTexture = asset.cubeTexture;
 			this.textureProjector = asset.textureProjector;
+			
+			this.normalReflectance = asset.normalReflectance;
 			
 			this.refraction = asset.refraction;
 			this.alpha = asset.alpha;

@@ -348,6 +348,10 @@ package awaybuilder.view.mediators
 			else if( obj is OutlineMethod )
 			{
 				var outlineMethod:OutlineMethod = obj as OutlineMethod;
+				outlineMethod.outlineColor = asset.color;
+				outlineMethod.showInnerLines = asset.showInnerLines;
+				outlineMethod.outlineSize = asset.size;
+//				outlineMethod.dedicatedMeshes
 			}
 			else if( obj is ProjectiveTextureMethod )
 			{
@@ -360,6 +364,9 @@ package awaybuilder.view.mediators
 			else if( obj is RimLightMethod )
 			{
 				var rimLightMethod:RimLightMethod = obj as RimLightMethod;
+				rimLightMethod.color = asset.color;
+				rimLightMethod.power = asset.power;
+				rimLightMethod.strength = asset.strength;
 			}
 		}
 		
@@ -766,11 +773,14 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_addNewEffectMethodHandler(event:SceneEvent):void
 		{
-			var asset:MaterialVO = event.items[0] as MaterialVO;
-			if( asset ) 
-			{
-				applyMaterial( asset );
+			if( event.items && event.items.length ) {
+				var asset:MaterialVO = event.items[0] as MaterialVO;
+				if( asset ) 
+				{
+					applyMaterial( asset );
+				}
 			}
+			
 		}
 		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
 		{

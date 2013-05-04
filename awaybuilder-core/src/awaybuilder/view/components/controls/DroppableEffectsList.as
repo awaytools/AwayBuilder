@@ -154,13 +154,12 @@ package awaybuilder.view.components.controls
 			{
 				// Get the item, clone if needed
 				var item:ScenegraphItemVO = items[i] as ScenegraphItemVO;
-				var clonnedItem:EffectMethodVO = EffectMethodVO(item.item).clone() as EffectMethodVO;
 				//				if (copyItems)
 				//					item = copyItemWithUID(item);
 				
 				// Copy the data
-				dataProvider.addItemAt(clonnedItem, dropIndex + i);
-				dispatchEvent( new DroppedEvent( DroppedEvent.DROPPED, clonnedItem, dropIndex + i ) );
+				dataProvider.addItemAt(item.item, dropIndex + i);
+				dispatchEvent( new DroppedEvent( DroppedEvent.DROPPED, item.item, dropIndex + i ) );
 				
 				// Update the selection
 				if (i != caretIndex)

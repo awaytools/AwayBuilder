@@ -84,6 +84,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SubGeometryVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
+	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.AssetUtil;
 	
@@ -171,121 +172,100 @@ package awaybuilder.model
 		private function fillEffectMethod( asset:EffectMethodVO, item:EffectMethodBase ):EffectMethodVO
 		{
 			asset.type = getQualifiedClassName( item ).split("::")[1];
+			asset.name = item.name;
 			switch( true ) 
 			{
 				case(item is AlphaMaskMethod):
-					with (item as AlphaMaskMethod) 
-					{ 
-						asset.texture = awaybuilder.utils.AssetUtil.GetAsset(texture) as TextureVO;
-						asset.useSecondaryUV = useSecondaryUV;
-					}
+					var alphaMaskMethod:AlphaMaskMethod = item as AlphaMaskMethod;
+					asset.texture = GetAsset(alphaMaskMethod.texture) as TextureVO;
+					asset.useSecondaryUV = alphaMaskMethod.useSecondaryUV;
 					break;
 				case(item is ColorTransformMethod):
-					with (item as ColorTransformMethod) 
-					{ 
-						asset.r = colorTransform.redMultiplier;
-						asset.g = colorTransform.greenMultiplier;
-						asset.b = colorTransform.blueMultiplier;
-						asset.a = colorTransform.alphaMultiplier;
-						asset.rO = colorTransform.redOffset;
-						asset.gO = colorTransform.greenOffset;
-						asset.bO = colorTransform.blueOffset;
-						asset.aO = colorTransform.alphaOffset;
-					}
+					var colorTransformMethod:ColorTransformMethod = item as ColorTransformMethod;
+						asset.r = colorTransformMethod.colorTransform.redMultiplier;
+						asset.g = colorTransformMethod.colorTransform.greenMultiplier;
+						asset.b = colorTransformMethod.colorTransform.blueMultiplier;
+						asset.a = colorTransformMethod.colorTransform.alphaMultiplier;
+						asset.rO = colorTransformMethod.colorTransform.redOffset;
+						asset.gO = colorTransformMethod.colorTransform.greenOffset;
+						asset.bO = colorTransformMethod.colorTransform.blueOffset;
+						asset.aO = colorTransformMethod.colorTransform.alphaOffset;
 					break;
 				case(item is ColorMatrixMethod):
-					with (item as ColorMatrixMethod) 
-					{ 
-						asset.r = colorMatrix[0];
-						asset.g = colorMatrix[1];
-						asset.b = colorMatrix[2];
-						asset.a = colorMatrix[3];
-						asset.rG = colorMatrix[5];
-						asset.gG = colorMatrix[6];
-						asset.gG = colorMatrix[7];
-						asset.gG = colorMatrix[8];
-						asset.rB = colorMatrix[10];
-						asset.gB = colorMatrix[11];
-						asset.bB = colorMatrix[12];
-						asset.aB = colorMatrix[13];
-						asset.rA = colorMatrix[15];
-						asset.gA = colorMatrix[16];
-						asset.bA = colorMatrix[17];
-						asset.aA = colorMatrix[18];
-						asset.rO = colorMatrix[4];
-						asset.gO = colorMatrix[9];
-						asset.bO = colorMatrix[14];
-						asset.aO = colorMatrix[19];
-					}
+				var colorMatrixMethod:ColorMatrixMethod = item as ColorMatrixMethod;
+						asset.r = colorMatrixMethod.colorMatrix[0];
+						asset.g = colorMatrixMethod.colorMatrix[1];
+						asset.b = colorMatrixMethod.colorMatrix[2];
+						asset.a = colorMatrixMethod.colorMatrix[3];
+						asset.rG = colorMatrixMethod.colorMatrix[5];
+						asset.gG = colorMatrixMethod.colorMatrix[6];
+						asset.bG = colorMatrixMethod.colorMatrix[7];
+						asset.aG = colorMatrixMethod.colorMatrix[8];
+						asset.rB = colorMatrixMethod.colorMatrix[10];
+						asset.gB = colorMatrixMethod.colorMatrix[11];
+						asset.bB = colorMatrixMethod.colorMatrix[12];
+						asset.aB = colorMatrixMethod.colorMatrix[13];
+						asset.rA = colorMatrixMethod.colorMatrix[15];
+						asset.gA = colorMatrixMethod.colorMatrix[16];
+						asset.bA = colorMatrixMethod.colorMatrix[17];
+						asset.aA = colorMatrixMethod.colorMatrix[18];
+						asset.rO = colorMatrixMethod.colorMatrix[4];
+						asset.gO = colorMatrixMethod.colorMatrix[9];
+						asset.bO = colorMatrixMethod.colorMatrix[14];
+						asset.aO = colorMatrixMethod.colorMatrix[19];
 					break;
 				case(item is EnvMapMethod):
-					with (item as EnvMapMethod) 
-					{ 
-						asset.cubeTexture = awaybuilder.utils.AssetUtil.GetAsset(cubeTexture) as CubeTextureVO;
-						asset.alpha = alpha;
-						asset.mask = awaybuilder.utils.AssetUtil.GetAsset(texture) as TextureVO;
-					}
+					var envMapMethod:EnvMapMethod = item as EnvMapMethod;
+					asset.cubeTexture = GetAsset(envMapMethod.envMap) as CubeTextureVO;
+					asset.alpha = envMapMethod.alpha;
+					asset.texture = GetAsset(envMapMethod.mask) as TextureVO;
 					break;
 				case(item is FogMethod):
-					with (item as FogMethod) 
-					{ 
-						asset.color = fogColor;
-						asset.minDistance = minDistance;
-						asset.maxDistance = maxDistance;
-					}
+				var fogMethod:FogMethod = item as FogMethod; 
+					asset.color = fogMethod.fogColor;
+					asset.minDistance = fogMethod.minDistance;
+					asset.maxDistance = fogMethod.maxDistance;
 					break;
 				case(item is FresnelEnvMapMethod):
-					with (item as FresnelEnvMapMethod) 
-					{ 
-						asset.cubeTexture = awaybuilder.utils.AssetUtil.GetAsset(cubeTexture) as CubeTextureVO;
-						asset.power = fresnelPower;
-						asset.normalReflectance = normalReflectance;
-						asset.alpha = alpha;
-						asset.mask = awaybuilder.utils.AssetUtil.GetAsset(mask) as TextureVO;;
-					}
+					var fresnelEnvMapMethod:FresnelEnvMapMethod = item as FresnelEnvMapMethod;
+					asset.cubeTexture = GetAsset(fresnelEnvMapMethod.envMap) as CubeTextureVO;
+					asset.power = fresnelEnvMapMethod.fresnelPower;
+					asset.normalReflectance = fresnelEnvMapMethod.normalReflectance;
+					asset.alpha = fresnelEnvMapMethod.alpha;
+					asset.texture = GetAsset(fresnelEnvMapMethod.mask) as TextureVO;
 					break;
 				case(item is LightMapMethod):
-					with (item as LightMapMethod) 
-					{ 
-						asset.texture = awaybuilder.utils.AssetUtil.GetAsset(texture) as TextureVO;
-						asset.mode = blendMode;
-						asset.useSecondaryUV = useSecondaryUV;
-					}
+					var lightMapMethod:LightMapMethod = item as LightMapMethod; 
+					asset.texture = GetAsset(lightMapMethod.texture) as TextureVO;
+					asset.mode = lightMapMethod.blendMode;
+					//asset.useSecondaryUV = lightMapMethod.useSecondaryUV;
 					break;
 				case(item is OutlineMethod):
-					with (item as OutlineMethod) 
-					{ 
-						asset.size = outlineSize;
-						asset.color = outlineColor;
-						asset.showInnerLines = showInnerLines;
-						asset.dedicatedMesh = dedicatedMesh;
-					}
+					var outlineMethod:OutlineMethod = item as OutlineMethod;
+					asset.size = outlineMethod.outlineSize;
+					asset.color = outlineMethod.outlineColor;
+					asset.showInnerLines = outlineMethod.showInnerLines;
+//					asset.dedicatedMesh = outlineMethod.dedicatedMesh;
 					break;
 				case(item is ProjectiveTextureMethod):
-					with (item as ProjectiveTextureMethod) 
-					{ 
-						asset.textureProjector = getQualifiedClassName( projector ).split("::")[1];
-						asset.mode = outlineSize;
-					}
+					var projectiveTextureMethod:ProjectiveTextureMethod = item as ProjectiveTextureMethod;
+					asset.textureProjector = GetAsset( projectiveTextureMethod.projector ) as TextureProjectorVO;
+					asset.mode = projectiveTextureMethod.mode;
 					break;
 				case(item is RefractionEnvMapMethod):
-					with (item as RefractionEnvMapMethod) 
-					{ 
-						asset.cubeTexture = awaybuilder.utils.AssetUtil.GetAsset(envMap) as CubeTextureVO;
-						asset.r = dispersionR;
-						asset.g = dispersionG;
-						asset.b = dispersionB;
-						asset.alpha = alpha;
-						asset.refractionIndex = refractionIndex;
-					}
+					var refractionEnvMapMethod:RefractionEnvMapMethod = item as RefractionEnvMapMethod; 
+					asset.cubeTexture = GetAsset(refractionEnvMapMethod.envMap) as CubeTextureVO;
+					asset.r = refractionEnvMapMethod.dispersionR;
+					asset.g = refractionEnvMapMethod.dispersionG;
+					asset.b = refractionEnvMapMethod.dispersionB;
+					asset.alpha = refractionEnvMapMethod.alpha;
+					asset.refraction = refractionEnvMapMethod.refractionIndex;
 					break;
 				case(item is RimLightMethod):
-					with (item as RimLightMethod) 
-					{ 
-						asset.color = RimLightMethod(item).color;
-						asset.strength = RimLightMethod(item).strength;
-						asset.power = RimLightMethod(item).power;
-					}
+					var rimLightMethod:RimLightMethod = item as RimLightMethod;
+					asset.color = RimLightMethod(item).color;
+					asset.strength = RimLightMethod(item).strength;
+					asset.power = RimLightMethod(item).power;
 					break;
 			}
 			
