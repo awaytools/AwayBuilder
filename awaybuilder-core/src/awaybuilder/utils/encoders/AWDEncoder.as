@@ -897,9 +897,30 @@ package awaybuilder.utils.encoders
 			switch(methVO.type)
 			{ 
 				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
-					var colorMatrixAsVector:Vector.<Number>= new Vector.<Number>;// to do: fill this vector with the colorTransform
-					var colorMatrixAsVectorDefault:Vector.<Number>= new Vector.<Number>;// to do: fill this vector with the default ColorTranform
-					returnID=_encodeSharedMethodBlock(methVO.name,401, [801], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [MTX4x4]);
+					var colorMatrixAsVector:Array=new Array();// to do: fill this vector with the colorTransform
+					colorMatrixAsVector.push(methVO.r);//0
+					colorMatrixAsVector.push(methVO.g);//1
+					colorMatrixAsVector.push(methVO.b);//2
+					colorMatrixAsVector.push(methVO.a);//3
+					colorMatrixAsVector.push(methVO.rO);//4
+					colorMatrixAsVector.push(methVO.rG);//5
+					colorMatrixAsVector.push(methVO.gG);//6
+					colorMatrixAsVector.push(methVO.bG);//7
+					colorMatrixAsVector.push(methVO.aG);//8
+					colorMatrixAsVector.push(methVO.gO);//9
+					colorMatrixAsVector.push(methVO.rB);//10
+					colorMatrixAsVector.push(methVO.gB);//11
+					colorMatrixAsVector.push(methVO.bB);//12
+					colorMatrixAsVector.push(methVO.aB);//13
+					colorMatrixAsVector.push(methVO.bO);//14
+					colorMatrixAsVector.push(methVO.rA);//15
+					colorMatrixAsVector.push(methVO.gA);//16
+					colorMatrixAsVector.push(methVO.bA);//17
+					colorMatrixAsVector.push(methVO.aA);//18
+					colorMatrixAsVector.push(methVO.aO);//19
+					
+					var colorMatrixAsVectorDefault:Array= new Array(0,0,0,1, 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);// to do: check if the default array is right
+					returnID=_encodeSharedMethodBlock(methVO.name,401, [101], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [FLOAT32]);
 					break;
 				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
 					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
@@ -927,16 +948,19 @@ package awaybuilder.utils.encoders
 					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
 					break;
 				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
-					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [methVO.cubeTexture,methVO.refraction,methVO.r,methVO.g,methVO.b,methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [cubeTexID, methVO.refraction, methVO.r, methVO.g, methVO.b, methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
 					break;
 				case "OutlineMethod"://EffectMethodVO.OUTLINE:
-					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color,methVO.size,methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
+					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color, methVO.size, methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
 					break;
-				case "FresnelEnvMapoMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
-					returnID=_encodeSharedMethodBlock(methVO.name,410, [1,3], [methVO.cubeTexture,methVO.alpha], [2048,1], [0,1]);
+				case "FresnelEnvMapMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					returnID=_encodeSharedMethodBlock(methVO.name, 410, [1,101], [cubeTexID, methVO.alpha], [0, 1], [BADDR, FLOAT32]);
 					break;
 				case "FogMethod"://EffectMethodVO.FOG:
-					returnID=_encodeSharedMethodBlock(methVO.name,411, [101,102,601], [methVO.minDistance,methVO.maxDistance, methVO.color], [0,1000,0x808080], [FLOAT32,FLOAT32,COLOR]);
+					returnID=_encodeSharedMethodBlock(methVO.name, 411, [101,102,601], [methVO.minDistance, methVO.maxDistance, methVO.color], [0, 1000, 0x808080], [FLOAT32, FLOAT32, COLOR]);
 					break;
 				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
 				//EffectMethodVO.PLANAR_REFLECTION
@@ -1053,7 +1077,6 @@ package awaybuilder.utils.encoders
 		private function _encodeMethod(id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : void
 		{
 			//store ID
-			
 			if ((valuesAr.length!=typesVec.length)||(idsVec.length!=typesVec.length)){
 				if(_debug) trace("error in Method encoding !!! method id = "+id);
 				return 
@@ -1062,10 +1085,20 @@ package awaybuilder.utils.encoders
 			_body.writeShort(id);//method type 
 			_beginElement(); // start prop list
 			var i:int=0;
+			var s:int=0;
+			var encodeProp:Boolean=true;
 			for (i=0;i< idsVec.length;i++){
 				// we only store the property if it is not the default-value 
 				if (defaultValuesAr[i]!=valuesAr[i]){
-					_encodeProperty(idsVec[i],valuesAr[i], typesVec[i]);
+					if(valuesAr[i] is Array){
+						encodeProp=false;
+						for(s=0;s<valuesAr[i].length;s++){
+							if (Array(defaultValuesAr[i])[s]!=Array(valuesAr[i])[s]){
+								encodeProp=true;
+							}							
+						}
+					}
+					if(encodeProp)_encodeProperty(idsVec[i],valuesAr[i], typesVec[i]);
 				}
 			}
 			_endElement(); // end prop list

@@ -111,6 +111,9 @@ package awaybuilder.model
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
 					_objects.push( c );
 					break;
+				case AssetType.EFFECTS_METHOD:
+					_document.methods.addItem( assets.GetAsset( event.asset ) );
+					break;	
 				case AssetType.LIGHT:
 					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;
