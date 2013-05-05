@@ -41,6 +41,7 @@ package awaybuilder.model.vo.scene
 			this.type = asset.type;
 			
 			this.envMap = asset.envMap;
+			this.texture = asset.texture;
 			
 			this.value = asset.value;
 			

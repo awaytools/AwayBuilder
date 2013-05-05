@@ -103,6 +103,9 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.SHADINGMETHOD_CHANGE, view_shadingmethodChangeHandler );
+			addViewListener( PropertyEditorEvent.SHADINGMETHOD_ADD_TEXTURE, view_shadingmethodAddTextureHandler );
+			addViewListener( PropertyEditorEvent.SHADINGMETHOD_ADD_CUBE_TEXTURE, view_shadingmethodAddCubeTextureHandler );
+			addViewListener( PropertyEditorEvent.SHADINGMETHOD_BASE_METHOD_CHANGE, view_shadingmethodBaseMethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADINGMETHOD_STEPPER_CHANGE, view_shadingmethodChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_CHANGE, view_shadowmapperChangeHandler );
@@ -263,7 +266,9 @@ package awaybuilder.view.mediators
 		}
 		private function view_effectmethodAddCubeTextureHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE,[view.data],assets.CreateCubeTexture()));
+			var e:SceneEvent = new SceneEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE,[view.data],assets.CreateCubeTexture());
+			e.options = "cubeTexture";
+			this.dispatch(e);
 		}
 		private function view_effectmethodChangeStepperHandler(event:PropertyEditorEvent):void
 		{
@@ -299,6 +304,24 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADING_METHOD,[view.data], event.data));
 		}
+		private function view_shadingmethodAddTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data],"texture"));
+		}
+		private function view_shadingmethodAddCubeTextureHandler(event:PropertyEditorEvent):void
+		{
+			var e:SceneEvent = new SceneEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE,[view.data],assets.CreateCubeTexture());
+			e.options = "envMap";
+			this.dispatch(e);
+		}
+		private function view_shadingmethodBaseMethodChangeHandler(event:PropertyEditorEvent):void
+		{
+			var newMethod:ShadingMethodVO = ShadingMethodVO(view.data).clone() as ShadingMethodVO;
+			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
+			newMethod.baseMethod = method;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADING_METHOD,[view.data], newMethod));
+		}
+		
 		private function view_shadingmethodChangeStepperHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADING_METHOD,[view.data], event.data, true));

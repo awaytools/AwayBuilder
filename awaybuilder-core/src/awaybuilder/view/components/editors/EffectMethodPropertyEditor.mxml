@@ -78,11 +78,6 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
 		}
 		
-		protected function textureDropDownList_changeHandler(event:IndexChangeEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
-		}
-		
 		protected function textureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, _asset, true));
@@ -153,7 +148,7 @@
 									   dataProvider="{textures}" requireSelection="true" selectedItem="@{_asset.texture}"
 									   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 									   newItemLabel="New Texture"
-									   change="textureDropDownList_changeHandler(event)"
+									   change="value_changeHandler(event)"
 									   addNewItem="textureDropDownList_addNewItemHandler(event)"
 									   />
 		<s:Button styleName="editSharedObjectButtonStyle"
@@ -317,7 +312,7 @@
 									   dataProvider="{textures}" requireSelection="true" selectedItem="@{_asset.texture}"
 									   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 									   newItemLabel="New Texture"
-									   change="textureDropDownList_changeHandler(event)"
+									   change="value_changeHandler(event)"
 									   addNewItem="textureDropDownList_addNewItemHandler(event)"
 									   />
 		<s:Button styleName="editSharedObjectButtonStyle"

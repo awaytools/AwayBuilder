@@ -66,32 +66,32 @@
 			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
 		<s:FormItem label="Positive X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="positiveXButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
+			<s:Button label="Replace ..." click="positiveXButton_clickHandler(event)" width="120" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Group width="100%">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="120">
+			<s:Group width="120">
 				<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 					<s:fill>
 						<s:SolidColor color="0x000000"/>
 					</s:fill>
 				</s:Rect>
-				<s:BitmapImage width="100%" source="{_asset.positiveX}" scaleMode="letterbox"/>
+				<s:BitmapImage width="120" source="{_asset.positiveX}" scaleMode="letterbox"/>
 				<s:filters>
 					<s:DropShadowFilter distance="1"/>
 				</s:filters>
 			</s:Group>
 		</s:FormItem>
 		<s:FormItem label="Negative X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="negativeXButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
+			<s:Button label="Replace ..." click="negativeXButton_clickHandler(event)" width="120" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Group width="100%">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="120">
+			<s:Group width="120">
 				<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 					<s:fill>
 						<s:SolidColor color="0x000000"/>
 					</s:fill>
 				</s:Rect>
-				<s:BitmapImage width="100%" source="{_asset.negativeX}" scaleMode="letterbox"/>
+				<s:BitmapImage width="120" source="{_asset.negativeX}" scaleMode="letterbox"/>
 				<s:filters>
 					<s:DropShadowFilter distance="1"/>
 				</s:filters>
@@ -99,32 +99,32 @@
 		</s:FormItem>
 		
 		<s:FormItem label="Positive Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="positiveYButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
+			<s:Button label="Replace ..." click="positiveYButton_clickHandler(event)" width="120" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Group width="100%">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="120">
+			<s:Group width="120">
 				<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 					<s:fill>
 						<s:SolidColor color="0x000000"/>
 					</s:fill>
 				</s:Rect>
-				<s:BitmapImage width="100%" source="{_asset.positiveY}" scaleMode="letterbox"/>
+				<s:BitmapImage width="120" source="{_asset.positiveY}" scaleMode="letterbox"/>
 				<s:filters>
 					<s:DropShadowFilter distance="1"/>
 				</s:filters>
 			</s:Group>
 		</s:FormItem>
 		<s:FormItem label="Negative Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="negativeYButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
+			<s:Button label="Replace ..." click="negativeYButton_clickHandler(event)" width="120" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Group width="100%">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="120">
+			<s:Group width="120">
 				<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 					<s:fill>
 						<s:SolidColor color="0x000000"/>
 					</s:fill>
 				</s:Rect>
-				<s:BitmapImage width="100%" source="{_asset.negativeY}" scaleMode="letterbox"/>
+				<s:BitmapImage width="120" source="{_asset.negativeY}" scaleMode="letterbox"/>
 				<s:filters>
 					<s:DropShadowFilter distance="1"/>
 				</s:filters>
@@ -132,32 +132,32 @@
 		</s:FormItem>
 		
 		<s:FormItem label="Positive Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="positiveZButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
+			<s:Button label="Replace ..." click="positiveZButton_clickHandler(event)" width="120" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Group width="100%">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="120">
+			<s:Group width="120">
 				<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 					<s:fill>
 						<s:SolidColor color="0x000000"/>
 					</s:fill>
 				</s:Rect>
-				<s:BitmapImage width="100%" source="{_asset.positiveZ}" scaleMode="letterbox"/>
+				<s:BitmapImage width="120" source="{_asset.positiveZ}" scaleMode="letterbox"/>
 				<s:filters>
 					<s:DropShadowFilter distance="1"/>
 				</s:filters>
 			</s:Group>
 		</s:FormItem>
 		<s:FormItem label="Negative Z" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Button label="Replace ..." click="negativeZButton_clickHandler(event)" width="100%" enabled="{!_asset.isDefault}"/>
+			<s:Button label="Replace ..." click="negativeZButton_clickHandler(event)" width="120" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:Group width="100%">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="120">
+			<s:Group width="120">
 				<s:Rect top="-1" bottom="-1" right="-1" left="-1">
 					<s:fill>
 						<s:SolidColor color="0x000000"/>
 					</s:fill>
 				</s:Rect>
-				<s:BitmapImage width="100%" source="{_asset.negativeZ}" scaleMode="letterbox"/>
+				<s:BitmapImage width="120" source="{_asset.negativeZ}" scaleMode="letterbox"/>
 				<s:filters>
 					<s:DropShadowFilter distance="1"/>
 				</s:filters>

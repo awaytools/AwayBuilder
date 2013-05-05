@@ -5,6 +5,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 
@@ -21,17 +22,17 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var asset:EffectMethodVO;
+			var asset:AssetVO;
 			if( event.items && event.items.length )
 			{
-				asset = event.items[0] as EffectMethodVO;
+				asset = event.items[0] as AssetVO;
 			}
 			
 			var oldValue:CubeTextureVO = event.oldValue as CubeTextureVO;
 			var newValue:CubeTextureVO = event.newValue as CubeTextureVO;
 			
 			if( asset ) {
-				saveOldValue( event, asset.cubeTexture );
+				saveOldValue( event, asset[event.options] );
 			}
 			
 			if( event.isUndoAction )
@@ -45,7 +46,7 @@ package awaybuilder.controller.scene
 			
 			if( asset )
 			{
-				asset.cubeTexture = newValue;
+				asset[event.options] = newValue;
 			}
 			
 			addToHistory( event );

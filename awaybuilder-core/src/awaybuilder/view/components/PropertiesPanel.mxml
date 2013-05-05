@@ -36,15 +36,7 @@
 		</s:Parallel>
 	</fx:Declarations>
     <fx:Script><![CDATA[
-		import awaybuilder.model.vo.scene.AssetVO;
-		import awaybuilder.model.vo.scene.ContainerVO;
-		import awaybuilder.model.vo.scene.LightVO;
-		import awaybuilder.model.vo.scene.MaterialVO;
-		import awaybuilder.model.vo.scene.MeshVO;
-		import awaybuilder.model.vo.scene.TextureVO;
-		
 		import mx.collections.ArrayCollection;
-		import mx.events.FlexEvent;
 
 		private var _prevSelected:ArrayCollection = new ArrayCollection(); 
 		[Bindable]
@@ -128,7 +120,7 @@
 			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
 			<editors:EffectMethodPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
 			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
-			<editors:ShadingPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
+			<editors:ShadingPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
 			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="geometry,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>

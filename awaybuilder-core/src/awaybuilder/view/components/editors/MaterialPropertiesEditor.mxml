@@ -711,7 +711,7 @@
 	
 	<controls:CollapsiblePanel width="100%" title="Lighting" collapsed="true">
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
-			<controls:PropertiesItemContainer label="Light Picker:" width="100%">
+			<controls:PropertiesItemContainer label="Light Picker" width="100%">
 				<controls:ExtendedDropDownList id="lightPickerDropDownList" width="100%" height="24" skinClass="awaybuilder.view.skins.ThinExtendedDropDownListSkin"
 											   dataProvider="{lightPickers}" selectedItem="{_selectedLightPicker}" requireSelection="true"
 											   labelFunction="{assetDropDownLabelFunction}"
@@ -722,14 +722,14 @@
 				<s:Button styleName="editSharedObjectButtonStyle"
 						  width="23" height="100%" click="editPickerButton_clickHandler(event)" enabled="{!lightPickerDropDownList.selectedItem.isNull&amp;&amp;!lightPickerDropDownList.selectedItem.isDefault}"/>
 			</controls:PropertiesItemContainer>
-			<controls:PropertiesItemContainer label="Shadow Light:" width="100%">
+			<controls:PropertiesItemContainer label="Shadow Light" width="100%">
 				<s:DropDownList id="shadowLightDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" labelFunction="assetDropDownLabelFunction"
 								change="shadowLightDropDownList_changeHandler(event)" width="100%" requireSelection="true"
 								selectedItem="{_selectedLight}" dataProvider="{_lights}"/>
 				<s:Button styleName="editSharedObjectButtonStyle"
 						  width="23" height="100%" click="editLightButton_clickHandler(event)" enabled="{!shadowLightDropDownList.selectedItem.isNull&amp;&amp;!shadowLightDropDownList.selectedItem.isDefault}"/>
 			</controls:PropertiesItemContainer>
-			<controls:PropertiesItemContainer label="Shadow Method:" width="100%">
+			<controls:PropertiesItemContainer label="Shadow Method" width="100%">
 				<s:DropDownList id="shadowMethodDropDownList" itemRenderer="awaybuilder.view.components.editors.renderers.DropDownItemRenderer" requireSelection="true" labelFunction="assetDropDownLabelFunction"
 								change="shadowMethodDropDownList_changeHandler(event)" width="100%"
 								selectedItem="{_selectedShadowMethod}" dataProvider="{_shadowMethods}"
@@ -742,28 +742,28 @@
 	
 	<controls:CollapsiblePanel width="100%" title="Shading" collapsed="true">
 		<s:VGroup width="100%" paddingLeft="10" enabled="{!_asset.isDefault}">
-			<controls:PropertiesItemContainer label="Ambient Method:" width="100%">
+			<controls:PropertiesItemContainer label="Ambient Method" width="100%">
 				<s:DropDownList id="ambientMethodDropDownList" requireSelection="true"
 								change="ambientMethodDropDownList_changeHandler(event)" width="100%"
 								selectedItem="{_selectedAmbientMethod}" dataProvider="{ambientList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="ambientMethod_clickHandler(event)"/>
 			</controls:PropertiesItemContainer>
-			<controls:PropertiesItemContainer label="Diffuse Method:" width="100%">
+			<controls:PropertiesItemContainer label="Diffuse Method" width="100%">
 				<s:DropDownList id="diffuseMethodDropDownList" requireSelection="true"
 								change="diffuseMethodDropDownList_changeHandler(event)" width="100%"
 								selectedItem="{_selectedDiffuseMethod}" dataProvider="{diffuseList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="diffuseMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
-			<controls:PropertiesItemContainer label="Specular Method:" width="100%">
+			<controls:PropertiesItemContainer label="Specular Method" width="100%">
 				<s:DropDownList id="specularMethodDropDownList" requireSelection="true"
 								change="specularMethodDropDownList_changeHandler(event)" width="100%"
 								selectedItem="{_selectedSpecularMethod}" dataProvider="{specularList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="specularMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
-			<controls:PropertiesItemContainer label="Normal Method:" width="100%">
+			<controls:PropertiesItemContainer label="Normal Method" width="100%">
 				<s:DropDownList id="normalMethodDropDownList" requireSelection="true"
 								change="normalMethodDropDownList_changeHandler(event)" width="100%"
 								selectedItem="{_selectedNormalMethod}" dataProvider="{normalList}"

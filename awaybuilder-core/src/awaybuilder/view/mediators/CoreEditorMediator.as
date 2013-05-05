@@ -138,7 +138,6 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, eventDispatcher_changeShadowMapperHandler);
 			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, eventDispatcher_changeCubeTextureHandler);
 			
-			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewCubeTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
@@ -826,6 +825,10 @@ package awaybuilder.view.mediators
 				if( event.items[0] is EffectMethodVO ) 
 				{
 					applyEffectMethod( event.items[0] as EffectMethodVO );
+				}
+				if( event.items[0] is ShadingMethodVO ) 
+				{
+					applyShadingMethod( event.items[0] as ShadingMethodVO );
 				}
 			}
 		}

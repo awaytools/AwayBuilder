@@ -55,6 +55,9 @@ package awaybuilder.view.components.editors.events
 		public static const LIGHT_ADD_CascadeShadowMapMethod:String = "lightAddCascadeShadowMapMethod";
 		
 		public static const SHADINGMETHOD_CHANGE:String = "shadingmethodChange";
+		public static const SHADINGMETHOD_BASE_METHOD_CHANGE:String = "shadingmethodBaseMethodChange";
+		public static const SHADINGMETHOD_ADD_TEXTURE:String = "shadingmethodAddTexture";
+		public static const SHADINGMETHOD_ADD_CUBE_TEXTURE:String = "shadingmethodAddCubeTexture";
 		public static const SHADINGMETHOD_STEPPER_CHANGE:String = "shadingmethodStepperChange";
 		
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";

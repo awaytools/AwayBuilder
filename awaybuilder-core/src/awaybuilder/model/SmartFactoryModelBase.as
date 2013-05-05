@@ -341,7 +341,7 @@ package awaybuilder.model
 				{
 					var lightMapDiffuseMethod:LightMapDiffuseMethod = obj as LightMapDiffuseMethod;
 					asset.blendMode = lightMapDiffuseMethod.blendMode;
-					asset.texture = GetAsset( lightMapDiffuseMethod.texture ) as TextureVO;
+					asset.texture = GetAsset( lightMapDiffuseMethod.lightMapTexture ) as TextureVO;
 					asset.baseMethod = GetAsset( lightMapDiffuseMethod.baseMethod ) as ShadingMethodVO;
 					break;
 				}
@@ -373,7 +373,8 @@ package awaybuilder.model
 				{
 					var fresnelSpecularMethod:FresnelSpecularMethod = obj as FresnelSpecularMethod;
 					asset.basedOnSurface = fresnelSpecularMethod.basedOnSurface;
-					asset.value = fresnelSpecularMethod.fresnelPower;
+					asset.fresnelPower = fresnelSpecularMethod.fresnelPower;
+					asset.value = fresnelSpecularMethod.normalReflectance;
 					asset.baseMethod = GetAsset( fresnelSpecularMethod.baseMethod ) as ShadingMethodVO;
 					break;
 				}
@@ -603,7 +604,6 @@ package awaybuilder.model
 				_defaultMaterial = GetAsset( material ) as MaterialVO;
 				_defaultMaterial.isDefault = true;
 			}
-			
 			if( !_defaultCubeTexture )
 			{
 				var bitmap:BitmapData = getChekerboard();

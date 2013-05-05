@@ -17,7 +17,7 @@
 	</s:HGroup>
 	<s:Group id="contentGroup" width="100%">
 		<s:layout>
-			<s:HorizontalLayout />
+			<s:HorizontalLayout verticalAlign="middle"/>
 		</s:layout>
 	</s:Group>
 

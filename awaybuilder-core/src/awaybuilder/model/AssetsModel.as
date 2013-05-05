@@ -7,14 +7,14 @@ package awaybuilder.model
 	import away3d.materials.methods.*;
 	import away3d.textures.*;
 	
+	import awaybuilder.model.vo.scene.*;
+	import awaybuilder.utils.*;
+	
 	import flash.display.*;
 	import flash.geom.*;
 	import flash.utils.*;
 	
 	import mx.utils.*;
-	
-	import awaybuilder.model.vo.scene.*;
-	import awaybuilder.utils.*;
 
 	public class AssetsModel extends SmartFactoryModelBase
 	{
@@ -222,6 +222,9 @@ package awaybuilder.model
 					break;
 				case "BasicDiffuseMethod":
 					method = new BasicDiffuseMethod();
+					break;
+				case "DepthDiffuseMethod":
+					method = new DepthDiffuseMethod();
 					break;
 				case "GradientDiffuseMethod":
 					method = new GradientDiffuseMethod(GetObject(_defaultTexture) as Texture2DBase);
