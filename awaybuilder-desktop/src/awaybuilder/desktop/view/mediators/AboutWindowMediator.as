@@ -14,14 +14,9 @@ package awaybuilder.desktop.view.mediators
 		[Inject]
 		public var about:AboutWindow;
 		
-		[Inject(name="version")]
-		public var version:String;
-		
 		override public function onRegister():void
 		{
 			ModalityManager.modalityManager.addModalNature(this.about);
-			
-			this.about.content.location = "html/about.html?version=" + this.version;
 			
 			this.eventMap.mapListener(this.about, Event.CLOSING, window_closingHandler);
 			this.eventMap.mapListener(this.about, Event.COMPLETE, window_completeHandler);
