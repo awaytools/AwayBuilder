@@ -23,6 +23,7 @@ package awaybuilder.utils.encoders
 	import away3d.materials.MaterialBase;
 	import away3d.materials.MultiPassMaterialBase;
 	import away3d.materials.SinglePassMaterialBase;
+	import away3d.materials.SkyBoxMaterial;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.TextureMultiPassMaterial;
 	import away3d.materials.lightpickers.LightPickerBase;
@@ -62,6 +63,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.ShadingMethodVO;
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.SubGeometryVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureVO;
@@ -352,8 +354,13 @@ package awaybuilder.utils.encoders
 			var thisBlock:AWDBlock=new AWDBlock();
 			var newParentID:uint=0;
 			switch (true){
-				case (vo is MeshVO):
-					
+				case (vo is SkyBoxVO):					
+					if(_debug)trace("SkyBoxVO = "+SkyBoxVO(vo).name+" parentID = "+parentID);
+					_blockCache[vo]=thisBlock;
+					newParentID=_encodeSkyBox(SkyBoxVO(vo));
+					thisBlock.id=newParentID;
+					break;
+				case (vo is MeshVO):					
 					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID);
 					_blockCache[vo]=thisBlock;
 					newParentID=_encodeMesh(MeshVO(vo),parentID);
@@ -376,10 +383,30 @@ package awaybuilder.utils.encoders
 				}
 			}
 			
-		}	
+		}			
 		
-		
-		
+		// encode SkyBox (id=31)
+		private function _encodeSkyBox(sky : SkyBoxVO) : uint
+		{	
+			var returnID:uint;
+			var skyBoxTex:uint=_getBlockIDorEncodeAsset(sky.cubeMap);
+			
+			returnID=_encodeBlockHeader(31);
+			_beginElement(); // Block
+			
+			_body.writeUTF(sky.name);
+			_body.writeUnsignedInt(skyBoxTex);
+			
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+						
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_endElement(); // Block
+			
+			return returnID;
+		}
 		
 		// encode Geometry (id=1)
 		private function _encodeGeometry(geom : GeometryVO) : uint
@@ -1110,12 +1137,6 @@ package awaybuilder.utils.encoders
 		}
 		
 		
-		// to do: add the skyBox encode
-		private function _encodeSkyBoxBlock(_skyBox:Object) : void
-		{
-			// we need SkyBoxVO to use this function
-			//_encodeBlockHeader(31);
-		}
 		private function _encodePrimitiveBlock(_primitive:Object) : void
 		{
 			// we nee PrimitivesVOs, to use this function
