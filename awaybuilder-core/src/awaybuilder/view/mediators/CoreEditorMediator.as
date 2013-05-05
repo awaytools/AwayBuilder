@@ -25,7 +25,9 @@ package awaybuilder.view.mediators
     import away3d.materials.lightpickers.LightPickerBase;
     import away3d.materials.lightpickers.StaticLightPicker;
     import away3d.materials.methods.AlphaMaskMethod;
+    import away3d.materials.methods.BasicAmbientMethod;
     import away3d.materials.methods.BasicDiffuseMethod;
+    import away3d.materials.methods.BasicNormalMethod;
     import away3d.materials.methods.BasicSpecularMethod;
     import away3d.materials.methods.CascadeShadowMapMethod;
     import away3d.materials.methods.CelDiffuseMethod;
@@ -644,6 +646,10 @@ package awaybuilder.view.mediators
 			var singlePassMaterialBase:SinglePassMaterialBase = m as SinglePassMaterialBase;
 			if( singlePassMaterialBase ) 
 			{
+				singlePassMaterialBase.diffuseMethod = assets.GetObject(asset.diffuseMethod) as BasicDiffuseMethod;
+				singlePassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
+				singlePassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
+				singlePassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
 				
 				if( m is ColorMaterial )
 				{
@@ -691,6 +697,11 @@ package awaybuilder.view.mediators
 			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
 			if( multiPassMaterialBase ) 
 			{
+				multiPassMaterialBase.diffuseMethod = assets.GetObject(asset.diffuseMethod) as BasicDiffuseMethod;
+				multiPassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
+				multiPassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
+				multiPassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
+				
 				if( m is ColorMultiPassMaterial )
 				{
 					var colorMultiPassMaterial:ColorMultiPassMaterial = m as ColorMultiPassMaterial;
