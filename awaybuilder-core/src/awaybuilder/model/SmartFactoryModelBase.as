@@ -24,6 +24,9 @@ package awaybuilder.model
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.*;
 	import away3d.materials.utils.DefaultMaterialManager;
+	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.SkyBox;
+	import away3d.primitives.SphereGeometry;
 	import away3d.textures.BitmapCubeTexture;
 	import away3d.textures.BitmapTexture;
 	
@@ -54,6 +57,8 @@ package awaybuilder.model
 					return fillMesh( new MeshVO(), item as Mesh );
 				case(item is LightBase):
 					return fillLight( new LightVO(), item as LightBase  );
+				case(item is SkyBox):
+					return fillSkyBox( new SkyBoxVO(), item as SkyBox  );
 				case(item is Entity):
 				case(item is ObjectContainer3D):
 					return fillContainer( new ContainerVO(), item as ObjectContainer3D );
@@ -251,6 +256,13 @@ package awaybuilder.model
 			}
 			return asset;
 		}
+		
+		private function fillSkyBox( asset:SkyBoxVO, obj:SkyBox ):SkyBoxVO
+		{
+			asset = fillAsset( asset, obj ) as SkyBoxVO;
+			asset.cubeMap = GetAsset( SkyBoxMaterial(obj.material).cubeMap ) as CubeTextureVO;
+			return asset;
+		}
 		private function fillLight( asset:LightVO, item:LightBase ):LightVO
 		{
 			asset = fillObject( asset, item ) as LightVO;
@@ -303,13 +315,33 @@ package awaybuilder.model
 			asset.indexData = item.indexData;
 			return asset;
 		}
-		private function fillGeometry( asset:GeometryVO, item:Geometry ):GeometryVO
+		private function fillGeometry( asset:GeometryVO, obj:Geometry ):GeometryVO
 		{
-			asset = fillAsset( asset, item ) as GeometryVO;
+			asset = fillAsset( asset, obj ) as GeometryVO;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			asset.subGeometries = new ArrayCollection();
-			for each( var sub:ISubGeometry in item.subGeometries )
+			for each( var sub:ISubGeometry in obj.subGeometries )
 			{
 				asset.subGeometries.addItem( GetAsset(sub) );
+			}
+			if( obj is CubeGeometry )
+			{
+				var cubeGeometry:CubeGeometry = obj as CubeGeometry;
+				asset.width = cubeGeometry.width;
+				asset.height = cubeGeometry.height;
+				asset.depth = cubeGeometry.depth;
+				asset.tile6 = cubeGeometry.tile6;
+				asset.segmentsW = cubeGeometry.segmentsW;
+				asset.segmentsH = cubeGeometry.segmentsH;
+				asset.segmentsD = cubeGeometry.segmentsD;
+			}
+			else if( obj is SphereGeometry )
+			{
+				var sphereGeometry:SphereGeometry = obj as SphereGeometry;
+				asset.radius = sphereGeometry.radius;
+				asset.yUp = sphereGeometry.yUp;
+				asset.segmentsW = sphereGeometry.segmentsW;
+				asset.segmentsH = sphereGeometry.segmentsH;
 			}
 			return asset;
 		}

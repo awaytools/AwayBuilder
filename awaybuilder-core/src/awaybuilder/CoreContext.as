@@ -35,10 +35,13 @@ package awaybuilder
 	import awaybuilder.controller.history.UndoRedoEvent;
 	import awaybuilder.controller.scene.AddNewCubeTextureCommand;
 	import awaybuilder.controller.scene.AddNewEffectMethodCommand;
+	import awaybuilder.controller.scene.AddNewGeometryCommand;
 	import awaybuilder.controller.scene.AddNewLightCommand;
 	import awaybuilder.controller.scene.AddNewLightPickerCommand;
 	import awaybuilder.controller.scene.AddNewMaterialCommand;
+	import awaybuilder.controller.scene.AddNewMeshCommand;
 	import awaybuilder.controller.scene.AddNewShadowMethodCommand;
+	import awaybuilder.controller.scene.AddNewSkyBoxCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.ChangeContainerCommand;
 	import awaybuilder.controller.scene.ChangeCubeTextureCommand;
@@ -51,6 +54,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeShadingMethodCommand;
 	import awaybuilder.controller.scene.ChangeShadowMapperCommand;
 	import awaybuilder.controller.scene.ChangeShadowMethodCommand;
+	import awaybuilder.controller.scene.ChangeSkyBoxCommand;
 	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
 	import awaybuilder.controller.scene.ReplaceTextureCommand;
@@ -146,6 +150,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHTPICKER, ChangeLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_METHOD, ChangeShadowMethodCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_EFFECT_METHOD, ChangeEffectMethodCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_SKYBOX, ChangeSkyBoxCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADOW_MAPPER, ChangeShadowMapperCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_GEOMETRY, ChangeGeometryCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADING_METHOD, ChangeShadingMethodCommand);
@@ -157,8 +162,11 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHT, AddNewLightCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_LIGHTPICKER, AddNewLightPickerCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_SHADOW_METHOD, AddNewShadowMethodCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_SKYBOX, AddNewSkyBoxCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE, AddNewCubeTextureCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, AddNewEffectMethodCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_GEOMETRY, AddNewGeometryCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_MESH, AddNewMeshCommand);
 			
 			commandMap.mapEvent(SceneEvent.REPLACE_TEXTURE, ReplaceTextureCommand);
 

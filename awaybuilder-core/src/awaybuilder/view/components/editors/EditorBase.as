@@ -69,6 +69,28 @@ package awaybuilder.view.components.editors
 			_textures = value;
 		}
 		
+		private var _geometry:ArrayCollection;
+		[Bindable]
+		public function get geometry():ArrayCollection
+		{
+			return _geometry;
+		}
+		public function set geometry(value:ArrayCollection):void
+		{
+			_geometry = value;
+		}
+		
+		private var _animator:ArrayCollection;
+		[Bindable]
+		public function get animator():ArrayCollection
+		{
+			return _animator;
+		}
+		public function set animator(value:ArrayCollection):void
+		{
+			_animator = value;
+		}
+		
 		private var _lightPickers:ArrayCollection;
 		[Bindable]
 		public function get lightPickers():ArrayCollection

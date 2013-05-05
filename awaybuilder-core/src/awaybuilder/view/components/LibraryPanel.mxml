@@ -9,10 +9,7 @@
 		<s:Power id="collapseEaser" exponent="2" easeInFraction="0.1" />
 		<s:Resize id="collapseEffect" duration="150" easer="{collapseEaser}" heightTo="24" />
 		<fx:Component className="NewTexturePopup">
-			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
-									   chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();"
-									   >
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();">
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
@@ -21,10 +18,7 @@
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 		<fx:Component className="NewLightPopup">
-			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
-									   chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();"
-									   >
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();">
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
@@ -34,10 +28,7 @@
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 		<fx:Component className="NewEffectPopup">
-			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
-									   chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();"
-									   >
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();">
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
@@ -52,6 +43,24 @@
 				<s:Button width="100%" label="New FresnelEnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'FresnelEnvMapMethod')"/>
 				<s:Button width="100%" label="New FogMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'FogMethod')"/>
 				<s:Button width="100%" label="New EnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'EnvMapMethod')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
+		<fx:Component className="NewGeometryPopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();" >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="New CubeGeometry" styleName="addItemButton" cornerRadius="0" click="close(true,'CubeGeometry')"/>
+				<s:Button width="100%" label="New SphereGeometry" styleName="addItemButton" cornerRadius="0" click="close(true,'SphereGeometry')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
+		<fx:Component className="NewObjectsPopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();" >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="New Mesh" styleName="addItemButton" cornerRadius="0" click="close(true,'Mesh')"/>
+				<s:Button width="100%" label="New SkyBox" styleName="addItemButton" cornerRadius="0" click="close(true,'SkyBox')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 	</fx:Declarations>
@@ -159,7 +168,29 @@
 			{
 				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_MATERIAL ) );
 			}
+			protected function scenePanel_addNewItemHandler(event:MouseEvent):void
+			{
+				var button:ButtonBase = event.relatedObject as ButtonBase;
+				var popup:NewObjectsPopup = new NewObjectsPopup();
+				popup.open(this);
+				popup.addEventListener('close', newObjectPopup_closeHandler);
+				var pos:Point = button.localToGlobal( new Point() );
+				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
+			}
 			
+			private function newObjectPopup_closeHandler(event:PopUpEvent):void 
+			{
+				if (!event.commit) return;
+				switch(event.data)
+				{
+					case "Mesh":
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_MESH ) );
+						break;
+					default:
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_SKYBOX ) );
+						break;
+				}
+			}  
 			private function newTexturePopup_closeHandler(event:PopUpEvent):void 
 			{
 				if (!event.commit) return;
@@ -191,11 +222,27 @@
 				var pos:Point = button.localToGlobal( new Point() );
 				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
 			}
+			private function geometryPanel_addNewItemHandler(event:MouseEvent):void
+			{
+				var button:ButtonBase = event.relatedObject as ButtonBase;
+				var popup:NewGeometryPopup = new NewGeometryPopup();
+				popup.open(this);
+				popup.addEventListener('close', newGeometryPopup_closeHandler);
+				var pos:Point = button.localToGlobal( new Point() );
+				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
+			}
+			
 			private function newEffectPopup_closeHandler(event:PopUpEvent):void 
 			{
 				if (!event.commit) return;
 				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_EFFECTMETHOD, event.data ) );
-			}   
+			}  
+			private function newGeometryPopup_closeHandler(event:PopUpEvent):void 
+			{
+				if (!event.commit) return;
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_GEOMETRY, event.data ) );
+			}  
+			
 			private function newLightPopup_closeHandler(event:PopUpEvent):void 
 			{
 				if (!event.commit) return;
@@ -234,7 +281,9 @@
 	</fx:Script>
 	<s:VGroup width="225" height="100%" gap="0">
 		<controls:LibraryCollapsiblePanel id="scenePanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
-								   title="Scene Objects" width="100%" collapsed="false" height="100%" collapsedChange="panel_collapsedChangeHandler(event)">
+								   title="Scene Objects" width="100%" collapsed="false" height="100%" addEnabled="true"
+								   addNewItem="scenePanel_addNewItemHandler(event)"
+								   collapsedChange="panel_collapsedChangeHandler(event)">
 			<tree:Tree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
@@ -256,7 +305,8 @@
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="geometryPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
-								   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
+								   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)"
+								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
 			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedItems}"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>

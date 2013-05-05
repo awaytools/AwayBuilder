@@ -19,6 +19,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
+    import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureVO;
     import awaybuilder.utils.AssetUtil;
@@ -63,6 +64,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_SKYBOX, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -101,6 +103,10 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.SKYBOX_CHANGE, view_skyboxChangeHandler );
+			addViewListener( PropertyEditorEvent.SKYBOX_STEPPER_CHANGE, view_skyboxChangeStepperHandler );
+			addViewListener( PropertyEditorEvent.SKYBOX_ADD_CUBE_TEXTURE, view_skyboxAddCubeTextureHandler );
 			
 			addViewListener( PropertyEditorEvent.SHADINGMETHOD_CHANGE, view_shadingmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADINGMETHOD_ADD_TEXTURE, view_shadingmethodAddTextureHandler );
@@ -291,7 +297,20 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_MAPPER,[view.data], event.data, true));
 		}
-		
+		private function view_skyboxChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SKYBOX,[view.data], event.data));
+		}
+		private function view_skyboxChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SKYBOX,[view.data], event.data));
+		}
+		private function view_skyboxAddCubeTextureHandler(event:PropertyEditorEvent):void
+		{
+			var e:SceneEvent = new SceneEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE,[view.data],assets.CreateCubeTexture());
+			e.options = "cubeMap";
+			this.dispatch(e);
+		}
 		private function view_shadowmethodChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_METHOD,[view.data], event.data));
@@ -567,6 +586,11 @@ package awaybuilder.view.mediators
 						view.SetData(mesh);
 						view.showEditor( "mesh", event.newValue, event.oldValue );
                     }
+					else if( event.items[0] is SkyBoxVO )
+					{
+						view.showEditor( "skyBox", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
                     else if( event.items[0] is ContainerVO )
                     {
 						view.showEditor( "container", event.newValue, event.oldValue );
@@ -687,6 +711,16 @@ package awaybuilder.view.mediators
 			view.nullableTextures = new ArrayCollection(nullableTextures);
 			view.defaultableTextures = new ArrayCollection(defaultableTextures);
 			view.cubeTextures = new ArrayCollection(cubeTextures);
+			
+			var geometry:Array = [];
+			for each( asset in document.geometry )
+			{
+				if( asset is GeometryVO ) 
+				{
+					geometry.push( asset );
+				}
+			}
+			view.geometry = new ArrayCollection(geometry);
 			
 			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
 			materials.addItemAt( assets.GetDefaultMaterial(), 0 );

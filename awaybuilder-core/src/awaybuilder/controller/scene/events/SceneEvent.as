@@ -27,18 +27,23 @@ import flash.events.Event;
 		
 		public static const CHANGE_SHADING_METHOD:String = "changeShadingMethod";
 		
+		public static const CHANGE_SKYBOX:String = "changeSkyBox";
+		
 		public static const CHANGE_SHADOW_METHOD:String = "changeShadowMethod";
 		public static const CHANGE_SHADOW_MAPPER:String = "changeShadowMapper";
 		public static const CHANGE_EFFECT_METHOD:String = "changeEffectMethod";
 		
 		public static const ADD_NEW_LIGHT:String = "addNewLight";
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";
+		public static const ADD_NEW_MESH:String = "addNewMesh";
+		public static const ADD_NEW_SKYBOX:String = "addNewSkyBox";
 		public static const ADD_NEW_SHADOW_METHOD:String = "addNewShadowMethod";
 		public static const ADD_NEW_EFFECT_METHOD:String = "addNewEffectMethod";
 		public static const ADD_NEW_LIGHTPICKER:String = "addNewLightPicker";
 		public static const ADD_NEW_TEXTURE:String = "addNewTexture";
 		public static const ADD_NEW_CUBE:String = "addNewCubeTexture";
 		public static const ADD_NEW_CUBE_TEXTURE:String = "addNewCubeTexture";
+		public static const ADD_NEW_GEOMETRY:String = "addNewGeometry";
 		public static const REPLACE_TEXTURE:String = "replaceTexture";
 		
 		public static const SWITCH_CAMERA_TO_FREE:String = "switchCameraToFree";

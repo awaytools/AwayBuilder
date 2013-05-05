@@ -25,7 +25,7 @@ package awaybuilder.controller.history
                 if( event.canBeCombined )
                 {
                     var lastEvent:HistoryEvent = undoRedoModel.getLastActon();
-                    if( lastEvent && lastEvent.canBeCombined && (lastEvent.type==event.type) && (event.timeStamp-lastEvent.timeStamp<500) )
+                    if( lastEvent && lastEvent.canBeCombined && (lastEvent.type==event.type) && (event.timeStamp-lastEvent.timeStamp<150) )
                     {
 						lastEvent.timeStamp = event.timeStamp;
                         lastEvent.newValue = event.newValue;

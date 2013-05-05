@@ -41,6 +41,8 @@ package awaybuilder.controller.scene
 			
 			vo.castsShadows = mesh.castsShadows;
 			
+			vo.geometry = mesh.geometry;
+			
 			var e:Array = new Array();
 			for each( var extra:ExtraItemVO in mesh.extras )
 			{

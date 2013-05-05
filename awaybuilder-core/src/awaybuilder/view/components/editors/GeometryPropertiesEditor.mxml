@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
 					xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
-					xmlns:editors="awaybuilder.view.components.editors.*" xmlns:mx="library://ns.adobe.com/flex/mx">
+					xmlns:editors="awaybuilder.view.components.editors.*" xmlns:mx="library://ns.adobe.com/flex/mx"
+					currentState="{_asset.type}">
+	<editors:states>
+		<s:State name="Geometry"/>
+		<s:State name="CubeGeometry"/>
+		<s:State name="SphereGeometry"/>
+	</editors:states>
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
@@ -17,8 +23,11 @@
 			_asset = GeometryVO(asset).clone() as GeometryVO;
 		}
 		
-		private function name_changeHandler(event:Event):void {
+		private function stepper_changeHandler(event:Event):void {
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.GEOMETRY_STEPPER_CHANGE, _asset));
+		}
+		private function value_changeHandler(event:Event):void {
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.GEOMETRY_CHANGE, _asset));
 		}
 	]]></fx:Script>
 	
@@ -38,7 +47,37 @@
 	
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="stepper_changeHandler(event)"/>
+		</s:FormItem>
+		<s:FormItem label="Radius" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="SphereGeometry">
+			<controls:DragableNumericStepper value="@{_asset.radius}" stepSize="0.1" snapInterval="0.01" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="width" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CubeGeometry">
+			<controls:DragableNumericStepper value="@{_asset.width}" stepSize="0.1" snapInterval="0.01" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="height" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CubeGeometry">
+			<controls:DragableNumericStepper value="@{_asset.height}" stepSize="0.1" snapInterval="0.01" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="depth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CubeGeometry">
+			<controls:DragableNumericStepper value="@{_asset.depth}" stepSize="0.1" snapInterval="0.01" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="Tile6" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CubeGeometry"
+					toolTip="The type of uv mapping to use.">
+			<s:CheckBox change="value_changeHandler(event)" selected="@{_asset.tile6}"/>
+		</s:FormItem>
+		<s:FormItem label="SegmentsH" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="SphereGeometry,CubeGeometry">
+			<controls:DragableNumericStepper value="@{_asset.segmentsH}" stepSize="1" snapInterval="1" minimum="1" maximum="100" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="SegmentsW" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="SphereGeometry,CubeGeometry">
+			<controls:DragableNumericStepper value="@{_asset.segmentsW}" stepSize="1" snapInterval="1" minimum="1" maximum="100" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="SegmentsD" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CubeGeometry">
+			<controls:DragableNumericStepper value="@{_asset.segmentsD}" stepSize="1" snapInterval="1" minimum="1" maximum="100" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="yUp" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="SphereGeometry"
+					toolTip="Defines whether the sphere poles should lay on the Y-axis (true) or on the Z-axis (false).">
+			<s:CheckBox change="value_changeHandler(event)" selected="@{_asset.yUp}" />
 		</s:FormItem>
 	</s:Form>
+	
 </editors:EditorBase>

@@ -71,6 +71,10 @@ package awaybuilder.view.components.editors.events
 		public static const EFFECTMETHOD_ADD_CUBE_TEXTURE:String = "effectmethodAddCubeTexture";
 		public static const EFFECTMETHOD_STEPPER_CHANGE:String = "effectmethodStepperChange";
 		
+		public static const SKYBOX_CHANGE:String = "skyboxChange";
+		public static const SKYBOX_ADD_CUBE_TEXTURE:String = "skyboxAddCubeTexture";
+		public static const SKYBOX_STEPPER_CHANGE:String = "skyboxStepperChange";
+		
 		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";
 		public static const LIGHTPICKER_STEPPER_CHANGE:String = "lightPickerStepperChange";
 		public static const LIGHTPICKER_ADD_DIRECTIONAL_LIGHT:String = "lightPickerAddDirectionalLight";

@@ -24,6 +24,7 @@
 		<s:State name="cubeTexture"/>
 		<s:State name="shadowMapper"/>
 		<s:State name="shadingMethod"/>
+		<s:State name="skyBox"/>
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -71,6 +72,9 @@
 		public var materials:ArrayCollection;
 		
 		[Bindable]
+		public var geometry:ArrayCollection;
+		
+		[Bindable]
 		public var cubeTextures:ArrayCollection;
 		
 		[Bindable]
@@ -107,7 +111,7 @@
 			
 			<editors:GlobalOptionPropertiesEditor data="{_data}" includeIn="global" />
 			
-			<editors:MeshPropertyEditor id="meshProperties" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
+			<editors:MeshPropertyEditor geometry="{geometry}" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
@@ -122,6 +126,7 @@
 			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
 			<editors:ShadingPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
 			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="geometry,initAll" />
+			<editors:SkyBoxPropertiesEditor prevSelected="{prevSelected}" cubeTextures="{cubeTextures}" data="{_data}" includeIn="skyBox,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

@@ -15,7 +15,7 @@ import org.robotlegs.mvcs.Actor;
 		private var _undoStack:Vector.<HistoryEvent> = new <HistoryEvent>[];
 		private var _redoStack:Vector.<HistoryEvent> = new <HistoryEvent>[];
 
-		public var maxUndoActions:int = 133;
+		public var maxUndoActions:int = 666;
 
 		public function get canUndo():Boolean
 		{

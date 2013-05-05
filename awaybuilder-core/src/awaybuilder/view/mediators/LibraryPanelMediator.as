@@ -4,6 +4,7 @@ package awaybuilder.view.mediators
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.primitives.SkyBox;
 	
 	import awaybuilder.controller.document.events.ImportTextureEvent;
 	import awaybuilder.controller.events.DocumentEvent;
@@ -18,11 +19,13 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.ScenegraphFactory;
@@ -61,7 +64,9 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_LIGHTPICKER, view_addLightPickerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE, view_addTextureHandler);
 			addViewListener(LibraryPanelEvent.ADD_CUBE_TEXTURE, view_addCubeTextureHandler);
-			
+			addViewListener(LibraryPanelEvent.ADD_GEOMETRY, view_addGeometryHandler);
+			addViewListener(LibraryPanelEvent.ADD_MESH, view_addMeshHandler);
+			addViewListener(LibraryPanelEvent.ADD_SKYBOX, view_addSkyBoxHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_MATERIAL, view_addMaterialHandler);
 			
@@ -102,6 +107,32 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD, null));
 		}
+		
+		private function view_addGeometryHandler(event:LibraryPanelEvent):void
+		{
+			var asset:GeometryVO = assets.CreateGeometry( event.data as String );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_GEOMETRY,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		
+		private function view_addSkyBoxHandler(event:LibraryPanelEvent):void
+		{
+			var asset:SkyBoxVO = assets.CreateSkyBox();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SKYBOX,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		private function view_addMeshHandler(event:LibraryPanelEvent):void
+		{
+			if( !document.geometry.length )
+			{
+				Alert.show( "To create a Mesh, you need Geometry", "Cancelled" );
+				return;
+			}
+			var asset:MeshVO = assets.CreateMesh( document.geometry.getItemAt(0) as GeometryVO );
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MESH,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		
 		private function view_addCubeTextureHandler(event:LibraryPanelEvent):void
 		{
 			var asset:CubeTextureVO = assets.CreateCubeTexture();

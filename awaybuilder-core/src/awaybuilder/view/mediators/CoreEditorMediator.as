@@ -1,6 +1,7 @@
 package awaybuilder.view.mediators
 {
     import away3d.containers.ObjectContainer3D;
+    import away3d.core.base.Geometry;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
@@ -18,6 +19,7 @@ package awaybuilder.view.mediators
     import away3d.materials.MaterialBase;
     import away3d.materials.MultiPassMaterialBase;
     import away3d.materials.SinglePassMaterialBase;
+    import away3d.materials.SkyBoxMaterial;
     import away3d.materials.TextureMaterial;
     import away3d.materials.TextureMultiPassMaterial;
     import away3d.materials.lightpickers.LightPickerBase;
@@ -54,6 +56,9 @@ package awaybuilder.view.mediators
     import away3d.materials.methods.SoftShadowMapMethod;
     import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
     import away3d.materials.methods.WrapDiffuseMethod;
+    import away3d.primitives.CubeGeometry;
+    import away3d.primitives.SkyBox;
+    import away3d.primitives.SphereGeometry;
     import away3d.textures.BitmapCubeTexture;
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
@@ -69,6 +74,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.CubeTextureVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.ExtraItemVO;
+    import awaybuilder.model.vo.scene.GeometryVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
@@ -77,6 +83,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
+    import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
@@ -137,6 +144,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, eventDispatcher_changeEffectMethodHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, eventDispatcher_changeShadowMapperHandler);
 			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, eventDispatcher_changeCubeTextureHandler);
+			addContextListener(SceneEvent.CHANGE_GEOMETRY, eventDispatcher_changeGeometryHandler);
+			addContextListener(SceneEvent.CHANGE_SKYBOX, eventDispatcher_changeSkyboxHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewCubeTextureHandler);
@@ -307,6 +316,15 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function applySkyBox( asset:SkyBoxVO ):void
+		{
+			var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
+			var newSkyBox:SkyBox = new SkyBox( assets.GetObject( asset.cubeMap ) as CubeTextureBase );
+			newSkyBox.name = asset.name;
+			Scene3DManager.removeMesh(obj);
+			Scene3DManager.addObject(newSkyBox);
+			assets.ReplaceObject( obj, newSkyBox );
+		}
 		private function applyEffectMethod( asset:EffectMethodVO ):void
 		{
 			var obj:EffectMethodBase = assets.GetObject( asset ) as EffectMethodBase;
@@ -756,6 +774,12 @@ package awaybuilder.view.mediators
 				var obj:Mesh = assets.GetObject( item ) as Mesh;
 				applyContainer( item );
 				obj.castsShadows = item.castsShadows;
+				obj.geometry = assets.GetObject( item.geometry ) as Geometry;
+				
+				for( var i:int = 0; i < obj.subMeshes.length; i++ )
+				{
+					assets.ReplaceObject( assets.GetObject( item.subMeshes.getItemAt(i) as AssetVO ), obj.subMeshes[i] );
+				}
 				for each( var sub:SubMeshVO in item.subMeshes )
 				{
 					applySubMesh( sub );
@@ -826,9 +850,13 @@ package awaybuilder.view.mediators
 				{
 					applyEffectMethod( event.items[0] as EffectMethodVO );
 				}
-				if( event.items[0] is ShadingMethodVO ) 
+				else if( event.items[0] is ShadingMethodVO ) 
 				{
 					applyShadingMethod( event.items[0] as ShadingMethodVO );
+				}
+				else if( event.items[0] is SkyBoxVO ) 
+				{
+					applySkyBox( event.items[0] as SkyBoxVO );
 				}
 			}
 		}
@@ -851,6 +879,45 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function eventDispatcher_changeSkyboxHandler(event:SceneEvent):void
+		{
+			var asset:SkyBoxVO = event.items[0] as SkyBoxVO;
+			if( asset ) 
+			{
+				applySkyBox( asset );
+				var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
+				obj.name = asset.name;
+				SkyBoxMaterial(obj.material).cubeMap = assets.GetObject( asset.cubeMap ) as CubeTextureBase;
+			}
+		}
+		private function eventDispatcher_changeGeometryHandler(event:SceneEvent):void
+		{
+			var asset:GeometryVO = event.items[0] as GeometryVO;
+			if( asset ) 
+			{
+				var obj:Geometry = assets.GetObject( asset ) as Geometry;
+				obj.name = asset.name;
+				if( obj is CubeGeometry )
+				{
+					var cubeGeometry:CubeGeometry = obj as CubeGeometry;
+					cubeGeometry.width = asset.width;
+					cubeGeometry.height = asset.height;
+					cubeGeometry.depth = asset.depth;
+					cubeGeometry.tile6 = asset.tile6;
+					cubeGeometry.segmentsD = asset.segmentsD;
+					cubeGeometry.segmentsH = asset.segmentsH;
+					cubeGeometry.segmentsW = asset.segmentsW;
+				}
+				else if( obj is SphereGeometry )
+				{
+					var sphereGeometry:SphereGeometry = obj as SphereGeometry;
+					sphereGeometry.radius = asset.radius;
+					sphereGeometry.yUp = asset.yUp;
+					sphereGeometry.segmentsW = asset.segmentsW;
+					sphereGeometry.segmentsH = asset.segmentsH;
+				}
+			}
+		}
 		private function eventDispatcher_changeCubeTextureHandler(event:SceneEvent):void
 		{
 			var asset:CubeTextureVO = event.items[0] as CubeTextureVO;
