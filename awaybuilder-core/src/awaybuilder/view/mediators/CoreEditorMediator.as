@@ -324,11 +324,11 @@ package awaybuilder.view.mediators
 		private function applySkyBox( asset:SkyBoxVO ):void
 		{
 			var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
-			var newSkyBox:SkyBox = new SkyBox( assets.GetObject(asset.cubeMap) as CubeTextureBase );
-			newSkyBox.name = asset.name;
-			Scene3DManager.removeMesh(obj);
-			Scene3DManager.addObject(newSkyBox);
-			assets.ReplaceObject( obj, newSkyBox );
+			SkyBoxMaterial(obj.material).cubeMap = assets.GetObject(asset.cubeMap) as CubeTextureBase;
+			obj.name = asset.name;
+//			Scene3DManager.removeMesh(obj);
+//			Scene3DManager.addObject(newSkyBox);
+//			assets.ReplaceObject( obj, newSkyBox );
 		}
 		private function applyEffectMethod( asset:EffectMethodVO ):void
 		{
