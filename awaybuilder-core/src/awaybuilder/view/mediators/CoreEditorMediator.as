@@ -97,6 +97,7 @@ package awaybuilder.view.mediators
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
+    import flash.display3D.textures.Texture;
     import flash.display3D.textures.TextureBase;
     import flash.events.ErrorEvent;
     import flash.events.KeyboardEvent;
@@ -321,11 +322,8 @@ package awaybuilder.view.mediators
 		private function applySkyBox( asset:SkyBoxVO ):void
 		{
 			var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
-			var newSkyBox:SkyBox = new SkyBox( assets.GetObject( asset.cubeMap ) as CubeTextureBase );
-			newSkyBox.name = asset.name;
-			Scene3DManager.removeMesh(obj);
-			Scene3DManager.addObject(newSkyBox);
-			assets.ReplaceObject( obj, newSkyBox );
+			obj.name = asset.name;
+			SkyBoxMaterial(obj.material).cubeMap = assets.GetObject(asset.cubeMap) as CubeTextureBase;
 		}
 		private function applyEffectMethod( asset:EffectMethodVO ):void
 		{
@@ -896,9 +894,6 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applySkyBox( asset );
-				var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
-				obj.name = asset.name;
-				SkyBoxMaterial(obj.material).cubeMap = assets.GetObject( asset.cubeMap ) as CubeTextureBase;
 			}
 		}
 		private function eventDispatcher_changeGeometryHandler(event:SceneEvent):void
@@ -935,12 +930,12 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				var obj:BitmapCubeTexture = assets.GetObject( asset ) as BitmapCubeTexture;
-				obj.positiveX = asset.positiveX;
-				obj.negativeX = asset.negativeX;
-				obj.positiveY = asset.positiveY;
-				obj.negativeY = asset.negativeY;
-				obj.positiveZ = asset.positiveZ;
-				obj.negativeZ = asset.negativeZ;
+				if( obj.positiveX != asset.positiveX ) obj.positiveX = asset.positiveX;
+				if( obj.negativeX != asset.negativeX ) obj.negativeX = asset.negativeX;
+				if( obj.positiveY != asset.positiveY ) obj.positiveY = asset.positiveY;
+				if( obj.negativeY != asset.negativeY ) obj.negativeY = asset.negativeY;
+				if( obj.positiveZ != asset.positiveZ ) obj.positiveZ = asset.positiveZ;
+				if( obj.negativeZ != asset.negativeZ ) obj.negativeZ = asset.negativeZ;
 			}
 		}
 		private function eventDispatcher_changeShadowMapperHandler(event:SceneEvent):void
