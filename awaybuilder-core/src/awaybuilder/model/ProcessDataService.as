@@ -9,6 +9,7 @@ package awaybuilder.model
 	import away3d.library.assets.BitmapDataAsset;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.MaterialBase;
+	import away3d.primitives.SkyBox;
 	
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.controller.history.HistoryEvent;
@@ -110,6 +111,10 @@ package awaybuilder.model
 				case AssetType.CONTAINER:
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
 					_objects.push( c );
+					break;
+				case AssetType.ENTITY:
+					var sb:SkyBox = event.asset as SkyBox;
+					_objects.push( sb );
 					break;
 				case AssetType.EFFECTS_METHOD:
 					_document.methods.addItem( assets.GetAsset( event.asset ) );
