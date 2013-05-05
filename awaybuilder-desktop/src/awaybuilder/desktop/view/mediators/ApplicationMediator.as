@@ -667,7 +667,7 @@ package awaybuilder.desktop.view.mediators
 				appMenu.removeItemAt(0);
 				
 				appMenu.addItemAt(new NativeMenuItem("", true), 0);
-				this._macAboutItem = this.createMenuItem("About awaybuilder", MENU_ABOUT, appMenu, 0);
+				this._macAboutItem = this.createMenuItem("About Away Builder", MENU_ABOUT, appMenu, 0);
 				this._macPreferencesItem = this.createMenuItem("Preferences...", MENU_APPLICATION_SETTINGS, appMenu);
 				appMenu.addItem(new NativeMenuItem("", true));
 				//add it again to act like other custom menu items
