@@ -43,12 +43,13 @@ package awaybuilder.controller.scene
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
+					
 					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
 				}
-				if( vo is ContainerVO ) {
+				else if( vo is ContainerVO ) {
 					Scene3DManager.removeContainer( assets.GetObject(vo) as ObjectContainer3D );
 				}
-				if( vo is LightVO ) {
+				else if( vo is LightVO ) {
 					Scene3DManager.removeLight( assets.GetObject(vo) as LightBase );
 				}
 			}
