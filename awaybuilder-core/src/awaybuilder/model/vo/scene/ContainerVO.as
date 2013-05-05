@@ -17,9 +17,14 @@ package awaybuilder.model.vo.scene
 		override public function clone():ObjectVO
 		{
 			var clone:ContainerVO = new ContainerVO()
-			clone.fillFromObject( this );
-			clone.children = new ArrayCollection( children.source.concat() );
+			clone.fillFromContainer( this );
 			return clone;
+		}
+		
+		public function fillFromContainer( asset:ContainerVO ):void
+		{
+			this.fillFromObject( this );
+			this.children = children;
 		}
 	}
 }

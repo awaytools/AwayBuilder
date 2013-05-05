@@ -54,6 +54,7 @@ package awaybuilder.view.mediators
     import away3d.materials.methods.SoftShadowMapMethod;
     import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
     import away3d.materials.methods.WrapDiffuseMethod;
+    import away3d.textures.BitmapCubeTexture;
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
@@ -65,6 +66,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
+    import awaybuilder.model.vo.scene.CubeTextureVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.ExtraItemVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
@@ -134,8 +136,11 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SHADING_METHOD, eventDispatcher_changeShadingMethodHandler);
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, eventDispatcher_changeEffectMethodHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, eventDispatcher_changeShadowMapperHandler);
+			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, eventDispatcher_changeCubeTextureHandler);
+			
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
+			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewCubeTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewShadowMethodHandler);
@@ -340,10 +345,15 @@ package awaybuilder.view.mediators
 			else if( obj is FresnelEnvMapMethod )
 			{
 				var fresnelEnvMapMethod:FresnelEnvMapMethod = obj as FresnelEnvMapMethod;
+				fresnelEnvMapMethod.envMap = assets.GetObject( asset.cubeTexture ) as CubeTextureBase;
+				fresnelEnvMapMethod.alpha = asset.alpha;
 			}
 			else if( obj is LightMapMethod )
 			{
 				var lightMapMethod:LightMapMethod = obj as LightMapMethod;
+				lightMapMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
+//				lightMapMethod.useSecondaryUV = assets.useSecondaryUV;
+				lightMapMethod.blendMode = asset.mode;
 			}
 			else if( obj is OutlineMethod )
 			{
@@ -360,6 +370,12 @@ package awaybuilder.view.mediators
 			else if( obj is RefractionEnvMapMethod )
 			{
 				var refractionEnvMapMethod:RefractionEnvMapMethod = obj as RefractionEnvMapMethod;
+				refractionEnvMapMethod.envMap = assets.GetObject( asset.cubeTexture ) as CubeTextureBase;
+				refractionEnvMapMethod.dispersionR = asset.r;
+				refractionEnvMapMethod.dispersionG = asset.g;
+				refractionEnvMapMethod.dispersionB = asset.b;
+				refractionEnvMapMethod.refractionIndex = asset.refraction;
+				refractionEnvMapMethod.alpha = asset.alpha;
 			}
 			else if( obj is RimLightMethod )
 			{
@@ -794,10 +810,22 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length ) {
-				var asset:MaterialVO = event.items[0] as MaterialVO;
-				if( asset ) 
+				if( event.items[0] is MaterialVO ) 
 				{
-					applyMaterial( asset );
+					applyMaterial( event.items[0] as MaterialVO );
+				}
+				if( event.items[0] is EffectMethodVO ) 
+				{
+					applyEffectMethod( event.items[0] as EffectMethodVO );
+				}
+			}
+		}
+		private function eventDispatcher_addNewCubeTextureHandler(event:SceneEvent):void
+		{
+			if( event.items && event.items.length ) {
+				if( event.items[0] is EffectMethodVO ) 
+				{
+					applyEffectMethod( event.items[0] as EffectMethodVO );
 				}
 			}
 		}
@@ -820,6 +848,20 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function eventDispatcher_changeCubeTextureHandler(event:SceneEvent):void
+		{
+			var asset:CubeTextureVO = event.items[0] as CubeTextureVO;
+			if( asset ) 
+			{
+				var obj:BitmapCubeTexture = assets.GetObject( asset ) as BitmapCubeTexture;
+				obj.positiveX = asset.positiveX;
+				obj.negativeX = asset.negativeX;
+				obj.positiveY = asset.positiveY;
+				obj.negativeY = asset.negativeY;
+				obj.positiveZ = asset.positiveZ;
+				obj.negativeZ = asset.negativeZ;
+			}
+		}
 		private function eventDispatcher_changeShadowMapperHandler(event:SceneEvent):void
 		{
 			var asset:ShadowMapperVO = event.items[0] as ShadowMapperVO;

@@ -1,5 +1,6 @@
 package awaybuilder.controller.history
 {
+    import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.model.UndoRedoModel;
     
     import org.robotlegs.mvcs.Command;

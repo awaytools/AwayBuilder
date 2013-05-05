@@ -37,6 +37,7 @@ import flash.events.Event;
 		public static const ADD_NEW_EFFECT_METHOD:String = "addNewEffectMethod";
 		public static const ADD_NEW_LIGHTPICKER:String = "addNewLightPicker";
 		public static const ADD_NEW_TEXTURE:String = "addNewTexture";
+		public static const ADD_NEW_CUBE:String = "addNewCubeTexture";
 		public static const ADD_NEW_CUBE_TEXTURE:String = "addNewCubeTexture";
 		public static const REPLACE_TEXTURE:String = "replaceTexture";
 		

@@ -137,6 +137,7 @@ package awaybuilder.model
 				case "EnvMapMethod":
 					method = new EnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
 					method.name =  "EnvMap " + AssetUtil.GetNextId("EnvMapMethod");
+					EnvMapMethod(method).mask = GetObject(_defaultTexture) as Texture2DBase;
 					break;
 			}
 			return GetAsset( method ) as EffectMethodVO;

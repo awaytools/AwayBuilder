@@ -456,3 +456,7 @@ controls|SparkColorPicker
 {
 	skinClass: ClassReference("awaybuilder.view.skins.ColorPickerListSkin");
 }
+controls|ExtendedDropDownList
+{
+	skinClass: ClassReference("awaybuilder.view.skins.ExtendedDropDownListSkin");
+}

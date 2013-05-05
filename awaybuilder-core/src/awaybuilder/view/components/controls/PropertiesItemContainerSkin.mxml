@@ -8,7 +8,8 @@
         <s:State name="disabled" />
     </s:states>
     <s:layout>
-		<s:VerticalLayout/>
+		<s:VerticalLayout paddingTop="{hostComponent.paddingTop}" paddingBottom="{hostComponent.paddingBottom}" 
+						  paddingLeft="{hostComponent.paddingLeft}" paddingRight="{hostComponent.paddingRight}"/>
 	</s:layout>
 	<s:HGroup width="100%">
 		<s:Label text="{hostComponent.label}" fontWeight="bold"/>
@@ -16,7 +17,7 @@
 	</s:HGroup>
 	<s:Group id="contentGroup" width="100%">
 		<s:layout>
-			<s:HorizontalLayout/>
+			<s:HorizontalLayout />
 		</s:layout>
 	</s:Group>
 

@@ -62,8 +62,10 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
+			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightToLightpickerHandler);
@@ -107,6 +109,8 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_STEPPER_CHANGE, view_shadowmapperChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
+			addViewListener( PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, view_effectmethodAddTextureHandler );
+			addViewListener( PropertyEditorEvent.EFFECTMETHOD_ADD_CUBE_TEXTURE, view_effectmethodAddCubeTextureHandler );
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_STEPPER_CHANGE, view_effectmethodChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.TEXTURE_STEPPER_CHANGE, view_textureChangeStepperHandler );
@@ -252,6 +256,14 @@ package awaybuilder.view.mediators
 		private function view_effectmethodChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_EFFECT_METHOD,[view.data], event.data));
+		}
+		private function view_effectmethodAddTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data],"texture"));
+		}
+		private function view_effectmethodAddCubeTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_CUBE_TEXTURE,[view.data],assets.CreateCubeTexture()));
 		}
 		private function view_effectmethodChangeStepperHandler(event:PropertyEditorEvent):void
 		{
@@ -619,44 +631,39 @@ package awaybuilder.view.mediators
 			var nullTextureItem:TextureVO = new TextureVO();
 			nullTextureItem.name = "Null";
 			nullTextureItem.isNull = true;
+			
 			var asset:AssetVO;
-			var lights:ArrayCollection = new ArrayCollection();
-			var pickers:ArrayCollection = new ArrayCollection();
-			pickers.addItem( nullItem );
+			var lights:Array = [];
+			var pickers:Array = [nullItem];
 			for each( asset in document.lights )
 			{
-				if( asset is LightPickerVO ) pickers.addItem( asset );
+				if( asset is LightPickerVO ) pickers.push( asset );
 				if( asset is LightVO ) 
 				{
-					if( LightVO(asset).castsShadows ) lights.addItem( asset );
+					if( LightVO(asset).castsShadows ) lights.push( asset );
 				}
 			}
-			view.lightPickers = pickers;
-			view.lights = lights;
+			view.lightPickers = new ArrayCollection(pickers);
+//			view.lights = new ArrayCollection(lights);
 			
-			var textures:ArrayCollection = new ArrayCollection();
-			textures.addItem( nullTextureItem );
-			
-			var cubeTextures:ArrayCollection = new ArrayCollection();
-			cubeTextures.addItem( nullTextureItem );
-			
-			textures.addItemAt( assets.GetDefaultTexture(), 1 );
-			cubeTextures.addItemAt( assets.GetDefaultCubeTexture(), 1 );
-			
+			var nullableTextures:Array = [nullTextureItem, assets.GetDefaultTexture()];
+			var defaultableTextures:Array = [assets.GetDefaultTexture()];
+			var cubeTextures:Array = [assets.GetDefaultCubeTexture()];
 			for each( asset in document.textures )
 			{
 				if( asset is TextureVO ) 
 				{
-					textures.addItem( asset );
+					nullableTextures.push( asset );
+					defaultableTextures.push( asset );
 				}
-				if( asset in CubeTextureVO )
+				if( asset is CubeTextureVO )
 				{
-					cubeTextures.addItem( asset );
+					cubeTextures.push( asset );
 				}
-					
 			}
-			view.textures = textures;
-			view.cubeTextures = cubeTextures;
+			view.nullableTextures = new ArrayCollection(nullableTextures);
+			view.defaultableTextures = new ArrayCollection(defaultableTextures);
+			view.cubeTextures = new ArrayCollection(cubeTextures);
 			
 			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
 			materials.addItemAt( assets.GetDefaultMaterial(), 0 );

@@ -64,6 +64,8 @@ package awaybuilder.view.components.editors.events
 		public static const SHADOWMAPPER_STEPPER_CHANGE:String = "shadowMapperStepperChange";
 		
 		public static const EFFECTMETHOD_CHANGE:String = "effectmethodChange";
+		public static const EFFECTMETHOD_ADD_TEXTURE:String = "effectmethodAddTexture";
+		public static const EFFECTMETHOD_ADD_CUBE_TEXTURE:String = "effectmethodAddCubeTexture";
 		public static const EFFECTMETHOD_STEPPER_CHANGE:String = "effectmethodStepperChange";
 		
 		public static const LIGHTPICKER_CHANGE:String = "lightPickerChange";

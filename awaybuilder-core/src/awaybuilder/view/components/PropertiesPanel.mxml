@@ -70,7 +70,10 @@
 			_data = value;
 		}
 		[Bindable]
-		public var textures:ArrayCollection;
+		public var nullableTextures:ArrayCollection;
+		
+		[Bindable]
+		public var defaultableTextures:ArrayCollection;
 		
 		[Bindable]
 		public var materials:ArrayCollection;
@@ -80,9 +83,6 @@
 		
 		[Bindable]
 		public var lightPickers:ArrayCollection;
-		
-		[Bindable]
-		public var lights:ArrayCollection;
 		
 		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean ):void
 		{
@@ -119,14 +119,14 @@
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
-			<editors:MaterialPropertiesEditor textures="{textures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
+			<editors:MaterialPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
 			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
 			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="cubeTexture,initAll" />
 			<editors:LightPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
 			<editors:LightPickerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
 			<editors:ContainerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
 			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
-			<editors:EffectMethodPropertyEditor textures="{textures}" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
+			<editors:EffectMethodPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
 			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
 			<editors:ShadingPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
 			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="geometry,initAll" />

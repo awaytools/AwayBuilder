@@ -140,10 +140,9 @@
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="environmentMapDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+			<controls:ExtendedDropDownList id="environmentMapDropDownList" width="100%" height="40" requireSelection="true"
 										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{cubeTextures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   dataProvider="{cubeTextures}" labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 										   newItemLabel="New Cube Texture"
 										   change="environmentMapDropDownList_changeHandler(event)"
 										   addNewItem="environmentMapDropDownList_addNewItemHandler(event)"
@@ -157,10 +156,9 @@
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="gradientDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+			<controls:ExtendedDropDownList id="gradientDropDownList" width="100%" height="40"  requireSelection="true"
 										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   dataProvider="{textures}" labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 										   newItemLabel="New Texture"
 										   change="gradientDropDownList_changeHandler(event)"
 										   addNewItem="gradientDropDownList_addNewItemHandler(event)"
@@ -174,14 +172,12 @@
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="lightMapDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+			<controls:ExtendedDropDownList id="lightMapDropDownList" width="100%" height="40" requireSelection="true"
 										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
+										   dataProvider="{textures}" labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 										   change="lightMapDropDownList_changeHandler(event)"
 										   addNewItem="lightMapDropDownList_addNewItemHandler(event)"
-										   />
+										   newItemLabel="New Texture" />
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click=""/>
 		</s:HGroup>
 	</s:VGroup>
@@ -191,14 +187,12 @@
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="secondaryNormalMapDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+			<controls:ExtendedDropDownList id="secondaryNormalMapDropDownList" width="100%" height="40" requireSelection="true"
 										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
+										   dataProvider="{textures}" labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 										   change="secondaryNormalMapDropDownList_changeHandler(event)"
 										   addNewItem="secondaryNormalMapDropDownList_addNewItemHandler(event)"
-										   />
+										   newItemLabel="New Texture"/>
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click=""/>
 		</s:HGroup>
 	</s:VGroup>

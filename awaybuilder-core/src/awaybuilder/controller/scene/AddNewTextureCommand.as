@@ -9,8 +9,8 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.model.vo.scene.interfaces.ITextured;
@@ -30,16 +30,16 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var material:MaterialVO;
+			var asset:AssetVO;
 			if( event.items && event.items.length )
 			{
-				material = event.items[0] as MaterialVO;
+				asset = event.items[0] as AssetVO;
 			}
 			var oldValue:DocumentVO = event.oldValue as DocumentVO;
 			var newValue:DocumentVO = event.newValue as DocumentVO;
 			
-			if( material ) {
-				saveOldTexture( event, material, event.options as String );
+			if( asset ) {
+				saveOldTexture( event, asset, event.options as String );
 			}
 			
 			var newTexture:TextureVO;
@@ -57,21 +57,9 @@ package awaybuilder.controller.scene
 				document.textures.addItemAt( newTexture, 0 ); // add new texture to library
 			}
 			
-			if( material )
+			if( asset )
 			{
-				material[event.options] = newTexture;
-//				if( method is DiffuseMethodVO ){
-//					DiffuseMethodVO( method).apply();
-//				}
-//				if( method is AmbientMethodVO ){
-//					AmbientMethodVO( method).apply();
-//				}
-//				if( method is SpecularMethodVO ){
-//					SpecularMethodVO( method).apply();
-//				}
-//				if( method is NormalMethodVO ){
-//					NormalMethodVO( method).apply();
-//				}
+				asset[event.options] = newTexture;
 			}
 			else if( newTexture )
 			{
@@ -81,16 +69,17 @@ package awaybuilder.controller.scene
 			addToHistory( event );
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
 			document.empty = false;
+			document.edited = true;
 		}
 		
-		protected function saveOldTexture( event:HistoryEvent, prevValue:MaterialVO, option:String ):void 
+		protected function saveOldTexture( event:HistoryEvent, prevValue:AssetVO, option:String ):void 
 		{
 			if( !event.oldValue )
 			{
 				var oldDocument:DocumentVO = new DocumentVO();
 				if( prevValue[option] ) 
 				{
-					oldDocument.textures.addItem( TextureVO(prevValue[option]).clone() );
+					oldDocument.textures.addItem( prevValue[option] );
 				}
 				event.oldValue = oldDocument;
 			}

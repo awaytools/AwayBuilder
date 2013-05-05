@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx" autoDrawBackground="false" height="34">
+				xmlns:mx="library://ns.adobe.com/flex/mx" autoDrawBackground="false">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -15,22 +15,27 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.scene.interfaces.ITextured;
+			import awaybuilder.model.vo.scene.CubeTextureVO;
 			
 			[Bindable]
-			private var _asset:ITextured;
+			private var _texture:CubeTextureVO;
 			
 			[Bindable]
 			private var _image:BitmapData;
+			[Bindable]
+			private var _isNull:Boolean;
 			
 			override public function set data(value:Object):void 
 			{
 				super.data = value;
-				_asset = value as ITextured;
-				_image = null;
-				if( _asset.texture && _asset.texture.bitmapData )
+				_texture = value as CubeTextureVO;
+				if( _texture ) {
+					_isNull = false;
+					_image = _texture.positiveX;
+				}
+				else
 				{
-					_image = _asset.texture.bitmapData;
+					_isNull = true;
 				}
 				
 			}
@@ -44,7 +49,7 @@
 			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
-	<s:Group width="34" height="34" id="imageGroup"> 
+	<s:Group width="34" height="34" visible="{!_isNull}"> 
 		<s:Rect top="0" bottom="0" left="0" right="0">
 			<s:fill>
 				<s:SolidColor color="0x222222"/>
@@ -56,6 +61,5 @@
 		<s:BitmapImage source="{_image}" top="1" bottom="1" left="1" right="1"/>
 		
 	</s:Group>
-	
-	<s:Label text="{_asset.name}" width="100%" maxDisplayedLines="1"/>
+	<s:Label text="{_isNull?'Null':_texture.name.split('/').pop()}" width="100%" maxDisplayedLines="1"/>
 </s:ItemRenderer>

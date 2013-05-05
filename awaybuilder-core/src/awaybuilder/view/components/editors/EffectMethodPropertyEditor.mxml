@@ -22,9 +22,12 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.CubeTextureVO;
 		import awaybuilder.model.vo.scene.EffectMethodVO;
 		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.TextureVO;
+		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.events.ColorPickerEvent;
@@ -37,6 +40,8 @@
 		[Bindable]
 		private var _selectedLight:LightVO;
 		
+		[Bindable] private var _selectedTexture:TextureVO;
+		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is EffectMethodVO) ) return;
@@ -48,9 +53,14 @@
 			return item.bitmapData;
 		}
 		
-		private function dropDownLabelFunction(item:TextureVO):Object 
+		private function dropDownLabelFunction(item:AssetVO):Object 
 		{
 			return item.name.split("/").pop();
+		}
+		
+		private function dropDownCubeTextureIconFunction(item:CubeTextureVO):Object 
+		{
+			return item.positiveX;
 		}
 		
 		protected function projectiveTextureMethod_changeHandler(event:IndexChangeEvent):void
@@ -66,6 +76,36 @@
 		protected function value_changeHandler(event:Event):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
+		}
+		
+		protected function textureDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
+		}
+		
+		protected function textureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, _asset, true));
+		}
+		
+		protected function textureDropDownListButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.texture));
+		}
+		
+		protected function environmentMapDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_CHANGE, _asset, true));
+		}
+		
+		protected function environmentMapDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_ADD_CUBE_TEXTURE, _asset, true));
+		}
+		
+		protected function environmentMapDropDownListButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.cubeTexture));
 		}
 		
 	]]></fx:Script>
@@ -96,39 +136,29 @@
 			<s:CheckBox id="useSecondaryUVBox" change="value_changeHandler(event)" selected="@{_asset.useSecondaryUV}" />
 		</s:FormItem>
 	</s:Form>
-	<s:VGroup width="100%" paddingLeft="10" includeIn="LightMapMethod">
-		<s:HGroup width="100%">
-			<s:Label text="Blend Mode:" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
+	<controls:PropertiesItemContainer width="100%" paddingLeft="10" paddingTop="6" paddingRight="8" label="Blend Mode" includeIn="LightMapMethod">
 		<s:DropDownList id="blendModeDropDownList" requireSelection="true" selectionColor="0x111111"
 						width="100%" selectedItem="@{_asset.mode}" change="value_changeHandler(event)">
 			<s:dataProvider>
 				<s:ArrayList>
-					<fx:String>Add</fx:String>
-					<fx:String>Multiply</fx:String>
+					<fx:String>add</fx:String>
+					<fx:String>multiply</fx:String>
 				</s:ArrayList>
 			</s:dataProvider>
 		</s:DropDownList>
-	</s:VGroup>
-	<s:VGroup width="100%" paddingLeft="10" includeIn="LightMapMethod,AlphaMaskMethod">
-		<s:HGroup width="100%">
-			<s:Label text="Texture:" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
-										   change=""
-										   addNewItem=""
-										   />
-			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
-		</s:HGroup>
-	</s:VGroup>
+	</controls:PropertiesItemContainer>
+	<controls:PropertiesItemContainer width="100%" paddingLeft="10" paddingTop="6" paddingRight="8" label="Texture" includeIn="LightMapMethod,AlphaMaskMethod">
+		<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40"
+									   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+									   dataProvider="{textures}" requireSelection="true" selectedItem="@{_asset.texture}"
+									   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+									   newItemLabel="New Texture"
+									   change="textureDropDownList_changeHandler(event)"
+									   addNewItem="textureDropDownList_addNewItemHandler(event)"
+									   />
+		<s:Button styleName="editSharedObjectButtonStyle"
+				  width="23" height="100%" click="textureDropDownListButton_clickHandler(event)" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
+	</controls:PropertiesItemContainer>
 	
 	<s:VGroup width="100%" paddingLeft="10" includeIn="ProjectiveTextureMethod">
 		<s:HGroup width="100%">
@@ -159,85 +189,57 @@
 	
 	<s:VGroup width="100%" paddingLeft="10" includeIn="ColorMatrixMethod">
 		<s:HGroup width="100%">
-			<s:Label text="Color Transform:" fontWeight="bold"/>
+			<s:Label text="Color Matrix" fontWeight="bold"/>
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rRStepper" value="@{_asset.r}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gRStepper" value="@{_asset.g}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bRStepper" value="@{_asset.b}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aRStepper" value="@{_asset.a}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.r}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.g}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.b}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.a}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rGStepper" value="@{_asset.rG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gGStepper" value="@{_asset.gG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bGStepper" value="@{_asset.bG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aGStepper" value="@{_asset.aG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.rG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.gG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.bG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.aG}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rBStepper" value="@{_asset.rB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gBStepper" value="@{_asset.gB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bBStepper" value="@{_asset.bB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aBStepper" value="@{_asset.aB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.rB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.gB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.bB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.aB}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rAStepper" value="@{_asset.rA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gAStepper" value="@{_asset.gA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bAStepper" value="@{_asset.bA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aAStepper" value="@{_asset.aA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.rA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.gA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.bA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.aA}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rO1Stepper" value="@{_asset.rO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gO1Stepper" value="@{_asset.gO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bO1Stepper" value="@{_asset.bO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aO1Stepper" value="@{_asset.aO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="rO1Stepper" value="@{_asset.rO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="gO1Stepper" value="@{_asset.gO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="bO1Stepper" value="@{_asset.bO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper id="aO1Stepper" value="@{_asset.aO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 	</s:VGroup>
 	
 	<s:VGroup width="100%" paddingLeft="10" includeIn="ColorTransformMethod">
 		<s:HGroup width="100%">
-			<s:Label text="Color Transform:" fontWeight="bold"/>
+			<s:Label text="Color Transform" fontWeight="bold"/>
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rMStepper" value="@{_asset.r}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gMStepper" value="@{_asset.g}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bMStepper" value="@{_asset.b}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aMStepper" value="@{_asset.a}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.r}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.g}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.b}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.a}" stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<controls:DragableNumericStepper id="rOStepper" value="@{_asset.rO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="gOStepper" value="@{_asset.gO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="bOStepper" value="@{_asset.bO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="aOStepper" value="@{_asset.aO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.rO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.gO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.bO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.aO}" stepSize="1" snapInterval="1" minimum="0" maximum="255" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:HGroup>
 	</s:VGroup>
 	 
@@ -257,48 +259,36 @@
 		</s:FormItem>
 	</s:Form>
 	
-	<s:VGroup width="100%" paddingLeft="10" includeIn="RefractionEnvMapMethod,FresnelEnvMapMethod,EnvMapMethod">
-		<s:HGroup width="100%">
-			<s:Label text="Environment Map" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="environmentMapDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
-										   change=""
-										   addNewItem=""
-										   />
-			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
-		</s:HGroup>
-	</s:VGroup>
+	<controls:PropertiesItemContainer width="100%" paddingLeft="10" paddingTop="6" paddingRight="8" label="Environment Map" includeIn="RefractionEnvMapMethod,FresnelEnvMapMethod,EnvMapMethod">
+		<controls:ExtendedDropDownList id="environmentMapDropDownList" width="100%" height="40" requireSelection="true"
+									   itemRenderer="awaybuilder.view.components.editors.renderers.CubeTextureItemRenderer"
+									   dataProvider="{cubeTextures}" selectedItem="@{_asset.cubeTexture}"
+									   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownCubeTextureIconFunction}"
+									   newItemLabel="New Cube Texture"
+									   change="environmentMapDropDownList_changeHandler(event)"
+									   addNewItem="environmentMapDropDownList_addNewItemHandler(event)"
+									   />
+		<s:Button styleName="editSharedObjectButtonStyle"
+				  width="23" height="100%" click="environmentMapDropDownListButton_clickHandler(event)" enabled="{!environmentMapDropDownList.selectedItem.isNull&amp;&amp;!environmentMapDropDownList.selectedItem.isDefault}"/>
+	</controls:PropertiesItemContainer>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="RefractionEnvMapMethod" >
 		<s:FormItem label="Refraction Index" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<controls:DragableNumericStepper id="refractionStepper" value="{_asset.refraction}" stepSize="0.1" snapInterval="0.001" minimum="0" maximum="1" width="40"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.refraction}" stepSize="0.1" snapInterval="0.001" minimum="0" maximum="1" width="40" change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
-		<s:FormItem label="Dispersion " skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<controls:DragableNumericStepper id="dispersionRStepper" value="@{_asset.r}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="dispersionGStepper" value="@{_asset.g}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
-			<controls:DragableNumericStepper id="dispersionBStepper" value="@{_asset.b}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%"
-											 change="valueStepper_changeHandler(event)" />
+		<s:FormItem label="Dispersion" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper value="@{_asset.r}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.g}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.b}" stepSize="0.01" snapInterval="0.001" minimum="0" maximum="1" width="100%" change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<controls:DragableNumericStepper id="alphaStepper" value="@{_asset.alpha}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="1" width="40"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.alpha}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="1" width="40" change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
 	</s:Form>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="FogMethod" >
 		<s:FormItem label="Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<controls:DragableNumericStepper id="minValueStepper" value="@{_asset.minDistance}" stepSize="1" snapInterval="0.01" minimum="1" maximum="1000" width="40"
-											 change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.minDistance}" stepSize="1" snapInterval="0.01" minimum="1" maximum="1000" width="40" change="valueStepper_changeHandler(event)" />
 			<s:Label text=" - " height="100%" verticalAlign="middle" fontWeight="bold"/>
-			<controls:DragableNumericStepper id="maxValueStepper" value="@{_asset.maxDistance}" stepSize="1" snapInterval="0.01" minimum="{minValueStepper.value}" maximum="1000" width="40"
+			<controls:DragableNumericStepper value="@{_asset.maxDistance}" stepSize="1" snapInterval="0.01" minimum="{_asset.minDistance}" maximum="1000" width="40"
 											 change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
@@ -321,24 +311,18 @@
 			<s:CheckBox selected="@{_asset.dedicatedMesh}" change="value_changeHandler(event)" />
 		</s:FormItem>
 	</s:Form>
-	<s:VGroup width="100%" paddingLeft="10" includeIn="EnvMapMethod">
-		<s:HGroup width="100%">
-			<s:Label text="Mask:" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<controls:ExtendedDropDownList id="maskDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
-										   change=""
-										   addNewItem=""
-										   />
-			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="" enabled="{!textureDropDownList.selectedItem.isNull&amp;&amp;!textureDropDownList.selectedItem.isDefault}"/>
-		</s:HGroup>
-	</s:VGroup>
+	<controls:PropertiesItemContainer width="100%" paddingLeft="10" paddingTop="6" paddingRight="8" label="Mask" includeIn="EnvMapMethod">
+		<controls:ExtendedDropDownList id="maskDropDownList" width="100%" height="40"
+									   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+									   dataProvider="{textures}" requireSelection="true" selectedItem="@{_asset.texture}"
+									   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+									   newItemLabel="New Texture"
+									   change="textureDropDownList_changeHandler(event)"
+									   addNewItem="textureDropDownList_addNewItemHandler(event)"
+									   />
+		<s:Button styleName="editSharedObjectButtonStyle"
+				  width="23" height="100%" click="textureDropDownListButton_clickHandler(event)" enabled="{!maskDropDownList.selectedItem.isNull&amp;&amp;!maskDropDownList.selectedItem.isDefault}"/>
+	</controls:PropertiesItemContainer>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="FresnelEnvMapMethod,EnvMapMethod" >
 		<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<controls:DragableNumericStepper value="@{_asset.alpha}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="1" width="40"

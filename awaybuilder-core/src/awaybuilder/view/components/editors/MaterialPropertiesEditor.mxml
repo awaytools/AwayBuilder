@@ -621,9 +621,9 @@
 				<controls:HorizontalFormSeparator/>
 			</s:HGroup>
 			<s:HGroup width="100%" verticalAlign="middle">
-				<controls:ExtendedDropDownList id="ambientTextureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+				<controls:ExtendedDropDownList id="ambientTextureDropDownList" width="100%" height="40" requireSelection="true"
 											   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-											   dataProvider="{textures}" requireSelection="true"
+											   dataProvider="{textures}"
 											   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
 											   newItemLabel="New Texture"
 											   change="ambientTextureDropDownList_changeHandler(event)"
@@ -644,7 +644,7 @@
 				<controls:HorizontalFormSeparator/>
 			</s:HGroup>
 			<s:HGroup width="100%" verticalAlign="middle">
-				<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+				<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40"
 											   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
 											   dataProvider="{textures}" requireSelection="true"
 											   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
@@ -677,7 +677,7 @@
 				<controls:HorizontalFormSeparator/>
 			</s:HGroup>
 			<s:HGroup width="100%" verticalAlign="middle">
-				<controls:ExtendedDropDownList id="specularDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+				<controls:ExtendedDropDownList id="specularDropDownList" width="100%" height="40"
 											   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
 											   dataProvider="{textures}" requireSelection="true"
 											   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
@@ -695,7 +695,7 @@
 				<controls:HorizontalFormSeparator/>
 			</s:HGroup>
 			<s:HGroup width="100%" verticalAlign="middle">
-				<controls:ExtendedDropDownList id="normalTextureDropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
+				<controls:ExtendedDropDownList id="normalTextureDropDownList" width="100%" height="40"
 											   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
 											   dataProvider="{textures}" requireSelection="true"
 											   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
