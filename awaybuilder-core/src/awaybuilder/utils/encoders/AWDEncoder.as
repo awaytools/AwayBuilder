@@ -508,10 +508,10 @@ package awaybuilder.utils.encoders
 		// encode LightBlock (id=41)
 		private function _endoceExtraProperties(extraObject:Object) : void
 		{
-			trace("EncodeProperties");
+			if(_debug)trace("EncodeProperties");
 			for each (var object:ExtraItemVO in extraObject){
-				trace("valueName = "+object.name);
-				trace("valueValue = "+object.value);
+				if(_debug)trace("valueName = "+object.name);
+				if(_debug)trace("valueValue = "+object.value);
 				_encodeAttribute(object.name, object.value)
 			}
 		}
@@ -629,7 +629,7 @@ package awaybuilder.utils.encoders
 			_body.writeUTF(tex.name);
 			
 			var ba : ByteArray = _encodeBitmap(tex.bitmapData);	
-			_body.writeByte(1);
+			_body.writeByte(1);//external=0,embed=1;
 			_body.writeUnsignedInt(ba.length);
 			_body.writeBytes(ba);
 			
@@ -657,10 +657,11 @@ package awaybuilder.utils.encoders
 			var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ);	
 			
 			var returnID:uint = _encodeBlockHeader(83);
-			_beginElement(); // Block	
-			
-			// write all encodedBitMaps into the file
+			_beginElement(); // Block		
+			_body.writeByte(1);//external=0,embed=1;
 			_body.writeUTF(cubeTexture.name);
+					
+			// write all encodedBitMaps into the file
 			_body.writeUnsignedInt(id_posX.length);
 			_body.writeBytes(id_posX);
 			_body.writeUnsignedInt(id_negX.length);
@@ -1093,7 +1094,7 @@ package awaybuilder.utils.encoders
 					if(valuesAr[i] is Array){
 						encodeProp=false;
 						for(s=0;s<valuesAr[i].length;s++){
-							if (Array(defaultValuesAr[i])[s]!=Array(valuesAr[i])[s]){
+							if ((defaultValuesAr[i])as Array[s]!=(valuesAr[i])as Array[s]){
 								encodeProp=true;
 							}							
 						}
