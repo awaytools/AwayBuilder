@@ -1,6 +1,5 @@
 package awaybuilder.utils.scene
 {
-	import away3d.library.AssetLibrary;
 	import avmplus.getQualifiedClassName;
 	
 	import away3d.cameras.Camera3D;
@@ -15,6 +14,7 @@ package awaybuilder.utils.scene
 	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
 	import away3d.events.Stage3DEvent;
+	import away3d.library.AssetLibrary;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
@@ -467,7 +467,7 @@ package awaybuilder.utils.scene
 			}
 		}
 		
-		public static function removeMesh(mesh:Mesh):void
+		public static function removeMesh(mesh:ObjectContainer3D):void
 		{
 			mesh.parent.removeChild(mesh);
 			
