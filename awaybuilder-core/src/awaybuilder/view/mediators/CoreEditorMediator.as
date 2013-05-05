@@ -1049,7 +1049,15 @@ package awaybuilder.view.mediators
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-            var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
+			var m:Mesh = event.object as Mesh;
+			var vo:ObjectVO;
+			if (m.parent is LightGizmo3D) 
+				vo = assets.GetAsset( (m.parent as LightGizmo3D).light ) as ObjectVO;
+			else if (m.parent is ContainerGizmo3D) 
+				vo = assets.GetAsset( (m.parent as ContainerGizmo3D).container ) as ObjectVO;
+            else 
+				vo = assets.GetAsset( event.object ) as ObjectVO;
+
 			vo = vo.clone() as ObjectVO;
             switch( event.gizmoMode ) 
 			{
@@ -1075,7 +1083,15 @@ package awaybuilder.view.mediators
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
-			var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
+			var m:Mesh = event.object as Mesh;
+			var vo:ObjectVO;
+			if (m.parent is LightGizmo3D)
+				vo = assets.GetAsset( (m.parent as LightGizmo3D).light ) as ObjectVO;
+			else if (m.parent is ContainerGizmo3D)
+				vo = assets.GetAsset( (m.parent as ContainerGizmo3D).container ) as ObjectVO;
+            else
+            	vo = assets.GetAsset( event.object ) as ObjectVO;
+
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:

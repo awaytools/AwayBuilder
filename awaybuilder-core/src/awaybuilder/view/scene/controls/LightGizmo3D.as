@@ -47,7 +47,7 @@ package awaybuilder.view.scene.controls
 				cone.pivotPoint = new Vector3D(0, -150, 0);
 				cone.material.depthCompareMode = wC.material.depthCompareMode = Context3DCompareMode.ALWAYS;
 			} else {
-				cone = new Mesh(new PlaneGeometry(100, 100, 1, 1), lightTexture);			
+				cone = new Mesh(new PlaneGeometry(100, 100, 1, 1), lightTexture);
 			}
 			cone.castsShadows=false;
 			cone.name = light.name;

@@ -1,5 +1,8 @@
 package awaybuilder.controller.scene
 {
+	import away3d.containers.ObjectContainer3D;
+	import away3d.lights.LightBase;
+	import awaybuilder.model.vo.scene.LightVO;
 	import away3d.entities.Mesh;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
@@ -40,9 +43,18 @@ package awaybuilder.controller.scene
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
 				if( vo is MeshVO ) {
-//					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
+					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
+				}
+				if( vo is ContainerVO ) {
+					Scene3DManager.removeContainer( assets.GetObject(vo) as ObjectContainer3D );
+				}
+				if( vo is LightVO ) {
+					Scene3DManager.removeLight( assets.GetObject(vo) as LightBase );
 				}
 			}
+			
+			Scene3DManager.currentGizmo.hide();
+			
 			removeItemsFromDocument( objects );
 			
 			addToHistory( event );

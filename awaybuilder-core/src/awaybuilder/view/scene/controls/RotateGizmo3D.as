@@ -195,7 +195,6 @@ package awaybuilder.view.scene.controls
 			click2.y = Scene3DManager.stage.mouseY;			
 			
 			actualMesh = currentMesh;			
-			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;			
 			
 			switch(currentAxis)
 			{

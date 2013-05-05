@@ -303,7 +303,9 @@ package awaybuilder.utils.scene
 			
 			if (selectedObject) {
 				var isLightGizmo:LightGizmo3D = selectedObject.parent as LightGizmo3D;
-			 	if (!isLightGizmo || isLightGizmo.type==LightGizmo3D.POINT_LIGHT || Scene3DManager.currentGizmo==rotateGizmo)
+			 	if (!isLightGizmo || 
+					(isLightGizmo.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo) ||
+					(isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo))
 					currentGizmo.show(selectedObject);			
 			}
 		}
@@ -333,6 +335,9 @@ package awaybuilder.utils.scene
 				if (lights.getItemAt(i) == light)
 				{
 					lights.removeItemAt(i);
+					var lG:LightGizmo3D = lightGizmos[i];
+					if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.removeChild(lG);
+					else scene.removeChild(lG);
 					lightGizmos.splice(i, 1);
 					break;
 				}
@@ -464,14 +469,27 @@ package awaybuilder.utils.scene
 		
 		public static function removeMesh(mesh:Mesh):void
 		{
-			scene.removeChild(mesh);
+			mesh.parent.removeChild(mesh);
 			
 			for (var i:int=0;i<objects.length;i++)
 			{
 				if (objects.getItemAt(i) == mesh)
 				{
 					objects.removeItemAt(i);
-					//meshes.splice(i, 1);
+					break;
+				}
+			}
+		}
+
+		public static function removeContainer(container:ObjectContainer3D):void
+		{
+			container.parent.removeChild(container);
+			
+			for (var i:int=0;i<objects.length;i++)
+			{
+				if (objects.getItemAt(i) == container)
+				{
+					objects.removeItemAt(i);
 					break;
 				}
 			}
