@@ -1,13 +1,16 @@
 package awaybuilder.controller.clipboard
 {
+	import away3d.core.base.Object3D;
 	import away3d.entities.Mesh;
 	
 	import awaybuilder.controller.clipboard.events.ClipboardEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.ObjectVO;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -18,6 +21,9 @@ package awaybuilder.controller.clipboard
 		
 		[Inject]
 		public var document:DocumentModel;
+		
+		[Inject]
+		public var assets:AssetsModel;
 		
 		[Inject]
 		public var event:ClipboardEvent;
@@ -32,12 +38,12 @@ package awaybuilder.controller.clipboard
 			var copiedObjects:Vector.<AssetVO> = new Vector.<AssetVO>();
 			for each( var vo:AssetVO in document.selectedAssets )
 			{
-				var meshVO:MeshVO = vo as MeshVO;
-				if( meshVO )
+				var asset:MeshVO = vo as MeshVO;
+				if( asset )
 				{
-//					var newMesh:Mesh = Mesh(meshVO.linkedObject).clone() as Mesh;
-//					copiedObjects.push( new MeshVO(newMesh) );
-//					trace( "newMesh.name  = " + newMesh.name );
+					var newObject:Object3D = assets.GetObject( asset ) as Object3D;
+					copiedObjects.push( asset.clone() );
+					trace( "newMesh.name  = " + newObject.name );
 				}
 				
 			}
