@@ -97,12 +97,14 @@ package awaybuilder.view.mediators
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
+    import flash.display.BitmapData;
     import flash.display3D.textures.Texture;
     import flash.display3D.textures.TextureBase;
     import flash.events.ErrorEvent;
     import flash.events.KeyboardEvent;
     import flash.events.UncaughtErrorEvent;
     import flash.geom.ColorTransform;
+    import flash.geom.Matrix;
     import flash.geom.Vector3D;
     import flash.ui.Keyboard;
     
@@ -322,8 +324,11 @@ package awaybuilder.view.mediators
 		private function applySkyBox( asset:SkyBoxVO ):void
 		{
 			var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
-			obj.name = asset.name;
-			SkyBoxMaterial(obj.material).cubeMap = assets.GetObject(asset.cubeMap) as CubeTextureBase;
+			var newSkyBox:SkyBox = new SkyBox( assets.GetObject(asset.cubeMap) as CubeTextureBase );
+			newSkyBox.name = asset.name;
+			Scene3DManager.removeMesh(obj);
+			Scene3DManager.addObject(newSkyBox);
+			assets.ReplaceObject( obj, newSkyBox );
 		}
 		private function applyEffectMethod( asset:EffectMethodVO ):void
 		{
@@ -930,12 +935,57 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				var obj:BitmapCubeTexture = assets.GetObject( asset ) as BitmapCubeTexture;
-				if( obj.positiveX != asset.positiveX ) obj.positiveX = asset.positiveX;
-				if( obj.negativeX != asset.negativeX ) obj.negativeX = asset.negativeX;
-				if( obj.positiveY != asset.positiveY ) obj.positiveY = asset.positiveY;
-				if( obj.negativeY != asset.negativeY ) obj.negativeY = asset.negativeY;
-				if( obj.positiveZ != asset.positiveZ ) obj.positiveZ = asset.positiveZ;
-				if( obj.negativeZ != asset.negativeZ ) obj.negativeZ = asset.negativeZ;
+				
+				var maxValue:Number = Math.max(asset.positiveX.width,Math.max(asset.negativeX.width,
+																Math.max(asset.positiveY.width,
+																Math.max(asset.negativeY.width,
+																	Math.max(asset.positiveZ.width,asset.negativeZ.width)))));
+				var matrix:Matrix = new Matrix ();
+				var data:BitmapData;
+				var k:Number
+				
+				k = maxValue/asset.positiveX.width;
+				matrix = new Matrix();
+				matrix.scale(k, k);
+				data = new BitmapData(maxValue, maxValue);
+				data.draw(asset.positiveX, matrix);
+				obj.positiveX = data;
+				
+				k = maxValue/asset.negativeX.width;
+				matrix = new Matrix();
+				matrix.scale(k, k);
+				data = new BitmapData(maxValue, maxValue);
+				data.draw(asset.negativeX, matrix);
+				obj.negativeX = data;
+				
+				k = maxValue/asset.positiveY.width;
+				matrix = new Matrix();
+				matrix.scale(k, k);
+				data = new BitmapData(maxValue, maxValue);
+				data.draw(asset.positiveY, matrix);
+				obj.positiveY = data;
+				
+				k = maxValue/asset.negativeY.width;
+				matrix = new Matrix();
+				matrix.scale(k, k);
+				data = new BitmapData(maxValue, maxValue);
+				data.draw(asset.negativeY, matrix);
+				obj.negativeY = data;
+				
+				k = maxValue/asset.positiveZ.width;
+				matrix = new Matrix();
+				matrix.scale(k, k);
+				data = new BitmapData(maxValue, maxValue);
+				data.draw(asset.positiveZ, matrix);
+				obj.positiveZ = data;
+				
+				k = maxValue/asset.negativeZ.width;
+				matrix = new Matrix();
+				matrix.scale(k, k);
+				data = new BitmapData(maxValue, maxValue);
+				data.draw(asset.negativeZ, matrix);
+				obj.negativeZ = data;
+				
 			}
 		}
 		private function eventDispatcher_changeShadowMapperHandler(event:SceneEvent):void
