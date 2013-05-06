@@ -274,7 +274,7 @@ package awaybuilder.model
 			asset.specular = item.specular;
 			
 			asset.castsShadows = item.castsShadows;
-			
+			trace( "item.castsShadows = " + item.castsShadows );
 			asset.shadowMapper = GetAsset( item.shadowMapper ) as ShadowMapperVO;
 			
 			if( item is DirectionalLight ) 
