@@ -8,6 +8,12 @@
 					currentState="{_asset.type}"
 					>
 	<fx:Declarations>
+		<s:ArrayCollection id="baseList">
+			<fx:Object label="FilteredShadowMapMethod" value="FilteredShadowMapMethod"/>
+			<fx:Object label="DitheredShadowMapMethod" value="DitheredShadowMapMethod"/>
+			<fx:Object label="SoftShadowMapMethod" value="SoftShadowMapMethod"/>
+			<fx:Object label="HardShadowMapMethod" value="HardShadowMapMethod"/>
+		</s:ArrayCollection>
 	</fx:Declarations>
 	<editors:states>
 		<s:State name="CascadeShadowMapMethod"/>
@@ -27,10 +33,22 @@
 		[Bindable]
 		private var _asset:ShadowMethodVO;
 		
+		[Bindable] private var _selectedBaseMethod:Object;
+		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is ShadowMethodVO) ) return;
 			_asset = ShadowMethodVO(asset).clone();
+			
+			var item:Object;
+			
+			for each(item in baseList) 
+			{
+				if( item.value == _asset.baseMethod.type ) 
+				{
+					_selectedBaseMethod = item;
+				}
+			}
 		}
 		
 		private function name_changeHandler(event:Event):void 
@@ -63,6 +81,14 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, _asset, true));
 		}
 		
+		protected function baseMethodDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMETHOD_BASE_METHOD_CHANGE, baseMethodDropDownList.selectedItem.value));
+		}
+		protected function editSharedObjectButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.baseMethod));
+		}
 	]]></fx:Script>
 	
 	
@@ -105,13 +131,12 @@
 											 width="40" value="{_asset.range}"
 											 change="rangeStepper_changeHandler(event)" />
 		</s:FormItem>
-		<s:FormItem label="Base Method" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CascadeShadowMapMethod,NearShadowMapMethod">
-			<s:DropDownList id="baseMethodDropDownList" requireSelection="true" selectionColor="0x111111" enabled="false"
-							width="100%"
-							/>
-		</s:FormItem>
-		
-
 	</s:Form>
-	
+	<controls:PropertiesItemContainer label="Base Method" paddingLeft="10" paddingTop="6" paddingRight="8" width="100%" includeIn="NearShadowMapMethod">
+		<s:DropDownList id="baseMethodDropDownList" requireSelection="true"
+						change="baseMethodDropDownList_changeHandler(event)" width="100%"
+						selectedItem="{_selectedBaseMethod}" dataProvider="{baseList}"
+						/>
+		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="editSharedObjectButton_clickHandler(event)"/>
+	</controls:PropertiesItemContainer>
 </editors:EditorBase>

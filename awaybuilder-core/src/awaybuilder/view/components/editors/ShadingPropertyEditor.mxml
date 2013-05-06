@@ -64,13 +64,15 @@
 			
 			for each(item in diffuseList) 
 			{
-				if( item.value == _asset.baseMethod.type ) {
+				if( item.value == _asset.baseMethod.type ) 
+				{
 					_selectedDiffuseMethod = item;
 				}
 			}
 			for each(item in specularList) 
 			{
-				if( item.value == _asset.baseMethod.type ) {
+				if( item.value == _asset.baseMethod.type ) 
+				{
 					_selectedSpecularMethod = item;
 				}
 			}
@@ -114,7 +116,7 @@
 		
 		protected function editSharedObjectButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.baseMethod, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.baseMethod));
 		}
 		
 		protected function textureButton_clickHandler(event:MouseEvent):void

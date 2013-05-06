@@ -88,7 +88,7 @@ package awaybuilder.model
 				case(item is Skeleton):
 					return fillAsset( new SkeletonVO(), item as Skeleton );
 				case(item is ShadowMapMethodBase):
-					return  fillShadowMethod( new ShadowMethodVO(), item as ShadowMapMethodBase );
+					return fillShadowMethod( new ShadowMethodVO(), item as ShadowMapMethodBase );
 				case(item is SubMesh):
 					return fillSubMesh( new SubMeshVO(), item as SubMesh );
 				case(item is EffectMethodBase):
@@ -228,6 +228,7 @@ package awaybuilder.model
 		private function fillShadowMethod( asset:ShadowMethodVO, item:ShadowMapMethodBase ):ShadowMethodVO
 		{
 			asset = fillAsset( asset, item ) as ShadowMethodVO;
+			asset.castingLight = GetAsset( item.castingLight ) as LightVO;
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;
 			asset.type = getQualifiedClassName( item ).split("::")[1];

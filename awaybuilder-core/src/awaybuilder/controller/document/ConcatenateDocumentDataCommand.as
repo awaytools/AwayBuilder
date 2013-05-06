@@ -57,6 +57,7 @@ package awaybuilder.controller.document
 			}
 			var data:DocumentVO = event.newValue as DocumentVO;
 			addObjects( data.scene.source );
+			addLights( data.lights.source );
 			document.animations = new ArrayCollection(document.animations.source.concat( data.animations.source ));
 			document.geometry = new ArrayCollection(document.geometry.source.concat( data.geometry.source ));
 			document.materials = new ArrayCollection(document.materials.source.concat( data.materials.source ));
@@ -64,6 +65,7 @@ package awaybuilder.controller.document
 			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
 			document.textures = new ArrayCollection(document.textures.source.concat( data.textures.source ));
 			document.lights = new ArrayCollection(document.lights.source.concat( data.lights.source ));
+			
 			document.methods = new ArrayCollection(document.methods.source.concat( data.methods.source ));
 			
 			document.empty = false;
@@ -114,6 +116,13 @@ package awaybuilder.controller.document
 			}
 		}
 		
+		private function addLights( objects:Array ):void 
+		{
+			for (var i:int = 0; i < objects.length; i++) 
+			{
+				addLight( _sceneObjects.shift() );
+			}
+		}
 		private function addObjects( objects:Array ):void 
 		{
 			_sceneObjects = objects.concat();
@@ -123,18 +132,19 @@ package awaybuilder.controller.document
 		{
 			if( _sceneObjects.length == 0 )
 			{
+				CursorManager.removeBusyCursor();			
 				DisplayObject(FlexGlobals.topLevelApplication).removeEventListener( Event.ENTER_FRAME, addNextObject_enterFrameHandler );
-				
 				
 				Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
 				CameraManager.focusTarget();
+				
 				return;
 			}
 			for (var i:int = 0; i < 10; i++) 
 			{
 				addObject( _sceneObjects.shift() );
 			}
-			CursorManager.removeBusyCursor();			
+			
 		}
 		private function addObject( value:Object ):void
 		{
@@ -148,6 +158,9 @@ package awaybuilder.controller.document
 			{
 				Scene3DManager.addObject( assets.GetObject(skyBox) as SkyBox );
 			}
+		}
+		private function addLight( value:Object ):void
+		{
 			var light:LightVO = value as LightVO;
 			if( light ) 
 			{

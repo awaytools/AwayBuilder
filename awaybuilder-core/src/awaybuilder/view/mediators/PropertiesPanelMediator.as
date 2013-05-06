@@ -1,7 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import away3d.entities.Mesh;
-    
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
@@ -22,11 +20,8 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureVO;
-    import awaybuilder.utils.AssetUtil;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.editors.events.PropertyEditorEvent;
-    
-    import flash.utils.getTimer;
     
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
@@ -104,6 +99,7 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_CHANGE, view_shadowmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMETHOD_STEPPER_CHANGE, view_shadowmethodChangeStepperHandler );
+			addViewListener( PropertyEditorEvent.SHADOWMETHOD_BASE_METHOD_CHANGE, view_shadowmethodBaseMethodChangeHandler );
 			
 			addViewListener( PropertyEditorEvent.SKYBOX_CHANGE, view_skyboxChangeHandler );
 			addViewListener( PropertyEditorEvent.SKYBOX_STEPPER_CHANGE, view_skyboxChangeStepperHandler );
@@ -320,6 +316,31 @@ package awaybuilder.view.mediators
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_METHOD,[view.data], event.data, true));
 		}
+		private function view_shadowmethodBaseMethodChangeHandler(event:PropertyEditorEvent):void
+		{
+			var method:ShadowMethodVO;
+			var light:LightVO = ShadowMethodVO(view.data).castingLight;
+			var newMethod:ShadowMethodVO = ShadowMethodVO(view.data).clone() as ShadowMethodVO;
+			switch(event.data)
+			{
+				case "FilteredShadowMapMethod":
+					method = assets.CreateFilteredShadowMapMethod( light );
+					break;
+				case "DitheredShadowMapMethod":
+					method = assets.CreateDitheredShadowMapMethod( light );
+					break;
+				case "SoftShadowMapMethod":
+					method = assets.CreateSoftShadowMapMethod( light );
+					break;
+				case "HardShadowMapMethod":
+					method = assets.CreateHardShadowMapMethod( light );
+					break;
+					
+			}
+			newMethod.baseMethod = method;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADOW_METHOD,[view.data], newMethod));
+		}
+		
 		private function view_shadingmethodChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SHADING_METHOD,[view.data], event.data));

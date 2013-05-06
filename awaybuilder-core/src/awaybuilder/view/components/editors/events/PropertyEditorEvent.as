@@ -62,6 +62,7 @@ package awaybuilder.view.components.editors.events
 		
 		public static const SHADOWMETHOD_CHANGE:String = "shadowmethodChange";
 		public static const SHADOWMETHOD_STEPPER_CHANGE:String = "shadowmethodStepperChange";
+		public static const SHADOWMETHOD_BASE_METHOD_CHANGE:String = "shadowmethodBaseMethodChange";
 		
 		public static const SHADOWMAPPER_CHANGE:String = "shadowMapperChange";
 		public static const SHADOWMAPPER_STEPPER_CHANGE:String = "shadowMapperStepperChange";

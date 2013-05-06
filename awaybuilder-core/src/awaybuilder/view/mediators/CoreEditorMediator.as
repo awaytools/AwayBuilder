@@ -54,6 +54,7 @@ package awaybuilder.view.mediators
     import away3d.materials.methods.RimLightMethod;
     import away3d.materials.methods.ShadingMethodBase;
     import away3d.materials.methods.ShadowMapMethodBase;
+    import away3d.materials.methods.SimpleShadowMapMethodBase;
     import away3d.materials.methods.SimpleWaterNormalMethod;
     import away3d.materials.methods.SoftShadowMapMethod;
     import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
@@ -519,10 +520,12 @@ package awaybuilder.view.mediators
 			else if( obj is CascadeShadowMapMethod )
 			{
 				var cascadeShadowMapMethod:CascadeShadowMapMethod = obj as CascadeShadowMapMethod;
+				cascadeShadowMapMethod.baseMethod = assets.GetObject( asset.baseMethod ) as SimpleShadowMapMethodBase;
 			}
 			else if( obj is NearShadowMapMethod )
 			{
 				var nearShadowMapMethod:NearShadowMapMethod = obj as NearShadowMapMethod;
+				nearShadowMapMethod.baseMethod = assets.GetObject( asset.baseMethod ) as SimpleShadowMapMethodBase;
 			}
 		}
 		private function applyContainer( asset:ContainerVO ):void

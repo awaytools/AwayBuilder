@@ -11,6 +11,7 @@ package awaybuilder.model.vo.scene
 	[Bindable]
 	public class ShadowMethodVO extends AssetVO
 	{
+		public var castingLight:LightVO;
 		
 		public var epsilon:Number = .002;
 		public var alpha:Number = 1;
