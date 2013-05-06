@@ -1093,7 +1093,8 @@ package awaybuilder.utils.encoders
 			_encodeSpecularMethod(mat.specularMethod,materialMethods);
 			_encodeAmbientMethod(mat.ambientMethod,materialMethods);
 			_encodeNormalMethod(mat.normalMethod,materialMethods);
-			
+			if(_debug)trace("ShadowMethod= "+mat.shadowMethod);
+			if(_debug)trace("ShadowMethod ID= "+_getBlockIDorEncodeAsset(mat.shadowMethod));
 			if (mat.shadowMethod)materialMethods.push(new AWDmethod(998, [1], [_getBlockIDorEncodeAsset(mat.shadowMethod)], [0], [BADDR]));
 			for each (var effectMethVO:EffectMethodVO in mat.effectMethods){
 				materialMethods.push(new AWDmethod(999, [1], [_getBlockIDorEncodeAsset(effectMethVO)], [0], [BADDR]));// to do - check the correct id for a "shared methdod block"-method 
