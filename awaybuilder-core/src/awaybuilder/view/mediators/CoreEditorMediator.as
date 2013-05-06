@@ -435,8 +435,7 @@ package awaybuilder.view.mediators
 				{
 					var lightMapDiffuseMethod:LightMapDiffuseMethod = obj as LightMapDiffuseMethod;
 					lightMapDiffuseMethod.blendMode = asset.blendMode;
-					trace( "lightMapDiffuseMethod.blendMode " + lightMapDiffuseMethod.blendMode );
-					lightMapDiffuseMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
+					lightMapDiffuseMethod.lightMapTexture = assets.GetObject( asset.texture ) as Texture2DBase;
 					lightMapDiffuseMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicDiffuseMethod;
 					break;
 				}
