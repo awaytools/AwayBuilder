@@ -251,6 +251,9 @@ package awaybuilder.model
 			var method:ShadingMethodBase;
 			switch( type )
 			{
+				case "BasicAmbientMethod":
+					method = new BasicAmbientMethod();
+					break;
 				case "EnvMapAmbientMethod":
 					method = new EnvMapAmbientMethod(GetObject(_defaultCubeTexture) as CubeTextureBase);
 					break;

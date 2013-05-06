@@ -239,6 +239,8 @@ package awaybuilder.view.mediators
 			var newMaterial:MaterialVO = MaterialVO(view.data).clone() as MaterialVO;
 			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
 			newMaterial.ambientMethod = method;
+			trace(  event.data.toString() );
+			trace( newMaterial.ambientMethod );
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
 		}
 		private function view_materialDiffuseMethodHandler(event:PropertyEditorEvent):void
