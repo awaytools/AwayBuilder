@@ -509,6 +509,28 @@ package awaybuilder.model
 				var colorMaterial:ColorMaterial = item as ColorMaterial;
 				asset.alpha = colorMaterial.alpha;
 				asset.alphaThreshold = colorMaterial.alphaThreshold;
+				
+				asset.alphaBlending = colorMaterial.alphaBlending;
+				
+				asset.ambientLevel = colorMaterial.ambient; 
+				asset.ambientColor = colorMaterial.ambientColor;
+				asset.ambientTexture = null;
+				asset.ambientMethod = GetAsset( colorMaterial.ambientMethod ) as ShadingMethodVO;
+				
+				asset.diffuseColor= colorMaterial.diffuseMethod.diffuseColor;
+				asset.diffuseTexture = null;
+				asset.diffuseMethod = GetAsset( colorMaterial.diffuseMethod ) as ShadingMethodVO;
+				
+				asset.specularLevel = colorMaterial.specular;
+				asset.specularColor = colorMaterial.specularColor;
+				asset.specularGloss = colorMaterial.gloss;
+				asset.specularTexture = GetAsset( colorMaterial.specularMap ) as TextureVO;
+				asset.specularMethod = GetAsset( colorMaterial.specularMethod ) as ShadingMethodVO;
+				
+				asset.normalTexture = GetAsset( colorMaterial.normalMap ) as TextureVO;
+				asset.normalMethod = GetAsset( colorMaterial.normalMethod ) as ShadingMethodVO;
+				
+				asset.shadowMethod = GetAsset( colorMaterial.shadowMethod ) as ShadowMethodVO;
 			}
 			else if( item is TextureMultiPassMaterial )
 			{
@@ -543,6 +565,27 @@ package awaybuilder.model
 				asset.type = MaterialVO.MULTIPASS;
 				var colorMultiPassMaterial:ColorMultiPassMaterial = item as ColorMultiPassMaterial;
 				asset.alphaThreshold = colorMultiPassMaterial.alphaThreshold;
+				
+				
+				asset.ambientLevel = colorMultiPassMaterial.ambient; 
+				asset.ambientColor = colorMultiPassMaterial.ambientColor;
+				asset.ambientTexture = null;
+				asset.ambientMethod = GetAsset( colorMultiPassMaterial.ambientMethod ) as ShadingMethodVO;
+				
+				asset.diffuseColor= colorMultiPassMaterial.diffuseMethod.diffuseColor;
+				asset.diffuseTexture = null;
+				asset.diffuseMethod = GetAsset( colorMultiPassMaterial.diffuseMethod ) as ShadingMethodVO;
+				
+				asset.specularLevel = colorMultiPassMaterial.specular;
+				asset.specularColor = colorMultiPassMaterial.specularColor;
+				asset.specularGloss = colorMultiPassMaterial.gloss;
+				asset.specularTexture = GetAsset( colorMultiPassMaterial.specularMap ) as TextureVO;
+				asset.specularMethod = GetAsset( colorMultiPassMaterial.specularMethod ) as ShadingMethodVO;
+				
+				asset.normalTexture = GetAsset( colorMultiPassMaterial.normalMap ) as TextureVO;
+				asset.normalMethod = GetAsset( colorMultiPassMaterial.normalMethod ) as ShadingMethodVO;
+				
+				asset.shadowMethod = GetAsset( colorMultiPassMaterial.shadowMethod ) as ShadowMethodVO;
 			}
 			
 			asset.effectMethods = new ArrayCollection();
