@@ -4,7 +4,9 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.ProcessDataService;
+	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
@@ -36,10 +38,21 @@ package awaybuilder.controller.document
 		private function loader_completeHandler( event:Event ):void
 		{
 			var bitmap:Bitmap = event.target.content;
-			var vo:CubeTextureVO = importEvent.items[0] as CubeTextureVO;
-			var newAsset:CubeTextureVO = vo.clone();
-			newAsset[importEvent.options] = bitmap.bitmapData;
-			dispatch( new SceneEvent( SceneEvent.CHANGE_CUBE_TEXTURE, importEvent.items, newAsset ) );
+			var asset:AssetVO = importEvent.items[0] as AssetVO;
+			var clone:AssetVO;
+			if( asset is CubeTextureVO )
+			{
+				clone = CubeTextureVO(asset).clone();
+				clone[importEvent.options] = bitmap.bitmapData;
+				dispatch( new SceneEvent( SceneEvent.CHANGE_CUBE_TEXTURE, importEvent.items, clone ) );
+			}
+			else if( asset is TextureVO )
+			{
+				clone = TextureVO(asset).clone();
+				TextureVO(clone).bitmapData = bitmap.bitmapData;
+				dispatch( new SceneEvent( SceneEvent.CHANGE_TEXTURE, importEvent.items, clone ) );
+			}
+			
 			CursorManager.removeBusyCursor();
 		}
 	}

@@ -62,6 +62,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_TEXTURE, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_SKYBOX, context_simpleUpdateHandler);
@@ -403,7 +404,7 @@ package awaybuilder.view.mediators
 		}
 		private function view_replaceTextureHandler(event:PropertyEditorEvent):void
 		{
-			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_REPLACE,[event.data]));
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE,[view.data],"bitmapData"));
 		}
 		private function view_replaceCubeTextureHandler(event:PropertyEditorEvent):void
 		{

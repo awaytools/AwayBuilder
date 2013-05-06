@@ -9,9 +9,6 @@ package awaybuilder.controller.document.events
 		public static const IMPORT_AND_BITMAP_REPLACE:String = "importBitmapAndRplace";
 		public static const LOAD_AND_BITMAP_REPLACE:String = "loadBitmapAndRplace";
 		
-		public static const IMPORT_AND_REPLACE:String = "importTextureAndRplace";
-		public static const LOAD_AND_REPLACE:String = "loadTextureAndRplace";
-		
 		public static const IMPORT_AND_ADD:String = "importTextureForMaterial";
 		public static const LOAD_AND_ADD:String = "loadTextureForMaterial";
 		

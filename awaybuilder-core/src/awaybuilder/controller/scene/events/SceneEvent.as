@@ -44,7 +44,6 @@ import flash.events.Event;
 		public static const ADD_NEW_CUBE:String = "addNewCubeTexture";
 		public static const ADD_NEW_CUBE_TEXTURE:String = "addNewCubeTexture";
 		public static const ADD_NEW_GEOMETRY:String = "addNewGeometry";
-		public static const REPLACE_TEXTURE:String = "replaceTexture";
 		
 		public static const SWITCH_CAMERA_TO_FREE:String = "switchCameraToFree";
 		public static const SWITCH_CAMERA_TO_TARGET:String = "switchCameraToTarget";

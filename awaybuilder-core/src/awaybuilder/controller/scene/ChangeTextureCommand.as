@@ -24,6 +24,7 @@ package awaybuilder.controller.scene
 			
 			saveOldValue( event, vo.clone() );
 			vo.name = newAsset.name;
+			vo.bitmapData = newAsset.bitmapData;
 			
 			addToHistory( event );
 		}

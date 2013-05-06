@@ -11,10 +11,8 @@ package awaybuilder
 	import awaybuilder.controller.document.ConcatenateDocumentDataCommand;
 	import awaybuilder.controller.document.ImportBitmapCommand;
 	import awaybuilder.controller.document.ImportDocumentCommand;
-	import awaybuilder.controller.document.ImportTextureAndReplaceCommand;
 	import awaybuilder.controller.document.ImportTextureForMaterialCommand;
 	import awaybuilder.controller.document.LoadBitmapAndReplaceCommand;
-	import awaybuilder.controller.document.LoadTextureAndRepalceCommand;
 	import awaybuilder.controller.document.LoadTextureForMaterialCommand;
 	import awaybuilder.controller.document.NewDocumentCommand;
 	import awaybuilder.controller.document.OpenDocumentCommand;
@@ -57,7 +55,6 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeSkyBoxCommand;
 	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
-	import awaybuilder.controller.scene.ReplaceTextureCommand;
 	import awaybuilder.controller.scene.RotateObjectCommand;
 	import awaybuilder.controller.scene.ScaleObjectCommand;
 	import awaybuilder.controller.scene.SelectCommand;
@@ -138,9 +135,6 @@ package awaybuilder
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE, ImportBitmapCommand);
 			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_BITMAP_REPLACE, LoadBitmapAndReplaceCommand);
 			
-			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_REPLACE, ImportTextureAndReplaceCommand);
-			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_REPLACE, LoadTextureAndRepalceCommand);
-			
 			commandMap.mapEvent(SceneEvent.CHANGE_GLOBAL_OPTIONS, ChangeGlobalOptionsCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
@@ -168,8 +162,6 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.ADD_NEW_GEOMETRY, AddNewGeometryCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MESH, AddNewMeshCommand);
 			
-			commandMap.mapEvent(SceneEvent.REPLACE_TEXTURE, ReplaceTextureCommand);
-
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_COPY, CopyCommand);
 			this.commandMap.mapEvent(PasteEvent.CLIPBOARD_PASTE, PasteCommand);

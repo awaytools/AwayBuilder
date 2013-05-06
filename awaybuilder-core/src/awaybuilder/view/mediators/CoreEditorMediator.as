@@ -62,6 +62,7 @@ package awaybuilder.view.mediators
     import away3d.primitives.SkyBox;
     import away3d.primitives.SphereGeometry;
     import away3d.textures.BitmapCubeTexture;
+    import away3d.textures.BitmapTexture;
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
@@ -87,6 +88,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
+    import awaybuilder.model.vo.scene.TextureVO;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
     import awaybuilder.utils.scene.modes.CameraMode;
@@ -149,6 +151,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, eventDispatcher_changeEffectMethodHandler);
 			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, eventDispatcher_changeShadowMapperHandler);
 			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, eventDispatcher_changeCubeTextureHandler);
+			addContextListener(SceneEvent.CHANGE_TEXTURE, eventDispatcher_changeTextureHandler);
 			addContextListener(SceneEvent.CHANGE_GEOMETRY, eventDispatcher_changeGeometryHandler);
 			addContextListener(SceneEvent.CHANGE_SKYBOX, eventDispatcher_changeSkyboxHandler);
 			
@@ -326,9 +329,6 @@ package awaybuilder.view.mediators
 			var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
 			SkyBoxMaterial(obj.material).cubeMap = assets.GetObject(asset.cubeMap) as CubeTextureBase;
 			obj.name = asset.name;
-//			Scene3DManager.removeMesh(obj);
-//			Scene3DManager.addObject(newSkyBox);
-//			assets.ReplaceObject( obj, newSkyBox );
 		}
 		private function applyEffectMethod( asset:EffectMethodVO ):void
 		{
@@ -929,6 +929,16 @@ package awaybuilder.view.mediators
 				}
 			}
 		}
+		private function eventDispatcher_changeTextureHandler(event:SceneEvent):void
+		{
+			var asset:TextureVO = event.items[0] as TextureVO;
+			if( asset ) 
+			{
+				var obj:BitmapTexture = assets.GetObject( asset ) as BitmapTexture;
+				obj.name = asset.name;
+				obj.bitmapData = asset.bitmapData;
+			}
+		}
 		private function eventDispatcher_changeCubeTextureHandler(event:SceneEvent):void
 		{
 			var asset:CubeTextureVO = event.items[0] as CubeTextureVO;
@@ -985,7 +995,6 @@ package awaybuilder.view.mediators
 				data = new BitmapData(maxValue, maxValue);
 				data.draw(asset.negativeZ, matrix);
 				obj.negativeZ = data;
-				
 			}
 		}
 		private function eventDispatcher_changeShadowMapperHandler(event:SceneEvent):void
