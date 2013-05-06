@@ -229,7 +229,7 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, item ) as ShadowMethodVO;
 			asset.castingLight = GetAsset( item.castingLight ) as LightVO;
-			asset.castingLight.shadowMethods.addItem( asset );
+			//asset.castingLight.shadowMethods.addItem( asset );
 			
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;
