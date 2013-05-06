@@ -229,6 +229,8 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, item ) as ShadowMethodVO;
 			asset.castingLight = GetAsset( item.castingLight ) as LightVO;
+			asset.castingLight.shadowMethods.addItem( asset );
+			
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;
 			asset.type = getQualifiedClassName( item ).split("::")[1];
@@ -253,7 +255,7 @@ package awaybuilder.model
 			else if( item is NearShadowMapMethod )
 			{
 				var nearShadowMapMethod:NearShadowMapMethod = item as NearShadowMapMethod;
-//				asset.baseMethod = GetAsset( nearShadowMapMethod.baseMethod ) as ShadowMethodVO;
+				asset.baseMethod = GetAsset( nearShadowMapMethod.baseMethod ) as ShadowMethodVO;
 			}
 			return asset;
 		}
@@ -502,7 +504,10 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
-				
+				if( asset.shadowMethod )
+				{
+					asset.light = asset.shadowMethod.castingLight;
+				}
 			}
 			else if( item is ColorMaterial )
 			{
@@ -532,6 +537,10 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( colorMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( colorMaterial.shadowMethod ) as ShadowMethodVO;
+				if( asset.shadowMethod )
+				{
+					asset.light = asset.shadowMethod.castingLight;
+				}
 			}
 			else if( item is TextureMultiPassMaterial )
 			{
@@ -560,6 +569,10 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
+				if( asset.shadowMethod )
+				{
+					asset.light = asset.shadowMethod.castingLight;
+				}
 			}
 			else if( item is ColorMultiPassMaterial )
 			{
@@ -587,6 +600,10 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( colorMultiPassMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( colorMultiPassMaterial.shadowMethod ) as ShadowMethodVO;
+				if( asset.shadowMethod )
+				{
+					asset.light = asset.shadowMethod.castingLight;
+				}
 			}
 			
 			asset.effectMethods = new ArrayCollection();
