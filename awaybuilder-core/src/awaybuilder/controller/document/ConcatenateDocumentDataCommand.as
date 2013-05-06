@@ -56,16 +56,19 @@ package awaybuilder.controller.document
 				return;
 			}
 			var data:DocumentVO = event.newValue as DocumentVO;
-			addObjects( data.scene.source );
-			addLights( data.lights.source );
+			addObjects( data.scene.source.concat() );
+			addLights( data.lights.source.concat() );
 			document.animations = new ArrayCollection(document.animations.source.concat( data.animations.source ));
 			document.geometry = new ArrayCollection(document.geometry.source.concat( data.geometry.source ));
 			document.materials = new ArrayCollection(document.materials.source.concat( data.materials.source ));
 			document.scene = new ArrayCollection(document.scene.source.concat( data.scene.source ));
 			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
 			document.textures = new ArrayCollection(document.textures.source.concat( data.textures.source ));
+			trace( "data.lights.source = "  + data.lights.source );
+			trace( "document.lights.source = "  + document.lights.source );
 			document.lights = new ArrayCollection(document.lights.source.concat( data.lights.source ));
 			
+			trace( "document.lights = "  + document.lights );
 			document.methods = new ArrayCollection(document.methods.source.concat( data.methods.source ));
 			
 			document.empty = false;
@@ -120,7 +123,8 @@ package awaybuilder.controller.document
 		{
 			for (var i:int = 0; i < objects.length; i++) 
 			{
-				addLight( _sceneObjects.shift() );
+				addLight( objects.shift() );
+				i--;
 			}
 		}
 		private function addObjects( objects:Array ):void 
@@ -148,16 +152,16 @@ package awaybuilder.controller.document
 		}
 		private function addObject( value:Object ):void
 		{
-			var o:ContainerVO = value as ContainerVO;
-			if( o ) 
-			{
-				Scene3DManager.addObject( assets.GetObject(o) as ObjectContainer3D );
-			}
-			var skyBox:SkyBoxVO = value as SkyBoxVO;
-			if( skyBox ) 
-			{
-				Scene3DManager.addObject( assets.GetObject(skyBox) as SkyBox );
-			}
+//			var o:ContainerVO = value as ContainerVO;
+//			if( o ) 
+//			{
+//				Scene3DManager.addObject( assets.GetObject(o) as ObjectContainer3D );
+//			}
+//			var skyBox:SkyBoxVO = value as SkyBoxVO;
+//			if( skyBox ) 
+//			{
+//				Scene3DManager.addObject( assets.GetObject(skyBox) as SkyBox );
+//			}
 		}
 		private function addLight( value:Object ):void
 		{
