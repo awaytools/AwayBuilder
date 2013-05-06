@@ -575,7 +575,6 @@ package awaybuilder.model
 		{
 			asset = fillObject( asset, item ) as ContainerVO;
 			asset.children = new ArrayCollection();
-			trace( "asset.name  " +  asset.name );
 			for (var i:int = 0; i < item.numChildren; i++) 
 			{
 				asset.children.addItem(GetAsset( item.getChildAt(i) ) );
