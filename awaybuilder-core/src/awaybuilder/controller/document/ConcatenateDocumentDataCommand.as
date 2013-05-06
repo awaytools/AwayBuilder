@@ -152,11 +152,11 @@ package awaybuilder.controller.document
 		}
 		private function addObject( value:Object ):void
 		{
-//			var o:ContainerVO = value as ContainerVO;
-//			if( o ) 
-//			{
-//				Scene3DManager.addObject( assets.GetObject(o) as ObjectContainer3D );
-//			}
+			var o:ContainerVO = value as ContainerVO;
+			if( o ) 
+			{
+				Scene3DManager.addObject( assets.GetObject(o) as ObjectContainer3D );
+			}
 //			var skyBox:SkyBoxVO = value as SkyBoxVO;
 //			if( skyBox ) 
 //			{

@@ -1068,9 +1068,7 @@ package awaybuilder.view.mediators
 					else if( event.items[0] is ContainerVO)
 					{
 						var container:ContainerVO = event.items[0] as ContainerVO;
-						var asset:ObjectContainer3D = assets.GetObject( container ) as ObjectContainer3D;
-//						if (asset.numChildren == 1)
-//							selectObjectsScene( (asset.getChildAt(0) as ContainerGizmo3D).containerGizmo );
+						selectContainersScene( assets.GetObject( container ) as ObjectContainer3D );
 					}
 					else if( event.items[0] is LightVO )
 					{
@@ -1103,6 +1101,17 @@ package awaybuilder.view.mediators
 			}
 			Scene3DManager.selectObject(o.name);
 			
+		}
+		private function selectContainersScene( c:ObjectContainer3D ):void
+		{
+			for each( var containerGizmo:ContainerGizmo3D in Scene3DManager.containerGizmos )
+			{
+				if( containerGizmo.container == c )
+				{
+					selectObjectsScene(containerGizmo.containerGizmo);
+					return;
+				}
+			}
 		}
 		private function selectLightsScene( l:LightBase ):void
 		{

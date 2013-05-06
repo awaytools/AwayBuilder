@@ -80,7 +80,7 @@ package awaybuilder.utils.scene
 		public static var scaleGizmo:ScaleGizmo3D;
 		
 		public static var lightGizmos:Vector.<LightGizmo3D> = new Vector.<LightGizmo3D>();
-		public static var containers:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
+		public static var containerGizmos:Vector.<ContainerGizmo3D> = new Vector.<ContainerGizmo3D>();
 		
 		public static function init(scope:UIComponent):void
 		{
@@ -229,14 +229,11 @@ package awaybuilder.utils.scene
 		}
 
 		private function updateContainerGizmos() : void {
-			var c:ObjectContainer3D;
+			var c:ContainerGizmo3D;
 			var cI:int;
-			for (cI=0; cI<containers.length; cI++) {
-				c = containers[cI];
-				if (c.numChildren == 1) {
-					var cG:ContainerGizmo3D = c.getChildAt(0) as ContainerGizmo3D;
-					cG.updateContainer();
-				}
+			for (cI=0; cI<containerGizmos.length; cI++) {
+				c = containerGizmos[cI];
+				c.updateContainer();
 			}
 		}
 		
@@ -318,13 +315,12 @@ package awaybuilder.utils.scene
 			var gizmo:LightGizmo3D = new LightGizmo3D(light); 
 			gizmo.cone.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);
 			lightGizmos.push(gizmo);
-			objects.addItem(light);
 			
 			if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.addChild(gizmo);
 			else scene.addChild(gizmo);
-			scene.addChild(light);
+			if (light.parent != null) scene.addChild(light);
 			
-			lights.addItem(light);
+			if (lights.getItemIndex(light) == -1) lights.addItem(light);
 		}
 		
 		public static function removeLight(light:LightBase):void
@@ -462,9 +458,19 @@ package awaybuilder.utils.scene
 			
 			objects.addItem(o);
 
-			if (getQualifiedClassName(o)=="away3d.containers::ObjectContainer3D" && o.numChildren == 0) {
-				Scene3DManager.containers.push(o);
-				o.addChild(new ContainerGizmo3D(o));
+			attachGizmos(o);
+		}
+		
+		private static function attachGizmos(container:ObjectContainer3D) : void {			
+			var childCtr:int = 0;
+			while (childCtr < container.numChildren) {
+				attachGizmos(container.getChildAt(childCtr++));
+			}
+
+			if (getQualifiedClassName(container)=="away3d.containers::ObjectContainer3D" && container.numChildren == 0) {
+				var cG:ContainerGizmo3D = new ContainerGizmo3D(container);
+				Scene3DManager.containerGizmos.push(cG);
+				container.addChild(cG);
 			}
 		}
 		
@@ -612,20 +618,16 @@ package awaybuilder.utils.scene
 			{
 				selectObjectInContainer(m, meshName);
 			}
+			for each(var l:LightBase in lights.source)
+			{
+				selectLightInContainer(l, meshName);
+			}
 		}
 
 		private static function selectObjectInContainer(o : ObjectContainer3D, meshName : String) : void {
 
 			var m:Mesh = o as Mesh;
 
-			if (o is LightBase) {
-				var lB:LightBase = o as LightBase;
-				for each (var lG:LightGizmo3D in lightGizmos) {
-					if (lG.light == lB)
-						m = lG.cone;
-				}
-			}
-			
 			if (m && m.name == meshName)
 			{
 				if (!m.showBounds)
@@ -634,8 +636,35 @@ package awaybuilder.utils.scene
 					selectedObjects.addItem(m);						
 					selectedObject = m;
 					
-					var isLightGizmo:LightGizmo3D = m.parent as LightGizmo3D;
-					if (!isLightGizmo || isLightGizmo.type==LightGizmo3D.POINT_LIGHT || Scene3DManager.currentGizmo==rotateGizmo)
+					currentGizmo.show(selectedObject);
+				}
+			} else {
+				for (var c:int = 0; c<o.numChildren; c++) {
+					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
+					selectObjectInContainer(container, meshName);
+				}
+			}
+		}
+
+		private static function selectLightInContainer(o : ObjectContainer3D, meshName : String) : void {
+
+			var l:LightBase = o as LightBase;
+			var m:Mesh;
+			if (l) {
+				for each (var lG:LightGizmo3D in lightGizmos) {
+					if (lG.light == l)
+						m = lG.cone;
+				}
+	
+				if (!m.showBounds)
+				{
+	
+					if (m is Mesh) m.showBounds = true;
+					selectedObjects.addItem(m);						
+					selectedObject = m;
+					
+					if ((lG.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
+						(lG.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo))
 						currentGizmo.show(selectedObject);
 				}
 			} else {
