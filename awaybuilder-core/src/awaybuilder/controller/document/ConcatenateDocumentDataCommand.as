@@ -1,8 +1,9 @@
 package awaybuilder.controller.document
 {
-	import awaybuilder.utils.scene.CameraManager;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
+	import away3d.lights.LightBase;
+	import away3d.primitives.SkyBox;
 	
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
@@ -15,8 +16,11 @@ package awaybuilder.controller.document
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.utils.AssetUtil;
+	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;
@@ -138,6 +142,16 @@ package awaybuilder.controller.document
 			if( o ) 
 			{
 				Scene3DManager.addObject( assets.GetObject(o) as ObjectContainer3D );
+			}
+			var skyBox:SkyBoxVO = value as SkyBoxVO;
+			if( skyBox ) 
+			{
+				Scene3DManager.addObject( assets.GetObject(skyBox) as SkyBox );
+			}
+			var light:LightVO = value as LightVO;
+			if( light ) 
+			{
+				Scene3DManager.addLight( assets.GetObject(light) as LightBase );
 			}
 		}
 		

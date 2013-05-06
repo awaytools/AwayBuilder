@@ -542,6 +542,7 @@ package awaybuilder.view.mediators
 		{
 			var o:Object3D = Object3D( assets.GetObject(asset) );
 			o.name = asset.name;
+			
 			o.x = asset.x;
 			o.y = asset.y;
 			o.z = asset.z;

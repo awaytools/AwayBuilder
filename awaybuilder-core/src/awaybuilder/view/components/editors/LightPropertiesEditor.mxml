@@ -273,15 +273,9 @@
 												 change="angleStepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="pointType">
-				<controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.x}"
-												 change="position_commitHandler(event)" />
-				<controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.y}"
-												 change="position_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.z}"
-												 change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.x}" change="position_commitHandler(event)" />
+				<controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.y}" change="position_commitHandler(event)"/>
+				<controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.z}" change="position_commitHandler(event)"/>
 			</s:FormItem>
 		</s:Form>
 	</controls:CollapsiblePanel>

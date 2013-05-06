@@ -18,6 +18,7 @@ package awaybuilder.utils.scene
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.primitives.SkyBox;
 	import away3d.primitives.WireframePlane;
 	
 	import awaybuilder.controller.scene.events.SceneEvent;
