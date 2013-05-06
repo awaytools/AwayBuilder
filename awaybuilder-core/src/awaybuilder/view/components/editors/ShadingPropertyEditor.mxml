@@ -112,18 +112,6 @@
 			return item.positiveX;
 		}
 		
-		protected function baseSpecularMethodDropdownList_changeHandler(event:IndexChangeEvent):void
-		{
-		}
-		
-		protected function baseDiffuseMethodDropdownList_changeHandler(event:IndexChangeEvent):void
-		{
-		}
-		
-		protected function blendModeDropDownList_changeHandler(event:IndexChangeEvent):void
-		{
-		}
-		
 		protected function editSharedObjectButton_clickHandler(event:MouseEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.baseMethod, true));
@@ -206,7 +194,7 @@
 		</s:FormItem>
 		<s:FormItem label="Blend Mode" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="LightMapDiffuseMethod">
 			<s:DropDownList id="blendModeDropDownList" requireSelection="true" selectedItem="@{_asset.blendMode}"
-							width="100%" change="blendModeDropDownList_changeHandler(event)" >
+							width="100%" change="value_changeHandler(event)" >
 				<s:dataProvider>
 					<s:ArrayList>
 						<fx:String>add</fx:String>
