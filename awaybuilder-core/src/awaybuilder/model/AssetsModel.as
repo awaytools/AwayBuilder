@@ -280,7 +280,7 @@ package awaybuilder.model
 				case "SubsurfaceScatteringDiffuseMethod":
 					baseMethod = new BasicDiffuseMethod();
 					method = new SubsurfaceScatteringDiffuseMethod();
-					SubsurfaceScatteringDiffuseMethod(method).baseMethod = baseMethod as BasicDiffuseMethod;
+//					SubsurfaceScatteringDiffuseMethod(method).baseMethod = baseMethod as BasicDiffuseMethod;
 					break;
 				case "BasicSpecularMethod":
 					method = new BasicSpecularMethod();
