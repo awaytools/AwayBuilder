@@ -30,7 +30,7 @@ package awaybuilder.controller.scene
 			if( event.isUndoAction )
 			{
 				document.removeAsset( document.scene, oldValue );
-//				Scene3DManager.removeMesh( assets.GetObject(oldValue) as SkyBox );
+				Scene3DManager.removeSkyBox( assets.GetObject(oldValue) as SkyBox );
 			}
 			else
 			{

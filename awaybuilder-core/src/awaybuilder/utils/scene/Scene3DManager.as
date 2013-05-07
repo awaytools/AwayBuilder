@@ -440,12 +440,14 @@ package awaybuilder.utils.scene
 			var max:Vector3D = new Vector3D(-Infinity, -Infinity, -Infinity);
 			
 			for each(var o:ObjectContainer3D in objects.source) {
-				if (o.minX < min.x) min.x = o.minX;
-				if (o.minY < min.y) min.y = o.minY;
-				if (o.minZ < min.z) min.z = o.minZ;
-				if (o.maxX > max.x) max.x = o.maxX;
-				if (o.maxY > max.y) max.y = o.maxY;
-				if (o.maxZ > max.z) max.z = o.maxZ;
+				if (!(o is SkyBox)) {
+					if (o.minX < min.x) min.x = o.minX;
+					if (o.minY < min.y) min.y = o.minY;
+					if (o.minZ < min.z) min.z = o.minZ;
+					if (o.maxX > max.x) max.x = o.maxX;
+					if (o.maxY > max.y) max.y = o.maxY;
+					if (o.maxZ > max.z) max.z = o.maxZ;
+				}
 			}
 
 			var v:Vector.<Number> = Vector.<Number>([min.x, min.y, min.z, max.x, max.y, max.z]);
@@ -500,6 +502,20 @@ package awaybuilder.utils.scene
 			for (var i:int=0;i<objects.length;i++)
 			{
 				if (objects.getItemAt(i) == container)
+				{
+					objects.removeItemAt(i);
+					break;
+				}
+			}
+		}
+
+		public static function removeSkyBox(skyBox:SkyBox):void
+		{
+			skyBox.parent.removeChild(skyBox);
+			
+			for (var i:int=0;i<objects.length;i++)
+			{
+				if (objects.getItemAt(i) == skyBox)
 				{
 					objects.removeItemAt(i);
 					break;
