@@ -4,6 +4,7 @@ package awaybuilder.utils.encoders
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
 	import away3d.core.base.ISubGeometry;
+	import away3d.core.base.Object3D;
 	import away3d.core.base.SkinnedSubGeometry;
 	import away3d.core.base.SubMesh;
 	import away3d.core.math.MathConsts;
@@ -383,7 +384,8 @@ package awaybuilder.utils.encoders
 				}
 			}
 			
-		}			
+		}	
+		
 		
 		// encode SkyBox (id=31)
 		private function _encodeSkyBox(sky : SkyBoxVO) : uint
@@ -553,15 +555,25 @@ package awaybuilder.utils.encoders
 			var radius:Number;
 			var fallOff:Number;
 			
-			
+			var lightMatrix:Matrix3D=getTransformMatrix(light);
 			// if the lights will be part of the sceneGraph, we will need to get its parentID 		
-			
-			
+			var dirVec:Vector3D=new Vector3D();
+			if (light.type==LightVO.DIRECTIONAL){
+				
+				
+				
+				dirVec.y = -Math.sin( light.elevationAngle*Math.PI/180);
+				dirVec.x =  Math.sin(Math.PI/2 - light.elevationAngle*Math.PI/180)*Math.sin( light.azimuthAngle*Math.PI/180);
+				dirVec.z =  Math.sin(Math.PI/2 - light.elevationAngle*Math.PI/180)*Math.cos( light.azimuthAngle*Math.PI/180);
+				var tmpObject:Object3D=new Object3D();
+				tmpObject.lookAt(new Vector3D(dirVec.x,dirVec.y,dirVec.z));
+				//lightMatrix=tmpObject.transform;
+			}
 			
 			returnID=_encodeBlockHeader(41);
 			_beginElement(); // Block
 			_body.writeUnsignedInt(parentId);//parent		
-			_encodeMatrix3D(getTransformMatrix(light));//matrix
+			_encodeMatrix3D(lightMatrix);//matrix
 			_body.writeUTF(light.name);//name
 			
 			if (light.type==LightVO.POINT){
@@ -586,8 +598,9 @@ package awaybuilder.utils.encoders
 			if(light.ambientColor!=0xffffff){_encodeProperty(7,light.ambientColor, COLOR);}//ambientColor
 			if(light.ambient!=0){_encodeProperty(8,light.ambient, FLOAT32);}//ambient-level
 			if (light.type==LightVO.DIRECTIONAL){
-				_encodeProperty(20,light.azimuthAngle, FLOAT32);//azimuthAngle
-				_encodeProperty(21,light.elevationAngle, FLOAT32);//azimuthAngle
+				_encodeProperty(21,dirVec.x, FLOAT32);//azimuthAngle
+				_encodeProperty(22,dirVec.y, FLOAT32);//azimuthAngle
+				_encodeProperty(23,dirVec.z, FLOAT32);//azimuthAngle
 			}		
 			// just add the shadowmapper as max 3 light-properties (shadowMapper-Type + shadowmapper-properties)	
 			if((light.castsShadows)&&(light.shadowMapper)){		
