@@ -465,8 +465,8 @@ package awaybuilder.utils.scene
 			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity)
 				camera.lens.far = 100000;
 			else {
-				var radius:Number = Math.max((bounds[3] - bounds[0]), (bounds[4] - bounds[1]), (bounds[2] - bounds[5])) * 0.5;
-				var dist:Number = camera.scenePosition.length + radius;
+				var radius:Number = Math.max((bounds[3] - bounds[0]), (bounds[4] - bounds[1]), (bounds[2] - bounds[5])) * 0.55;
+				var dist:Number = camera.scenePosition.length + radius + (camera.scenePosition.length / radius);
 				camera.lens.far = dist;
 			}
 		}

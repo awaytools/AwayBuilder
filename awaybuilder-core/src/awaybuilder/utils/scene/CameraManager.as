@@ -30,7 +30,8 @@ package awaybuilder.utils.scene
 		public static const ZOOM_MULTIPLIER:Number = 8;
 		
 		// Singleton instance declaration
-		private static const self:CameraManager = new CameraManager();		
+		private static const self : CameraManager = new CameraManager();
+		private var _lastRadius : Number;
 		public static function get instance():CameraManager { return self; }			
 		public function CameraManager() { if ( instance ) throw new Error("CameraManager is a singleton"); }			
 		
@@ -179,7 +180,12 @@ package awaybuilder.utils.scene
 						break;
 					case CameraMode.TARGET: processTargetMode();
 						break;				
-				}				
+				}
+				
+				if (_lastRadius != radius) {
+					Scene3DManager.updateDefaultCameraFarPlane();
+					_lastRadius = radius;		
+				}
 			}				
 		}					
 		
@@ -420,7 +426,6 @@ package awaybuilder.utils.scene
 						break;						
 					}
 				}
-				Scene3DManager.updateDefaultCameraFarPlane();
 			}			
 		}						
 		
