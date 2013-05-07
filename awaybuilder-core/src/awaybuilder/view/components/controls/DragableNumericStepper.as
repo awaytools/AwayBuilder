@@ -87,8 +87,8 @@ package awaybuilder.view.components.controls
 		{
 			valueDisplay.removeEventListener( MouseEvent.CLICK, valueDisplay_clickHandler );
 			valueDisplay.addEventListener( MouseEvent.CLICK, valueDisplay_clickHandler );
-			stage.addEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
-			stage.addEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
+			systemManager.getSandboxRoot().addEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
+			systemManager.getSandboxRoot().addEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
 			prevX = event.stageX;
 			prevY = event.stageY;
 			baseX = event.stageX;
@@ -98,8 +98,8 @@ package awaybuilder.view.components.controls
 		{
 			valueDisplay.removeEventListener( MouseEvent.CLICK, valueDisplay_clickHandler );
 			editingMode = true;
-			stage.removeEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
-			stage.removeEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
+			systemManager.getSandboxRoot().removeEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
+			systemManager.getSandboxRoot().removeEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
 		}
 		
 		private var prevX:Number = 0;
@@ -155,10 +155,9 @@ package awaybuilder.view.components.controls
 		}
 		private function stage_mouseUpHandler( event:MouseEvent ):void
 		{
-			stage.removeEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
-			stage.removeEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
+			systemManager.getSandboxRoot().removeEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
+			systemManager.getSandboxRoot().removeEventListener( MouseEvent.MOUSE_UP, stage_mouseUpHandler );
 		}
-		
 		private function textDisplay_enterHandler(event:Event):void
 		{
 			commitTextInput();
@@ -221,7 +220,7 @@ package awaybuilder.view.components.controls
 		private function onFocusInHandler(event:FocusEvent):void {
 			_isFocused = true;
 			invalidateSkinState();
-			stage.addEventListener(MouseEvent.CLICK,childUpOutside);
+			systemManager.getSandboxRoot().addEventListener(MouseEvent.CLICK,childUpOutside);
 		}
 		
 		private function onFocusOutHandler(event:FocusEvent):void {
@@ -229,7 +228,7 @@ package awaybuilder.view.components.controls
 			{
 				_isFocused = false;
 				invalidateSkinState();
-				stage.removeEventListener(MouseEvent.CLICK, childUpOutside);
+				systemManager.getSandboxRoot().removeEventListener(MouseEvent.CLICK, childUpOutside);
 				editingMode = false;
 			}
 			
@@ -241,14 +240,13 @@ package awaybuilder.view.components.controls
 			{
 				var s:Stage = Application(FlexGlobals.topLevelApplication).stage;
 				stage.focus = null;
-				stage.removeEventListener(MouseEvent.CLICK, childUpOutside);
+				systemManager.getSandboxRoot().removeEventListener(MouseEvent.CLICK, childUpOutside);
 			}
 			
 		}
 		private function removedFromStageHandler(event:Event):void
 		{
-			var s:Stage = Application(FlexGlobals.topLevelApplication).stage;
-			s.removeEventListener(MouseEvent.CLICK, childUpOutside);
+			systemManager.getSandboxRoot().removeEventListener(MouseEvent.CLICK, childUpOutside);
 		}
 		
 		override protected function getCurrentSkinState():String {
