@@ -318,7 +318,7 @@ package awaybuilder.utils.scene
 			
 			if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.addChild(gizmo);
 			else scene.addChild(gizmo);
-			if (light.parent != null) scene.addChild(light);
+			if (light.parent == null) scene.addChild(light);
 			
 			if (lights.getItemIndex(light) == -1) lights.addItem(light);
 		}
