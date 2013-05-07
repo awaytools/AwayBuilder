@@ -302,8 +302,8 @@ package awaybuilder.utils.scene
 			if (selectedObject) {
 				var isLightGizmo:LightGizmo3D = selectedObject.parent as LightGizmo3D;
 			 	if (!isLightGizmo || 
-					(isLightGizmo.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo) ||
-					(isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo))
+					(isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
+					(isLightGizmo.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo))
 					currentGizmo.show(selectedObject);			
 			}
 		}
@@ -421,6 +421,11 @@ package awaybuilder.utils.scene
 				}
 			}
 			
+			for each(var lG:LightGizmo3D in lightGizmos)
+			{
+				lG.parent.removeChild(lG);
+			}	
+					
 			for each(var l:LightBase in lights.source)
 			{
 				l.dispose();
@@ -650,27 +655,26 @@ package awaybuilder.utils.scene
 
 			var l:LightBase = o as LightBase;
 			var m:Mesh;
-			if (l) {
-				for each (var lG:LightGizmo3D in lightGizmos) {
-					if (lG.light == l)
+			if (l && l.name == meshName) {
+				var lG:LightGizmo3D;
+				m = null;
+				for each (lG in lightGizmos) {
+					if (lG.light == l) {
 						m = lG.cone;
-				}
 	
-				if (!m.showBounds)
-				{
-	
-					if (m is Mesh) m.showBounds = true;
-					selectedObjects.addItem(m);						
-					selectedObject = m;
-					
-					if ((lG.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
-						(lG.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo))
-						currentGizmo.show(selectedObject);
+						m.showBounds = true;
+						selectedObjects.addItem(m);						
+						selectedObject = m;
+						
+						if ((lG.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
+							(lG.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo))
+							currentGizmo.show(selectedObject);
+					}
 				}
 			} else {
 				for (var c:int = 0; c<o.numChildren; c++) {
 					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
-					selectObjectInContainer(container, meshName);
+					selectLightInContainer(container, meshName);
 				}
 			}
 		}

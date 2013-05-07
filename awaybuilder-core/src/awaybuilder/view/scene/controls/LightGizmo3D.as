@@ -63,6 +63,7 @@ package awaybuilder.view.scene.controls
 			} else {
 				cone.eulers = CameraManager.camera.eulers.clone();
 				cone.rotationX -= 90;
+				cone.rotationY -= 1; // Temporary fix for bounds visiblity
 				cone.scaleX = cone.scaleZ = CameraManager.radius / 1500;
 			}
 		}
