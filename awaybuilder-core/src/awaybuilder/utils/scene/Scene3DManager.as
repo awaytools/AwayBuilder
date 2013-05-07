@@ -1,5 +1,6 @@
 package awaybuilder.utils.scene
 {
+	import away3d.tools.utils.Bounds;
 	import avmplus.getQualifiedClassName;
 	
 	import away3d.cameras.Camera3D;
@@ -423,7 +424,9 @@ package awaybuilder.utils.scene
 			
 			for each(var lG:LightGizmo3D in lightGizmos)
 			{
-				lG.parent.removeChild(lG);
+				if (lG.parent) 
+					lG.parent.removeChild(lG);
+				lG.dispose();	
 			}	
 					
 			for each(var l:LightBase in lights.source)
@@ -436,17 +439,20 @@ package awaybuilder.utils.scene
 		}
 		
 		public static function get sceneBounds() : Vector.<Number> {
+			
 			var min:Vector3D = new Vector3D(Infinity, Infinity, Infinity);
 			var max:Vector3D = new Vector3D(-Infinity, -Infinity, -Infinity);
 			
 			for each(var o:ObjectContainer3D in objects.source) {
 				if (!(o is SkyBox)) {
-					if (o.minX < min.x) min.x = o.minX;
-					if (o.minY < min.y) min.y = o.minY;
-					if (o.minZ < min.z) min.z = o.minZ;
-					if (o.maxX > max.x) max.x = o.maxX;
-					if (o.maxY > max.y) max.y = o.maxY;
-					if (o.maxZ > max.z) max.z = o.maxZ;
+					Bounds.getObjectContainerBounds(o);
+			
+					if (Bounds.minX < min.x) min.x = Bounds.minX;
+					if (Bounds.minY < min.y) min.y = Bounds.minY;
+					if (Bounds.minZ < min.z) min.z = Bounds.minZ;
+					if (Bounds.maxX > max.x) max.x = Bounds.maxX;
+					if (Bounds.maxY > max.y) max.y = Bounds.maxY;
+					if (Bounds.maxZ > max.z) max.z = Bounds.maxZ;
 				}
 			}
 
