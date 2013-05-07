@@ -71,7 +71,6 @@ package awaybuilder.view.scene.controls
 			if (!active && currentMesh != null) 
 			{
 				this.position = currentMesh.scenePosition;
-				this.content.eulers = currentMesh.eulers;
 			}
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
@@ -91,9 +90,6 @@ package awaybuilder.view.scene.controls
 			else
 			{
 				this.position = mesh.scenePosition;
-				content.rotationX = mesh.rotationX;
-				content.rotationY = mesh.rotationY;
-				content.rotationZ = mesh.rotationZ;				
 			}
 			
 
