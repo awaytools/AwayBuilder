@@ -518,7 +518,7 @@ package awaybuilder.utils.encoders
 			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  FLOAT32);
 			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  FLOAT32);
 			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  FLOAT32);
-			if(mesh.castsShadows==true)_encodeProperty(5,mesh.pivotZ,  BOOL);
+			if(mesh.castsShadows==true)_encodeProperty(5,mesh.castsShadows,  BOOL);
 			_endElement(); // Prop list
 			
 			
@@ -584,18 +584,22 @@ package awaybuilder.utils.encoders
 			if(light.specular!=1){_encodeProperty(4,light.specular, FLOAT32);}//specular
 			if(light.diffuse!=1){_encodeProperty(5,light.diffuse, FLOAT32);}//diffuse
 			if(light.ambientColor!=0xffffff){_encodeProperty(7,light.ambientColor, COLOR);}//ambientColor
-			if(light.ambient!=0){_encodeProperty(8,light.ambient, FLOAT32);}//color
+			if(light.ambient!=0){_encodeProperty(8,light.ambient, FLOAT32);}//ambient-level
+			if (light.type==LightVO.DIRECTIONAL){
+				_encodeProperty(20,light.azimuthAngle, FLOAT32);//azimuthAngle
+				_encodeProperty(21,light.elevationAngle, FLOAT32);//azimuthAngle
+			}		
 			// just add the shadowmapper as max 3 light-properties (shadowMapper-Type + shadowmapper-properties)	
 			if((light.castsShadows)&&(light.shadowMapper)){		
 				var mapperVO:ShadowMapperVO=light.shadowMapper;
 				switch(mapperVO.type){ 
 					case "NearDirectionalShadowMapper":
-						_encodeProperty(9,1, UINT8);
+						_encodeProperty(9,2, UINT8);
 						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
 						if(mapperVO.coverage!=0.5)_encodeProperty(11,mapperVO.coverage, FLOAT32);
 						break;
 					case "DirectionalShadowMapper":
-						_encodeProperty(9,2, UINT8);
+						_encodeProperty(9,1, UINT8);
 						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
 						break;
 					case "CascadeShadowMapper":
