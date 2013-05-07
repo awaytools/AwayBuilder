@@ -43,7 +43,6 @@ package awaybuilder.controller.clipboard
 				{
 					var newObject:Object3D = assets.GetObject( asset ) as Object3D;
 					copiedObjects.push( asset.clone() );
-					trace( "newMesh.name  = " + newObject.name );
 				}
 				
 			}

@@ -1179,7 +1179,6 @@ package awaybuilder.view.mediators
 					selected.push(asset);
 				}
 			} 
-			trace( "select" );
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
 		}
 

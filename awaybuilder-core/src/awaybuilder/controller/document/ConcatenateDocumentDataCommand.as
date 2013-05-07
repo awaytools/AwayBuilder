@@ -64,11 +64,8 @@ package awaybuilder.controller.document
 			document.scene = new ArrayCollection(document.scene.source.concat( data.scene.source ));
 			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
 			document.textures = new ArrayCollection(document.textures.source.concat( data.textures.source ));
-			trace( "data.lights.source = "  + data.lights.source );
-			trace( "document.lights.source = "  + document.lights.source );
 			document.lights = new ArrayCollection(document.lights.source.concat( data.lights.source ));
 			
-			trace( "document.lights = "  + document.lights );
 			document.methods = new ArrayCollection(document.methods.source.concat( data.methods.source ));
 			
 			document.empty = false;

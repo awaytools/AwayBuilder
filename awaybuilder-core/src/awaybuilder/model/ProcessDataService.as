@@ -89,12 +89,8 @@ package awaybuilder.model
 				dispatch( new ErrorLogEvent(ErrorLogEvent.LOG_ENTRY_MADE));
 			}
 			
-			trace( "_document.lights = " + _document.lights );
-			
 			_nextEvent.newValue = _document;
-			trace( "_nextEvent = " + _nextEvent );
 			dispatch( _nextEvent );
-			
 			
 			CursorManager.removeBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = true;

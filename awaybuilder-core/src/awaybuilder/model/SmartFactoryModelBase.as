@@ -55,50 +55,69 @@ package awaybuilder.model
 			{
 				case(item is Mesh):
 					return fillMesh( new MeshVO(), item as Mesh );
+					
 				case(item is LightBase):
 					return fillLight( new LightVO(), item as LightBase  );
+					
 				case(item is SkyBox):
 					return fillSkyBox( new SkyBoxVO(), item as SkyBox  );
+					
 				case(item is Entity):
 				case(item is ObjectContainer3D):
 					return fillContainer( new ContainerVO(), item as ObjectContainer3D );
+					
 				case(item is MaterialBase):
 					return fillMaterial( new MaterialVO(), item as MaterialBase );
+					
 				case(item is BitmapTexture):
 					return fillTexture( new TextureVO(), item as BitmapTexture );
+					
 				case(item is Geometry):
 					return fillGeometry( new GeometryVO(), item as Geometry );
+					
 				case(item is ISubGeometry):
 					return fillSubGeometry( new SubGeometryVO(), item as ISubGeometry );
+					
 				case(item is AnimationNodeBase):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					return asset;
+					
 				case(item is AnimationSetBase):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					asset.name = "Animation Set (" + item.name +")";
 					return asset;
+					
 				case(item is AnimationStateBase):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					asset.name = "Animation State (" + item.name +")";
+					
 					return asset;
 				case(item is SkeletonPose):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					asset.name = "Skeleton Pose (" + item.name +")";
 					return asset;
+					
 				case(item is Skeleton):
 					return fillAsset( new SkeletonVO(), item as Skeleton );
+					
 				case(item is ShadowMapMethodBase):
 					return fillShadowMethod( new ShadowMethodVO(), item as ShadowMapMethodBase );
+					
 				case(item is SubMesh):
 					return fillSubMesh( new SubMeshVO(), item as SubMesh );
+					
 				case(item is EffectMethodBase):
 					return fillEffectMethod( new EffectMethodVO(), item as EffectMethodBase );
+					
 				case(item is LightPickerBase):
 					return fillLightPicker( new LightPickerVO(),  item as StaticLightPicker );
+					
 				case(item is BitmapCubeTexture):
 					return fillCubeTexture( new CubeTextureVO(),  item as BitmapCubeTexture );
+					
 				case(item is ShadowMapperBase):
 					return fillShadowMapper( new ShadowMapperVO(),  item as ShadowMapperBase );
+					
 				case(item is ShadingMethodBase):
 					return fillShadingMethod( new ShadingMethodVO(),  item as ShadingMethodBase );
 			}
@@ -229,7 +248,12 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, item ) as ShadowMethodVO;
 			asset.castingLight = GetAsset( item.castingLight ) as LightVO;
-			//asset.castingLight.shadowMethods.addItem( asset );
+			var alreadyAdded:Boolean = false;
+			for each( var method:ShadowMethodVO in asset.castingLight.shadowMethods )
+			{
+				if( method.equals( asset ) ) alreadyAdded = false;	
+			}
+			if( !alreadyAdded )	asset.castingLight.shadowMethods.addItem( asset );
 			
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;
@@ -277,7 +301,6 @@ package awaybuilder.model
 			asset.specular = item.specular;
 			
 			asset.castsShadows = item.castsShadows;
-			trace( "item.castsShadows = " + item.castsShadows );
 			asset.shadowMapper = GetAsset( item.shadowMapper ) as ShadowMapperVO;
 			
 			if( item is DirectionalLight ) 
