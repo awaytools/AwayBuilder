@@ -253,7 +253,7 @@ package awaybuilder.model
 			{
 				if( method.equals( asset ) ) alreadyAdded = true;	
 			}
-			if( !alreadyAdded )	asset.castingLight.shadowMethods.addItem( asset );
+			if( !alreadyAdded )	asset.castingLight.shadowMethods.addItem( asset ); // Lights are containers for shadows
 			
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;

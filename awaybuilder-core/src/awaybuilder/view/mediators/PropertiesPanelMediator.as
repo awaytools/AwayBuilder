@@ -2,6 +2,7 @@ package awaybuilder.view.mediators
 {
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
+    import awaybuilder.controller.history.UndoRedoEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
@@ -69,6 +70,9 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightToLightpickerHandler);
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
+			
+			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
+			addContextListener(SceneEvent.DELETE_OBJECTS, context_deleteObjectsHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, context_documentUpdatedHandler);
 
@@ -692,6 +696,48 @@ package awaybuilder.view.mediators
 			}
         }
 
+		
+		private function context_deleteObjectsHandler(event:SceneEvent):void
+		{
+			if( (view.data is AssetVO) && !getCurrentIsPresent( view.data as AssetVO ) ) 
+			{
+				dispatch( new SceneEvent( SceneEvent.SELECT, [] ) );
+			}
+		}
+		private function context_undoHandler(event:UndoRedoEvent):void
+		{
+			if( (view.data is AssetVO) && !getCurrentIsPresent( view.data as AssetVO ) ) 
+			{
+				dispatch( new SceneEvent( SceneEvent.SELECT, [] ) );
+			}
+		}
+		
+		private function getCurrentIsPresent( asset:AssetVO ):Boolean
+		{
+			if( getAssetIsInList( asset, document.scene ) ) return true;
+			if( getAssetIsInList( asset, document.textures ) ) return true;
+			if( getAssetIsInList( asset, document.materials ) ) return true;
+			if( getAssetIsInList( asset, document.methods ) ) return true;
+			if( getAssetIsInList( asset, document.geometry ) ) return true;
+			if( getAssetIsInList( asset, document.lights ) ) return true;
+			if( getAssetIsInList( asset, document.animations ) ) return true;
+			if( getAssetIsInList( asset, document.skeletons ) ) return true;
+			return false;
+		}
+		private function getAssetIsInList( asset:AssetVO, list:ArrayCollection ):Boolean
+		{
+			for each ( var item:AssetVO in list )
+			{
+				if( item.equals( asset ) ) return true;
+				
+				var container:ContainerVO = item as ContainerVO;
+				if( container && container.children && container.children.length )
+				{
+					if( getAssetIsInList( asset, container.children ) ) return true;
+				}
+			}
+			return false;
+		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
 			var nullItem:AssetVO = new AssetVO();
