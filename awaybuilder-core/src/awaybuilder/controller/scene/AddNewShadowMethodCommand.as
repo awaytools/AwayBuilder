@@ -35,8 +35,15 @@ package awaybuilder.controller.scene
 				}
 				else 
 				{
-					asset.shadowMethods.addItem(newValue);
+					var alreadyAdded:Boolean = false;
+					for each( var method:ShadowMethodVO in asset.shadowMethods )
+					{
+						if( method.equals( newValue ) ) alreadyAdded = true;	
+					}
+					if( !alreadyAdded )	asset.shadowMethods.addItem( newValue );
 				}
+				
+				
 			}
 			
 			addToHistory( event );

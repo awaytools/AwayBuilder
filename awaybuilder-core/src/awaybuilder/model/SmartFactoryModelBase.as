@@ -251,7 +251,7 @@ package awaybuilder.model
 			var alreadyAdded:Boolean = false;
 			for each( var method:ShadowMethodVO in asset.castingLight.shadowMethods )
 			{
-				if( method.equals( asset ) ) alreadyAdded = false;	
+				if( method.equals( asset ) ) alreadyAdded = true;	
 			}
 			if( !alreadyAdded )	asset.castingLight.shadowMethods.addItem( asset );
 			
