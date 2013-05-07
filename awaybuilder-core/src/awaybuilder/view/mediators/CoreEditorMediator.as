@@ -323,6 +323,8 @@ package awaybuilder.view.mediators
 			{
 				applyObject( object );
 			}
+			
+			Scene3DManager.updateDefaultCameraFarPlane();
 		}
 		
 		private function applySkyBox( asset:SkyBoxVO ):void

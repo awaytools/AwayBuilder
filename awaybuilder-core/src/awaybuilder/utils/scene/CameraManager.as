@@ -261,8 +261,14 @@ package awaybuilder.utils.scene
 				bmax = Mesh(t).bounds.max.clone();
 			} else {
 				var vec:Vector.<Number> = Scene3DManager.sceneBounds;
-				bmin = new Vector3D(vec[0], vec[1], vec[2]);
-				bmax = new Vector3D(vec[3], vec[4], vec[5]);
+				
+				if (vec[0]==Infinity || vec[1]==Infinity || vec[2]==Infinity || vec[3]==-Infinity || vec[4]==-Infinity || vec[5]==-Infinity) { 
+					bmin = new Vector3D(-500, 0, 0);
+					bmax = new Vector3D(500, 0, 0);
+				} else {
+					bmin = new Vector3D(vec[0], vec[1], vec[2]);
+					bmax = new Vector3D(vec[3], vec[4], vec[5]);
+				}
 			}
 			
 				
@@ -296,6 +302,7 @@ package awaybuilder.utils.scene
 			var dist:Vector3D = camera.scenePosition.subtract(pos);
 			wheelSpeed = dist.length/60; 
 			Scene3DManager.zoomToDistance(radius);
+			Scene3DManager.updateDefaultCameraFarPlane();
 		}
 		
 		
@@ -413,6 +420,7 @@ package awaybuilder.utils.scene
 						break;						
 					}
 				}
+				Scene3DManager.updateDefaultCameraFarPlane();
 			}			
 		}						
 		

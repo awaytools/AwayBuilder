@@ -56,8 +56,6 @@ package awaybuilder.view.mediators
 		{
 			statusBar.zoom -= CameraManager.ZOOM_DELTA_VALUE;
 			CameraManager.radius = CameraManager.zoomFunction(statusBar.zoom);
-			
-			
 		}
 	}
 }

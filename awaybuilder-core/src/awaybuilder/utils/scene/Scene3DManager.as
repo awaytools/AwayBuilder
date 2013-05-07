@@ -113,6 +113,7 @@ package awaybuilder.utils.scene
 			
 			directionalLightView = new View3D();
 			directionalLightView.shareContext = true;
+			directionalLightView.layeredView = true;
 			directionalLightView.stage3DProxy = stage3DProxy;	
 			directionalLightView.mousePicker = PickingType.RAYCAST_BEST_HIT;
 			directionalLightView.camera.lens.near = 1;
@@ -456,11 +457,18 @@ package awaybuilder.utils.scene
 				}
 			}
 
-			var v:Vector.<Number> = Vector.<Number>([min.x, min.y, min.z, max.x, max.y, max.z]);
-			if (min.x==Infinity || min.y==Infinity || min.z==Infinity || max.x==-Infinity || max.y==-Infinity || max.z==-Infinity)
-				v = Vector.<Number>([-500, 0, 0, 500, 0, 0]);
-
-			return v;
+			return Vector.<Number>([min.x, min.y, min.z, max.x, max.y, max.z]);
+		}
+		
+		public static function updateDefaultCameraFarPlane() : void {
+			var bounds:Vector.<Number> = sceneBounds;
+			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity)
+				camera.lens.far = 100000;
+			else {
+				var radius:Number = Math.max((bounds[3] - bounds[0]), (bounds[4] - bounds[1]), (bounds[2] - bounds[5])) * 0.5;
+				var dist:Number = camera.scenePosition.length + radius;
+				camera.lens.far = dist;
+			}
 		}
 		
 		public static function addObject(o:ObjectContainer3D):void
