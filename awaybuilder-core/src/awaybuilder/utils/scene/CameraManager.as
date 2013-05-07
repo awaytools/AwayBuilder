@@ -160,6 +160,11 @@ package awaybuilder.utils.scene
 					instance.poi.eulers = camera.eulers;
 					instance.poi.moveForward(300);
 					instance.initTargetMode(5, 300, _xDeg, _yDeg);
+					
+					radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
+					Scene3DManager.updateDefaultCameraFarPlane();
+					Scene3DManager.zoomToDistance(radius);
+					
 				break;
 			}			
 		}
@@ -182,7 +187,7 @@ package awaybuilder.utils.scene
 						break;				
 				}
 				
-				if (_lastRadius != radius) {
+				if (_lastRadius != radius || mode == CameraMode.FREE) {
 					Scene3DManager.updateDefaultCameraFarPlane();
 					_lastRadius = radius;		
 				}
@@ -209,7 +214,7 @@ package awaybuilder.utils.scene
 			camera.moveForward(_zSpeed * _runMultiplier);
 			camera.moveRight(_xSpeed * _runMultiplier);
 						
-			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));			
+			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));	
 		}
 		
 		
@@ -244,6 +249,8 @@ package awaybuilder.utils.scene
 			
 			camera.position = getCameraPosition(_xDeg, -_yDeg);							
 			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));
+			
+			if (hasMoved) radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
 		}			
 		
 		
