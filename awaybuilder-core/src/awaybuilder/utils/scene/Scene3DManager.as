@@ -154,7 +154,7 @@ package awaybuilder.utils.scene
 						
 			
 			//Create Grid
-			grid = new WireframePlane(10000, 10000, 100, 100, 0x000000, 1, "xz");
+			grid = new WireframePlane(10000, 10000, 100, 100, 0x000000, 0.5, "xz");
 			grid.mouseEnabled = false;
 			scene.addChild(grid);	
 			
