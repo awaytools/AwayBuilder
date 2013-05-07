@@ -65,6 +65,7 @@ package awaybuilder.view.scene.controls
 				cone.rotationX -= 90;
 				cone.rotationY -= 1; // Temporary fix for bounds visiblity
 				cone.scaleX = cone.scaleZ = CameraManager.radius / 1500;
+				cone.position = light.position.clone();
 			}
 		}
 	}
