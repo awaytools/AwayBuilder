@@ -21,7 +21,7 @@
 			<fx:Object label="WrapDiffuseMethod" value="WrapDiffuseMethod"/>
 			<fx:Object label="LightMapDiffuseMethod" value="LightMapDiffuseMethod"/>
 			<fx:Object label="CelDiffuseMethod" value="CelDiffuseMethod"/>
-			<fx:Object label="SubsurfaceScatteringDiffuse" value="SubsurfaceScatteringDiffuseMethod"/>
+			<!--<fx:Object label="SubsurfaceScatteringDiffuse" value="SubsurfaceScatteringDiffuseMethod"/>-->
 		</s:ArrayCollection>
 		<s:ArrayCollection id="specularList">
 			<fx:Object label="BasicSpecularMethod" value="BasicSpecularMethod"/>
