@@ -81,7 +81,7 @@ Note: To improve quality, it is advisable to manually adjust the source image in
 	</s:HGroup>
 	<s:HGroup width="100%" paddingTop="16" paddingRight="16" paddingLeft="16"
 			  verticalAlign="middle" horizontalAlign="center">
-	    <s:DataGrid height="170" id="textureWarnings" 
+	    <s:DataGrid height="170" id="textureWarnings" selectionColor="0x111111" rollOverColor="0x222222"
 	        dataProvider="{textureWarningLog}"
 	        width="100%">   
 	        <s:columns>
