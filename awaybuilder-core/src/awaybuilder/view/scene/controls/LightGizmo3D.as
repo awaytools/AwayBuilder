@@ -40,7 +40,7 @@ package awaybuilder.view.scene.controls
 			if (type == DIRECTIONAL_LIGHT) {
 				cone = new Mesh(new PlaneGeometry(50, 50, 1, 1), lightTexture);
 				cone.y = 150;
-				var wC:WireframeCylinder = new WireframeCylinder(100, 100, 300, 8, 1, 0xffff00, 0.5);
+				var wC:WireframeCylinder = new WireframeCylinder(100, 100, 300, 8, 1, 0xffff00, 0.25);
 				wC.y = -150;
 				cone.addChild(wC);
 				cone.rotationX = -90;

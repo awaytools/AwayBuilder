@@ -35,7 +35,7 @@ package awaybuilder.controller.scene
 			else
 			{
 				document.scene.addItemAt( newValue, 0 );
-				Scene3DManager.addObject( assets.GetObject(newValue) as SkyBox );
+				Scene3DManager.addSkybox( assets.GetObject(newValue) as SkyBox );
 			}
 			
 			addToHistory( event );

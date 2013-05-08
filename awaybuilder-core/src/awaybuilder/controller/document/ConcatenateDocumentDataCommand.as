@@ -157,7 +157,7 @@ package awaybuilder.controller.document
 			var skyBox:SkyBoxVO = value as SkyBoxVO;
 			if( skyBox ) 
 			{
-				Scene3DManager.addObject( assets.GetObject(skyBox) as SkyBox );
+				Scene3DManager.addSkybox( assets.GetObject(skyBox) as SkyBox );
 			}
 		}
 		private function addLight( value:Object ):void

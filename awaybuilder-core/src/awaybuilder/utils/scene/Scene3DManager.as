@@ -61,6 +61,7 @@ package awaybuilder.utils.scene
 		public static var view:View3D;
 		public static var directionalLightView:View3D;
 		public static var gizmoView : View3D;
+		public static var backgroundView : View3D;
 		public static var scene:Scene3D;
 		public static var camera:Camera3D;
 		
@@ -73,6 +74,7 @@ package awaybuilder.utils.scene
 		public static var lights:ArrayList = new ArrayList();// TODO: Use vector
 		
 		public static var grid:WireframePlane;
+		public static var backgroundGrid:WireframePlane;
 		public static var orientationTool:OrientationTool;
 		
 		public static var currentGizmo:Gizmo3DBase;
@@ -96,10 +98,18 @@ package awaybuilder.utils.scene
 		
 		private function onContextCreated(e:Stage3DEvent):void 
 		{
+			backgroundView = new View3D();
+			backgroundView.shareContext = true;
+			backgroundView.stage3DProxy = stage3DProxy;	
+			backgroundView.camera.lens.near = 1;
+			backgroundView.camera.lens.far = 110000;			
+			scope.addChild(backgroundView);
+
 			//Create view3D, camera and add to stage
 			view = new View3D();
 			view.shareContext = true;
-			view.stage3DProxy = stage3DProxy;	
+			view.stage3DProxy = stage3DProxy;
+			view.layeredView = true;
 			view.mousePicker = PickingType.RAYCAST_BEST_HIT;
 			view.camera.lens.near = 1;
 			view.camera.lens.far = 100000;			
@@ -158,6 +168,10 @@ package awaybuilder.utils.scene
 			grid.mouseEnabled = false;
 			scene.addChild(grid);	
 			
+			//Background grid 
+			backgroundGrid = new WireframePlane(10000, 10000, 100, 100, 0x000000, 0.25, "xz");
+			backgroundGrid.mouseEnabled = false;
+			backgroundView.scene.addChild(backgroundGrid);	
 			
 			//Camera Settings
 			CameraManager.init(scope, view);	
@@ -188,15 +202,26 @@ package awaybuilder.utils.scene
 		}
 		
 		private function loop(e:Event):void 
-		{			
+		{						
+			updateBackgroundGrid();
+
 			currentGizmo.update();
 			updateLights();
 			updateContainerGizmos();
 			
 			view.render();			
+
 			updateDirectionalLightView();
 			orientationTool.update();
 			gizmoView.render();
+		}
+		
+		private function updateBackgroundGrid() : void {
+			backgroundView.camera.lens.near = CameraManager.camera.lens.far;
+			backgroundView.camera.lens.far = CameraManager.camera.lens.far + 10000;
+			backgroundView.camera.transform = CameraManager.camera.transform.clone();
+			backgroundGrid.transform = Scene3DManager.grid.transform.clone();
+			backgroundView.render();
 		}
 
 		private function updateDirectionalLightView() : void {
@@ -260,8 +285,8 @@ package awaybuilder.utils.scene
 			stage3DProxy.width = scope.width;
 			stage3DProxy.height = scope.height;			
 			
-			view.width = directionalLightView.width = gizmoView.width = scope.width;
-			view.height = directionalLightView.height = gizmoView.height = scope.height;
+			backgroundView.width = view.width = directionalLightView.width = gizmoView.width = scope.width;
+			backgroundView.height = view.height = directionalLightView.height = gizmoView.height = scope.height;
 		}
 		
 		// Mouse Events *************************************************************************************************************************************************
@@ -447,7 +472,7 @@ package awaybuilder.utils.scene
 			for each(var o:ObjectContainer3D in objects.source) {
 				if (!(o is SkyBox)) {
 					Bounds.getObjectContainerBounds(o);
-			
+					
 					if (Bounds.minX < min.x) min.x = Bounds.minX;
 					if (Bounds.minY < min.y) min.y = Bounds.minY;
 					if (Bounds.minZ < min.z) min.z = Bounds.minZ;
@@ -465,9 +490,13 @@ package awaybuilder.utils.scene
 			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity)
 				camera.lens.far = 100000;
 			else {
-				var radius:Number = Math.max((bounds[3] - bounds[0]), (bounds[4] - bounds[1]), (bounds[2] - bounds[5])) * 0.55;
-				var dist:Number = camera.scenePosition.length + radius + (camera.scenePosition.length / radius);
-				camera.lens.far = dist;
+				var vec:Vector3D = new Vector3D(bounds[3] - bounds[0], bounds[4] - bounds[1], bounds[5] - bounds[2]);
+				vec.x = (vec.x * 0.5) + bounds[0];
+				vec.y = (vec.y * 0.5) + bounds[1];
+				vec.z = (vec.z * 0.5) + bounds[2];
+				
+				// Far plane is distance from camera position to scene bounds center + the radius of the scene bounds
+				camera.lens.far = Vector3D.distance(camera.scenePosition, vec) + Vector3D.distance(vec, new Vector3D(bounds[0], bounds[1], bounds[2]));;
 			}
 		}
 		
@@ -476,6 +505,17 @@ package awaybuilder.utils.scene
 			addMousePicker(o);
 			
 			scene.addChild(o);
+			
+			objects.addItem(o);
+
+			attachGizmos(o);
+		}
+
+		public static function addSkybox(o:ObjectContainer3D):void
+		{		
+			addMousePicker(o);
+			
+			backgroundView.scene.addChild(o);
 			
 			objects.addItem(o);
 
