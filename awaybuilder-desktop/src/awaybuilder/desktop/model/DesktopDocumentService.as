@@ -2,13 +2,18 @@ package awaybuilder.desktop.model
 {
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
 	import awaybuilder.model.SmartDocumentServiceBase;
 	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.encoders.AWDEncoder;
 	import awaybuilder.utils.encoders.ISceneGraphEncoder;
 	
+	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -16,6 +21,8 @@ package awaybuilder.desktop.model
 	import flash.net.FileFilter;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	
+	import mx.managers.CursorManager;
 	
 	public class DesktopDocumentService extends SmartDocumentServiceBase implements IDocumentService
 	{
@@ -25,9 +32,14 @@ package awaybuilder.desktop.model
 		
 		private var _nextEvent:HistoryEvent;
 		
-		public function openBitmap( event:HistoryEvent ):void
+		private var _items:Array;
+		
+		private var _property:String;
+		
+		public function openBitmap( items:Array, property:String ):void
 		{
-			_nextEvent = event;
+			_items = items;
+			_property = property;
 			var file:File = new File();
 			file.addEventListener(Event.SELECT, bitmapFile_open_selectHandler);
 			file.addEventListener(Event.CANCEL, bitmapFile_open_cancelHandler);
@@ -152,9 +164,7 @@ package awaybuilder.desktop.model
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-//			_nextEvent.name = file.name;
-//			_nextEvent.path = file.url;
-			load( file.url );
+			loadBitmap( file.url );
 		}
 		private function bitmapFile_open_cancelHandler(event:Event):void
 		{
@@ -169,8 +179,6 @@ package awaybuilder.desktop.model
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 			
-//			_nextEvent.name = file.name;
-//			_nextEvent.path = file.url;
 			load( file.url );
 		}
 		
@@ -181,10 +189,30 @@ package awaybuilder.desktop.model
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 		}
 		
-		override protected function documentReady( _document:DocumentVO ):void {
+		override protected function documentReady( _document:DocumentVO ):void 
+		{
 			_nextEvent.newValue = _document;
 			dispatch( _nextEvent );
 		}
 		
+		override protected function bitmapReady( bitmap:Bitmap ):void
+		{
+			var asset:AssetVO = _items[0] as AssetVO;
+			var clone:AssetVO;
+			if( asset is CubeTextureVO )
+			{
+				clone = CubeTextureVO(asset).clone();
+				clone[_property] = bitmap.bitmapData;
+				dispatch( new SceneEvent( SceneEvent.CHANGE_CUBE_TEXTURE, _items, clone ) );
+			}
+			else if( asset is TextureVO )
+			{
+				clone = TextureVO(asset).clone();
+				TextureVO(clone).bitmapData = bitmap.bitmapData;
+				dispatch( new SceneEvent( SceneEvent.CHANGE_TEXTURE, _items, clone ) );
+			}
+			
+			CursorManager.removeBusyCursor();
+		}
 	}
 }

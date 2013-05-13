@@ -1,10 +1,7 @@
 package awaybuilder.controller.document
 {
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
-	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.model.IDocumentService;
-	
-	import flash.utils.setTimeout;
 	
 	import org.robotlegs.mvcs.Command;
 	

@@ -1,50 +1,27 @@
 package awaybuilder.web.model
 {
-	import away3d.containers.ObjectContainer3D;
-	import away3d.entities.Mesh;
-	import away3d.events.AssetEvent;
-	import away3d.events.LoaderEvent;
-	import away3d.library.AssetLibrary;
-	import away3d.library.assets.AssetType;
-	import away3d.library.assets.BitmapDataAsset;
-	import away3d.loaders.parsers.Parsers;
-	import away3d.materials.MaterialBase;
-	import away3d.primitives.SkyBox;
-	
-	import awaybuilder.controller.events.ErrorLogEvent;
-	import awaybuilder.controller.events.ReadDocumentEvent;
-	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
-	import awaybuilder.model.AssetsModel;
-	import awaybuilder.model.DocumentModel;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.IDocumentService;
 	import awaybuilder.model.SmartDocumentServiceBase;
 	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.utils.encoders.AWDEncoder;
-	import awaybuilder.utils.encoders.ISceneGraphEncoder;
-	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	
-	import flash.events.DataEvent;
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.HTTPStatusEvent;
-	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.FileFilter;
 	import flash.net.FileReference;
-	import flash.net.URLRequest;
-	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
-	import mx.collections.ArrayCollection;
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
-	
-	import org.robotlegs.mvcs.Actor;
-	
-	import spark.components.Application;
 	
 	public class DocumentService extends SmartDocumentServiceBase implements IDocumentService
 	{
@@ -52,14 +29,19 @@ package awaybuilder.web.model
 		
 		private var _nextEvent:HistoryEvent;
 		
+		private var _items:Array;
+		
+		private var _property:String;
+		
 		private var _fileToData:Dictionary = new Dictionary();
 		
 		private var _file:FileReference;
 		
-		public function openBitmap( event:HistoryEvent ):void
+		public function openBitmap( items:Array, property:String ):void
 		{
 			_file = new FileReference();
-			_nextEvent = event;
+			_items = items;
+			_property = property;
 			_file.addEventListener(Event.SELECT, bitmapFile_open_selectHandler);
 			_file.addEventListener(Event.CANCEL, bitmapFile_open_cancelHandler);
 			var filters:Array = [];
@@ -114,18 +96,23 @@ package awaybuilder.web.model
 		
 		private function bitmapFile_open_selectHandler(event:Event):void
 		{
-			_file.removeEventListener(Event.SELECT, file_open_selectHandler);
-			_file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			_file.addEventListener(Event.COMPLETE, file_open_completeHandler);
+			_file.removeEventListener(Event.SELECT, bitmapFile_open_selectHandler);
+			_file.removeEventListener(Event.CANCEL, bitmapFile_open_cancelHandler);
+			_file.addEventListener(Event.COMPLETE, bitmapFile_open_completeHandler);
 			_file.load();
 		}
 		private function bitmapFile_open_cancelHandler(event:Event):void
 		{
 			var file:FileReference = FileReference(event.currentTarget);
-			file.removeEventListener(Event.SELECT, file_open_selectHandler);
-			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
+			file.removeEventListener(Event.SELECT, bitmapFile_open_selectHandler);
+			file.removeEventListener(Event.CANCEL, bitmapFile_open_cancelHandler);
 		}
 		
+		private function bitmapFile_open_completeHandler(event:Event):void
+		{
+			_file.removeEventListener(Event.COMPLETE, bitmapFile_open_completeHandler);
+			parseBitmap( _file.data );
+		}	
 		private function file_open_selectHandler(event:Event):void
 		{
 			_file.removeEventListener(Event.SELECT, file_open_selectHandler);
@@ -168,9 +155,30 @@ package awaybuilder.web.model
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 		}
 		
-		override protected function documentReady( _document:DocumentVO ):void {
+		override protected function documentReady( _document:DocumentVO ):void 
+		{
 			_nextEvent.newValue = _document;
 			dispatch( _nextEvent );
+		}
+		
+		override protected function bitmapReady( bitmap:Bitmap ):void
+		{
+			var asset:AssetVO = _items[0] as AssetVO;
+			var clone:AssetVO;
+			if( asset is CubeTextureVO )
+			{
+				clone = CubeTextureVO(asset).clone();
+				clone[_property] = bitmap.bitmapData;
+				dispatch( new SceneEvent( SceneEvent.CHANGE_CUBE_TEXTURE, _items, clone ) );
+			}
+			else if( asset is TextureVO )
+			{
+				clone = TextureVO(asset).clone();
+				TextureVO(clone).bitmapData = bitmap.bitmapData;
+				dispatch( new SceneEvent( SceneEvent.CHANGE_TEXTURE, _items, clone ) );
+			}
+			
+			CursorManager.removeBusyCursor();
 		}
 		
 	}

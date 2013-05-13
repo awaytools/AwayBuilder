@@ -6,32 +6,25 @@ package awaybuilder.controller.document
 	import away3d.primitives.SkyBox;
 	
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
-	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
-	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
-	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
 	import flash.events.Event;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
-	
-	import org.robotlegs.mvcs.Command;
 	
 	import spark.components.Application;
 

@@ -17,7 +17,7 @@ package awaybuilder.controller.document
 		{
 //			var nextEvent:ImportTextureEvent = new ImportTextureEvent(ImportTextureEvent.LOAD_AND_BITMAP_REPLACE, event.items);
 //			nextEvent.options = event.options;
-//			this.fileService.openBitmap( nextEvent );
+			this.fileService.openBitmap( event.items , event.options as String  );
 		}
 	}
 }

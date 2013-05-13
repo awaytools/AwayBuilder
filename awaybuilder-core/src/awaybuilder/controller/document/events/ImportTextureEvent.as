@@ -1,16 +1,12 @@
 package awaybuilder.controller.document.events
 {
-	import awaybuilder.controller.events.ReadDocumentEvent;
-	
 	import flash.events.Event;
 
-	public class ImportTextureEvent extends ReadDocumentEvent
+	public class ImportTextureEvent extends Event
 	{
 		public static const IMPORT_AND_BITMAP_REPLACE:String = "importBitmapAndRplace";
-		public static const LOAD_AND_BITMAP_REPLACE:String = "loadBitmapAndRplace";
 		
 		public static const IMPORT_AND_ADD:String = "importTextureForMaterial";
-		public static const LOAD_AND_ADD:String = "loadTextureForMaterial";
 		
 		public function ImportTextureEvent( type:String, items:Array, options:Object=null )
 		{

@@ -1,6 +1,6 @@
 package awaybuilder.controller.document
 {
-	import awaybuilder.controller.events.ReadDocumentEvent;
+	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.model.IDocumentService;
 	
 	import flash.utils.setTimeout;
@@ -14,8 +14,8 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			var nextEvent:ReadDocumentEvent = new ReadDocumentEvent(ReadDocumentEvent.APPEND_DOCUMENT, null, null);
-//			this.fileService.open( "all", nextEvent );
+			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
+			this.fileService.open( "open", nextEvent );
 		}
 	}
 }

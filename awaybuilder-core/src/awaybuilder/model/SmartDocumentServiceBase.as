@@ -13,8 +13,14 @@ package awaybuilder.model
 	
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	
@@ -35,6 +41,24 @@ package awaybuilder.model
 		private var _document:DocumentVO;
 		
 		private var _objects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
+		
+		protected function loadBitmap( url:String  ):void
+		{
+			var loader:Loader = new Loader();             
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loader_completeHander); 
+			loader.load( new URLRequest(url) );
+		}
+		protected function parseBitmap( data:ByteArray ):void
+		{
+			var loader:Loader = new Loader();             
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loader_completeHander); 
+			loader.loadBytes( data );
+		}
+		private function loader_completeHander(event:Event):void
+		{
+			var loader:LoaderInfo = LoaderInfo( event.currentTarget );       
+			bitmapReady(loader.content as Bitmap);
+		}
 		
 		protected function load( url:String ):void
 		{
@@ -108,9 +132,6 @@ package awaybuilder.model
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
 		}
 		
-		protected function documentReady( _document:DocumentVO ):void {
-			throw new Error( "Abstract method error" );
-		}
 		private function assetCompleteHandler( event:AssetEvent ):void
 		{		
 			switch( event.asset.assetType )
@@ -161,5 +182,12 @@ package awaybuilder.model
 			}
 		}
 		
+		protected function documentReady( _document:DocumentVO ):void {
+			throw new Error( "Abstract method error" );
+		}
+		
+		protected function bitmapReady( bitmap:Bitmap ):void {
+			throw new Error( "Abstract method error" );
+		}
 	}
 }

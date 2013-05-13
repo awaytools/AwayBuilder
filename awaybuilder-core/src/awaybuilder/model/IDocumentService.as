@@ -1,6 +1,5 @@
 package awaybuilder.model
 {
-	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
 	
 	public interface IDocumentService
@@ -9,6 +8,6 @@ package awaybuilder.model
 		function saveAs(data:Object, defaultName:String):void;
 		function open( type:String, event:HistoryEvent ):void;
 		
-		function openBitmap( event:HistoryEvent ):void;
+		function openBitmap( items:Array, property:String ):void;
 	}
 }

@@ -6,17 +6,13 @@ package awaybuilder
 	import awaybuilder.controller.clipboard.PasteCommand;
 	import awaybuilder.controller.clipboard.events.ClipboardEvent;
 	import awaybuilder.controller.clipboard.events.PasteEvent;
-	import awaybuilder.controller.document.AppendDocumentCommand;
 	import awaybuilder.controller.document.ChangeGlobalOptionsCommand;
 	import awaybuilder.controller.document.ConcatenateDocumentDataCommand;
 	import awaybuilder.controller.document.ImportBitmapCommand;
 	import awaybuilder.controller.document.ImportDocumentCommand;
 	import awaybuilder.controller.document.ImportTextureForMaterialCommand;
-	import awaybuilder.controller.document.LoadBitmapAndReplaceCommand;
-	import awaybuilder.controller.document.LoadTextureForMaterialCommand;
 	import awaybuilder.controller.document.NewDocumentCommand;
 	import awaybuilder.controller.document.OpenDocumentCommand;
-	import awaybuilder.controller.document.ReplaceDocumentCommand;
 	import awaybuilder.controller.document.SaveDocumentCommand;
 	import awaybuilder.controller.document.SaveDocumentFailCommand;
 	import awaybuilder.controller.document.SaveDocumentSuccessCommand;
@@ -25,7 +21,6 @@ package awaybuilder
 	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
-	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.history.RedoCommand;
@@ -67,7 +62,6 @@ package awaybuilder
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.ProcessDataService;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.model.WindowModel;
 	import awaybuilder.view.components.CoreEditor;
@@ -103,9 +97,6 @@ package awaybuilder
 			this.commandMap.mapEvent(DocumentEvent.OPEN_DOCUMENT, OpenDocumentCommand);
 			this.commandMap.mapEvent(DocumentEvent.IMPORT_DOCUMENT, ImportDocumentCommand);
 			
-			this.commandMap.mapEvent(ReadDocumentEvent.REPLACE_DOCUMENT, ReplaceDocumentCommand);
-			this.commandMap.mapEvent(ReadDocumentEvent.APPEND_DOCUMENT, AppendDocumentCommand);
-			
 			this.commandMap.mapEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA, ConcatenateDocumentDataCommand);
 			
 			this.commandMap.mapEvent(ReadDocumentDataResultEvent.READ_DOCUMENT_DATA_FAULT, ReadDocumentDataFaultCommand);
@@ -130,10 +121,8 @@ package awaybuilder
 			this.commandMap.mapEvent(SceneEvent.SELECT, SelectCommand);
 			
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_ADD, ImportTextureForMaterialCommand);
-			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_ADD, LoadTextureForMaterialCommand);
 			
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE, ImportBitmapCommand);
-			this.commandMap.mapEvent(ImportTextureEvent.LOAD_AND_BITMAP_REPLACE, LoadBitmapAndReplaceCommand);
 			
 			commandMap.mapEvent(SceneEvent.CHANGE_GLOBAL_OPTIONS, ChangeGlobalOptionsCommand);
 			
@@ -174,7 +163,6 @@ package awaybuilder
 			this.injector.mapSingleton(DocumentModel);
 			this.injector.mapSingleton(AssetsModel);
 			this.injector.mapSingleton(UndoRedoModel);
-			this.injector.mapSingleton(ProcessDataService);
 			this.injector.mapSingleton(WindowModel);
 			
 			this.mediatorMap.mapView(CoreEditor, CoreEditorMediator);
