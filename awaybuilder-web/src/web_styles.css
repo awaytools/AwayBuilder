@@ -1,0 +1,10 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "awaybuilder.desktop.view.components.*";
+
+s|Application
+{
+	backgroundColor: #333333;
+	backgroundAlpha: 0;
+	skinClass: ClassReference("awaybuilder.web.view.skins.AwayBuilderSkin");
+}

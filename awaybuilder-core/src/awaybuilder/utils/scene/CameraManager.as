@@ -10,12 +10,13 @@ package awaybuilder.utils.scene
 	import awaybuilder.utils.scene.modes.CameraMode;
 	
 	import com.greensock.TweenMax;
-
+	
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
+	import flash.system.Capabilities;
 	
 	import mx.core.UIComponent;
 
@@ -107,8 +108,12 @@ package awaybuilder.utils.scene
 			instance.scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);	
 			instance.stage.addEventListener(Event.MOUSE_LEAVE, instance.onMouseLeave);	
 			instance.stage.addEventListener(MouseEvent.MOUSE_WHEEL, instance.onMouseWheel);
-			instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
-			instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
+			
+			if(Capabilities.playerType == "Desktop")
+			{
+				instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, instance.onMouseMiddleDown);
+				instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
+			}
 			
 			scope.addEventListener(Event.ENTER_FRAME, instance.loop);
 		}

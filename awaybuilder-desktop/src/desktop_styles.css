@@ -6,7 +6,7 @@ s|WindowedApplication
 {
 	backgroundColor: #333333;
 	backgroundAlpha: 0;
-	skinClass: ClassReference("awaybuilder.desktop.view.skins.DesktopAppSkin");
+	skinClass: ClassReference("awaybuilder.desktop.view.skins.AwayBuilderSkin");
 }
 
 s|Window

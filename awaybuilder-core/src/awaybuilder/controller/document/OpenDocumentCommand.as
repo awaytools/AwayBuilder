@@ -1,5 +1,6 @@
 package awaybuilder.controller.document
 {
+	import awaybuilder.controller.events.DocumentDataOperationEvent;
 	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.model.IDocumentService;
 	
@@ -14,7 +15,8 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			var nextEvent:ReadDocumentEvent = new ReadDocumentEvent(ReadDocumentEvent.REPLACE_DOCUMENT, null, null);
+			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
+			nextEvent.canUndo = false;
 			this.fileService.open( "open", nextEvent );
 		}
 	}

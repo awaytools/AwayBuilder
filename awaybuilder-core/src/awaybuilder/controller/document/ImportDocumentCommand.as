@@ -15,7 +15,7 @@ package awaybuilder.controller.document
 		override public function execute():void
 		{
 			var nextEvent:ReadDocumentEvent = new ReadDocumentEvent(ReadDocumentEvent.APPEND_DOCUMENT, null, null);
-			this.fileService.open( "all", nextEvent );
+//			this.fileService.open( "all", nextEvent );
 		}
 	}
 }

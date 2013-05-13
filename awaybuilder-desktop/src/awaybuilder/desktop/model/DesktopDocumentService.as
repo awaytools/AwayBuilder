@@ -1,9 +1,11 @@
 package awaybuilder.desktop.model
 {
-	import awaybuilder.controller.events.ReadDocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
+	import awaybuilder.model.SmartDocumentServiceBase;
+	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.utils.encoders.AWDEncoder;
 	import awaybuilder.utils.encoders.ISceneGraphEncoder;
 	
@@ -15,19 +17,15 @@ package awaybuilder.desktop.model
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
-	import mx.collections.ArrayCollection;
-	
-	import org.robotlegs.mvcs.Actor;
-	
-	public class FileSystemDocumentService extends Actor implements IDocumentService
+	public class DesktopDocumentService extends SmartDocumentServiceBase implements IDocumentService
 	{
 		private static const FILE_EXTENSION : String = '.awd';
 		
 		private var _fileToData:Dictionary = new Dictionary();
 		
-		private var _nextEvent:ReadDocumentEvent;
+		private var _nextEvent:HistoryEvent;
 		
-		public function openBitmap( event:ReadDocumentEvent ):void
+		public function openBitmap( event:HistoryEvent ):void
 		{
 			_nextEvent = event;
 			var file:File = new File();
@@ -39,7 +37,7 @@ package awaybuilder.desktop.model
 			file.browseForOpen(title, filters);
 		}
 		
-		public function open( type:String, event:ReadDocumentEvent ):void
+		public function open( type:String, event:HistoryEvent ):void
 		{
 			_nextEvent = event;
 			var file:File = new File();
@@ -69,9 +67,6 @@ package awaybuilder.desktop.model
 		
 		public function saveAs(data:Object, defaultName:String):void
 		{
-			trace(defaultName);
-			trace(defaultName.toLowerCase().lastIndexOf(FILE_EXTENSION));
-			trace(defaultName.length - FILE_EXTENSION.length);
 			if(defaultName.toLowerCase().lastIndexOf(FILE_EXTENSION) != defaultName.length - FILE_EXTENSION.length)
 			{
 				defaultName += FILE_EXTENSION;
@@ -157,9 +152,9 @@ package awaybuilder.desktop.model
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			_nextEvent.name = file.name;
-			_nextEvent.path = file.url;
-			dispatch(_nextEvent);
+//			_nextEvent.name = file.name;
+//			_nextEvent.path = file.url;
+			load( file.url );
 		}
 		private function bitmapFile_open_cancelHandler(event:Event):void
 		{
@@ -174,9 +169,9 @@ package awaybuilder.desktop.model
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 			
-			_nextEvent.name = file.name;
-			_nextEvent.path = file.url;
-			dispatch(_nextEvent);
+//			_nextEvent.name = file.name;
+//			_nextEvent.path = file.url;
+			load( file.url );
 		}
 		
 		private function file_open_cancelHandler(event:Event):void
@@ -184,6 +179,11 @@ package awaybuilder.desktop.model
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
+		}
+		
+		override protected function documentReady( _document:DocumentVO ):void {
+			_nextEvent.newValue = _document;
+			dispatch( _nextEvent );
 		}
 		
 	}

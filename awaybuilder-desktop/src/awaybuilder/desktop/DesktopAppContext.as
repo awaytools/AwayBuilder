@@ -2,7 +2,6 @@ package awaybuilder.desktop
 {
     import awaybuilder.CoreContext;
     import awaybuilder.controller.events.DocumentEvent;
-    import awaybuilder.controller.events.DocumentLoadEvent;
     import awaybuilder.controller.events.DocumentRequestEvent;
     import awaybuilder.controller.events.MessageBoxEvent;
     import awaybuilder.controller.events.SceneReadyEvent;
@@ -18,13 +17,11 @@ package awaybuilder.desktop
     import awaybuilder.desktop.controller.events.AboutEvent;
     import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
     import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
-    import awaybuilder.desktop.model.FileSystemDocumentService;
+    import awaybuilder.desktop.model.DesktopDocumentService;
     import awaybuilder.desktop.view.components.AboutWindow;
-    import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
     import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
     import awaybuilder.desktop.view.mediators.AboutWindowMediator;
     import awaybuilder.desktop.view.mediators.ApplicationMediator;
-    import awaybuilder.desktop.view.mediators.DocumentLoadProgressWindowMediator;
     import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
     import awaybuilder.model.IDocumentService;
     
@@ -67,18 +64,15 @@ package awaybuilder.desktop
 			this.commandMap.mapEvent(MessageBoxEvent.SHOW_MESSAGE_BOX, ShowMessageBoxCommand);
 			this.commandMap.mapEvent(AboutEvent.SHOW_ABOUT, ShowAboutWindowCommand);
 			
-			this.commandMap.mapEvent(DocumentLoadEvent.SHOW_DOCUMENT_LOAD_PROGRESS, ShowDocumentLoadProgressWindowCommand);
-
 			this.commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
 			
 			
-			this.injector.mapSingletonOf(IDocumentService, FileSystemDocumentService);
+			this.injector.mapSingletonOf(IDocumentService, DesktopDocumentService);
 			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);
 			
 			this.mediatorMap.mapView(AwayBuilderApplication, ApplicationMediator);
 			this.mediatorMap.mapView(EditedDocumentWarningWindow, EditedDocumentWarningWindowMediator);
 			this.mediatorMap.mapView(AboutWindow, AboutWindowMediator);
-			this.mediatorMap.mapView(DocumentLoadProgressWindow, DocumentLoadProgressWindowMediator);
 			
 			this.mediatorMap.createMediator(FlexGlobals.topLevelApplication);
 			this.dispatchEvent(new ContextEvent(ContextEvent.STARTUP));

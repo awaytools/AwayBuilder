@@ -62,6 +62,8 @@
 				bmp = new BitmapData(dim, dim, tmp.transparent, 0);
 				bmp.draw(tmp, mtx, null, null, null, true);
 				
+				
+				
 				//TODO: Replace the assets BitmapTexture bitmapData with the rescaled version
 			}
 		]]>
