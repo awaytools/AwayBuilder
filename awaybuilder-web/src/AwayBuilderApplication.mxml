@@ -5,6 +5,7 @@
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	xmlns:components="awaybuilder.view.components.*"
 	frameRate="60"
+	preloader="AwayBuilderPreloader"
 	minWidth="1000" minHeight="720" 
 	backgroundColor="0x333333"
 	preinitialize="preinitializeHandler(event)"

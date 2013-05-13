@@ -2,6 +2,8 @@ package awaybuilder.web.controller
 {
 	import awaybuilder.controller.events.SceneReadyEvent;
 	
+	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.system.Capabilities;
 	import flash.utils.setTimeout;
 	
@@ -19,13 +21,10 @@ package awaybuilder.web.controller
 		
 		override public function execute():void
 		{
-//			_app = FlexGlobals.topLevelApplication as AwayBuilderApplication;
-//			_app.splashScreen.close();
-//			_app.visible = true;
-//			_app.alwaysInFront = true;
-//			_app.alwaysInFront = false;
+			_app = FlexGlobals.topLevelApplication as AwayBuilderApplication;
+//			Sprite(_app.preloader).dispatchEvent(new Event(Event.COMPLETE)); 
+			
 		}
-		
 		
 	}
 }
