@@ -319,8 +319,10 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_translateHandler(event:SceneEvent):void
 		{
 			var object:ObjectVO = event.items[0] as ObjectVO;
-			if( object ) 
-			{
+			var lightObject:LightVO = event.items[0] as LightVO;
+			if( lightObject ) {
+				applyLight( lightObject );
+			} else if (object) {
 				applyObject( object );
 			}
 			
@@ -1195,16 +1197,17 @@ package awaybuilder.view.mediators
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-			var m:Mesh = event.object as Mesh;
+			var m:ObjectContainer3D = event.object as ObjectContainer3D;
 			var vo:ObjectVO;
-			if (m.parent is LightGizmo3D) 
-				vo = assets.GetAsset( (m.parent as LightGizmo3D).light ) as ObjectVO;
-			else if (m.parent is ContainerGizmo3D) 
+			var lvo:LightVO;
+			var dL:DirectionalLight = event.object as DirectionalLight;
+			if (m.parent is ContainerGizmo3D) 
 				vo = assets.GetAsset( (m.parent as ContainerGizmo3D).container ) as ObjectVO;
             else 
 				vo = assets.GetAsset( event.object ) as ObjectVO;
 
 			vo = vo.clone() as ObjectVO;
+			lvo = vo.clone() as LightVO;
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:
@@ -1213,9 +1216,15 @@ package awaybuilder.view.mediators
 					vo.z = event.endValue.z;
                     break;
                 case GizmoMode.ROTATE:
-					vo.rotationX = event.endValue.x;
-					vo.rotationY = event.endValue.y;
-					vo.rotationZ = event.endValue.z;
+					if (lvo && dL) {
+						lvo.elevationAngle = Math.round(-Math.asin( dL.direction.y )*180/Math.PI);
+						var a:Number = Math.atan2(dL.direction.x, dL.direction.z )*180/Math.PI;
+						lvo.azimuthAngle = Math.round(a<0?a+360:a);
+					} else {
+						vo.rotationX = event.endValue.x;
+						vo.rotationY = event.endValue.y;
+						vo.rotationZ = event.endValue.z;
+					}
                     break;
                 default:
 					vo.scaleX = event.endValue.x;
@@ -1224,12 +1233,13 @@ package awaybuilder.view.mediators
                     break;
             }
 
-            this.dispatch(new SceneEvent(SceneEvent.CHANGING,[vo]));
+            if (lvo && dL) this.dispatch(new SceneEvent(SceneEvent.CHANGING,[lvo]));
+			else this.dispatch(new SceneEvent(SceneEvent.CHANGING,[vo]));
         }
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
-			var m:Mesh = event.object as Mesh;
+			var m:ObjectContainer3D = event.object as ObjectContainer3D;
 			var vo:ObjectVO;
 			if (m.parent is LightGizmo3D)
 				vo = assets.GetAsset( (m.parent as LightGizmo3D).light ) as ObjectVO;

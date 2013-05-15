@@ -1,13 +1,12 @@
 package awaybuilder.view.scene.controls
 {
+	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.utils.scene.CameraManager;
 	import flash.display3D.Context3DCompareMode;
-	import flash.display.BlendMode;
 	import away3d.primitives.WireframeCylinder;
 	import away3d.lights.DirectionalLight;
 	import flash.geom.Vector3D;
 	import away3d.primitives.PlaneGeometry;
-	import away3d.cameras.Camera3D;
 	import away3d.materials.TextureMaterial;
 	import away3d.utils.Cast;
 	import away3d.containers.ObjectContainer3D;
@@ -60,11 +59,13 @@ package awaybuilder.view.scene.controls
 			if (type == DIRECTIONAL_LIGHT) {
 				cone.eulers = light.eulers.clone();
 				cone.rotationX -= 90;
+				//trace("DIRLight:"+cone.eulers);
 			} else {
 				cone.eulers = CameraManager.camera.eulers.clone();
 				cone.rotationX -= 90;
 				cone.rotationY -= 1; // Temporary fix for bounds visiblity
-				cone.scaleX = cone.scaleZ = CameraManager.radius / 1500;
+				var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(cone.scenePosition);
+				cone.scaleX = cone.scaleZ = dist.length/1500;
 				cone.position = light.position.clone();
 			}
 		}

@@ -41,6 +41,8 @@ package awaybuilder.view.scene.controls
 		
 		public function ScaleGizmo3D()
 		{
+			type = SCALE_GIZMO;
+
 			var cubeGeom:CubeGeometry = new CubeGeometry(20, 20, 20, 1, 1, 1, true);
 			var cylGeom:CylinderGeometry = new CylinderGeometry(5, 5, 100, 16, 1, true, true, true, false);
 			

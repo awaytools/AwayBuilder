@@ -4,8 +4,6 @@ package awaybuilder.view.scene.controls
 	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
-	import away3d.lights.PointLight;
-	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.primitives.ConeGeometry;
 	import away3d.primitives.CylinderGeometry;
 	
@@ -37,6 +35,8 @@ package awaybuilder.view.scene.controls
 		
 		public function TranslateGizmo3D()
 		{
+			type = TRANSLATE_GIZMO;
+			
 			var coneGeom:ConeGeometry = new ConeGeometry(10, 20, 16, 1, true, false);
 			var cylGeom:CylinderGeometry = new CylinderGeometry(5, 5, 100, 16, 1, true, true, true, false);		
 			
@@ -178,10 +178,10 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
 				
-			actualMesh = currentMesh;			
+			actualMesh = (currentMesh.parent is ContainerGizmo3D) ? currentMesh.parent.parent : (currentMesh.parent is LightGizmo3D) ? (currentMesh.parent as LightGizmo3D).light : currentMesh;
 			
 			startValue = actualMesh.position;
-			
+
 			switch(currentAxis)
 			{
 				case "xAxis":
@@ -264,11 +264,13 @@ package awaybuilder.view.scene.controls
 					break;				
 			}					
 			
-			actualMesh.position = this.position.clone();					
-			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
 			
+			//if (actualMesh.parent is ContainerGizmo3D) actualMesh.parent.parent.position = this.position.clone() 
+			//else 
+			actualMesh.position = this.position.clone();
+
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
 		}
 		
@@ -287,7 +289,7 @@ package awaybuilder.view.scene.controls
 			yCylinder.material = yAxisMaterial;			
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
-			
+
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position.clone()));
 		}		
 		

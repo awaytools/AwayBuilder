@@ -64,6 +64,7 @@ package awaybuilder.utils.scene
 		public static var backgroundView : View3D;
 		public static var scene:Scene3D;
 		public static var camera:Camera3D;
+		public static var gizmoCamera:Camera3D;
 		
 		public static var selectedObjects:ArrayList = new ArrayList();// TODO: Use vector
 		public static var selectedObject:Entity;
@@ -142,7 +143,9 @@ package awaybuilder.utils.scene
 			gizmoView.stage3DProxy = stage3DProxy;	
 			gizmoView.layeredView = true;
 			gizmoView.mousePicker = PickingType.RAYCAST_BEST_HIT;
-			gizmoView.camera = camera;
+			gizmoView.camera.lens.near = 1;
+			gizmoView.camera.lens.far = 100000;	
+			gizmoCamera = gizmoView.camera;
 			scope.addChild(gizmoView);
 			
 			//Create Gizmos
@@ -206,6 +209,7 @@ package awaybuilder.utils.scene
 			updateBackgroundGrid();
 
 			currentGizmo.update();
+			updateGizmo();
 			updateLights();
 			updateContainerGizmos();
 			
@@ -332,6 +336,16 @@ package awaybuilder.utils.scene
 					(isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
 					(isLightGizmo.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo))
 					currentGizmo.show(selectedObject);			
+			}
+		}
+		
+		public static function updateGizmo() : void {
+			gizmoCamera.transform = camera.transform.clone();
+			var isLightGizmo:LightGizmo3D = (selectedObject && selectedObject.parent) as LightGizmo3D;
+		 	if (isLightGizmo && isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) {
+				var oC:ObjectContainer3D = Scene3DManager.camera.clone() as ObjectContainer3D;
+				oC.moveForward(1000);
+				currentGizmo.position = oC.position;
 			}
 		}
 		

@@ -2,9 +2,7 @@ package awaybuilder.view.scene.controls
 {
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Entity;
-	import away3d.entities.Mesh;
 	import away3d.lights.DirectionalLight;
-	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	
@@ -15,6 +13,11 @@ package awaybuilder.view.scene.controls
 	
 	public class Gizmo3DBase extends ObjectContainer3D
 	{
+		protected const BASE_GIZMO:String = "baseGizmo";
+		protected const TRANSLATE_GIZMO:String = "translationGizmo";
+		protected const ROTATE_GIZMO:String = "rotationGizmo";
+		protected const SCALE_GIZMO:String = "scaleGizmo";
+		
 		public var active:Boolean = false;
 		public var hasMoved:Boolean = false;
 		
@@ -32,8 +35,10 @@ package awaybuilder.view.scene.controls
 		protected var sphereMaterial:ColorMaterial = new ColorMaterial(0xFFFFFF, 0.3);
 		protected var sphereHighlightMaterial:ColorMaterial = new ColorMaterial(0xFFFFFF, 0.6);
 		protected var cubeMaterial:ColorMaterial = new ColorMaterial();
+		protected var isLightGizmo:LightGizmo3D;
+		protected var type : String = BASE_GIZMO;
 		
-		private var ambientLight:DirectionalLight;
+		private var ambientLight : DirectionalLight;
 		
 		public function Gizmo3DBase()
 		{
@@ -70,7 +75,8 @@ package awaybuilder.view.scene.controls
 			
 			if (!active && currentMesh != null) 
 			{
-				this.position = currentMesh.scenePosition;
+				if (!(isLightGizmo && isLightGizmo.type == LightGizmo3D.DIRECTIONAL_LIGHT))
+					this.position = currentMesh.scenePosition;
 			}
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
@@ -80,16 +86,22 @@ package awaybuilder.view.scene.controls
 		{
 			currentMesh = mesh;
 			
-			if (currentMesh.parent is LightGizmo3D) 
+			isLightGizmo = currentMesh.parent as LightGizmo3D;
+			if (isLightGizmo) 
 			{
-				this.position = mesh.parent.parent.scenePosition;
-				content.rotationX = mesh.parent.parent.rotationX;
-				content.rotationY = mesh.parent.parent.rotationY;
-				content.rotationZ = mesh.parent.parent.rotationZ;				
+				this.position = isLightGizmo.light.scenePosition;
+				content.rotationX = content.rotationY = content.rotationZ = 0;		
 			}
 			else
 			{
 				this.position = mesh.scenePosition;
+				if (type == ROTATE_GIZMO) {
+					content.rotationX = mesh.rotationX;
+					content.rotationY = mesh.rotationY;
+					content.rotationZ = mesh.rotationZ;
+				} else {
+					content.rotationX = content.rotationY = content.rotationZ = 0;		
+				}
 			}
 			
 

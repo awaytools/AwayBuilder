@@ -254,7 +254,7 @@ package awaybuilder.utils.scene
 			
 			camera.position = getCameraPosition(_xDeg, -_yDeg);							
 			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));
-			
+			Scene3DManager.updateGizmo();
 			if (hasMoved) radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
 		}			
 		

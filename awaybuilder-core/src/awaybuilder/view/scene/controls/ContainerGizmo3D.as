@@ -20,9 +20,9 @@ package awaybuilder.view.scene.controls
 			
 			containerGizmo = new Mesh(new CubeGeometry(10, 10, 10), new ColorMaterial(0x0000ff));
 			var axisLines:SegmentSet = new SegmentSet();
-			axisLines.addSegment(new LineSegment(new Vector3D(-50, 0, 0), new Vector3D(50, 0, 0), 0x0, 0x0, 1));
-			axisLines.addSegment(new LineSegment(new Vector3D(0, -50, 0), new Vector3D(0, 50, 0), 0x0, 0x0, 1));
-			axisLines.addSegment(new LineSegment(new Vector3D(0, 0, -50), new Vector3D(0, 0, 50), 0x0, 0x0, 1));
+			axisLines.addSegment(new LineSegment(new Vector3D(-50, 0, 0), new Vector3D(50, 0, 0), 0x0, 0x0, 0.5));
+			axisLines.addSegment(new LineSegment(new Vector3D(0, -50, 0), new Vector3D(0, 50, 0), 0x0, 0x0, 0.5));
+			axisLines.addSegment(new LineSegment(new Vector3D(0, 0, -50), new Vector3D(0, 0, 50), 0x0, 0x0, 0.5));
 			containerGizmo.name = container.name + "_gizmo";
 			containerGizmo.mouseEnabled = true;
 			containerGizmo.pickingCollider = PickingColliderType.AS3_BEST_HIT;

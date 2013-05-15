@@ -1,5 +1,6 @@
 package awaybuilder.controller.scene
 {
+    import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.DocumentModel;
@@ -25,9 +26,15 @@ package awaybuilder.controller.scene
 				event.oldValue = new Vector3D( vo.rotationX, vo.rotationY, vo.rotationZ );
 			}
 			
-            vo.rotationX = vector.x;
-            vo.rotationY = vector.y;
-            vo.rotationZ = vector.z;
+			var lvo:LightVO = vo as LightVO;
+			if (lvo && lvo.type == LightVO.DIRECTIONAL) {
+				lvo.elevationAngle = ((vector.x + 360 + 90) % 360) - 90;
+				lvo.azimuthAngle = (vector.y + 360) % 360;
+			} else {
+	            vo.rotationX = vector.x;
+	            vo.rotationY = vector.y;
+	            vo.rotationZ = vector.z;
+			}
 
 //			vo.apply();
 
