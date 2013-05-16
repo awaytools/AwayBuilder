@@ -1,4 +1,4 @@
-package awaybuilder.view.components.tree
+package awaybuilder.view.components.controls.tree
 {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -26,17 +26,17 @@ package awaybuilder.view.components.tree
 	/**
 	 *  Dispatched when a branch is closed or collapsed.
 	 */
-	[Event(name="itemClose", type="awaybuilder.view.components.tree.TreeEvent")]
+	[Event(name="itemClose", type="awaybuilder.view.components.controls.tree.TreeEvent")]
 	
 	/**
 	 *  Dispatched when a branch is opened or expanded.
 	 */
-	[Event(name="itemOpen", type="awaybuilder.view.components.tree.TreeEvent")]
+	[Event(name="itemOpen", type="awaybuilder.view.components.controls.tree.TreeEvent")]
 	
 	/**
 	 *  Dispatched when a branch open or close is initiated.
 	 */
-	[Event(name="itemOpening", type="awaybuilder.view.components.tree.TreeEvent")]
+	[Event(name="itemOpening", type="awaybuilder.view.components.controls.tree.TreeEvent")]
 	
 	//--------------------------------------
 	//  Styles

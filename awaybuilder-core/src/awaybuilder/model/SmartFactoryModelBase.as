@@ -12,6 +12,7 @@ package awaybuilder.model
 	import away3d.core.base.SubMesh;
 	import away3d.entities.Entity;
 	import away3d.entities.Mesh;
+	import away3d.entities.TextureProjector;
 	import away3d.library.assets.NamedAssetBase;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
@@ -61,6 +62,9 @@ package awaybuilder.model
 					
 				case(item is SkyBox):
 					return fillSkyBox( new SkyBoxVO(), item as SkyBox  );
+					
+				case(item is TextureProjector):
+					return fillTextureProjector( new TextureProjectorVO(), item as TextureProjector  );
 					
 				case(item is Entity):
 				case(item is ObjectContainer3D):
@@ -284,6 +288,14 @@ package awaybuilder.model
 			return asset;
 		}
 		
+		private function fillTextureProjector( asset:TextureProjectorVO, obj:TextureProjector ):TextureProjectorVO
+		{
+			asset = fillObject( asset, obj ) as TextureProjectorVO;
+			asset.aspectRatio = obj.aspectRatio;
+			asset.fov = obj.fieldOfView;
+			asset.texture = GetAsset( obj.texture ) as TextureVO;
+			return asset;
+		}
 		private function fillSkyBox( asset:SkyBoxVO, obj:SkyBox ):SkyBoxVO
 		{
 			asset = fillAsset( asset, obj ) as SkyBoxVO;
@@ -741,8 +753,43 @@ package awaybuilder.model
 		protected var _assets:Dictionary = new Dictionary();
 		protected var _objectsByAsset:Dictionary = new Dictionary();
 		
-		protected var _defaultMaterial:MaterialVO;
-		protected var _defaultTexture:TextureVO;
-		protected var _defaultCubeTexture:CubeTextureVO;
+		private var _defaultMaterial:MaterialVO;
+		public function get defaultMaterial():MaterialVO
+		{
+			if( !_defaultMaterial )
+			{
+				createDefaults();
+			}
+			return _defaultMaterial;
+		}
+		
+		private var _defaultTexture:TextureVO;
+		public function get defaultTexture():TextureVO
+		{
+			if( !_defaultTexture )
+			{
+				createDefaults();
+			}
+			return _defaultTexture;
+		}
+		
+		private var _defaultCubeTexture:CubeTextureVO;
+		public function get defaultCubeTexture():CubeTextureVO
+		{
+			if( !_defaultCubeTexture )
+			{
+				createDefaults();
+			}
+			return _defaultCubeTexture;
+		}
+		
+		public function Clear():void
+		{
+			_defaultMaterial = null;
+			_defaultTexture = null;
+			_assets = new Dictionary();
+			_objectsByAsset = new Dictionary();
+			AssetUtil.Clear();
+		}
 	}
 }

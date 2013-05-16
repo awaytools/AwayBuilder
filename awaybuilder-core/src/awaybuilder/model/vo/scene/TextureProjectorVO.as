@@ -1,7 +1,7 @@
 package awaybuilder.model.vo.scene
 {
 	[Bindable]
-	public class TextureProjectorVO extends ObjectVO
+	public class TextureProjectorVO extends ContainerVO
 	{
 		public var aspectRatio:Number;
 		
@@ -18,7 +18,10 @@ package awaybuilder.model.vo.scene
 		
 		public function fillFromTextureProjector( asset:TextureProjectorVO ):void
 		{
-			this.fillFromObject( asset );
+			this.fillFromContainer( asset );
+			this.aspectRatio = asset.aspectRatio;
+			this.fov = asset.fov;
+			this.texture = asset.texture;
 		}
 		
 	}

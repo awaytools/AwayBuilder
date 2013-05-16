@@ -5,6 +5,7 @@ package awaybuilder.view.mediators
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
+    import away3d.entities.TextureProjector;
     import away3d.library.assets.NamedAssetBase;
     import away3d.lights.DirectionalLight;
     import away3d.lights.LightBase;
@@ -89,6 +90,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
+    import awaybuilder.model.vo.scene.TextureProjectorVO;
     import awaybuilder.model.vo.scene.TextureVO;
     import awaybuilder.utils.scene.CameraManager;
     import awaybuilder.utils.scene.Scene3DManager;
@@ -155,8 +157,10 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_TEXTURE, eventDispatcher_changeTextureHandler);
 			addContextListener(SceneEvent.CHANGE_GEOMETRY, eventDispatcher_changeGeometryHandler);
 			addContextListener(SceneEvent.CHANGE_SKYBOX, eventDispatcher_changeSkyboxHandler);
+			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, eventDispatcher_changeTextureProjectorHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
+			addContextListener(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewCubeTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
@@ -329,6 +333,14 @@ package awaybuilder.view.mediators
 			Scene3DManager.updateDefaultCameraFarPlane();
 		}
 		
+		private function applyTextureProjector( asset:TextureProjectorVO ):void
+		{
+			var obj:TextureProjector = assets.GetObject( asset ) as TextureProjector;
+			obj.fieldOfView = asset.fov;
+			obj.aspectRatio = asset.aspectRatio;
+			obj.texture = assets.GetObject(asset.texture) as Texture2DBase;
+			applyObject( asset );
+		}
 		private function applySkyBox( asset:SkyBoxVO ):void
 		{
 			var obj:SkyBox = assets.GetObject( asset ) as SkyBox;
@@ -901,6 +913,14 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function eventDispatcher_changeTextureProjectorHandler(event:SceneEvent):void
+		{
+			var asset:TextureProjectorVO = event.items[0] as TextureProjectorVO;
+			if( asset ) 
+			{
+				applyTextureProjector( asset );
+			}
+		}
 		private function eventDispatcher_changeSkyboxHandler(event:SceneEvent):void
 		{
 			var asset:SkyBoxVO = event.items[0] as SkyBoxVO;

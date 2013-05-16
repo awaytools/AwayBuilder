@@ -11,14 +11,21 @@
 	<fx:Script><![CDATA[
 		import away3d.entities.TextureProjector;
 		
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.ExtraItemVO;
 		import awaybuilder.model.vo.scene.LightVO;
+		import awaybuilder.model.vo.scene.ObjectVO;
 		import awaybuilder.model.vo.scene.TextureProjectorVO;
+		import awaybuilder.model.vo.scene.TextureVO;
+		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.collections.ArrayCollection;
+		import mx.controls.Alert;
 		import mx.events.ColorPickerEvent;
 		
 		import spark.components.supportClasses.ButtonBase;
+		import spark.events.GridItemEditorEvent;
 		import spark.events.IndexChangeEvent;
 		import spark.events.PopUpEvent;
 		
@@ -38,20 +45,15 @@
 			_asset = TextureProjectorVO(asset).clone() as TextureProjectorVO;
 		}
 		
-		private function name_changeHandler(event:Event):void 
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_STEPPER_CHANGE, _asset));
-		}
-		
 		private function position_commitHandler(event:Event):void {
 			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_POSITION_CHANGE, newValue));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
 		}
 		private function pivot_commitHandler(event:Event):void {
 			_asset.pivotX = pivotXStepper.value;
 			_asset.pivotY = pivotYStepper.value;
 			_asset.pivotZ = pivotZStepper.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, _asset));
 		}
 		private function rotation_commitHandler(event:Event):void 
 		{
@@ -62,6 +64,87 @@
 		{
 			var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
+		}
+		
+		protected function stepper_changeHandler(event:Event):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, _asset));
+		}
+		
+		protected function value_changeHandler(event:Event):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, _asset));
+			
+		}
+		
+		protected function textureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, _asset, true));
+		}
+		
+		protected function textureDropDownList_editSharedHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.texture));
+		}
+		
+		private function dropDownIconFunction(item:TextureVO):Object 
+		{
+			return item.bitmapData;
+		}
+		
+		private function dropDownLabelFunction(item:AssetVO):Object 
+		{
+			return item.name.split("/").pop();
+		}
+		protected function extrasGrid_gridItemEditorSessionSaveHandler(event:GridItemEditorEvent):void
+		{
+			var extra:ExtraItemVO = _asset.extras.getItemAt( event.rowIndex ) as ExtraItemVO;
+			if( event.column.dataField == "name" )
+			{
+				if( !isCorrectExtra(extra) )
+				{
+					Alert.show("Name must be unique", "Warning");
+					_asset.extras = ObjectVO(data).clone().extras;
+					return;
+				}
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, _asset));
+		}
+		private function addExtraButton_clickHandler(event:MouseEvent):void
+		{
+			var extra:ExtraItemVO = new ExtraItemVO();
+			var i:int = 0;
+			while( !isCorrectName( "key"+i ) )
+			{
+				i++;
+			}
+			extra.name = "key"+i;
+			_asset.extras.addItem(extra);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, _asset));
+		}
+		private function deleteExtraButton_clickHandler(event:MouseEvent):void
+		{
+			if( extrasGrid.selectedIndex>-1 )
+			{
+				_asset.extras.removeItemAt( extrasGrid.selectedIndex );
+			}
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, _asset));
+		}
+		private function isCorrectName( extra:String ):Boolean
+		{
+			for each( var item:ExtraItemVO in _asset.extras )
+			{
+				if( extra == item.name ) return false;
+			}
+			return true;
+		}
+		private function isCorrectExtra( extra:ExtraItemVO ):Boolean
+		{
+			for each( var item:ExtraItemVO in _asset.extras )
+			{
+				if( (extra.name == item.name) && (extra != item) ) return false;
+			}
+			return true;
 		}
 		
 	]]></fx:Script>
@@ -81,18 +164,36 @@
 	
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="stepper_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
+	
 	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			<s:FormItem label="Aspect ratio" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<controls:DragableNumericStepper stepSize="0.1" snapInterval="0.01" minimum="0" maximum="10"
+												 width="40" value="@{_asset.aspectRatio}"
+												 change="stepper_changeHandler(event)" />
+			</s:FormItem>
+			<s:FormItem label="Field of View" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<controls:DragableNumericStepper stepSize="0.1" snapInterval="0.01" minimum="0" maximum="170"
+												 width="40" value="@{_asset.fov}"
+												 change="stepper_changeHandler(event)" />
+			</s:FormItem>
 		</s:Form>
-	</controls:CollapsiblePanel>
-	
-	<controls:CollapsiblePanel width="100%" title="Color" collapsed="true">
-		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-		</s:Form>
+		<controls:PropertiesItemContainer width="100%" label="Texture">
+			<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40"
+										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
+										   dataProvider="{textures}" requireSelection="true" selectedItem="@{_asset.texture}"
+										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
+										   newItemLabel="New Texture"
+										   change="value_changeHandler(event)"
+										   addNewItem="textureDropDownList_addNewItemHandler(event)"
+										   />
+			<s:Button styleName="editSharedObjectButtonStyle"
+					  width="23" height="100%" click="textureDropDownList_editSharedHandler(event)" enabled="{!textureDropDownList.selectedItem.isDefault}"/>
+		</controls:PropertiesItemContainer>
 	</controls:CollapsiblePanel>
 	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
@@ -144,6 +245,22 @@
 		</s:Form>
 	</controls:CollapsiblePanel>
 	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
+		<s:DataGrid width="100%" id="extrasGrid" dataProvider="{_asset.extras}" focusEnabled="false"
+					editable="true" requestedMinRowCount="4" requestedMaxRowCount="6"
+					selectionColor="0x111111" rollOverColor="0x222222" 
+					gridItemEditorSessionSave="extrasGrid_gridItemEditorSessionSaveHandler(event)">
+			<s:columns> 
+				<s:ArrayList>
+					<s:GridColumn headerText="Name" dataField="name" editable="true"/> 
+					<s:GridColumn headerText="Value" dataField="value" editable="true"/> 
+				</s:ArrayList>
+			</s:columns> 
+		</s:DataGrid>
+		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
+			<s:Button id="addButton" toolTip="Add New" styleName="addButton" click="addExtraButton_clickHandler(event)" height="22" width="22"/>
+			<s:Button id="deleteButton" enabled="{extrasGrid.selectedIndex>-1}" toolTip="Remove" styleName="removeButton"
+					  click="deleteExtraButton_clickHandler(event)" height="22" width="22"/>
+		</s:HGroup>
 	</controls:CollapsiblePanel>
 	
 </editors:EditorBase>

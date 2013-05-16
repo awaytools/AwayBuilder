@@ -3,9 +3,9 @@
                             xmlns:s="library://ns.adobe.com/flex/spark"
                             xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
                             doubleClick="treeitemrendererbase1_doubleClickHandler(event)" 
-							doubleClickEnabled="true" xmlns:tree="awaybuilder.view.components.tree.*"
+							doubleClickEnabled="true"
 							styleName="{data.type}"
-                            height="24">
+                            height="24" xmlns:tree="awaybuilder.view.components.controls.tree.*">
 	
 	<tree:states>
 		<s:State name="normal" />
@@ -53,7 +53,7 @@
 	</s:Rect>
 	
     <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
-                    selected="{isOpen}" skinClass="awaybuilder.view.components.tree.TreeDisclosureButtonSkin"/>
+                    selected="{isOpen}" skinClass="awaybuilder.view.components.controls.tree.TreeDisclosureButtonSkin"/>
 	<s:BitmapImage id="iconButton" source="{getStyle('icon')}">
 		<s:filters>
 			<s:ColorMatrixFilter matrix="{ScenegraphItemVO(data).item.isDefault?bwMatrix:null}"  /> 

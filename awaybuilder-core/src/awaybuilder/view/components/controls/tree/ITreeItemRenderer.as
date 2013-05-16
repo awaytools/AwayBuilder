@@ -1,4 +1,4 @@
-package awaybuilder.view.components.tree
+package awaybuilder.view.components.controls.tree
 {
 	import spark.components.IItemRenderer;
 	

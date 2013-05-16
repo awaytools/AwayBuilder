@@ -4,7 +4,7 @@
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	backgroundAlpha="0" 
 	xmlns:components="awaybuilder.view.components.*"
-	xmlns:tree="awaybuilder.view.components.tree.*"
+	xmlns:tree="awaybuilder.view.components.controls.tree.*"
 	xmlns:controls="awaybuilder.view.components.controls.*">
 	
 	<s:layout>

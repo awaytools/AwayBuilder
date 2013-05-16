@@ -1,4 +1,4 @@
-package awaybuilder.view.components.tree
+package awaybuilder.view.components.controls.tree
 {
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;

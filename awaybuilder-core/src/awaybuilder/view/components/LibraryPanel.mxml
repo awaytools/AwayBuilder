@@ -3,7 +3,7 @@
 						   xmlns:s="library://ns.adobe.com/flex/spark" 
 						   xmlns:mx="library://ns.adobe.com/flex/mx" 
 						   xmlns:controls="awaybuilder.view.components.controls.*" 
-						   xmlns:tree="awaybuilder.view.components.tree.*"
+						   xmlns:tree="awaybuilder.view.components.controls.tree.*"
 						   skinClass="awaybuilder.view.skins.CollapsiblePanelSkin" creationComplete="collapsiblepanel_creationCompleteHandler(event)">
 	<fx:Declarations>
 		<s:Power id="collapseEaser" exponent="2" easeInFraction="0.1" />
@@ -59,6 +59,7 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
+				<s:Button width="100%" label="New Texture Projector" styleName="addItemButton" cornerRadius="0" click="close(true,'TextureProjector')"/>
 				<s:Button width="100%" label="New Mesh" styleName="addItemButton" cornerRadius="0" click="close(true,'Mesh')"/>
 				<s:Button width="100%" label="New SkyBox" styleName="addItemButton" cornerRadius="0" click="close(true,'SkyBox')"/>
 			</s:SkinnablePopUpContainer>
@@ -185,6 +186,9 @@
 				{
 					case "Mesh":
 						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_MESH ) );
+						break;
+					case "TextureProjector":
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_TEXTURE_PROJECTOR ) );
 						break;
 					default:
 						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_SKYBOX ) );

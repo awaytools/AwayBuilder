@@ -36,6 +36,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewShadowMethodCommand;
 	import awaybuilder.controller.scene.AddNewSkyBoxCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
+	import awaybuilder.controller.scene.AddNewTextureProjectorCommand;
 	import awaybuilder.controller.scene.ChangeContainerCommand;
 	import awaybuilder.controller.scene.ChangeCubeTextureCommand;
 	import awaybuilder.controller.scene.ChangeEffectMethodCommand;
@@ -49,6 +50,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeShadowMethodCommand;
 	import awaybuilder.controller.scene.ChangeSkyBoxCommand;
 	import awaybuilder.controller.scene.ChangeTextureCommand;
+	import awaybuilder.controller.scene.ChangeTextureProjectorCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
 	import awaybuilder.controller.scene.RotateObjectCommand;
 	import awaybuilder.controller.scene.ScaleObjectCommand;
@@ -139,6 +141,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_SHADING_METHOD, ChangeShadingMethodCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CUBE_TEXTURE, ChangeCubeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE, ChangeTextureCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR, ChangeTextureProjectorCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);
@@ -150,6 +153,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, AddNewEffectMethodCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_GEOMETRY, AddNewGeometryCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MESH, AddNewMeshCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, AddNewTextureProjectorCommand);
 			
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_COPY, CopyCommand);

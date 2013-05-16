@@ -2,6 +2,7 @@ package awaybuilder.model
 {
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
+	import away3d.entities.TextureProjector;
 	import away3d.lights.*;
 	import away3d.lights.shadowmaps.*;
 	import away3d.materials.*;
@@ -84,7 +85,7 @@ package awaybuilder.model
 		{
 			if( !clone )
 			{
-				clone = GetDefaultMaterial();
+				clone = defaultMaterial;
 			}
 			var newMaterial:SinglePassMaterialBase;
 			var textureMaterial:TextureMaterial = GetObject(clone) as TextureMaterial;
@@ -100,7 +101,7 @@ package awaybuilder.model
 			switch( type )
 			{
 				case "LightMapMethod":
-					method = new LightMapMethod(GetObject(_defaultTexture) as Texture2DBase);
+					method = new LightMapMethod(GetObject(defaultTexture) as Texture2DBase);
 					method.name =  "LightMap" + AssetUtil.GetNextId("LightMapMethod");
 					break;
 				case "ProjectiveTextureMethod":
@@ -117,7 +118,7 @@ package awaybuilder.model
 					method.name =  "ColorTransform" + AssetUtil.GetNextId("ColorTransformMethod");
 					break;
 				case "AlphaMaskMethod":
-					method = new AlphaMaskMethod(GetObject(_defaultTexture) as Texture2DBase, false);
+					method = new AlphaMaskMethod(GetObject(defaultTexture) as Texture2DBase, false);
 					method.name =  "AlphaMask" + AssetUtil.GetNextId("AlphaMaskMethod");
 					break;
 				case "ColorMatrixMethod":
@@ -125,7 +126,7 @@ package awaybuilder.model
 					method.name =  "ColorMatrix" + AssetUtil.GetNextId("ColorMatrixMethod");
 					break;
 				case "RefractionEnvMapMethod":
-					method = new RefractionEnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
+					method = new RefractionEnvMapMethod( GetObject(defaultCubeTexture) as CubeTextureBase );
 					method.name =  "RefractionEnvMap" + AssetUtil.GetNextId("RefractionEnvMapMethod");
 					break;
 				case "OutlineMethod":
@@ -133,7 +134,7 @@ package awaybuilder.model
 					method.name =  "Outline" + AssetUtil.GetNextId("OutlineMethod");
 					break;
 				case "FresnelEnvMapMethod":
-					method = new FresnelEnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
+					method = new FresnelEnvMapMethod( GetObject(defaultCubeTexture) as CubeTextureBase );
 					method.name =  "FresnelEnvMap" + AssetUtil.GetNextId("FresnelEnvMapMethod");
 					break;
 				case "FogMethod":
@@ -141,18 +142,24 @@ package awaybuilder.model
 					method.name =  "Fog" + AssetUtil.GetNextId("FogMethod");
 					break;
 				case "EnvMapMethod":
-					method = new EnvMapMethod( GetObject(_defaultCubeTexture) as CubeTextureBase );
+					method = new EnvMapMethod( GetObject(defaultCubeTexture) as CubeTextureBase );
 					method.name =  "EnvMap" + AssetUtil.GetNextId("EnvMapMethod");
-					EnvMapMethod(method).mask = GetObject(_defaultTexture) as Texture2DBase;
+					EnvMapMethod(method).mask = GetObject(defaultTexture) as Texture2DBase;
 					break;
 			}
 			return GetAsset( method ) as EffectMethodVO;
 		}
 		public function CreateSkyBox():SkyBoxVO
 		{
-			var mesh:SkyBox = new SkyBox( GetObject(GetDefaultCubeTexture()) as CubeTextureBase );
+			var mesh:SkyBox = new SkyBox( GetObject(defaultCubeTexture) as CubeTextureBase );
 			mesh.name = "SkyBox" + AssetUtil.GetNextId("SkyBox");
 			return GetAsset( mesh ) as SkyBoxVO;
+		}
+		public function CreateTextureProjector():TextureProjectorVO
+		{
+			var projector:TextureProjector = new TextureProjector( GetObject(defaultTexture) as Texture2DBase );
+			projector.name = "TextureProjector" + AssetUtil.GetNextId("TextureProjector");
+			return GetAsset( projector ) as TextureProjectorVO;
 		}
 		public function CreateMesh( geometry:GeometryVO ):MeshVO
 		{
@@ -255,7 +262,7 @@ package awaybuilder.model
 					method = new BasicAmbientMethod();
 					break;
 				case "EnvMapAmbientMethod":
-					method = new EnvMapAmbientMethod(GetObject(_defaultCubeTexture) as CubeTextureBase);
+					method = new EnvMapAmbientMethod(GetObject(defaultCubeTexture) as CubeTextureBase);
 					break;
 				case "BasicDiffuseMethod":
 					method = new BasicDiffuseMethod();
@@ -264,14 +271,14 @@ package awaybuilder.model
 					method = new DepthDiffuseMethod();
 					break;
 				case "GradientDiffuseMethod":
-					method = new GradientDiffuseMethod(GetObject(_defaultTexture) as Texture2DBase);
+					method = new GradientDiffuseMethod(GetObject(defaultTexture) as Texture2DBase);
 					break;
 				case "WrapDiffuseMethod":
 					method = new WrapDiffuseMethod();
 					break;
 				case "LightMapDiffuseMethod":
 					baseMethod = new BasicDiffuseMethod();
-					method = new LightMapDiffuseMethod(GetObject(_defaultTexture) as Texture2DBase,"multiply",false, baseMethod as BasicDiffuseMethod);
+					method = new LightMapDiffuseMethod(GetObject(defaultTexture) as Texture2DBase,"multiply",false, baseMethod as BasicDiffuseMethod);
 					break;
 				case "CelDiffuseMethod":
 					baseMethod = new BasicDiffuseMethod();
@@ -303,10 +310,10 @@ package awaybuilder.model
 					method = new BasicNormalMethod();
 					break;
 				case "HeightMapNormalMethod":
-					method = new HeightMapNormalMethod(GetObject(_defaultTexture) as Texture2DBase,5,5,5);
+					method = new HeightMapNormalMethod(GetObject(defaultTexture) as Texture2DBase,5,5,5);
 					break;
 				case "SimpleWaterNormalMethod":
-					method = new SimpleWaterNormalMethod(GetObject(_defaultTexture) as Texture2DBase,GetObject(_defaultTexture) as Texture2DBase);
+					method = new SimpleWaterNormalMethod(GetObject(defaultTexture) as Texture2DBase,GetObject(defaultTexture) as Texture2DBase);
 					break;
 				
 			}
@@ -332,32 +339,6 @@ package awaybuilder.model
 			}
 			
 			return GetAsset( mapper ) as ShadowMapperVO;
-		}
-		
-		//-- Defaults ---
-		
-		public function GetDefaultMaterial():MaterialVO
-		{
-			createDefaults();
-			return _defaultMaterial;
-		}
-		public function GetDefaultTexture():TextureVO
-		{
-			createDefaults();
-			return _defaultTexture;
-		}
-		public function GetDefaultCubeTexture():CubeTextureVO
-		{
-			createDefaults();
-			return _defaultCubeTexture;
-		}
-		public function Clear():void
-		{
-			_defaultMaterial = null;
-			_defaultTexture = null;
-			_assets = new Dictionary();
-			_objectsByAsset = new Dictionary();
-			AssetUtil.Clear();
 		}
 		
 	}

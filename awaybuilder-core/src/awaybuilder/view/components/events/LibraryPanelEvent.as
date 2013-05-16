@@ -6,6 +6,7 @@ package awaybuilder.view.components.events
 	{
 		public static const TREE_CHANGE:String = "treeChange";
 		
+		public static const ADD_TEXTURE_PROJECTOR:String = "addTextureProjector";
 		public static const ADD_TEXTURE:String = "addTexture";
 		public static const ADD_CUBE_TEXTURE:String = "addCubeTexture";
 		public static const ADD_MATERIAL:String = "addMaterial";

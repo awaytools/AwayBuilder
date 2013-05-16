@@ -20,6 +20,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
+    import awaybuilder.model.vo.scene.TextureProjectorVO;
     import awaybuilder.model.vo.scene.TextureVO;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.editors.events.PropertyEditorEvent;
@@ -62,6 +63,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_SKYBOX, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -117,6 +119,10 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_CHANGE, view_shadowmapperChangeHandler );
 			addViewListener( PropertyEditorEvent.SHADOWMAPPER_STEPPER_CHANGE, view_shadowmapperChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, view_textureProjectorChangeHandler );
+			addViewListener( PropertyEditorEvent.TEXTURE_PROJECTOR_ADD_TEXTURE, view_textureProjectorAddTextureHandler );
+			addViewListener( PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, view_textureProjectorChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, view_effectmethodAddTextureHandler );
@@ -261,6 +267,19 @@ package awaybuilder.view.mediators
 			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
 			newMaterial.specularMethod = method;
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
+		}
+		
+		private function view_textureProjectorChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR,[view.data], event.data));
+		}
+		private function view_textureProjectorAddTextureHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_ADD,[view.data],"texture"));
+		}
+		private function view_textureProjectorChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR,[view.data], event.data, true));
 		}
 		
 		private function view_effectmethodChangeHandler(event:PropertyEditorEvent):void
@@ -617,6 +636,11 @@ package awaybuilder.view.mediators
 						view.showEditor( "skyBox", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
+					else if( event.items[0] is TextureProjectorVO )
+					{
+						view.showEditor( "textureProjector", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
                     else if( event.items[0] is ContainerVO )
                     {
 						view.showEditor( "container", event.newValue, event.oldValue );
@@ -761,9 +785,9 @@ package awaybuilder.view.mediators
 			view.lightPickers = new ArrayCollection(pickers);
 //			view.lights = new ArrayCollection(lights);
 			
-			var nullableTextures:Array = [nullTextureItem, assets.GetDefaultTexture()];
-			var defaultableTextures:Array = [assets.GetDefaultTexture()];
-			var cubeTextures:Array = [assets.GetDefaultCubeTexture()];
+			var nullableTextures:Array = [nullTextureItem, assets.defaultTexture];
+			var defaultableTextures:Array = [assets.defaultTexture];
+			var cubeTextures:Array = [assets.defaultCubeTexture];
 			for each( asset in document.textures )
 			{
 				if( asset is TextureVO ) 
@@ -791,7 +815,7 @@ package awaybuilder.view.mediators
 			view.geometry = new ArrayCollection(geometry);
 			
 			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
-			materials.addItemAt( assets.GetDefaultMaterial(), 0 );
+			materials.addItemAt( assets.defaultMaterial, 0 );
 			view.materials = materials;
 		}
     }

@@ -2,7 +2,7 @@
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
       xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="112"
       alpha.disabled="0.5" blendMode="normal" xmlns:controls="awaybuilder.view.components.controls.*"> 
-	<fx:Metadata>[HostComponent("awaybuilder.view.components.tree.Tree")]</fx:Metadata>
+	<fx:Metadata>[HostComponent("awaybuilder.view.components.controls.tree.Tree")]</fx:Metadata>
     
     
     <s:states>
@@ -29,7 +29,7 @@
     <!--- The Scroller component to add scroll bars to the list. -->
     <controls:CrutchScroller left="0" top="0" right="0" bottom="0" id="scroller" minViewportInset="1" hasFocusableChildren="false">
         <!--- @copy spark.components.SkinnableDataContainer#dataGroup -->
-        <s:DataGroup id="dataGroup" itemRenderer="awaybuilder.view.components.tree.TreeItemRenderer">
+        <s:DataGroup id="dataGroup" itemRenderer="awaybuilder.view.components.controls.tree.TreeItemRenderer">
             <s:layout>
                 <!--- The default layout is vertical and measures at least for 5 rows.  
                 When switching to a different layout, HorizontalLayout for example,

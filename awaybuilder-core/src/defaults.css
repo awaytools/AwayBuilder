@@ -6,6 +6,7 @@
 @namespace tree "awaybuilder.view.components.tree.*";
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace s "library://ns.adobe.com/flex/spark";
+@namespace tree1 "awaybuilder.view.components.controls.tree.*";
 
 /*@font-face 
 {
@@ -89,7 +90,7 @@ awaybuilder|CoreEditor
 	color: #1d1d1c;
 	chromeColor: #dbdbdb;
 }
-tree|Tree
+tree1|Tree
 {
 	skinClass: ClassReference("awaybuilder.view.skins.TreeSkin")
 }
