@@ -457,7 +457,8 @@ package awaybuilder.utils.scene
 					if (Mesh(o).material && disposeMaterials) Mesh(o).material.dispose();
 				}
 				if (o && o.parent) {
-					scene.removeChild(o);
+					if (o is SkyBox) backgroundView.scene.removeChild(o);
+					else scene.removeChild(o);
 					o.dispose();
 				}
 			}
