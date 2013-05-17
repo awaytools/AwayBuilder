@@ -31,7 +31,8 @@ package awaybuilder.view.scene.controls
 		
 		private var mCube:Mesh;
 		
-		private var currentScale:Vector3D = new Vector3D(1, 1, 1);
+		private var scaleRatio:Vector3D = new Vector3D(1, 1, 1);
+		private var maxBounds:Number;
 		private var actualMesh:ObjectContainer3D;
 		
 		private var startValue:Vector3D;
@@ -209,16 +210,18 @@ package awaybuilder.view.scene.controls
 		{
 			currentAxis = e.target.name
 			
-			actualMesh = currentMesh;			
-			if (currentMesh.parent is LightGizmo3D) actualMesh = currentMesh.parent.parent;				
+			actualMesh = (currentMesh.parent is ContainerGizmo3D) ? currentMesh.parent.parent : currentMesh;			
 			
-			currentScale.x = 1;
-			currentScale.y = actualMesh.scaleY / actualMesh.scaleX;
-			currentScale.z = actualMesh.scaleZ / actualMesh.scaleX;				
-			
+			var maxScale:Number = Math.max( actualMesh.scaleX,  actualMesh.scaleY,  actualMesh.scaleZ );
+			scaleRatio.x = actualMesh.scaleX / maxScale;
+			scaleRatio.y = actualMesh.scaleY / maxScale;
+			scaleRatio.z = actualMesh.scaleZ / maxScale;				
+
+			maxBounds = Math.max(actualMesh.maxX - actualMesh.minX, actualMesh.maxY - actualMesh.minY, actualMesh.maxZ - actualMesh.minZ)
+
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
-			
+
 			switch(currentAxis)
 			{
 				case "xAxis":
@@ -267,7 +270,7 @@ package awaybuilder.view.scene.controls
 			var dx:Number = Scene3DManager.stage.mouseX - click.x;
 			var dy:Number = -(Scene3DManager.stage.mouseY - click.y);
 			
-			var trans:Number = ((dx+dy)/2) * (CameraManager.radius / 500);					
+			var trans:Number = (dx+dy) * 0.005 * CameraManager.radius/maxBounds;				
 			
 			var mScale:Vector3D = new Vector3D();
 			mScale.x = actualMesh.scaleX;
@@ -317,9 +320,9 @@ package awaybuilder.view.scene.controls
 				
 				case "allAxis":
 					
-					mScale.x += (trans * currentScale.x)/100;
-					mScale.y += (trans * currentScale.y)/100;
-					mScale.z += (trans * currentScale.z)/100;
+					mScale.x += trans * scaleRatio.x;
+					mScale.y += trans * scaleRatio.y;
+					mScale.z += trans * scaleRatio.z;
 					
 					break;				
 				

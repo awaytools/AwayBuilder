@@ -115,6 +115,8 @@ package awaybuilder.utils.scene
 				instance.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, instance.onMouseMiddleUp);
 			}
 			
+			focusTarget();
+			
 			scope.addEventListener(Event.ENTER_FRAME, instance.loop);
 		}
 		
@@ -333,8 +335,8 @@ package awaybuilder.utils.scene
 			poi.rotationY = camera.rotationY;
 			poi.rotationZ = camera.rotationZ;			
 			
-			var dx:Number = stage.mouseX - pan.x;
-			var dy:Number = stage.mouseY - pan.y;
+			var dx:Number = (stage.mouseX - pan.x) * (radius/500);
+			var dy:Number = (stage.mouseY - pan.y) * (radius/500);
 			
 			if (dx != 0 || dy != 0) hasMoved = true;
 			
