@@ -187,10 +187,9 @@ package awaybuilder.utils.encoders
 			_embedtextures=document.globalOptions.embedTextures
 			_geomStoragePrecision=document.globalOptions.geometryStorage	
 			_matrixStoragePrecision=document.globalOptions.matrixStorage
+			*/
 			_exportNormals=document.globalOptions.includeNormal	
 			_exportTangents=document.globalOptions.includeTangent	
-			*/
-			
 			if(_debug)trace("start encoding");
 			
 			//create a AWDBlock class for all supported Assets
@@ -387,29 +386,6 @@ package awaybuilder.utils.encoders
 		}	
 		
 		
-		// encode SkyBox (id=31)
-		private function _encodeSkyBox(sky : SkyBoxVO) : uint
-		{	
-			var returnID:uint;
-			var skyBoxTex:uint=_getBlockIDorEncodeAsset(sky.cubeMap);
-			
-			returnID=_encodeBlockHeader(31);
-			_beginElement(); // Block
-			
-			_body.writeUTF(sky.name);
-			_body.writeUnsignedInt(skyBoxTex);
-			
-			_beginElement(); // Prop list
-			_endElement(); // Prop list
-						
-			_beginElement(); // User attr
-			_endElement(); // User attr
-			
-			_endElement(); // Block
-			
-			return returnID;
-		}
-		
 		// encode Geometry (id=1)
 		private function _encodeGeometry(geom : GeometryVO) : uint
 		{	
@@ -456,8 +432,7 @@ package awaybuilder.utils.encoders
 		}
 		
 		
-		
-		// encode Mesh (id=22)
+		// encode Container (id=22)
 		private function _encodeContainer3D(container : ContainerVO, parentId:uint=0) : uint
 		{
 			
@@ -534,16 +509,30 @@ package awaybuilder.utils.encoders
 			
 		}
 		
-		// encode LightBlock (id=41)
-		private function _endoceExtraProperties(extraObject:Object) : void
-		{
-			if(_debug)trace("EncodeProperties");
-			for each (var object:ExtraItemVO in extraObject){
-				if(_debug)trace("valueName = "+object.name);
-				if(_debug)trace("valueValue = "+object.value);
-				_encodeAttribute(object.name, object.value)
-			}
+		
+		// encode SkyBox (id=31)
+		private function _encodeSkyBox(sky : SkyBoxVO) : uint
+		{	
+			var returnID:uint;
+			var skyBoxTex:uint=_getBlockIDorEncodeAsset(sky.cubeMap);
+			
+			returnID=_encodeBlockHeader(31);
+			_beginElement(); // Block
+			
+			_body.writeUTF(sky.name);
+			_body.writeUnsignedInt(skyBoxTex);
+			
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_endElement(); // Block
+			
+			return returnID;
 		}
+		
 		
 		// encode LightBlock (id=41)
 		private function _encodeLight(light:LightVO) : uint
@@ -664,75 +653,6 @@ package awaybuilder.utils.encoders
 			
 			return returnID;
 		}
-		
-		// encode TextureBlock (id=82)
-		private function _encodeTexture(tex:TextureVO) : uint
-		{
-			var returnID:uint=_encodeBlockHeader(82);
-			_beginElement(); // Block			
-			_body.writeUTF(tex.name);
-			
-			var ba : ByteArray = _encodeBitmap(tex.bitmapData);	
-			_body.writeByte(1);//external=0,embed=1;
-			_body.writeUnsignedInt(ba.length);
-			_body.writeBytes(ba);
-			
-			_beginElement(); // Properties (empty)
-			_endElement(); // Properties
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			if(_debug)trace("texture = "+tex.name + " has been encoded successfully!");
-			return returnID;
-			
-		}
-		
-		// encode TextureBlock (id=83)
-		private function _encodeCubeTextures(cubeTexture:CubeTextureVO) : uint
-		{
-			var id_posX : ByteArray = _encodeBitmap(cubeTexture.positiveX);	
-			var id_negX : ByteArray = _encodeBitmap(cubeTexture.negativeX);	
-			var id_posY : ByteArray = _encodeBitmap(cubeTexture.positiveY);	
-			var id_negY : ByteArray = _encodeBitmap(cubeTexture.negativeY);	
-			var id_posZ : ByteArray = _encodeBitmap(cubeTexture.positiveZ);	
-			var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ);	
-			
-			var returnID:uint = _encodeBlockHeader(83);
-			_beginElement(); // Block		
-			_body.writeByte(1);//external=0,embed=1;
-			_body.writeUTF(cubeTexture.name);
-					
-			// write all encodedBitMaps into the file
-			_body.writeUnsignedInt(id_posX.length);
-			_body.writeBytes(id_posX);
-			_body.writeUnsignedInt(id_negX.length);
-			_body.writeBytes(id_negX);
-			_body.writeUnsignedInt(id_posY.length);
-			_body.writeBytes(id_posY);
-			_body.writeUnsignedInt(id_negY.length);
-			_body.writeBytes(id_negY);
-			_body.writeUnsignedInt(id_posZ.length);
-			_body.writeBytes(id_posZ);
-			_body.writeUnsignedInt(id_negZ.length);
-			_body.writeBytes(id_negZ);
-			
-			
-			_beginElement(); // Properties (empty)
-			_endElement(); // Properties
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			
-			if(_debug)trace("cubeTexture = "+cubeTexture.name + " has been encoded successfully!");
-			return returnID;
-		}
-		
 		// encodes a materialBlock (id=81)
 		private function _encodeMaterial(mtl :MaterialVO) : uint
 		{
@@ -762,13 +682,21 @@ package awaybuilder.utils.encoders
 			var gloss:Number;//19
 			var specularColor:uint;//20
 			var specularTexture:uint;//21
-			var lightPicker:int;//22
-			
+			var lightPicker:int;//22			
 			var allMethods:Vector.<AWDmethod>=_encodeAllShadingMethods(mtl);
-			
 			if (mtl.diffuseTexture) texture=_getBlockIDorEncodeAsset(mtl.diffuseTexture);
 			if (mtl.ambientTexture) ambientTexture=_getBlockIDorEncodeAsset(mtl.ambientTexture);	
-			if ((texture)||(ambientTexture)) matType=2;			
+			if ((texture)||(ambientTexture)) matType=2;				
+			if (AssetVO(mtl.diffuseTexture)){
+				if (AssetVO(mtl.diffuseTexture).isDefault==true){
+					matType=2;
+				}				
+			}			
+			if (AssetVO(mtl.ambientTexture)){
+				if (AssetVO(mtl.ambientTexture).isDefault==true){
+					matType=2;
+				}				
+			}
 			if (matType==1) color=mtl.diffuseColor;			
 			if (mtl.type==MaterialVO.SINGLEPASS){
 				if (mtl.alpha!=1.0)	alpha=mtl.alpha;
@@ -855,6 +783,75 @@ package awaybuilder.utils.encoders
 		
 		
 		
+		// encode TextureBlock (id=82)
+		private function _encodeTexture(tex:TextureVO) : uint
+		{
+			var returnID:uint=_encodeBlockHeader(82);
+			_beginElement(); // Block			
+			_body.writeUTF(tex.name);
+			
+			var ba : ByteArray = _encodeBitmap(tex.bitmapData);	
+			_body.writeByte(1);//external=0,embed=1;
+			_body.writeUnsignedInt(ba.length);
+			_body.writeBytes(ba);
+			
+			_beginElement(); // Properties (empty)
+			_endElement(); // Properties
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_endElement(); // Block
+			
+			if(_debug)trace("texture = "+tex.name + " has been encoded successfully!");
+			return returnID;
+			
+		}
+		
+		// encode TextureBlock (id=83)
+		private function _encodeCubeTextures(cubeTexture:CubeTextureVO) : uint
+		{
+			var id_posX : ByteArray = _encodeBitmap(cubeTexture.positiveX);	
+			var id_negX : ByteArray = _encodeBitmap(cubeTexture.negativeX);	
+			var id_posY : ByteArray = _encodeBitmap(cubeTexture.positiveY);	
+			var id_negY : ByteArray = _encodeBitmap(cubeTexture.negativeY);	
+			var id_posZ : ByteArray = _encodeBitmap(cubeTexture.positiveZ);	
+			var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ);	
+			
+			var returnID:uint = _encodeBlockHeader(83);
+			_beginElement(); // Block		
+			_body.writeByte(1);//external=0,embed=1;
+			_body.writeUTF(cubeTexture.name);
+			
+			// write all encodedBitMaps into the file
+			_body.writeUnsignedInt(id_posX.length);
+			_body.writeBytes(id_posX);
+			_body.writeUnsignedInt(id_negX.length);
+			_body.writeBytes(id_negX);
+			_body.writeUnsignedInt(id_posY.length);
+			_body.writeBytes(id_posY);
+			_body.writeUnsignedInt(id_negY.length);
+			_body.writeBytes(id_negY);
+			_body.writeUnsignedInt(id_posZ.length);
+			_body.writeBytes(id_posZ);
+			_body.writeUnsignedInt(id_negZ.length);
+			_body.writeBytes(id_negZ);
+			
+			
+			_beginElement(); // Properties (empty)
+			_endElement(); // Properties
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_endElement(); // Block
+			
+			
+			if(_debug)trace("cubeTexture = "+cubeTexture.name + " has been encoded successfully!");
+			return returnID;
+		}
+		
+		
 		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
 		private function _encodeShadowMapMethodBlock(methVO:ShadowMethodVO, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
 		{
@@ -907,108 +904,6 @@ package awaybuilder.utils.encoders
 					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
 					returnID=_encodeShadowMapMethodBlock(methVO,1002, [1], [baseID], [0], [BADDR]);
 					break;
-			}	
-			return returnID;
-		}
-		
-		
-		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
-		private function _encodeSharedMethodBlock(name:String, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
-		{
-			
-			var returnID:uint=_encodeBlockHeader(91);
-			_beginElement(); // Block			
-			_body.writeUTF(name);			
-			
-			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			if(_debug)trace("SharedMethod = "+ name + " has been encoded successfully!");
-			return returnID
-		}
-		
-		
-		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
-		{
-			var returnID:uint=0;
-			var cubeTexID:uint;
-			var texID:uint;
-			var texProjectorID:uint;
-			if(_debug)trace("methVO.type = "+methVO.type);
-			switch(methVO.type)
-			{ 
-				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
-					var colorMatrixAsVector:Array=new Array();// to do: fill this vector with the colorTransform
-					colorMatrixAsVector.push(methVO.r);//0
-					colorMatrixAsVector.push(methVO.g);//1
-					colorMatrixAsVector.push(methVO.b);//2
-					colorMatrixAsVector.push(methVO.a);//3
-					colorMatrixAsVector.push(methVO.rO);//4
-					colorMatrixAsVector.push(methVO.rG);//5
-					colorMatrixAsVector.push(methVO.gG);//6
-					colorMatrixAsVector.push(methVO.bG);//7
-					colorMatrixAsVector.push(methVO.aG);//8
-					colorMatrixAsVector.push(methVO.gO);//9
-					colorMatrixAsVector.push(methVO.rB);//10
-					colorMatrixAsVector.push(methVO.gB);//11
-					colorMatrixAsVector.push(methVO.bB);//12
-					colorMatrixAsVector.push(methVO.aB);//13
-					colorMatrixAsVector.push(methVO.bO);//14
-					colorMatrixAsVector.push(methVO.rA);//15
-					colorMatrixAsVector.push(methVO.gA);//16
-					colorMatrixAsVector.push(methVO.bA);//17
-					colorMatrixAsVector.push(methVO.aA);//18
-					colorMatrixAsVector.push(methVO.aO);//19
-					
-					var colorMatrixAsVectorDefault:Array= new Array(0,0,0,1, 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);// to do: check if the default array is right
-					returnID=_encodeSharedMethodBlock(methVO.name,401, [101], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [FLOAT32]);
-					break;
-				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
-					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
-					returnID=_encodeSharedMethodBlock(methVO.name,402, [101,102,103,104,601], [methVO.a,methVO.r,methVO.g,methVO.b,offSetColor], [1,1,1,1,0x00000000], [FLOAT32,FLOAT32,FLOAT32,FLOAT32,COLOR]);
-					break;
-				case "EnvMapMethod"://EffectMethodVO.ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,403, [1,101,2], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,FLOAT32,BADDR]);
-					break;
-				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);					
-					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
-					break;
-				case EffectMethodVO.PROJECTIVE_TEXTURE:
-					if(_debug)trace("textureProjectors are not implemented yet!");
-					texProjectorID=0;//_getBlockIDorEncodeAsset(methVO.textureProjector);
-					returnID=_encodeSharedMethodBlock(methVO.name,405, [401,1], [blendModeDic[methVO.mode],texProjectorID], [10,0], [UINT8,BADDR]);
-					break;
-				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
-					returnID=_encodeSharedMethodBlock(methVO.name,406, [601,101,102], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,FLOAT32,FLOAT32]);
-					break;
-				case "AlphaMaskMethod"://EffectMethodVO.ALPHA_MASK:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
-					break;
-				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [cubeTexID, methVO.refraction, methVO.r, methVO.g, methVO.b, methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
-					break;
-				case "OutlineMethod"://EffectMethodVO.OUTLINE:
-					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color, methVO.size, methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
-					break;
-				case "FresnelEnvMapMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					returnID=_encodeSharedMethodBlock(methVO.name, 410, [1,101], [cubeTexID, methVO.alpha], [0, 1], [BADDR, FLOAT32]);
-					break;
-				case "FogMethod"://EffectMethodVO.FOG:
-					returnID=_encodeSharedMethodBlock(methVO.name, 411, [101,102,601], [methVO.minDistance, methVO.maxDistance, methVO.color], [0, 1000, 0x808080], [FLOAT32, FLOAT32, COLOR]);
-					break;
-				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
-				//EffectMethodVO.PLANAR_REFLECTION
 			}	
 			return returnID;
 		}
@@ -1153,6 +1048,108 @@ package awaybuilder.utils.encoders
 			_endElement(); // end prop list
 			
 		}
+		
+		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
+		private function _encodeSharedMethodBlock(name:String, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
+		{
+			
+			var returnID:uint=_encodeBlockHeader(91);
+			_beginElement(); // Block			
+			_body.writeUTF(name);			
+			
+			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_endElement(); // Block
+			
+			if(_debug)trace("SharedMethod = "+ name + " has been encoded successfully!");
+			return returnID
+		}
+		
+		
+		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
+		{
+			var returnID:uint=0;
+			var cubeTexID:uint;
+			var texID:uint;
+			var texProjectorID:uint;
+			if(_debug)trace("methVO.type = "+methVO.type);
+			switch(methVO.type)
+			{ 
+				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
+					var colorMatrixAsVector:Array=new Array();// to do: fill this vector with the colorTransform
+					colorMatrixAsVector.push(methVO.r);//0
+					colorMatrixAsVector.push(methVO.g);//1
+					colorMatrixAsVector.push(methVO.b);//2
+					colorMatrixAsVector.push(methVO.a);//3
+					colorMatrixAsVector.push(methVO.rO);//4
+					colorMatrixAsVector.push(methVO.rG);//5
+					colorMatrixAsVector.push(methVO.gG);//6
+					colorMatrixAsVector.push(methVO.bG);//7
+					colorMatrixAsVector.push(methVO.aG);//8
+					colorMatrixAsVector.push(methVO.gO);//9
+					colorMatrixAsVector.push(methVO.rB);//10
+					colorMatrixAsVector.push(methVO.gB);//11
+					colorMatrixAsVector.push(methVO.bB);//12
+					colorMatrixAsVector.push(methVO.aB);//13
+					colorMatrixAsVector.push(methVO.bO);//14
+					colorMatrixAsVector.push(methVO.rA);//15
+					colorMatrixAsVector.push(methVO.gA);//16
+					colorMatrixAsVector.push(methVO.bA);//17
+					colorMatrixAsVector.push(methVO.aA);//18
+					colorMatrixAsVector.push(methVO.aO);//19
+					
+					var colorMatrixAsVectorDefault:Array= new Array(0,0,0,1, 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);// to do: check if the default array is right
+					returnID=_encodeSharedMethodBlock(methVO.name,401, [101], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [FLOAT32]);
+					break;
+				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
+					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
+					returnID=_encodeSharedMethodBlock(methVO.name,402, [101,102,103,104,601], [methVO.a,methVO.r,methVO.g,methVO.b,offSetColor], [1,1,1,1,0x00000000], [FLOAT32,FLOAT32,FLOAT32,FLOAT32,COLOR]);
+					break;
+				case "EnvMapMethod"://EffectMethodVO.ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,403, [1,101,2], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,FLOAT32,BADDR]);
+					break;
+				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
+					texID=_getBlockIDorEncodeAsset(methVO.texture);					
+					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
+					break;
+				case EffectMethodVO.PROJECTIVE_TEXTURE:
+					if(_debug)trace("textureProjectors are not implemented yet!");
+					texProjectorID=0;//_getBlockIDorEncodeAsset(methVO.textureProjector);
+					returnID=_encodeSharedMethodBlock(methVO.name,405, [401,1], [blendModeDic[methVO.mode],texProjectorID], [10,0], [UINT8,BADDR]);
+					break;
+				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
+					returnID=_encodeSharedMethodBlock(methVO.name,406, [601,101,102], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,FLOAT32,FLOAT32]);
+					break;
+				case "AlphaMaskMethod"://EffectMethodVO.ALPHA_MASK:
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
+					break;
+				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [cubeTexID, methVO.refraction, methVO.r, methVO.g, methVO.b, methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
+					break;
+				case "OutlineMethod"://EffectMethodVO.OUTLINE:
+					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color, methVO.size, methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
+					break;
+				case "FresnelEnvMapMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					returnID=_encodeSharedMethodBlock(methVO.name, 410, [1,101], [cubeTexID, methVO.alpha], [0, 1], [BADDR, FLOAT32]);
+					break;
+				case "FogMethod"://EffectMethodVO.FOG:
+					returnID=_encodeSharedMethodBlock(methVO.name, 411, [101,102,601], [methVO.minDistance, methVO.maxDistance, methVO.color], [0, 1000, 0x808080], [FLOAT32, FLOAT32, COLOR]);
+					break;
+				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
+				//EffectMethodVO.PLANAR_REFLECTION
+			}	
+			return returnID;
+		}
+		
 		
 		
 		private function _encodePrimitiveBlock(_primitive:Object) : void
@@ -1528,6 +1525,15 @@ package awaybuilder.utils.encoders
 			
 		}
 		
+		private function _endoceExtraProperties(extraObject:Object) : void
+		{
+			if(_debug)trace("EncodeProperties");
+			for each (var object:ExtraItemVO in extraObject){
+				if(_debug)trace("valueName = "+object.name);
+				if(_debug)trace("valueValue = "+object.value);
+				_encodeAttribute(object.name, object.value)
+			}
+		}
 		
 		
 	}
