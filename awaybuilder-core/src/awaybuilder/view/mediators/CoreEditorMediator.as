@@ -730,15 +730,15 @@ package awaybuilder.view.mediators
 					var colorMultiPassMaterial:ColorMultiPassMaterial = m as ColorMultiPassMaterial;
 					colorMultiPassMaterial.color = asset.diffuseColor;
 //					colorMultiPassMaterial.alpha = asset.alpha;
-					colorMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
-					colorMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
-					colorMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
-//					colorMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
-					colorMaterial.ambient = asset.ambientLevel;
-					colorMaterial.ambientColor = asset.ambientColor;
-					colorMaterial.specular = asset.specularLevel;
-					colorMaterial.specularColor = asset.specularColor;
-					colorMaterial.gloss = asset.specularGloss;
+					colorMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					colorMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					colorMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+//					colorMultiPassMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					colorMultiPassMaterial.ambient = asset.ambientLevel;
+					colorMultiPassMaterial.ambientColor = asset.ambientColor;
+					colorMultiPassMaterial.specular = asset.specularLevel;
+					colorMultiPassMaterial.specularColor = asset.specularColor;
+					colorMultiPassMaterial.gloss = asset.specularGloss;
 					
 				}
 				else if( m is TextureMultiPassMaterial )
