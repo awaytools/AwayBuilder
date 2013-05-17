@@ -582,28 +582,28 @@ package awaybuilder.model
 				asset.type = MaterialVO.MULTIPASS;
 				var textureMultiPassMaterial:TextureMultiPassMaterial = item as TextureMultiPassMaterial;
 				asset.alphaThreshold = textureMultiPassMaterial.alphaThreshold;
-				asset.alphaBlending = textureMaterial.alphaBlending;
-				asset.colorTransform = textureMaterial.colorTransform;
+				//asset.alphaBlending = textureMultiPassMaterial.alphaBlending;
+				//asset.colorTransform = textureMultiPassMaterial.colorTransform;
 				
-				asset.ambientLevel = textureMaterial.ambient; 
-				asset.ambientColor = textureMaterial.ambientColor;
-				asset.ambientTexture = GetAsset( textureMaterial.ambientTexture ) as TextureVO;
-				asset.ambientMethod = GetAsset( textureMaterial.ambientMethod ) as ShadingMethodVO;
+				asset.ambientLevel = textureMultiPassMaterial.ambient; 
+				asset.ambientColor = textureMultiPassMaterial.ambientColor;
+				asset.ambientTexture = GetAsset( textureMultiPassMaterial.ambientTexture ) as TextureVO;
+				asset.ambientMethod = GetAsset( textureMultiPassMaterial.ambientMethod ) as ShadingMethodVO;
 				
-				asset.diffuseColor= textureMaterial.diffuseMethod.diffuseColor;
-				asset.diffuseTexture = GetAsset( textureMaterial.texture ) as TextureVO;
-				asset.diffuseMethod = GetAsset( textureMaterial.diffuseMethod ) as ShadingMethodVO;
+				asset.diffuseColor= textureMultiPassMaterial.diffuseMethod.diffuseColor;
+				asset.diffuseTexture = GetAsset( textureMultiPassMaterial.texture ) as TextureVO;
+				asset.diffuseMethod = GetAsset( textureMultiPassMaterial.diffuseMethod ) as ShadingMethodVO;
 				
-				asset.specularLevel = textureMaterial.specular;
-				asset.specularColor = textureMaterial.specularColor;
-				asset.specularGloss = textureMaterial.gloss;
-				asset.specularTexture = GetAsset( textureMaterial.specularMap ) as TextureVO;
-				asset.specularMethod = GetAsset( textureMaterial.specularMethod ) as ShadingMethodVO;
+				asset.specularLevel = textureMultiPassMaterial.specular;
+				asset.specularColor = textureMultiPassMaterial.specularColor;
+				asset.specularGloss = textureMultiPassMaterial.gloss;
+				asset.specularTexture = GetAsset( textureMultiPassMaterial.specularMap ) as TextureVO;
+				asset.specularMethod = GetAsset( textureMultiPassMaterial.specularMethod ) as ShadingMethodVO;
 				
-				asset.normalTexture = GetAsset( textureMaterial.normalMap ) as TextureVO;
-				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
+				asset.normalTexture = GetAsset( textureMultiPassMaterial.normalMap ) as TextureVO;
+				asset.normalMethod = GetAsset( textureMultiPassMaterial.normalMethod ) as ShadingMethodVO;
 				
-				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
+				asset.shadowMethod = GetAsset( textureMultiPassMaterial.shadowMethod ) as ShadowMethodVO;
 				if( asset.shadowMethod )
 				{
 					asset.light = asset.shadowMethod.castingLight;
