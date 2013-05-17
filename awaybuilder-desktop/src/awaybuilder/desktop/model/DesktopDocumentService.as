@@ -63,10 +63,10 @@ package awaybuilder.desktop.model
 					title = "Open File";
 					filters.push( new FileFilter("Away3D (*.awd)", "*.awd") );
 					break;
-				case "all":
+				case "import":
 					title = "Import File";
-					filters.push( new FileFilter("3D and Images", "*.awd;*.3ds;*.obj;*.md2;*.png;*.jpg;*.dae") );
-					filters.push( new FileFilter("3D (*.awd, *.3ds, *.obj, *.md2, *.dae)", "*.awd;*.3ds;*.obj;*.md2;*.dae") );
+					filters.push( new FileFilter("3D and Images", "*.awd;*.3ds;*.obj;*.md2;*.png;*.jpg;*.dae;*.md5mesh;*.md5anim") );
+					filters.push( new FileFilter("3D (*.awd, *.3ds, *.obj, *.md2, *.dae, *.md5mesh, *.md5anim)", "*.awd;*.3ds;*.obj;*.md2;*.dae;*.md5mesh;*.md5anim") );
 					filters.push( new FileFilter("Images (*.png, *.jpg)", "*.png;*.jpg") );
 					break;
 				case "images":

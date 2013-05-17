@@ -164,7 +164,7 @@
 	<s:Spacer height="6"/>
 	
     <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
-		<controls:PropertiesItemContainer label="Specular Method" width="100%">
+		<controls:PropertiesItemContainer label="Geometry" width="100%">
 			<s:DropDownList id="geometryDropDownList" requireSelection="true" labelField="name"
 							change="geometryDropDownList_changeHandler(event)" width="100%"
 							selectedItem="@{_asset.geometry}" dataProvider="{geometry}"/>
