@@ -187,7 +187,7 @@ package awaybuilder.view.scene.controls
 			currentAxis = e.target.name;	
 			
 			behindGizmoPlane = this.scenePosition.subtract(e.scenePosition).z > 0; //e.scenePosition.z > 0;
-			trace("CLICKPOS:l:"+e.localPosition+" s:"+e.scenePosition+" - sD:"+this.scenePosition.subtract(e.scenePosition));
+			//trace("CLICKPOS:l:"+e.localPosition+" s:"+e.scenePosition+" - sD:"+this.scenePosition.subtract(e.scenePosition));
 			//freeZAxis = Scene3DManager.camera.backVector;
 			//freeYAxis = sphere.rightVector.crossProduct(Scene3DManager.camera.rightVector);
 			//freeYAxis = freeZAxis.crossProduct(freeXAxis);

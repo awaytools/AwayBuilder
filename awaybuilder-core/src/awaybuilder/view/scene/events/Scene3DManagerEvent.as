@@ -14,8 +14,11 @@ package awaybuilder.view.scene.events
 		public static const MESH_SELECTED_FROM_VIEW:String = "Scene3DManagerEventMeshSelectedFromView";
 		public static const TRANSFORM:String = "Scene3DManagerEventMeshTransform";
 		public static const TRANSFORM_RELEASE:String = "Scene3DManagerEventMeshTransformRelease";
-		public static const ZOOM_DISTANCE_DELTA : String = "Scene3DManagerEvenZoomDistanceDelta";
-		public static const ZOOM_TO_DISTANCE : String = "Scene3DManagerEvenZoomToDistance";
+		public static const ZOOM_DISTANCE_DELTA : String = "Scene3DManagerEventZoomDistanceDelta";
+		public static const ZOOM_TO_DISTANCE : String = "Scene3DManagerEventZoomToDistance";
+		public static const SWITCH_TRANSFORM_ROTATE : String = "Scene3DManagerEventSwitchTransformRotate";
+		public static const SWITCH_TRANSFORM_TRANSLATE : String = "Scene3DManagerEventSwitchTransformTranslate";
+		public static const ENABLE_TRANSFORM_MODES : String = "Scene3DManagerEventEnableTransformModes";
 		
 		public var object:ObjectContainer3D;
 		public var gizmoMode:String;

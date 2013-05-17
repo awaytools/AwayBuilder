@@ -53,11 +53,16 @@ import flash.events.Event;
 		public static const SWITCH_TRANSFORM_TRANSLATE:String = "switchTransformToTranslate";
 		public static const SWITCH_TRANSFORM_ROTATE:String = "switchTransformToRotate";
 		public static const SWITCH_TRANSFORM_SCALE:String = "switchTransformToScale";
+		public static const ENABLE_ALL_TRANSFORM_MODES:String = "enableAllTransformModes";
 		
 		public static const SELECT_ALL:String = "selectAll";
 		public static const SELECT_NONE:String = "selectNone";
 //		public static const SELECT_OBJECTS:String = "selectObjects";
 		public static const DELETE_OBJECTS:String = "deleteObjects";
+		
+		public static const ENABLE_ROTATE_MODE_ONLY:String = "enableRotateModeOnly";
+		public static const ENABLE_TRANSLATE_MODE_ONLY:String = "enableTranslateModeOnly";
+		
 		
 		public function SceneEvent( type:String, items:Array=null, newValue:Object=null, canBeCombined:Boolean=false, oldValue:Object=null )
 		{

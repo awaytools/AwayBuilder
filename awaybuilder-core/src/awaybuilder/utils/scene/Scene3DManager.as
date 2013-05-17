@@ -313,8 +313,8 @@ package awaybuilder.utils.scene
 		public static function setTransformMode(mode:String):void
 		{
 			currentGizmo.active = false;
-			currentGizmo.hide();			
-			
+			currentGizmo.hide();
+
 			switch (mode) 
 			{													
 				case GizmoMode.TRANSLATE : currentGizmo = translateGizmo;
@@ -477,6 +477,8 @@ package awaybuilder.utils.scene
 			
 			lights.removeAll();
 			objects.removeAll();
+			
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
 		}
 		
 		public static function get sceneBounds() : Vector.<Number> {
@@ -656,6 +658,8 @@ package awaybuilder.utils.scene
 		
 		public static function unselectAll():Boolean
 		{
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
+
 			var itemsDeselected:Boolean = false;
 			for(var i:int=0;i<selectedObjects.length;i++)
 			{
@@ -727,6 +731,7 @@ package awaybuilder.utils.scene
 					selectedObject = m;
 					
 					currentGizmo.show(selectedObject);
+					instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
 				}
 			} else {
 				for (var c:int = 0; c<o.numChildren; c++) {
@@ -751,9 +756,8 @@ package awaybuilder.utils.scene
 						selectedObjects.addItem(m);						
 						selectedObject = m;
 						
-						if ((lG.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
-							(lG.type==LightGizmo3D.POINT_LIGHT && Scene3DManager.currentGizmo==translateGizmo))
-							currentGizmo.show(selectedObject);
+						if (lG.type==LightGizmo3D.DIRECTIONAL_LIGHT) instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.SWITCH_TRANSFORM_ROTATE));
+						else if (lG.type==LightGizmo3D.POINT_LIGHT) instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.SWITCH_TRANSFORM_TRANSLATE));
 					}
 				}
 			} else {

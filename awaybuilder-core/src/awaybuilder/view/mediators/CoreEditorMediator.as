@@ -175,6 +175,9 @@ package awaybuilder.view.mediators
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM_RELEASE, scene_transformReleaseHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, eventDispatcher_zoomDistanceDeltaHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomToDistanceHandler);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_itemSwitchesToRotateMode);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_itemSwitchesToTranslateMode);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES, eventDispatcher_enableAllTransformModes);
 			Scene3DManager.init( view.viewScope );
 			
             addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
@@ -1281,6 +1284,25 @@ package awaybuilder.view.mediators
                     break;
             }
         }
+
+        private function eventDispatcher_itemSwitchesToRotateMode(event:Scene3DManagerEvent):void
+        {
+			var sE:SceneEvent = new SceneEvent(SceneEvent.SWITCH_TRANSFORM_ROTATE);
+			sE.options = SceneEvent.ENABLE_ROTATE_MODE_ONLY;
+			this.dispatch(sE);
+		}
+
+        private function eventDispatcher_itemSwitchesToTranslateMode(event:Scene3DManagerEvent):void
+        {
+			var sE:SceneEvent = new SceneEvent(SceneEvent.SWITCH_TRANSFORM_TRANSLATE);
+			sE.options = SceneEvent.ENABLE_TRANSLATE_MODE_ONLY;
+			this.dispatch(sE);
+		}
+
+        private function eventDispatcher_enableAllTransformModes(event:Scene3DManagerEvent):void
+        {
+			this.dispatch(new SceneEvent(SceneEvent.ENABLE_ALL_TRANSFORM_MODES));
+		}
 
         //----------------------------------------------------------------------
 		//

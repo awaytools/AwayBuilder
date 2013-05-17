@@ -40,6 +40,7 @@ package awaybuilder.view.mediators
             addContextListener( SceneEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchToRotateHandler);
             addContextListener( SceneEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchToTranslateHandler);
             addContextListener( SceneEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchToScaleHandler);
+            addContextListener( SceneEvent.ENABLE_ALL_TRANSFORM_MODES, eventDispatcher_enableAllTransformModesHandler);
 
             addContextListener( SceneEvent.SELECT, context_itemSelectHandler);
             addContextListener( UndoRedoEvent.UNDO_LIST_CHANGE, context_undoListChangeHandler);
@@ -92,14 +93,30 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_switchToRotateHandler(event:SceneEvent):void
 		{
 			this.toolBar.rotateButton.selected = true;
+			var options:String = event.options as String;
+			if (options == SceneEvent.ENABLE_ROTATE_MODE_ONLY) {
+				this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = false;
+			} else {
+				this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
+			}
 		}
 		
 		private function eventDispatcher_switchToTranslateHandler(event:SceneEvent):void
 		{
-			
 			this.toolBar.translateButton.selected = true;
+			var options:String = event.options as String;
+			if (options == SceneEvent.ENABLE_TRANSLATE_MODE_ONLY) {
+				this.toolBar.rotateButton.enabled = this.toolBar.scaleButton.enabled = false;
+			} else {
+				this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
+			}
 		}
 		
+		private function eventDispatcher_enableAllTransformModesHandler(event:SceneEvent):void
+		{
+			this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
+		}
+
 		private function eventDispatcher_switchToFreeHandler(event:SceneEvent):void
 		{
 			this.toolBar.freeCameraButton.selected = true;
