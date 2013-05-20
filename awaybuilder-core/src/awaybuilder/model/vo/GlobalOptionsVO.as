@@ -10,7 +10,11 @@ package awaybuilder.model.vo
 		
 		public var geometryStorage:String = "Size"; // [Size, Precision ]
 		
-		public var compression:String = "DEFLATE"; // [DEFLATE, LZMA]
+		public var propertyStorage:String = "Size"; // [Size, Precision ]
+		
+		public var attributesStorage:String = "Size"; // [Size, Precision ]
+		
+		public var compression:String = "DEFLATE"; // [UNCOMPRESSED, DEFLATE, LZMA]
 		
 		public var namespace:String = "http://example.com/myawdns";
 		
@@ -33,6 +37,8 @@ package awaybuilder.model.vo
 		{
 			this.matrixStorage = asset.matrixStorage;
 			this.geometryStorage = asset.geometryStorage;
+			this.propertyStorage = asset.propertyStorage;
+			this.attributesStorage = asset.attributesStorage;
 			this.compression = asset.compression;
 			
 			this.namespace = asset.namespace;

@@ -25,9 +25,14 @@ package awaybuilder.model
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.*;
 	import away3d.materials.utils.DefaultMaterialManager;
+	import away3d.primitives.CapsuleGeometry;
+	import away3d.primitives.ConeGeometry;
 	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.CylinderGeometry;
+	import away3d.primitives.PlaneGeometry;
 	import away3d.primitives.SkyBox;
 	import away3d.primitives.SphereGeometry;
+	import away3d.primitives.TorusGeometry;
 	import away3d.textures.BitmapCubeTexture;
 	import away3d.textures.BitmapTexture;
 	
@@ -362,24 +367,69 @@ package awaybuilder.model
 			{
 				asset.subGeometries.addItem( GetAsset(sub) );
 			}
-			if( obj is CubeGeometry )
-			{
-				var cubeGeometry:CubeGeometry = obj as CubeGeometry;
-				asset.width = cubeGeometry.width;
-				asset.height = cubeGeometry.height;
-				asset.depth = cubeGeometry.depth;
-				asset.tile6 = cubeGeometry.tile6;
-				asset.segmentsW = cubeGeometry.segmentsW;
-				asset.segmentsH = cubeGeometry.segmentsH;
-				asset.segmentsD = cubeGeometry.segmentsD;
-			}
-			else if( obj is SphereGeometry )
-			{
-				var sphereGeometry:SphereGeometry = obj as SphereGeometry;
-				asset.radius = sphereGeometry.radius;
-				asset.yUp = sphereGeometry.yUp;
-				asset.segmentsW = sphereGeometry.segmentsW;
-				asset.segmentsH = sphereGeometry.segmentsH;
+			switch (true){
+				case (obj is PlaneGeometry):
+					var planeGeometry:PlaneGeometry = obj as PlaneGeometry;
+					asset.width = planeGeometry.width;
+					asset.height = planeGeometry.height;
+					asset.segmentsW = planeGeometry.segmentsW;
+					asset.segmentsH = planeGeometry.segmentsH;
+					asset.yUp = planeGeometry.yUp;
+					asset.doubleSided = planeGeometry.doubleSided;
+					break;
+				case (obj is CubeGeometry):
+					var cubeGeometry:CubeGeometry = obj as CubeGeometry;
+					asset.width = cubeGeometry.width;
+					asset.height = cubeGeometry.height;
+					asset.depth = cubeGeometry.depth;
+					asset.tile6 = cubeGeometry.tile6;
+					asset.segmentsW = cubeGeometry.segmentsW;
+					asset.segmentsH = cubeGeometry.segmentsH;
+					asset.segmentsD = cubeGeometry.segmentsD;
+					break;
+				case (obj is SphereGeometry):
+					var sphereGeometry:SphereGeometry = obj as SphereGeometry;
+					asset.radius = sphereGeometry.radius;
+					asset.yUp = sphereGeometry.yUp;
+					asset.segmentsSW = sphereGeometry.segmentsW;
+					asset.segmentsSH = sphereGeometry.segmentsH;
+					break;
+				case (obj is ConeGeometry):
+					var coneGeometry:ConeGeometry = obj as ConeGeometry;
+					asset.radius = coneGeometry.bottomRadius;
+					asset.height = coneGeometry.height;
+					asset.segmentsR = coneGeometry.segmentsW;
+					asset.segmentsH = coneGeometry.segmentsH;
+					asset.bottomClosed = coneGeometry.bottomClosed;
+					asset.yUp = coneGeometry.yUp;
+					break;
+				case (obj is CylinderGeometry):
+					var cylinderGeometry:CylinderGeometry = obj as CylinderGeometry;
+					asset.bottomRadius = cylinderGeometry.bottomRadius;
+					asset.topRadius = cylinderGeometry.topRadius;
+					asset.height = cylinderGeometry.height;
+					asset.segmentsR = cylinderGeometry.segmentsW;
+					asset.segmentsH = cylinderGeometry.segmentsH;
+					asset.topClosed = cylinderGeometry.topClosed;
+					asset.bottomClosed = cylinderGeometry.bottomClosed;
+					asset.yUp = cylinderGeometry.yUp;
+					break;
+				case (obj is CapsuleGeometry):
+					var capsuleGeometry:CapsuleGeometry = obj as CapsuleGeometry;
+					asset.radius = capsuleGeometry.radius;
+					asset.height = capsuleGeometry.height;
+					asset.segmentsR = capsuleGeometry.segmentsW;
+					asset.segmentsC = capsuleGeometry.segmentsH;
+					asset.yUp = capsuleGeometry.yUp;
+					break;
+				case (obj is TorusGeometry):
+					var torusGeometry:TorusGeometry = obj as TorusGeometry;
+					asset.radius = torusGeometry.radius;
+					asset.tubeRadius = torusGeometry.tubeRadius;
+					asset.segmentsR = torusGeometry.segmentsR;
+					asset.segmentsT = torusGeometry.segmentsT;
+					asset.yUp = torusGeometry.yUp;
+					break;
 			}
 			return asset;
 		}

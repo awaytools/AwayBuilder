@@ -9,6 +9,8 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="matrixGroup" selectedValue="{_asset.matrixStorage}" change="value_changeHandler(event)" />
 		<s:RadioButtonGroup id="geometryGroup" selectedValue="{_asset.geometryStorage}" change="value_changeHandler(event)"/>
+		<s:RadioButtonGroup id="propertiesGroup" selectedValue="{_asset.propertyStorage}" change="value_changeHandler(event)"/>
+		<s:RadioButtonGroup id="attributesGroup" selectedValue="{_asset.attributesStorage}" change="value_changeHandler(event)"/>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.GlobalOptionsVO;
@@ -29,6 +31,8 @@
 		{
 			_asset.matrixStorage = matrixGroup.selectedValue.toString();
 			_asset.geometryStorage = geometryGroup.selectedValue.toString();
+			_asset.propertyStorage = propertiesGroup.selectedValue.toString();
+			_asset.attributesStorage = attributesGroup.selectedValue.toString();
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.GLOBAL_OPTIONS_CHANGE, _asset, true));
 		}
 		private function stepper_changeHandler(event:Event):void 
@@ -64,18 +68,27 @@
 			<s:RadioButton label="Size" group="{geometryGroup}"/>
 			<s:RadioButton label="Precision" group="{geometryGroup}"/>
 		</controls:PropertiesItemContainer>
+		<controls:PropertiesItemContainer label="Properties Storage" width="100%">
+			<s:RadioButton label="Size" group="{propertiesGroup}"/>
+			<s:RadioButton label="Precision" group="{propertiesGroup}"/>
+		</controls:PropertiesItemContainer>
+		<controls:PropertiesItemContainer label="User Attributes Storage" width="100%">
+			<s:RadioButton label="Size" group="{attributesGroup}"/>
+			<s:RadioButton label="Precision" group="{attributesGroup}"/>
+		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="Compression" width="100%">
 			<s:DropDownList id="compressionDropDownList" requireSelection="true" selectedItem="@{_asset.compression}"
 							change="compressionDropDownList_changeHandler(event)" width="100%">
 				<s:dataProvider>
 					<s:ArrayList>
+						<fx:String>UNCOMPRESSED</fx:String>
 						<fx:String>DEFLATE</fx:String>
 						<fx:String>LZMA</fx:String>
 					</s:ArrayList>
 				</s:dataProvider>
 			</s:DropDownList>
 		</controls:PropertiesItemContainer>
-		<controls:PropertiesItemContainer label="User Attribute Namespace" width="100%">
+		<controls:PropertiesItemContainer label="User Attributes Namespace" width="100%">
 			<s:TextInput width="100%" text="@{_asset.namespace}" change="stepper_changeHandler(event)"/>
 		</controls:PropertiesItemContainer>
 	</s:VGroup>

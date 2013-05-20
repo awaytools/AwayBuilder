@@ -60,9 +60,14 @@ package awaybuilder.view.mediators
     import away3d.materials.methods.SoftShadowMapMethod;
     import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
     import away3d.materials.methods.WrapDiffuseMethod;
+    import away3d.primitives.CapsuleGeometry;
+    import away3d.primitives.ConeGeometry;
     import away3d.primitives.CubeGeometry;
+    import away3d.primitives.CylinderGeometry;
+    import away3d.primitives.PlaneGeometry;
     import away3d.primitives.SkyBox;
     import away3d.primitives.SphereGeometry;
+    import away3d.primitives.TorusGeometry;
     import away3d.textures.BitmapCubeTexture;
     import away3d.textures.BitmapTexture;
     import away3d.textures.CubeTextureBase;
@@ -939,7 +944,17 @@ package awaybuilder.view.mediators
 			{
 				var obj:Geometry = assets.GetObject( asset ) as Geometry;
 				obj.name = asset.name;
-				if( obj is CubeGeometry )
+				if( obj is PlaneGeometry )
+				{
+					var planeGeometry:PlaneGeometry = obj as PlaneGeometry;
+					planeGeometry.width = asset.width;
+					planeGeometry.height = asset.height;
+					planeGeometry.segmentsW = asset.segmentsW;
+					planeGeometry.segmentsH = asset.segmentsH;
+					planeGeometry.yUp = asset.yUp;
+					planeGeometry.doubleSided = asset.doubleSided;
+				}
+				else if( obj is CubeGeometry )
 				{
 					var cubeGeometry:CubeGeometry = obj as CubeGeometry;
 					cubeGeometry.width = asset.width;
@@ -955,8 +970,48 @@ package awaybuilder.view.mediators
 					var sphereGeometry:SphereGeometry = obj as SphereGeometry;
 					sphereGeometry.radius = asset.radius;
 					sphereGeometry.yUp = asset.yUp;
-					sphereGeometry.segmentsW = asset.segmentsW;
-					sphereGeometry.segmentsH = asset.segmentsH;
+					sphereGeometry.segmentsW = asset.segmentsSW;
+					sphereGeometry.segmentsH = asset.segmentsSH;
+				}
+				else if( obj is ConeGeometry )
+				{
+					var coneGeometry:ConeGeometry = obj as ConeGeometry;
+					coneGeometry.bottomRadius = asset.radius;
+					coneGeometry.height = asset.height;
+					coneGeometry.segmentsW = asset.segmentsR;
+					coneGeometry.segmentsH = asset.segmentsH;
+					coneGeometry.bottomClosed = asset.bottomClosed;
+					coneGeometry.yUp = asset.yUp;
+				}
+				else if( obj is CylinderGeometry )
+				{
+					var cylinderGeometry:CylinderGeometry = obj as CylinderGeometry;
+					cylinderGeometry.bottomRadius = asset.bottomRadius;
+					cylinderGeometry.topRadius = asset.topRadius;
+					cylinderGeometry.height = asset.height;
+					cylinderGeometry.segmentsW = asset.segmentsR;
+					cylinderGeometry.segmentsH = asset.segmentsH;
+					cylinderGeometry.topClosed = asset.topClosed;
+					cylinderGeometry.bottomClosed = asset.bottomClosed;
+					cylinderGeometry.yUp = asset.yUp;
+				}
+				else if( obj is CapsuleGeometry )
+				{
+					var capsuleGeometry:CapsuleGeometry = obj as CapsuleGeometry;
+					capsuleGeometry.radius = asset.radius;
+					capsuleGeometry.height = asset.height;
+					capsuleGeometry.segmentsW = asset.segmentsR;
+					capsuleGeometry.segmentsH = asset.segmentsC;
+					capsuleGeometry.yUp = asset.yUp;
+				}
+				 else if( obj is TorusGeometry )
+				{
+					var torusGeometry:TorusGeometry = obj as TorusGeometry;
+					torusGeometry.radius = asset.radius;
+					torusGeometry.tubeRadius = asset.tubeRadius;
+					torusGeometry.segmentsR = asset.segmentsR;
+					torusGeometry.segmentsT = asset.segmentsT;
+					torusGeometry.yUp = asset.yUp;
 				}
 			}
 		}

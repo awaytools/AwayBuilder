@@ -2,6 +2,7 @@ package awaybuilder.model
 {
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
+	import away3d.entities.TextureProjector;
 	import away3d.events.AssetEvent;
 	import away3d.events.LoaderEvent;
 	import away3d.library.AssetLibrary;
@@ -148,7 +149,11 @@ package awaybuilder.model
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
 					_objects.push( c );
 					break;
-				case AssetType.ENTITY:
+				case AssetType.TEXTURE_PROJECTOR:
+					var tp:TextureProjector = event.asset as TextureProjector;
+					_objects.push( tp );
+					break;
+				case AssetType.SKYBOX:
 					var sb:SkyBox = event.asset as SkyBox;
 					_objects.push( sb );
 					break;

@@ -67,6 +67,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.SubGeometryVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
+	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	
@@ -82,6 +83,7 @@ package awaybuilder.utils.encoders
 	import flash.geom.Orientation3D;
 	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
+	import flash.utils.CompressionAlgorithm;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
 	
@@ -97,6 +99,7 @@ package awaybuilder.utils.encoders
 		// set debug to true to get some traces in the console
 		private var _debug:Boolean=false;
 		private var _body : ByteArray;
+		private var _blockBody : ByteArray;
 		private var _blockCache : Dictionary;
 		private var _blockId : uint;
 		
@@ -131,14 +134,23 @@ package awaybuilder.utils.encoders
 		private var _exportNormals:Boolean=true;
 		private var _exportTangents:Boolean=false;
 		private var _streaming:Boolean=false;
-		private var _compression:uint=0; //1:
-		private var _geomStoragePrecision:Boolean=false; 
-		private var _matrixStoragePrecision:Boolean=false; 
+		private var _compression:uint=0;
+		private var _blockCompress:uint=0;
+		private var _geomStoragePrecision:uint=0; 
+		private var _matrixStoragePrecision:uint=0; 
+		private var _propsStoragePrecision:uint=0; 
 		private var _embedtextures:Boolean=true; 
+		
+		private var _matrixNrType : uint;
+		private var _propNrType : uint;
+		private var _geoNrType : uint;
+		private var _attributeNrType : uint;
 		
 		private var _depthSizeDic:Dictionary=new Dictionary();
 		private var _shadowMethodsToLightsDic:Dictionary=new Dictionary();
 		
+		private var _nameSpaceString:String; 
+		private var _nameSpaceID:uint; 
 		
 		public function AWDEncoder()
 		{
@@ -178,18 +190,49 @@ package awaybuilder.utils.encoders
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
 			
-			// to do: implement Encoder-options.
-			// atm - the AWDEncoder will not make use of any options. 
-			// I will add this as soon as the Encoder works stabil with default-settings.	
-			/*
-			_streaming=document.globalOptions.streaming	
-			_compression=document.globalOptions.compression	
+			_nameSpaceID=1;
+			_nameSpaceString=document.globalOptions.namespace;
 			_embedtextures=document.globalOptions.embedTextures
-			_geomStoragePrecision=document.globalOptions.geometryStorage	
-			_matrixStoragePrecision=document.globalOptions.matrixStorage
-			*/
-			_exportNormals=document.globalOptions.includeNormal	
-			_exportTangents=document.globalOptions.includeTangent	
+				
+			// get the type of compression to use
+			_compression=0;
+			if(document.globalOptions.compression=="UNCOMPRESSED")
+				_compression=0;
+			if(document.globalOptions.compression=="DEFLATE")
+				_compression=1;
+			if(document.globalOptions.compression=="LZMA")
+				_compression=2;			
+			// if the streaming option is enabled, the compression is set per block
+			if (document.globalOptions.streaming==true)
+			{
+				_blockCompress=_compression;
+				_compression=0;
+			}
+			
+			// set the global - storage - precision
+			_matrixNrType=FLOAT32;
+			if (document.globalOptions.matrixStorage=="Precision"){
+				_matrixNrType=FLOAT64;
+				_matrixStoragePrecision=1;				
+			}
+			_geoNrType=FLOAT32;
+			if (document.globalOptions.geometryStorage=="Precision"){
+				_geoNrType=FLOAT64;
+				_geomStoragePrecision=1;	
+			}
+			_propNrType=FLOAT32;
+			if (document.globalOptions.propertyStorage=="Precision"){
+				_propNrType=FLOAT64;
+				_propsStoragePrecision=1;	
+			}
+			_attributeNrType=FLOAT32;
+			if (document.globalOptions.attributesStorage=="Precision"){
+				_attributeNrType=FLOAT64;
+			}
+			
+			_exportNormals=document.globalOptions.includeNormal;
+			_exportTangents=document.globalOptions.includeTangent;	
+			
 			if(_debug)trace("start encoding");
 			
 			//create a AWDBlock class for all supported Assets
@@ -199,6 +242,10 @@ package awaybuilder.utils.encoders
 			_createAwdBlocks(document.materials);
 			_createAwdBlocks(document.geometry);
 			// to do: add export of Animations
+			
+			_encodeMetaDataBlock();
+			
+			_encodeNameSpaceBlock();
 			
 			// recursive encode all Scene-graph objects (ObjectContainer3d / Mesh) and their dependencies
 			var scene:ArrayCollection = document.scene;
@@ -222,9 +269,31 @@ package awaybuilder.utils.encoders
 			output.writeUTFBytes("AWD");//MagicString
 			output.writeByte(2);//versionNumber
 			output.writeByte(1);//RevisionNumber
-			output.writeShort(0);//flags //accuracy etc
-			output.writeByte(1); // ZLIB //compression (to do)			
-			_body.compress();
+			
+			var bf:uint = 0;
+			bf = 0<<15; //Set bit 16 
+			bf |= 0<<14; //Set bit 15 
+			bf |= 0<<13; //Set bit 14 
+			bf |= 0<<12; //Set bit 13 
+			bf |= 0<<11; //Set bit 12 
+			bf |= 0<<10; //Set bit 11
+			bf |= 0<<9; //Set bit 10
+			bf |= 0<<8; //Set bit 9
+			bf |= 0<<7; //Set bit 8
+			bf |= 0<<6; //Set bit 7
+			bf |= 0<<5; //Set bit 6
+			bf |= 0<<4; //Set bit 5
+			bf |= _propsStoragePrecision<<3; //Set bit 4
+			bf |= _geomStoragePrecision<<2; //Set bit 3
+			bf |= _matrixStoragePrecision<<1; //Set bit 2
+			bf |= int(document.globalOptions.streaming);    //Set bit 1
+			
+			output.writeShort(bf); // flags 
+			output.writeByte(_compression); // global compression
+			if (_compression==1)
+				_body.compress();
+			if (_compression==2)
+				_body.compress(CompressionAlgorithm.LZMA);
 			output.writeUnsignedInt(_body.length);
 			output.writeBytes(_body);
 			
@@ -257,6 +326,39 @@ package awaybuilder.utils.encoders
 				
 			}
 		}
+		
+		// encodes the BlockHeader - is called for every block that gets enncoded
+		private function _encodeBlockHeader(type : uint) : uint
+		{
+			_blockId++;
+			_body.writeUnsignedInt(_blockId);
+			_body.writeByte(0);
+			_body.writeByte(type);
+			
+			var compressBool:int=0;
+			var lzmaBool:int=0;
+			if (_blockCompress>0){
+				compressBool=1;
+				if (_blockCompress>1){
+					lzmaBool=1;}				
+			}
+			var bf:uint = 0;
+			bf = 0<<7; //Set bit 8
+			bf |= 0<<6; //Set bit 7
+			bf |= 0<<5; //Set bit 6
+			bf |= int(lzmaBool)<<4; //Set bit 5 - if true, LZMA is used for Compression
+			bf |= int(compressBool)<<3; //Set bit 4 - if true, the block is compressed
+			bf |= _propsStoragePrecision<<2; //Set bit 3 - reserved for propsStoragePrecision
+			bf |= _geomStoragePrecision<<1; //Set bit 2 - reserved for geomStoragePrecision
+			bf |= _matrixStoragePrecision;    //Set bit 1 - reserved for matrixStoragePrecisicn
+			_body.writeByte(bf);
+			_blockBody = new ByteArray();
+			_blockBody.endian = Endian.LITTLE_ENDIAN;
+			return _blockId;
+		}
+		
+		
+		
 		// creates AWDBlocks for a list of Assets
 		private function _createAwdBlocks(assetList:ArrayCollection) : void
 		{
@@ -366,6 +468,12 @@ package awaybuilder.utils.encoders
 					newParentID=_encodeMesh(MeshVO(vo),parentID);
 					thisBlock.id=newParentID;
 					break;
+				case (vo is TextureProjectorVO):
+					_blockCache[vo]=thisBlock;
+					if(_debug)trace("TextureProjectorVO = "+TextureProjectorVO(vo).name+" parentID = "+parentID);
+					newParentID=_encodeTextureProjector(TextureProjectorVO(vo),parentID);
+					thisBlock.id=newParentID;
+					break;
 				case (vo is ContainerVO):
 					_blockCache[vo]=thisBlock;
 					if(_debug)trace("ContainerVO = "+ContainerVO(vo).name+" parentID = "+parentID);
@@ -389,13 +497,16 @@ package awaybuilder.utils.encoders
 		// encode Geometry (id=1)
 		private function _encodeGeometry(geom : GeometryVO) : uint
 		{	
-			var sub:SubGeometryVO;
 			var returnID:uint;
+			if (geom.type!="Geometry"){
+				returnID=_encodePrimitiveBlock(geom);
+				return returnID;				
+			}
+			var sub:SubGeometryVO;
 			returnID=_encodeBlockHeader(1);
-			_beginElement(); // Block
 			
-			_body.writeUTF(geom.name);
-			_body.writeShort(geom.subGeometries.length);
+			_blockBody.writeUTF(geom.name);
+			_blockBody.writeShort(geom.subGeometries.length);
 			
 			_beginElement(); // Prop list
 			_endElement(); // Prop list
@@ -413,10 +524,8 @@ package awaybuilder.utils.encoders
 				/*if(sub is SkinnedSubGeometry){
 				var skinnedSub:SkinnedSubGeometry= sub as SkinnedSubGeometry;
 				_encodeStream(6, skinnedSub., sub.vertexNormalOffset, sub.vertexNormalStride);
-				_encodeStream(7, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
-				
-				}*/
-				
+				_encodeStream(7, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);				
+				}*/				
 				_endElement(); // Sub-geom
 				
 				_beginElement(); // User attr
@@ -426,37 +535,133 @@ package awaybuilder.utils.encoders
 			_beginElement(); // User attr
 			_endElement(); // User attr
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			return returnID;
 		}
 		
 		
+		// encode Primitve (id = 11)
+		private function _encodePrimitiveBlock(geom:GeometryVO) : uint
+		{
+			var returnID:uint;
+			returnID=_encodeBlockHeader(11);
+			
+			_blockBody.writeUTF(geom.name);
+			var geometryproperties:Vector.<AWDmethod>=new Vector.<AWDmethod>;
+			switch(geom.type){ 
+				case "PlaneGeometry":
+					_blockBody.writeByte(1);
+					_beginElement(); 
+					if (geom.width!=100)_encodeProperty(101,geom.width, _geoNrType);
+					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
+					if (geom.segmentsW!=1)_encodeProperty(301,geom.segmentsW, UINT16);		
+					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
+					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);		
+					if (geom.doubleSided!=false)_encodeProperty(702,geom.doubleSided, BOOL);	
+					_endElement(); 
+					break;
+				case "CubeGeometry":
+					_blockBody.writeByte(2);
+					_beginElement(); 
+					if (geom.width!=100)_encodeProperty(101,geom.width, _geoNrType);
+					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
+					if (geom.depth!=100)_encodeProperty(103,geom.depth, _geoNrType);
+					if (geom.segmentsW!=1)_encodeProperty(301,geom.segmentsW, UINT16);
+					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);
+					if (geom.segmentsD!=1)_encodeProperty(303,geom.segmentsD, UINT16);
+					if (geom.tile6!=true)_encodeProperty(701,geom.tile6, BOOL);
+					_endElement(); 
+					break;
+				case "SphereGeometry":
+					_blockBody.writeByte(3);
+					_beginElement(); 
+					if (geom.radius!=50)_encodeProperty(101,geom.radius, _geoNrType);
+					if (geom.segmentsSW!=16)_encodeProperty(301,geom.segmentsSW, UINT16);
+					if (geom.segmentsSH!=12)_encodeProperty(302,geom.segmentsSH, UINT16);		
+					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);			
+					_endElement(); 
+					break;
+				case "CylinderGeometry":
+					_blockBody.writeByte(4);
+					_beginElement(); 
+					if (geom.topRadius!=50)_encodeProperty(101,geom.topRadius, _geoNrType);
+					if (geom.bottomRadius!=50)_encodeProperty(102,geom.bottomRadius, _geoNrType);
+					if (geom.height!=100)_encodeProperty(103,geom.height, _geoNrType);
+					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
+					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
+					if (Boolean(geom.topClosed)!=true)_encodeProperty(701,Boolean(geom.topClosed), BOOL);		
+					if (Boolean(geom.bottomClosed)!=true)_encodeProperty(702,Boolean(geom.bottomClosed), BOOL);		
+					if (Boolean(geom.yUp)!=true)_encodeProperty(703,Boolean(geom.yUp), BOOL);	
+					_endElement(); 
+					break;
+				case "ConeGeometry":
+					_blockBody.writeByte(5);
+					_beginElement(); 
+					if (geom.radius!=50)_encodeProperty(101,geom.radius, _geoNrType);
+					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
+					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
+					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
+					if (Boolean(geom.topClosed)!=true)_encodeProperty(701,Boolean(geom.topClosed), BOOL);			
+					if (Boolean(geom.yUp)!=true)_encodeProperty(702,Boolean(geom.yUp), BOOL);	
+					_endElement(); 
+					break;
+				case "CapsuleGeometry":
+					_blockBody.writeByte(6);
+					_beginElement(); 
+					if (geom.radius!=50)_encodeProperty(101,geom.radius, _geoNrType);
+					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
+					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
+					if (geom.segmentsC!=12)_encodeProperty(302,geom.segmentsC, UINT16);		
+					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					_endElement(); 
+					break;
+				case "TorusGeometry":
+					_blockBody.writeByte(7);
+					_beginElement(); 
+					if (geom.radius!=50)_encodeProperty(101,geom.radius, _geoNrType);
+					if (geom.tubeRadius!=50)_encodeProperty(102,geom.tubeRadius, _geoNrType);
+					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
+					if (geom.segmentsT!=8)_encodeProperty(302,geom.segmentsT, UINT16);		
+					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					_endElement(); 
+					break;
+				default:
+					break;
+			}				
+			
+			_beginElement(); // Attr list
+			_endElement(); // Attr list
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		
 		// encode Container (id=22)
 		private function _encodeContainer3D(container : ContainerVO, parentId:uint=0) : uint
-		{
-			
+		{			
 			var i : uint;
 			var parentId : uint;
 			var returnID:uint=_encodeBlockHeader(22);
-			_beginElement(); // Block
 			
-			_body.writeUnsignedInt(parentId);
+			_blockBody.writeUnsignedInt(parentId);
 			_encodeMatrix3D(getTransformMatrix(container));
-			_body.writeUTF(container.name);
+			_blockBody.writeUTF(container.name);
 			// to do: add encoding of pivot.x/.y/.z + visibility + userData
 			
+			
 			_beginElement(); // Prop list
-			if(container.pivotX!=0)_encodeProperty(1,container.pivotX,  FLOAT32);
-			if(container.pivotY!=0)_encodeProperty(2,container.pivotY,  FLOAT32);
-			if(container.pivotZ!=0)_encodeProperty(3,container.pivotZ,  FLOAT32);
+			if(container.pivotX!=0)_encodeProperty(1,container.pivotX,  _matrixNrType);
+			if(container.pivotY!=0)_encodeProperty(2,container.pivotY,  _matrixNrType);
+			if(container.pivotZ!=0)_encodeProperty(3,container.pivotZ,  _matrixNrType);
 			_endElement(); // Prop list
 			
 			_beginElement(); // Attr list
 			_endoceExtraProperties(container.extras);
 			_endElement(); // Attr list
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			return returnID;
 		}
@@ -479,22 +684,21 @@ package awaybuilder.utils.encoders
 			}
 			
 			returnID=_encodeBlockHeader(23);
-			_beginElement(); // Block
 			
-			_body.writeUnsignedInt(parentId);
+			_blockBody.writeUnsignedInt(parentId);
 			_encodeMatrix3D(getTransformMatrix(mesh));
-			_body.writeUTF(mesh.name);
-			_body.writeUnsignedInt(geomId);
+			_blockBody.writeUTF(mesh.name);
+			_blockBody.writeUnsignedInt(geomId);
 			
-			_body.writeShort(materialIds.length);
+			_blockBody.writeShort(materialIds.length);
 			for (i=0; i<materialIds.length; i++) {
-				_body.writeUnsignedInt(materialIds[i]);
+				_blockBody.writeUnsignedInt(materialIds[i]);
 			}
 			
 			_beginElement(); // Prop list
-			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  FLOAT32);
-			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  FLOAT32);
-			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  FLOAT32);
+			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  _matrixNrType);
+			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  _matrixNrType);
+			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  _matrixNrType);
 			if(mesh.castsShadows==true)_encodeProperty(5,mesh.castsShadows,  BOOL);
 			_endElement(); // Prop list
 			
@@ -503,12 +707,11 @@ package awaybuilder.utils.encoders
 			_endoceExtraProperties(mesh.extras);
 			_endElement(); // Attr list
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			return returnID;
 			
-		}
-		
+		}		
 		
 		// encode SkyBox (id=31)
 		private function _encodeSkyBox(sky : SkyBoxVO) : uint
@@ -517,10 +720,9 @@ package awaybuilder.utils.encoders
 			var skyBoxTex:uint=_getBlockIDorEncodeAsset(sky.cubeMap);
 			
 			returnID=_encodeBlockHeader(31);
-			_beginElement(); // Block
 			
-			_body.writeUTF(sky.name);
-			_body.writeUnsignedInt(skyBoxTex);
+			_blockBody.writeUTF(sky.name);
+			_blockBody.writeUnsignedInt(skyBoxTex);
 			
 			_beginElement(); // Prop list
 			_endElement(); // Prop list
@@ -528,11 +730,10 @@ package awaybuilder.utils.encoders
 			_beginElement(); // User attr
 			_endElement(); // User attr
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			return returnID;
-		}
-		
+		}		
 		
 		// encode LightBlock (id=41)
 		private function _encodeLight(light:LightVO) : uint
@@ -547,23 +748,18 @@ package awaybuilder.utils.encoders
 			var lightMatrix:Matrix3D=getTransformMatrix(light);
 			// if the lights will be part of the sceneGraph, we will need to get its parentID 		
 			var dirVec:Vector3D=new Vector3D();
-			if (light.type==LightVO.DIRECTIONAL){
-				
-				
+			if (light.type==LightVO.DIRECTIONAL){				
 				
 				dirVec.y = -Math.sin( light.elevationAngle*Math.PI/180);
 				dirVec.x =  Math.sin(Math.PI/2 - light.elevationAngle*Math.PI/180)*Math.sin( light.azimuthAngle*Math.PI/180);
 				dirVec.z =  Math.sin(Math.PI/2 - light.elevationAngle*Math.PI/180)*Math.cos( light.azimuthAngle*Math.PI/180);
-				var tmpObject:Object3D=new Object3D();
-				tmpObject.lookAt(new Vector3D(dirVec.x,dirVec.y,dirVec.z));
-				//lightMatrix=tmpObject.transform;
 			}
 			
 			returnID=_encodeBlockHeader(41);
-			_beginElement(); // Block
-			_body.writeUnsignedInt(parentId);//parent		
+			
+			_blockBody.writeUnsignedInt(parentId);//parent		
 			_encodeMatrix3D(lightMatrix);//matrix
-			_body.writeUTF(light.name);//name
+			_blockBody.writeUTF(light.name);//name
 			
 			if (light.type==LightVO.POINT){
 				if(_debug)trace("start encode PointLight = "+light.name);
@@ -575,21 +771,21 @@ package awaybuilder.utils.encoders
 				lightType=2;
 			}					
 			
-			_body.writeByte(lightType);	//lightType	
+			_blockBody.writeByte(lightType);	//lightType	
 			
 			_beginElement(); // start lights-prop list
 			
-			if(radius){_encodeProperty(1,radius, FLOAT32);}//radius
-			if(fallOff){_encodeProperty(2,fallOff, FLOAT32);}//fallOff
+			if(radius){_encodeProperty(1,radius, _propNrType);}//radius
+			if(fallOff){_encodeProperty(2,fallOff, _propNrType);}//fallOff
 			if(light.color!=0xffffff){_encodeProperty(3,light.color, COLOR);}//color
-			if(light.specular!=1){_encodeProperty(4,light.specular, FLOAT32);}//specular
-			if(light.diffuse!=1){_encodeProperty(5,light.diffuse, FLOAT32);}//diffuse
+			if(light.specular!=1){_encodeProperty(4,light.specular, _propNrType);}//specular
+			if(light.diffuse!=1){_encodeProperty(5,light.diffuse, _propNrType);}//diffuse
 			if(light.ambientColor!=0xffffff){_encodeProperty(7,light.ambientColor, COLOR);}//ambientColor
-			if(light.ambient!=0){_encodeProperty(8,light.ambient, FLOAT32);}//ambient-level
+			if(light.ambient!=0){_encodeProperty(8,light.ambient, _propNrType);}//ambient-level
 			if (light.type==LightVO.DIRECTIONAL){
-				_encodeProperty(21,dirVec.x, FLOAT32);//azimuthAngle
-				_encodeProperty(22,dirVec.y, FLOAT32);//azimuthAngle
-				_encodeProperty(23,dirVec.z, FLOAT32);//azimuthAngle
+				_encodeProperty(21,dirVec.x, _matrixNrType);//azimuthAngle
+				_encodeProperty(22,dirVec.y, _matrixNrType);//azimuthAngle
+				_encodeProperty(23,dirVec.z, _matrixNrType);//azimuthAngle
 			}		
 			// just add the shadowmapper as max 3 light-properties (shadowMapper-Type + shadowmapper-properties)	
 			if((light.castsShadows)&&(light.shadowMapper)){		
@@ -598,7 +794,7 @@ package awaybuilder.utils.encoders
 					case "NearDirectionalShadowMapper":
 						_encodeProperty(9,2, UINT8);
 						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
-						if(mapperVO.coverage!=0.5)_encodeProperty(11,mapperVO.coverage, FLOAT32);
+						if(mapperVO.coverage!=0.5)_encodeProperty(11,mapperVO.coverage, _propNrType);
 						break;
 					case "DirectionalShadowMapper":
 						_encodeProperty(9,1, UINT8);
@@ -615,18 +811,57 @@ package awaybuilder.utils.encoders
 						break;
 				}
 			}			
-			_endElement(); // prop list
-			
+			_endElement(); // prop list			
 			
 			_beginElement(); // Attr list
 			_endElement(); // Attr list
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			if(_debug)trace("light = "+light.name + " has been encoded successfully.");	
 			return returnID;
 		}
 		
+		// encode Camera (blockID = 42)
+		private function _encodeCameraBlock(_cam:Object) : void
+		{
+			// we nee CamerasVO, to use this function
+			_encodeBlockHeader(42);
+			//needs to be done
+		}
+		
+		// encode Textureprojector (id=43)
+		private function _encodeTextureProjector(texProject :TextureProjectorVO,parentId:uint) : uint
+		{
+			var returnID:uint;
+			var texID:uint;
+			texID=_getBlockIDorEncodeAsset(texProject.texture);
+			
+			returnID=_encodeBlockHeader(43);
+			
+			_blockBody.writeUnsignedInt(parentId);
+			_encodeMatrix3D(getTransformMatrix(texProject));
+			_blockBody.writeUTF(texProject.name);
+			// to do: add encoding of pivot.x/.y/.z + visibility + userData
+			
+			_blockBody.writeUnsignedInt(texID);
+			_blockBody.writeFloat(texProject.aspectRatio);
+			_blockBody.writeFloat(texProject.fov);
+			
+			_beginElement(); // Prop list
+			if(texProject.pivotX!=0)_encodeProperty(1,texProject.pivotX,  _matrixNrType);
+			if(texProject.pivotY!=0)_encodeProperty(2,texProject.pivotY,  _matrixNrType);
+			if(texProject.pivotZ!=0)_encodeProperty(3,texProject.pivotZ,  _matrixNrType);
+			_endElement(); // Prop list
+			
+			_beginElement(); // Attr list
+			_endoceExtraProperties(texProject.extras);
+			_endElement(); // Attr list
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
 		// encode LightPicker (id=51)
 		private function _encodeLightPicker(_lp :LightPickerVO) : uint
 		{
@@ -638,18 +873,17 @@ package awaybuilder.utils.encoders
 			}			
 			
 			returnID=_encodeBlockHeader(51);
-			_beginElement(); // Block
 			
-			_body.writeUTF(_lp.name);
-			_body.writeShort(_lp.lights.length);	//num of lights
+			_blockBody.writeUTF(_lp.name);
+			_blockBody.writeShort(_lp.lights.length);	//num of lights
 			for (k=0;k<_lp.lights.length;k++){	
-				_body.writeUnsignedInt(lightIDs[k]);	//light-ids
+				_blockBody.writeUnsignedInt(lightIDs[k]);	//light-ids
 			}
 			
 			_beginElement(); // Attr list
 			_endElement(); // Attr list
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			return returnID;
 		}
@@ -728,16 +962,12 @@ package awaybuilder.utils.encoders
 			var thisBlendMode:uint=blendModeDic[mtl.blendMode];
 			if ((thisBlendMode!=1)&&(thisBlendMode!=2)&&(thisBlendMode!=8)&&(thisBlendMode!=10))	thisBlendMode=0;
 			if (thisBlendMode>0)	blendMode=thisBlendMode;
-			
-			
-			//write down the material as awdblock 
-			
+						
 			returnID=_encodeBlockHeader(81);
-			_beginElement(); // Block
 			
-			_body.writeUTF(mtl.name);
-			_body.writeByte(matType);	//materialType			
-			_body.writeByte(allMethods.length); //num of methods
+			_blockBody.writeUTF(mtl.name);
+			_blockBody.writeByte(matType);	//materialType			
+			_blockBody.writeByte(allMethods.length); //num of methods
 			
 			// Property list
 			_beginElement(); // Prop list
@@ -750,16 +980,16 @@ package awaybuilder.utils.encoders
 			if (bothSides==true){_encodeProperty(7, bothSides, BOOL);} // bothsides
 			if (alphaPremultiplied==true){_encodeProperty(8, alphaPremultiplied, BOOL);} // pre-multiplied				
 			if (blendMode){_encodeProperty(9, blendMode, UINT8);} // BlendMode
-			if (alpha){_encodeProperty(10, alpha, FLOAT32);}// alpha
+			if (alpha){_encodeProperty(10, alpha, _propNrType);}// alpha
 			if (alphaBlending==true){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
-			if (alphaThreshold){_encodeProperty(12, alphaThreshold, FLOAT32);}// alphaThreshold
+			if (alphaThreshold){_encodeProperty(12, alphaThreshold, _propNrType);}// alphaThreshold
 			if (repeat==false){_encodeProperty(13, repeat, BOOL);}// repeat
 			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
-			if (ambient){_encodeProperty(15, ambient, FLOAT32);}// ambient-level
+			if (ambient){_encodeProperty(15, ambient, _propNrType);}// ambient-level
 			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
 			if (ambientTexture){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap 		
-			if (specular){_encodeProperty(18, specular, FLOAT32);}// specular-level
-			//if (gloss){_encodeProperty(19, gloss, FLOAT32);}// specular-gloss !!! gloss doesnt seam to work in awayBuilder atm, so i do not export for now
+			if (specular){_encodeProperty(18, specular, _propNrType);}// specular-level
+			if (gloss){_encodeProperty(19, gloss, _propNrType);}// specular-gloss 
 			if (specularColor){_encodeProperty(20, specularColor, COLOR);}// specular-color
 			if (specularTexture){_encodeProperty(21, specularTexture, BADDR);}//specularMap 
 			if (lightPicker){_encodeProperty(22, lightPicker, BADDR);}//lightPicker
@@ -771,148 +1001,44 @@ package awaybuilder.utils.encoders
 				_encodeMethod(allMethods[i]._id,allMethods[i]._ids,allMethods[i]._values,allMethods[i]._defaultValues , allMethods[i]._types);
 			}
 			
-			
 			_beginElement(); // Attr list
 			_endElement(); // Attr list
 			
-			_endElement(); // Block
+			_finalizeBlock();
 			
 			return returnID;
 		}
 		
 		
-		
-		
-		// encode TextureBlock (id=82)
-		private function _encodeTexture(tex:TextureVO) : uint
+// start of  Material - Methods Helpers		
+		//encode all methods of a material. effectmethods and shadowMapmethods are stored in a own block
+		private function _encodeAllShadingMethods(mat:MaterialVO) : Vector.<AWDmethod>
 		{
-			var returnID:uint=_encodeBlockHeader(82);
-			_beginElement(); // Block			
-			_body.writeUTF(tex.name);
+			var materialMethods:Vector.<AWDmethod>=new Vector.<AWDmethod>;
 			
-			var ba : ByteArray = _encodeBitmap(tex.bitmapData);	
-			_body.writeByte(1);//external=0,embed=1;
-			_body.writeUnsignedInt(ba.length);
-			_body.writeBytes(ba);
-			
-			_beginElement(); // Properties (empty)
-			_endElement(); // Properties
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			if(_debug)trace("texture = "+tex.name + " has been encoded successfully!");
-			return returnID;
-			
-		}
-		
-		// encode TextureBlock (id=83)
-		private function _encodeCubeTextures(cubeTexture:CubeTextureVO) : uint
-		{
-			var id_posX : ByteArray = _encodeBitmap(cubeTexture.positiveX);	
-			var id_negX : ByteArray = _encodeBitmap(cubeTexture.negativeX);	
-			var id_posY : ByteArray = _encodeBitmap(cubeTexture.positiveY);	
-			var id_negY : ByteArray = _encodeBitmap(cubeTexture.negativeY);	
-			var id_posZ : ByteArray = _encodeBitmap(cubeTexture.positiveZ);	
-			var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ);	
-			
-			var returnID:uint = _encodeBlockHeader(83);
-			_beginElement(); // Block		
-			_body.writeByte(1);//external=0,embed=1;
-			_body.writeUTF(cubeTexture.name);
-			
-			// write all encodedBitMaps into the file
-			_body.writeUnsignedInt(id_posX.length);
-			_body.writeBytes(id_posX);
-			_body.writeUnsignedInt(id_negX.length);
-			_body.writeBytes(id_negX);
-			_body.writeUnsignedInt(id_posY.length);
-			_body.writeBytes(id_posY);
-			_body.writeUnsignedInt(id_negY.length);
-			_body.writeBytes(id_negY);
-			_body.writeUnsignedInt(id_posZ.length);
-			_body.writeBytes(id_posZ);
-			_body.writeUnsignedInt(id_negZ.length);
-			_body.writeBytes(id_negZ);
-			
-			
-			_beginElement(); // Properties (empty)
-			_endElement(); // Properties
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			
-			if(_debug)trace("cubeTexture = "+cubeTexture.name + " has been encoded successfully!");
-			return returnID;
-		}
-		
-		
-		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
-		private function _encodeShadowMapMethodBlock(methVO:ShadowMethodVO, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
-		{
-			var lightID:uint=0;
-			if (!_shadowMethodsToLightsDic[methVO]){
-				trace("unexpected error, could not find light for Shadowmethod");
+			_encodeDiffuseMethod(mat.diffuseMethod,materialMethods);
+			_encodeSpecularMethod(mat.specularMethod,materialMethods);
+			_encodeAmbientMethod(mat.ambientMethod,materialMethods);
+			_encodeNormalMethod(mat.normalMethod,materialMethods);
+			if(_debug)trace("ShadowMethod= "+mat.shadowMethod);
+			if(_debug)trace("ShadowMethod ID= "+_getBlockIDorEncodeAsset(mat.shadowMethod));
+			if (mat.shadowMethod)materialMethods.push(new AWDmethod(998, [1], [_getBlockIDorEncodeAsset(mat.shadowMethod)], [0], [BADDR]));
+			for each (var effectMethVO:EffectMethodVO in mat.effectMethods){
+				materialMethods.push(new AWDmethod(999, [1], [_getBlockIDorEncodeAsset(effectMethVO)], [0], [BADDR]));// to do - check the correct id for a "shared methdod block"-method 
 			}
-			else{
-				lightID=_getBlockIDorEncodeAsset(_shadowMethodsToLightsDic[methVO]);
-			}
-			var returnID:uint=_encodeBlockHeader(92);
-			_beginElement(); // Block			
-			_body.writeUTF(methVO.name);				
-			_body.writeUnsignedInt(lightID);			
-			
-			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			if(_debug)trace("ShadowMethod = "+ methVO.name + " has been encoded successfully!");
-			return returnID
+			return materialMethods;
 		}
-		// creates a new SharedBlock for a ShadowMethod.
-		private function _encodeShadowMethod(methVO:ShadowMethodVO) : uint
+		
+		// create the AmbientMethod as a AWDMethod (if its not the BasicDiffuseMethod)
+		private function _encodeAmbientMethod(ambientMethVO:ShadingMethodVO,materialMethods:Vector.<AWDmethod>) : void
 		{
-			var returnID:uint=0;
-			var baseID:uint;
-			switch(methVO.type)
-			{ 				
-				case ShadowMethodVO.FILTERED_SHADOW_MAP_METHOD:		
-					returnID=_encodeShadowMapMethodBlock(methVO, 1101, [101,102], [methVO.alpha,methVO.epsilon], [1,0.002], [FLOAT32,FLOAT32]);			
-					break;	
-				case ShadowMethodVO.DITHERED_SHADOW_MAP_METHOD:	
-					returnID=_encodeShadowMapMethodBlock(methVO, 1102, [101,102,201,103], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [FLOAT32,FLOAT32,UINT32,FLOAT32]);				
+			if(_debug)trace("ambientMethVO = "+ambientMethVO.type);
+			switch(ambientMethVO.type){ 
+				case "EnvMapAmbientMethod":
+					materialMethods.push(new AWDmethod(1, [1], [_getBlockIDorEncodeAsset(ambientMethVO.envMap)], [0], [BADDR]));
 					break;
-				case ShadowMethodVO.SOFT_SHADOW_MAP_METHOD:		
-					returnID=_encodeShadowMapMethodBlock(methVO,1103, [101,102,201,103], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [FLOAT32,FLOAT32,UINT32,FLOAT32]);				
-					break;
-				case ShadowMethodVO.HARD_SHADOW_MAP_METHOD:		
-					returnID=_encodeShadowMapMethodBlock(methVO,1104, [101,102], [methVO.alpha,methVO.epsilon], [1,0.002], [FLOAT32,FLOAT32]);			
-					break;	
-				case ShadowMethodVO.CASCADE_SHADOW_MAP_METHOD:		
-					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
-					returnID=_encodeShadowMapMethodBlock(methVO,1001, [1], [baseID], [0], [BADDR]);
-					break;
-				case ShadowMethodVO.NEAR_SHADOW_MAP_METHOD:		
-					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
-					returnID=_encodeShadowMapMethodBlock(methVO,1002, [1], [baseID], [0], [BADDR]);
-					break;
-			}	
-			return returnID;
+			}
 		}
-		
-		
-		
-		
-		
-		
 		
 		
 		// create the DiffuseMethod as a AWDMethod (if its not the BasicDiffuseMethod)
@@ -931,14 +1057,14 @@ package awaybuilder.utils.encoders
 					break;
 				case "CelDiffuseMethod":
 					_encodeDiffuseMethod(diffuseMethVO.baseMethod,materialMethods);
-					materialMethods.push(new AWDmethod(55, [401,101], [diffuseMethVO.value, diffuseMethVO.smoothness], [3,0.1], [UINT8,FLOAT32]));
+					materialMethods.push(new AWDmethod(55, [401,101], [diffuseMethVO.value, diffuseMethVO.smoothness], [3,0.1], [UINT8,_propNrType]));
 					break;
 				case "SubsurfaceScatteringDiffuseMethod":
 					_encodeDiffuseMethod(diffuseMethVO.baseMethod,materialMethods);
-					materialMethods.push(new AWDmethod(56, [101,102,601], [diffuseMethVO.scattering,diffuseMethVO.translucency,diffuseMethVO.scatterColor], [0.2,1,0xffffff], [FLOAT32,FLOAT32,COLOR]));
+					materialMethods.push(new AWDmethod(56, [101,102,601], [diffuseMethVO.scattering,diffuseMethVO.translucency,diffuseMethVO.scatterColor], [0.2,1,0xffffff], [_propNrType,_propNrType,COLOR]));
 					break;
 				case "WrapDiffuseMethod":
-					materialMethods.push(new AWDmethod(53, [101], [diffuseMethVO.value], [0.5], [FLOAT32]));
+					materialMethods.push(new AWDmethod(53, [101], [diffuseMethVO.value], [0.5], [_propNrType]));
 					break;
 				case "DepthDiffuseMethod":
 					materialMethods.push(new AWDmethod(51, [], [], [], []));
@@ -947,22 +1073,20 @@ package awaybuilder.utils.encoders
 					texID=_getBlockIDorEncodeAsset(diffuseMethVO.texture);
 					materialMethods.push(new AWDmethod(52, [104], [texID], [0], [BADDR]));
 					break;
-			}
-			
-		}
-		
+			}			
+		}		
+		// create the SpecularMethod as a AWDMethod (if its not the BasicDiffuseMethod)
 		private function _encodeSpecularMethod(speculareMethVO:ShadingMethodVO, materialMethods:Vector.<AWDmethod>) : void
 		{
 			if(_debug)trace("speculareMethVO = "+speculareMethVO.type);
 			switch(speculareMethVO.type){ 
 				case "CelSpecularMethod":	
 					_encodeSpecularMethod(speculareMethVO.baseMethod,materialMethods);
-					materialMethods.push(new AWDmethod(103, [101,102], [speculareMethVO.value, speculareMethVO.smoothness], [0.5,0.1], [FLOAT32,FLOAT32]));
+					materialMethods.push(new AWDmethod(103, [101,102], [speculareMethVO.value, speculareMethVO.smoothness], [0.5,0.1], [_propNrType,_propNrType]));
 					break;
 				case "FresnelSpecularMethod":	
 					_encodeSpecularMethod(speculareMethVO.baseMethod,materialMethods);
-					// to do: speculareMethVO.normalPower is not mapped - it is allways set to 0.1 = default
-					materialMethods.push(new AWDmethod(104, [701,101,102], [speculareMethVO.basedOnSurface, speculareMethVO.fresnelPower,0.1], [true,0.5,0.1], [BOOL,FLOAT32,FLOAT32]));
+					materialMethods.push(new AWDmethod(104, [701,101,102], [speculareMethVO.basedOnSurface, speculareMethVO.fresnelPower,speculareMethVO.value], [true,0.5,0.1], [BOOL,_propNrType,_propNrType]));
 					break;
 				case "AnisotropicSpecularMethod":	
 					materialMethods.push(new AWDmethod(101, [], [], [], []));
@@ -972,17 +1096,7 @@ package awaybuilder.utils.encoders
 					break;
 			}
 		}
-		
-		private function _encodeAmbientMethod(ambientMethVO:ShadingMethodVO,materialMethods:Vector.<AWDmethod>) : void
-		{
-			if(_debug)trace("ambientMethVO = "+ambientMethVO.type);
-			switch(ambientMethVO.type){ 
-				case "EnvMapAmbientMethod":
-					materialMethods.push(new AWDmethod(1, [1], [_getBlockIDorEncodeAsset(ambientMethVO.envMap)], [0], [BADDR]));
-					break;
-			}
-		}
-		
+		// create the NormalMethod as a AWDMethod (if its not the BasicDiffuseMethod)
 		private function _encodeNormalMethod(normalMethVO:ShadingMethodVO, materialMethods:Vector.<AWDmethod>) : void
 		{
 			if(_debug)trace("normalMethVO = "+normalMethVO.type);
@@ -996,24 +1110,302 @@ package awaybuilder.utils.encoders
 				break;*/
 			}
 		}
+// end of  Material - Methods Helpers
 		
-		private function _encodeAllShadingMethods(mat:MaterialVO) : Vector.<AWDmethod>
+	
+// start of textures
+		// encode TextureBlock (id=82)
+		private function _encodeTexture(tex:TextureVO) : uint
 		{
-			var materialMethods:Vector.<AWDmethod>=new Vector.<AWDmethod>;
+			var returnID:uint=_encodeBlockHeader(82);
 			
-			_encodeDiffuseMethod(mat.diffuseMethod,materialMethods);
-			_encodeSpecularMethod(mat.specularMethod,materialMethods);
-			_encodeAmbientMethod(mat.ambientMethod,materialMethods);
-			_encodeNormalMethod(mat.normalMethod,materialMethods);
-			if(_debug)trace("ShadowMethod= "+mat.shadowMethod);
-			if(_debug)trace("ShadowMethod ID= "+_getBlockIDorEncodeAsset(mat.shadowMethod));
-			if (mat.shadowMethod)materialMethods.push(new AWDmethod(998, [1], [_getBlockIDorEncodeAsset(mat.shadowMethod)], [0], [BADDR]));
-			for each (var effectMethVO:EffectMethodVO in mat.effectMethods){
-				materialMethods.push(new AWDmethod(999, [1], [_getBlockIDorEncodeAsset(effectMethVO)], [0], [BADDR]));// to do - check the correct id for a "shared methdod block"-method 
+			_blockBody.writeUTF(tex.name);
+			
+			if (_embedtextures){				
+				_blockBody.writeByte(1);//embed
+				var ba : ByteArray = _encodeBitmap(tex.bitmapData);	
+				_blockBody.writeUnsignedInt(ba.length);
+				_blockBody.writeBytes(ba);
 			}
-			return materialMethods;
+			else {
+				_blockBody.writeByte(0);//external
+				_blockBody.writeUTF(tex.name);				
+				}
+			
+			_beginElement(); // Properties (empty)
+			_endElement(); // Properties
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_finalizeBlock();
+			
+			if(_debug)trace("texture = "+tex.name + " has been encoded successfully!");
+			return returnID;
+			
 		}
 		
+		// encode TextureBlock (id=83)
+		private function _encodeCubeTextures(cubeTexture:CubeTextureVO) : uint
+		{
+			
+			var returnID:uint = _encodeBlockHeader(83);
+			
+			if (_embedtextures){	
+				_blockBody.writeByte(1);// embed;
+				_blockBody.writeUTF(cubeTexture.name);
+				var id_posX : ByteArray = _encodeBitmap(cubeTexture.positiveX);	
+				var id_negX : ByteArray = _encodeBitmap(cubeTexture.negativeX);	
+				var id_posY : ByteArray = _encodeBitmap(cubeTexture.positiveY);	
+				var id_negY : ByteArray = _encodeBitmap(cubeTexture.negativeY);	
+				var id_posZ : ByteArray = _encodeBitmap(cubeTexture.positiveZ);	
+				var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ);				
+				// write all encodedBitMaps into the file
+				_blockBody.writeUnsignedInt(id_posX.length);
+				_blockBody.writeBytes(id_posX);
+				_blockBody.writeUnsignedInt(id_negX.length);
+				_blockBody.writeBytes(id_negX);
+				_blockBody.writeUnsignedInt(id_posY.length);
+				_blockBody.writeBytes(id_posY);
+				_blockBody.writeUnsignedInt(id_negY.length);
+				_blockBody.writeBytes(id_negY);
+				_blockBody.writeUnsignedInt(id_posZ.length);
+				_blockBody.writeBytes(id_posZ);
+				_blockBody.writeUnsignedInt(id_negZ.length);
+				_blockBody.writeBytes(id_negZ);	
+			}
+			else{
+				_blockBody.writeByte(0);//external
+				_blockBody.writeUTF(cubeTexture.name);
+				
+				_blockBody.writeUTF(cubeTexture.name);
+				_blockBody.writeUTF(cubeTexture.name);
+				_blockBody.writeUTF(cubeTexture.name);
+				_blockBody.writeUTF(cubeTexture.name);
+				_blockBody.writeUTF(cubeTexture.name);
+				_blockBody.writeUTF(cubeTexture.name);
+				
+			}
+			
+			_beginElement(); // Properties (empty)
+			_endElement(); // Properties
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_finalizeBlock();
+			
+			
+			if(_debug)trace("cubeTexture = "+cubeTexture.name + " has been encoded successfully!");
+			return returnID;
+		}
+// end of textures
+		
+		
+		
+		// Creates a EffectMethod-AWDBlock	(id=91) 			
+		private function _encodeSharedMethodBlock(name:String, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
+		{
+			
+			var returnID:uint=_encodeBlockHeader(91);
+			
+			_blockBody.writeUTF(name);			
+			
+			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_finalizeBlock();
+			
+			if(_debug)trace("SharedMethod = "+ name + " has been encoded successfully!");
+			return returnID
+		}		
+		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
+		{
+			var returnID:uint=0;
+			var cubeTexID:uint;
+			var texID:uint;
+			var texProjectorID:uint;
+			if(_debug)trace("methVO.type = "+methVO.type);
+			switch(methVO.type)
+			{ 
+				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
+					var colorMatrixAsVector:Array=new Array();
+					colorMatrixAsVector.push(methVO.r);//0
+					colorMatrixAsVector.push(methVO.g);//1
+					colorMatrixAsVector.push(methVO.b);//2
+					colorMatrixAsVector.push(methVO.a);//3
+					colorMatrixAsVector.push(methVO.rO);//4
+					colorMatrixAsVector.push(methVO.rG);//5
+					colorMatrixAsVector.push(methVO.gG);//6
+					colorMatrixAsVector.push(methVO.bG);//7
+					colorMatrixAsVector.push(methVO.aG);//8
+					colorMatrixAsVector.push(methVO.gO);//9
+					colorMatrixAsVector.push(methVO.rB);//10
+					colorMatrixAsVector.push(methVO.gB);//11
+					colorMatrixAsVector.push(methVO.bB);//12
+					colorMatrixAsVector.push(methVO.aB);//13
+					colorMatrixAsVector.push(methVO.bO);//14
+					colorMatrixAsVector.push(methVO.rA);//15
+					colorMatrixAsVector.push(methVO.gA);//16
+					colorMatrixAsVector.push(methVO.bA);//17
+					colorMatrixAsVector.push(methVO.aA);//18
+					colorMatrixAsVector.push(methVO.aO);//19
+					
+					var colorMatrixAsVectorDefault:Array= new Array(0,0,0,1, 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
+					returnID=_encodeSharedMethodBlock(methVO.name,401, [101], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [_propNrType]);
+					break;
+				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
+					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
+					returnID=_encodeSharedMethodBlock(methVO.name,402, [101,102,103,104,601], [methVO.a,methVO.r,methVO.g,methVO.b,offSetColor], [1,1,1,1,0x00000000], [_propNrType,_propNrType,_propNrType,_propNrType,COLOR]);
+					break;
+				case "EnvMapMethod"://EffectMethodVO.ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,403, [1,101,2], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,_propNrType,BADDR]);
+					break;
+				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
+					texID=_getBlockIDorEncodeAsset(methVO.texture);					
+					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
+					break;
+				case "ProjectiveTextureMethod":
+					texID=_getBlockIDorEncodeAsset(methVO.textureProjector);
+					returnID=_encodeSharedMethodBlock(methVO.name,405, [1,401], [texID,blendModeDic[methVO.mode],texProjectorID], [0,10], [BADDR,UINT8]);
+					break;
+				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
+					returnID=_encodeSharedMethodBlock(methVO.name,406, [601,101,102], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,_propNrType,_propNrType]);
+					break;
+				case "AlphaMaskMethod"://EffectMethodVO.ALPHA_MASK:
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
+					break;
+				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					texID=_getBlockIDorEncodeAsset(methVO.texture);
+					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [cubeTexID, methVO.refraction, methVO.r, methVO.g, methVO.b, methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,_propNrType,_propNrType,_propNrType,_propNrType,_propNrType]);
+					break;
+				case "OutlineMethod"://EffectMethodVO.OUTLINE:
+					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color, methVO.size, methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,_propNrType,BOOL,BOOL]);
+					break;
+				case "FresnelEnvMapMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
+					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
+					returnID=_encodeSharedMethodBlock(methVO.name, 410, [1,101], [cubeTexID, methVO.alpha], [0, 1], [BADDR, _propNrType]);
+					break;
+				case "FogMethod"://EffectMethodVO.FOG:
+					returnID=_encodeSharedMethodBlock(methVO.name, 411, [101,102,601], [methVO.minDistance, methVO.maxDistance, methVO.color], [0, 1000, 0x808080], [_propNrType, _propNrType, COLOR]);
+					break;
+				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
+				//EffectMethodVO.PLANAR_REFLECTION
+			}	
+			return returnID;
+		}
+		
+		
+		// Creates a ShadowMapMethod-AWDBlock (id=92)	
+		private function _encodeShadowMapMethodBlock(methVO:ShadowMethodVO, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
+		{
+			var lightID:uint=0;
+			if (!_shadowMethodsToLightsDic[methVO])
+				trace("unexpected error, could not find light for Shadowmethod");
+			else
+				lightID=_getBlockIDorEncodeAsset(_shadowMethodsToLightsDic[methVO]);
+			
+			var returnID:uint=_encodeBlockHeader(92);
+			
+			_blockBody.writeUTF(methVO.name);				
+			_blockBody.writeUnsignedInt(lightID);			
+			
+			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
+			
+			_beginElement(); // Attributes (empty)
+			_endElement(); // Attributes
+			
+			_finalizeBlock();
+			
+			if(_debug)trace("ShadowMethod = "+ methVO.name + " has been encoded successfully!");
+			return returnID
+		}
+		// creates a new SharedBlock for a ShadowMethod.
+		private function _encodeShadowMethod(methVO:ShadowMethodVO) : uint
+		{
+			var returnID:uint=0;
+			var baseID:uint;
+			switch(methVO.type)
+			{ 				
+				case ShadowMethodVO.FILTERED_SHADOW_MAP_METHOD:		
+					returnID=_encodeShadowMapMethodBlock(methVO, 1101, [101,102], [methVO.alpha,methVO.epsilon], [1,0.002], [_propNrType,_propNrType]);			
+					break;	
+				case ShadowMethodVO.DITHERED_SHADOW_MAP_METHOD:	
+					returnID=_encodeShadowMapMethodBlock(methVO, 1102, [101,102,201,103], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [_propNrType,_propNrType,UINT32,_propNrType]);				
+					break;
+				case ShadowMethodVO.SOFT_SHADOW_MAP_METHOD:		
+					returnID=_encodeShadowMapMethodBlock(methVO,1103, [101,102,201,103], [methVO.alpha,methVO.epsilon,methVO.samples, methVO.range], [1,0.002,5,1], [_propNrType,_propNrType,UINT32,_propNrType]);				
+					break;
+				case ShadowMethodVO.HARD_SHADOW_MAP_METHOD:		
+					returnID=_encodeShadowMapMethodBlock(methVO,1104, [101,102], [methVO.alpha,methVO.epsilon], [1,0.002], [_propNrType,_propNrType]);			
+					break;	
+				case ShadowMethodVO.CASCADE_SHADOW_MAP_METHOD:		
+					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
+					returnID=_encodeShadowMapMethodBlock(methVO,1001, [1], [baseID], [0], [BADDR]);
+					break;
+				case ShadowMethodVO.NEAR_SHADOW_MAP_METHOD:		
+					baseID=_getBlockIDorEncodeAsset(methVO.baseMethod);// get id for baseMethod (encode BaseMethod if not allready)
+					returnID=_encodeShadowMapMethodBlock(methVO,1002, [1], [baseID], [0], [BADDR]);
+					break;
+			}	
+			return returnID;
+		}
+		
+		
+		// encode NameSpace (id=254)
+		private function _encodeNameSpaceBlock() : uint
+		{	
+			_encodeBlockHeader(254);
+			
+			_blockBody.writeByte(_nameSpaceID);	
+			_blockBody.writeUTF(_nameSpaceString);	
+			
+			_finalizeBlock();
+			return 0
+		}
+		
+		// encode MetaData (id=255)
+		private function _encodeMetaDataBlock() : uint
+		{	
+			_encodeBlockHeader(255);
+			
+			_beginElement(); // Prop list
+			var date:Date = new Date();			
+			var uintVal:uint = date.time;
+			_encodeProperty(1,uintVal, UINT32);
+			_encodeProperty(2,"AWDEncoder", AWDSTRING);
+			_encodeProperty(3,"0.9", AWDSTRING);
+			_encodeProperty(4,"AwayBuilder", AWDSTRING);
+			_encodeProperty(5,"0.9", AWDSTRING);
+			_endElement(); // Prop list
+			
+			_finalizeBlock();
+			return 0
+		}
+		
+		
+		
+// helper - functions 
+		
+		
+		private function _finalizeBlock() : void
+		{	
+			if(_blockCompress==1){
+				_blockBody.compress();
+			}
+			if(_blockCompress==2){
+				_blockBody.compress(CompressionAlgorithm.LZMA);
+			}
+			_body.writeUnsignedInt(_blockBody.length);
+			_body.writeBytes(_blockBody);
+			_blockBody=null;
+		}
 		
 		private function _encodeMethod(id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : void
 		{
@@ -1023,7 +1415,7 @@ package awaybuilder.utils.encoders
 				return 
 			}
 			
-			_body.writeShort(id);//method type 
+			_blockBody.writeShort(id);//method type 
 			_beginElement(); // start prop list
 			var i:int=0;
 			var s:int=0;
@@ -1049,188 +1441,30 @@ package awaybuilder.utils.encoders
 			
 		}
 		
-		// Creates a SharedMethod-AWDBlock	(id=91) - all dependencies have allready been created !			
-		private function _encodeSharedMethodBlock(name:String, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
-		{
-			
-			var returnID:uint=_encodeBlockHeader(91);
-			_beginElement(); // Block			
-			_body.writeUTF(name);			
-			
-			_encodeMethod( id, idsVec, valuesAr, defaultValuesAr, typesVec);
-			
-			_beginElement(); // Attributes (empty)
-			_endElement(); // Attributes
-			
-			_endElement(); // Block
-			
-			if(_debug)trace("SharedMethod = "+ name + " has been encoded successfully!");
-			return returnID
-		}
-		
-		
-		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
-		{
-			var returnID:uint=0;
-			var cubeTexID:uint;
-			var texID:uint;
-			var texProjectorID:uint;
-			if(_debug)trace("methVO.type = "+methVO.type);
-			switch(methVO.type)
-			{ 
-				case "ColorMatrixMethod"://EffectMethodVO.COLOR_MATRIX:
-					var colorMatrixAsVector:Array=new Array();// to do: fill this vector with the colorTransform
-					colorMatrixAsVector.push(methVO.r);//0
-					colorMatrixAsVector.push(methVO.g);//1
-					colorMatrixAsVector.push(methVO.b);//2
-					colorMatrixAsVector.push(methVO.a);//3
-					colorMatrixAsVector.push(methVO.rO);//4
-					colorMatrixAsVector.push(methVO.rG);//5
-					colorMatrixAsVector.push(methVO.gG);//6
-					colorMatrixAsVector.push(methVO.bG);//7
-					colorMatrixAsVector.push(methVO.aG);//8
-					colorMatrixAsVector.push(methVO.gO);//9
-					colorMatrixAsVector.push(methVO.rB);//10
-					colorMatrixAsVector.push(methVO.gB);//11
-					colorMatrixAsVector.push(methVO.bB);//12
-					colorMatrixAsVector.push(methVO.aB);//13
-					colorMatrixAsVector.push(methVO.bO);//14
-					colorMatrixAsVector.push(methVO.rA);//15
-					colorMatrixAsVector.push(methVO.gA);//16
-					colorMatrixAsVector.push(methVO.bA);//17
-					colorMatrixAsVector.push(methVO.aA);//18
-					colorMatrixAsVector.push(methVO.aO);//19
-					
-					var colorMatrixAsVectorDefault:Array= new Array(0,0,0,1, 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);// to do: check if the default array is right
-					returnID=_encodeSharedMethodBlock(methVO.name,401, [101], [colorMatrixAsVector], [colorMatrixAsVectorDefault], [FLOAT32]);
-					break;
-				case "ColorTransformMethod"://EffectMethodVO.COLOR_TRANSFORM:
-					var offSetColor:uint= methVO.aO << 24 | methVO.rO << 16 | methVO.gO << 8 | methVO.bO;
-					returnID=_encodeSharedMethodBlock(methVO.name,402, [101,102,103,104,601], [methVO.a,methVO.r,methVO.g,methVO.b,offSetColor], [1,1,1,1,0x00000000], [FLOAT32,FLOAT32,FLOAT32,FLOAT32,COLOR]);
-					break;
-				case "EnvMapMethod"://EffectMethodVO.ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,403, [1,101,2], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,FLOAT32,BADDR]);
-					break;
-				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);					
-					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
-					break;
-				case EffectMethodVO.PROJECTIVE_TEXTURE:
-					if(_debug)trace("textureProjectors are not implemented yet!");
-					texProjectorID=0;//_getBlockIDorEncodeAsset(methVO.textureProjector);
-					returnID=_encodeSharedMethodBlock(methVO.name,405, [401,1], [blendModeDic[methVO.mode],texProjectorID], [10,0], [UINT8,BADDR]);
-					break;
-				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
-					returnID=_encodeSharedMethodBlock(methVO.name,406, [601,101,102], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,FLOAT32,FLOAT32]);
-					break;
-				case "AlphaMaskMethod"://EffectMethodVO.ALPHA_MASK:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
-					break;
-				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					texID=_getBlockIDorEncodeAsset(methVO.texture);
-					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [cubeTexID, methVO.refraction, methVO.r, methVO.g, methVO.b, methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,FLOAT32,FLOAT32,FLOAT32,FLOAT32,FLOAT32]);
-					break;
-				case "OutlineMethod"://EffectMethodVO.OUTLINE:
-					returnID=_encodeSharedMethodBlock(methVO.name,409, [601,101,701,702], [methVO.color, methVO.size, methVO.showInnerLines, methVO.dedicatedMesh], [0x00000000,1,true,false], [COLOR,FLOAT32,BOOL,BOOL]);
-					break;
-				case "FresnelEnvMapMethod"://EffectMethodVO.FRESNEL_ENV_MAP:
-					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
-					returnID=_encodeSharedMethodBlock(methVO.name, 410, [1,101], [cubeTexID, methVO.alpha], [0, 1], [BADDR, FLOAT32]);
-					break;
-				case "FogMethod"://EffectMethodVO.FOG:
-					returnID=_encodeSharedMethodBlock(methVO.name, 411, [101,102,601], [methVO.minDistance, methVO.maxDistance, methVO.color], [0, 1000, 0x808080], [FLOAT32, FLOAT32, COLOR]);
-					break;
-				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
-				//EffectMethodVO.PLANAR_REFLECTION
-			}	
-			return returnID;
-		}
-		
-		
-		
-		private function _encodePrimitiveBlock(_primitive:Object) : void
-		{
-			// we nee PrimitivesVOs, to use this function
-			/*
-			_encodeBlockHeader(11);
-			_beginElement(); // Block
-			var materialMethods:Vector.<AWDmethod>=new Vector.<AWDmethod>;
-			switch(true){ 
-			case(_primitive is PlaneGeometry):
-			var _plane:PlaneGeometry=PlaneGeometry(_primitive)
-			materialMethods.push([1,2,7,8,12], [_plane.width,_plane.height,_plane.segmentsW,_plane.segmentsH,_plane.yUp], [100,100,1,1,true], [FLOAT32,FLOAT32,UINT16,UINT16,BOOL]);
-			break;
-			case(_primitive is CubeGeometry):
-			var _cube:CubeGeometry=CubeGeometry(_primitive)
-			materialMethods.push([1,2,3,7,8,9,12], [_cube.width,_cube.height,_cube.depth,_cube.segmentsW,_cube.segmentsH,_cube.segmentsD,_cube.tile6], [100,100,100,1,1,1,true], [FLOAT32,FLOAT32,FLOAT32,UINT16,UINT16,UINT16,BOOL]);	
-			break;
-			
-			case(_primitive is SphereGeometry):
-			var _sphere:SphereGeometry=SphereGeometry(_primitive)
-			materialMethods.push([4,7,8,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH,_sphere.yUp], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]);
-			break;
-			case(_primitive is CylinderGeometry):
-			//var _cylinder:CylinderGeometry=CylinderGeometry(_primitive)
-			//materialMethods.push([2,4,5,6,7,8,10,11,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]));
-			case(_primitive is ConeGeometry):
-			var _sphere:SphereGeometry=SphereGeometry(_primitive)
-			materialMethods.push([4,7,8,12], [_sphere.radius,_sphere.segmentsW,_sphere.segmentsH], [50,16,12,true], [FLOAT32,UINT16,UINT16,BOOL]);
-			materialMethods.push(new AWDmethod(101, [], [], [], []));
-			break;
-			case(_primitive is CapsuleGeometry):
-			materialMethods.push(new AWDmethod(102, [], [], [], []));
-			case(_primitive is TorusGeometry):
-			materialMethods.push(new AWDmethod(102, [], [], [], []));
-			break;
-			}
-			
-			_beginElement(); // Attr list
-			_endElement(); // Attr list
-			
-			_endElement(); // Block
-			
-			*/
-		}
-		private function _encodeTextureProjectorBlock(_texProjector:Object) : void
-		{
-			// we nee TextureprojectorVO, to use this function
-			_encodeBlockHeader(43);
-			//needs to be done
-		}
-		private function _encodeCameraBlock(_cam:Object) : void
-		{
-			// we nee CamerasVO, to use this function
-			_encodeBlockHeader(42);
-			//needs to be done
-		}
-		
-		
+		// encode a geometry stream 		
 		private function _encodeStream(type : uint, data : *, offset : uint = 0, stride : uint = 0) : void
 		{
-			_body.writeByte(type);
-			
+			_blockBody.writeByte(type);
+			var valueType:uint;
 			switch (type) {
-				case 4:
 				case 1:
-					_body.writeByte(FLOAT32);
+				case 4:
+				case 5:
+					_blockBody.writeByte(_geoNrType);
 					_beginElement();
 					_encodeFloatStream( Vector.<Number>(data), 3, offset, stride);
 					_endElement();
 					break;
 				
 				case 2:
-					_body.writeByte(UINT16);
+					_blockBody.writeByte(UINT16);
 					_beginElement();
 					_encodeUnsignedShortStream( Vector.<uint>(data) );
 					_endElement();
 					break;
 				
 				case 3:
-					_body.writeByte(FLOAT32);
+					_blockBody.writeByte(_geoNrType);
 					_beginElement();
 					_encodeFloatStream( Vector.<Number>(data), 2, offset, stride);
 					_endElement();
@@ -1247,7 +1481,7 @@ package awaybuilder.utils.encoders
 				var elem : uint;
 				
 				for (elem=0; elem<numPerVertex; elem++) {
-					_body.writeFloat(str[i+elem]);
+					_writeNumber(_geomStoragePrecision,(str[i+elem]));
 				}
 			}
 		}
@@ -1256,12 +1490,11 @@ package awaybuilder.utils.encoders
 		{
 			var i : uint;
 			for (i=0; i<str.length; i++) {
-				_body.writeShort(str[i]);
+				_blockBody.writeShort(str[i]);
 			}
 		}
 		
-		// to do: check if this is accutal the correct way to get the objects matrix, using the given ObjectVO-properties.	
-		// to do: research about info from mike: use static myMatrixCompose( params):Matrix 
+		
 		private function getTransformMatrix(Asset:ObjectVO) : Matrix3D
 		{			
 			var transformMatrix:Matrix3D=new Matrix3D();
@@ -1269,31 +1502,40 @@ package awaybuilder.utils.encoders
 			vectorComps.push(new Vector3D(Asset.x,Asset.y,Asset.z));
 			vectorComps.push(new Vector3D(Asset.rotationX * MathConsts.DEGREES_TO_RADIANS,Asset.rotationY* MathConsts.DEGREES_TO_RADIANS,Asset.rotationZ* MathConsts.DEGREES_TO_RADIANS));
 			vectorComps.push(new Vector3D(Asset.scaleX,Asset.scaleY,Asset.scaleZ));
-			transformMatrix.recompose(vectorComps);//,Orientation3D.AXIS_ANGLE);
+			transformMatrix.recompose(vectorComps);
 			return transformMatrix;
-		}
-		
+		}		
 		private function _encodeMatrix3D(mtx : Matrix3D) : void
 		{
 			var data : Vector.<Number> = mtx.rawData;
-			_body.writeFloat(data[0]);
-			_body.writeFloat(data[1]);
-			_body.writeFloat(data[2]);
-			_body.writeFloat(data[4]);
-			_body.writeFloat(data[5]);
-			_body.writeFloat(data[6]);
-			_body.writeFloat(data[8]);
-			_body.writeFloat(data[9]);
-			_body.writeFloat(data[10]);
-			_body.writeFloat(data[12]);
-			_body.writeFloat(data[13]);
-			_body.writeFloat(data[14]);
+			_writeNumber(_matrixStoragePrecision,data[0]);
+			_writeNumber(_matrixStoragePrecision,data[1]);
+			_writeNumber(_matrixStoragePrecision,data[2]);
+			_writeNumber(_matrixStoragePrecision,data[4]);
+			_writeNumber(_matrixStoragePrecision,data[5]);
+			_writeNumber(_matrixStoragePrecision,data[6]);
+			_writeNumber(_matrixStoragePrecision,data[8]);
+			_writeNumber(_matrixStoragePrecision,data[9]);
+			_writeNumber(_matrixStoragePrecision,data[10]);
+			_writeNumber(_matrixStoragePrecision,data[12]);
+			_writeNumber(_matrixStoragePrecision,data[13]);
+			_writeNumber(_matrixStoragePrecision,data[14]);
 		}
 		
 		
+		// wirtes a Number into the byteArray. This takes the storagePrecision into account that.
+		private function _writeNumber(precision:uint,value:Number) : void
+		{
+			if (precision>0){
+				_blockBody.writeDouble(value);				
+			}
+			else{
+				_blockBody.writeFloat(value);				
+			}
+		}
 		private function _finalize() : void
 		{
-			_body = null;
+			_blockBody = null;
 		}
 		
 		// encodes a Bitmap into a ByteArray - if the Bitmap contains transparent Pixel, its encodet to PNG, otherwise it is encodet to JPG
@@ -1311,26 +1553,25 @@ package awaybuilder.utils.encoders
 				bitMap.encode(bitMap.rect, new JPEGEncoderOptions(80), ba);
 			}	
 			return ba;
+		}		
+		//check if a transparent pixel was found in a bitmap (use PNG vs JPG)
+		private function bitMapHasTransparency(bmd:BitmapData,w:Number,h:Number):Boolean {
+			
+			var i:int;
+			var j:int;
+			
+			for(i=0;i<w;i++) for(j=0;j<h;j++) if(bmd.getPixel32(i, j) == 0) return true;
+			
+			return false;
+			
 		}
-		
 		
 		public function dispose() : void
 		{
 			_blockCache = null;
 		}
 		
-		private function _encodeBlockHeader(type : uint) : uint
-		{
-			_blockId++;
-			_body.writeUnsignedInt(_blockId);
-			_body.writeByte(0);
-			_body.writeByte(type);
-			_body.writeByte(0);
-			return _blockId;
-		}
-		
-		
-		
+		// encode a propertie (for a proertie list)	
 		private function _encodeProperty(id : int, value : *, type : uint) : void
 		{
 			var i : uint;
@@ -1367,53 +1608,67 @@ package awaybuilder.utils.encoders
 				case FLOAT64:
 					flen = 8;
 					break;
+				case AWDSTRING:
+					_blockBody.writeShort(id);
+					_blockBody.writeUnsignedInt(values[0].length);
+					_blockBody.writeUTFBytes(values[0]);
+					return;
 			}
 			
-			_body.writeShort(id);
-			_body.writeUnsignedInt(len * flen);
+			_blockBody.writeShort(id);
+			_blockBody.writeUnsignedInt(len * flen);
 			
 			for (i=0; i<len; i++) {
 				switch (type) {
 					case INT8:
 					case UINT8:
-						_body.writeByte(values[i]);
+						_blockBody.writeByte(values[i]);
 						break;
 					
 					case BOOL:
-						_body.writeByte(values[i]? 1 : 0);
+						_blockBody.writeByte(values[i]? 1 : 0);
 						break;
 					
 					case INT16:
 					case UINT16:
-						_body.writeShort(values[i]);
+						_blockBody.writeShort(values[i]);
 						break;
 					
 					case INT32:
-						_body.writeInt(values[i]);
+						_blockBody.writeInt(values[i]);
 						break;
 					
 					case UINT32:
 					case COLOR:
 					case BADDR:
-						_body.writeUnsignedInt(values[i]);
+						_blockBody.writeUnsignedInt(values[i]);
 						break;
 					
 					case FLOAT32:
-						_body.writeFloat(values[i]);
+						_blockBody.writeFloat(values[i]);
 						break;
 					
 					case FLOAT64:
-						_body.writeDouble(values[i]);
+						_blockBody.writeDouble(values[i]);
 						break;
 				}
 			}
 		}
 		
+		// encode the user-properties (the extra panel)
+		private function _endoceExtraProperties(extraObject:Object) : void
+		{
+			if(_debug)trace("EncodeProperties");
+			for each (var object:ExtraItemVO in extraObject){
+				if(_debug)trace("valueName = "+object.name);
+				if(_debug)trace("valueValue = "+object.value);
+				_encodeAttribute(object.name, object.value)
+			}
+		}
+		// encodes a user-Attribute
+		//to do: type-casting maybe can be improved / write the correct NameSpace for each Attributes 
 		private function _encodeAttribute(name:String, value : *) : void
 		{
-			// to do: better way to get the acctual value type ?
-			
-			// to do: improve by supporting a list of values (all same type) for each attribute instead of a single value.
 			var i : uint;
 			var len  : uint;
 			var flen : uint;
@@ -1427,7 +1682,7 @@ package awaybuilder.utils.encoders
 				value=int(copy);
 			}
 			if(Number(copy)){
-				type=FLOAT32;
+				type=_attributeNrType;
 				value=Number(copy);
 			}
 			if (type==AWDSTRING){
@@ -1440,61 +1695,59 @@ package awaybuilder.utils.encoders
 					value=true;
 				}
 			}			
-			_body.writeByte(0);//NameSpace			
-			_body.writeUTF(name);//Attribute name
-			_body.writeByte(type);//NameSpace		
+			_blockBody.writeByte(_nameSpaceID);//NameSpace			
+			_blockBody.writeUTF(name);//Attribute name
+			_blockBody.writeByte(type);//NameSpace		
 			
 			switch (type) {
 				case INT8:
 				case UINT8:	
 				case BOOL:
-					_body.writeUnsignedInt(1);
-					_body.writeByte(value);
+					_blockBody.writeUnsignedInt(1);
+					_blockBody.writeByte(value);
 					break;
 				
 				case INT16:
 				case UINT16:
-					_body.writeUnsignedInt(2);
-					_body.writeShort(value);
+					_blockBody.writeUnsignedInt(2);
+					_blockBody.writeShort(value);
 					break;
 				
 				case INT32:
-					_body.writeUnsignedInt(4);
-					_body.writeInt(value);
+					_blockBody.writeUnsignedInt(4);
+					_blockBody.writeInt(value);
 					break;
 					
 				case UINT32:
 				case COLOR:
 				case BADDR:
-					_body.writeUnsignedInt(4);
-					_body.writeUnsignedInt(value);
+					_blockBody.writeUnsignedInt(4);
+					_blockBody.writeUnsignedInt(value);
 					break;
 					
 				case FLOAT32:
-					_body.writeUnsignedInt(4);
-					_body.writeFloat(value);
+					_blockBody.writeUnsignedInt(4);
+					_blockBody.writeFloat(value);
 					break;
 					
 				case FLOAT64:
-					_body.writeUnsignedInt(8);
-					_body.writeDouble(value);
+					_blockBody.writeUnsignedInt(8);
+					_blockBody.writeDouble(value);
 					break;
 				
 				case AWDSTRING:
-					_body.writeUnsignedInt(value.length);
-					_body.writeUTFBytes(value);
+					_blockBody.writeUnsignedInt(value.length);
+					_blockBody.writeUTFBytes(value);
 					break;
 				}
 			
-		}
-		
+		}		
 		
 		private function _beginElement() : void
 		{
-			_elemSizeOffsets.push(_body.position);
-			_body.writeUnsignedInt(0); // Placeholder
-		}
-		
+			_elemSizeOffsets.push(_blockBody.position);
+			_blockBody.writeUnsignedInt(0); // Placeholder
+		}		
 		private function _endElement() : void
 		{
 			var size : uint;
@@ -1502,39 +1755,15 @@ package awaybuilder.utils.encoders
 			
 			offs = _elemSizeOffsets.pop();
 			
-			size = _body.position - (offs);
+			size = _blockBody.position - (offs);
 			if (size) {
 				size-=4;
 				//trace('size was ', size);
-				_body.position = offs;
-				_body.writeUnsignedInt(size);
-				_body.position = _body.length;
+				_blockBody.position = offs;
+				_blockBody.writeUnsignedInt(size);
+				_blockBody.position = _blockBody.length;
 			}
-		}		
-		
-		
-		//checks if a transparent pixel was found in the bitmap (use PNG vs JPG)
-		private function bitMapHasTransparency(bmd:BitmapData,w:Number,h:Number):Boolean {
-			
-			var i:int;
-			var j:int;
-			
-			for(i=0;i<w;i++) for(j=0;j<h;j++) if(bmd.getPixel32(i, j) == 0) return true;
-			
-			return false;
-			
-		}
-		
-		private function _endoceExtraProperties(extraObject:Object) : void
-		{
-			if(_debug)trace("EncodeProperties");
-			for each (var object:ExtraItemVO in extraObject){
-				if(_debug)trace("valueName = "+object.name);
-				if(_debug)trace("valueValue = "+object.value);
-				_encodeAttribute(object.name, object.value)
-			}
-		}
-		
+		}				
 		
 	}
 }
@@ -1548,9 +1777,30 @@ package awaybuilder.utils.encoders
 General Helper Classes 
 
 */
-
-
-
+internal class bitFlags
+{
+	public static const FLAG1:uint = 1;
+	public static const FLAG2:uint = 2;
+	public static const FLAG3:uint = 4;
+	public static const FLAG4:uint = 8;
+	public static const FLAG5:uint = 16;
+	public static const FLAG6:uint = 32;
+	public static const FLAG7:uint = 64;
+	public static const FLAG8:uint = 128;
+	public static const FLAG9:uint = 256;
+	public static const FLAG10:uint = 512;
+	public static const FLAG11:uint = 1024;
+	public static const FLAG12:uint = 2048;
+	public static const FLAG13:uint = 4096;
+	public static const FLAG14:uint = 8192;
+	public static const FLAG15:uint = 16384;
+	public static const FLAG16:uint = 32768;
+	
+	public static function test(flags:uint, testFlag:uint):Boolean
+	{
+		return (flags & testFlag) == testFlag;
+	}
+}
 internal class AWDBlock
 {
 	public var id : int;
@@ -1576,22 +1826,3 @@ internal class AWDmethod
 		_types=types;
 	} 
 }
-/*
-
-internal dynamic class AWDProperties
-{
-public function set(key : uint, value : *) : void
-{
-this[key.toString()] = value;
-}
-
-public function get(key : uint, fallback : *) : *
-{
-if (this.hasOwnProperty(key.toString()))
-return this[key.toString()];
-else return fallback;
-}
-}
-
-
-*/

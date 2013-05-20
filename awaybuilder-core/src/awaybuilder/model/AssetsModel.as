@@ -8,10 +8,15 @@ package awaybuilder.model
 	import away3d.materials.*;
 	import away3d.materials.lightpickers.*;
 	import away3d.materials.methods.*;
+	import away3d.primitives.CapsuleGeometry;
+	import away3d.primitives.ConeGeometry;
 	import away3d.primitives.CubeGeometry;
+	import away3d.primitives.CylinderGeometry;
+	import away3d.primitives.PlaneGeometry;
 	import away3d.primitives.PrimitiveBase;
 	import away3d.primitives.SkyBox;
 	import away3d.primitives.SphereGeometry;
+	import away3d.primitives.TorusGeometry;
 	import away3d.textures.*;
 	
 	import awaybuilder.model.vo.scene.*;
@@ -169,9 +174,14 @@ package awaybuilder.model
 		}
 		public function CreateGeometry( type:String ):GeometryVO
 		{
+			var georM:TorusGeometry
 			var geometry:PrimitiveBase;
 			switch( type )
 			{
+				case "PlaneGeometry":
+					geometry = new PlaneGeometry();
+					geometry.name = "PlaneGeometry" + AssetUtil.GetNextId("PlaneGeometry");
+					break;
 				case "CubeGeometry":
 					geometry = new CubeGeometry();
 					geometry.name = "CubeGeometry" + AssetUtil.GetNextId("CubeGeometry");
@@ -179,6 +189,22 @@ package awaybuilder.model
 				case "SphereGeometry":
 					geometry = new SphereGeometry();
 					geometry.name = "SphereGeometry" + AssetUtil.GetNextId("SphereGeometry");
+					break;
+				case "CylinderGeometry":
+					geometry = new CylinderGeometry();
+					geometry.name = "CylinderGeometry" + AssetUtil.GetNextId("CylinderGeometry");
+					break;
+				case "ConeGeometry":
+					geometry = new ConeGeometry();
+					geometry.name = "ConeGeometry" + AssetUtil.GetNextId("ConeGeometry");
+					break;
+				case "CapsuleGeometry":
+					geometry = new CapsuleGeometry();
+					geometry.name = "CapsuleGeometry" + AssetUtil.GetNextId("CapsuleGeometry");
+					break;
+				case "TorusGeometry":
+					geometry = new TorusGeometry();
+					geometry.name = "TorusGeometry" + AssetUtil.GetNextId("TorusGeometry");
 					break;
 			}
 			return GetAsset( geometry ) as GeometryVO;
