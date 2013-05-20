@@ -23,6 +23,8 @@ package
 		[Embed("/assets/Logo_AwayBuilder_240.png")]
 		private const Logo:Class;
 		
+		private var _image:Sprite;
+		
 		public function SplashScreen()
 		{
 			var initOptions:NativeWindowInitOptions = new NativeWindowInitOptions();
@@ -37,22 +39,22 @@ package
 			
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			this.stage.align = StageAlign.TOP_LEFT;
-			this.alwaysInFront = true;
+//			this.alwaysInFront = true;
 			this.activate();
 			this.width = 480;
 			this.height = 310;
 			this.x = (Capabilities.screenResolutionX-this.width)/2;
 			this.y = (Capabilities.screenResolutionY-this.height)/2;
 			
-			var image:Sprite = new Sprite();
-			this.stage.addChild( image );
+			_image = new Sprite();
+			this.stage.addChild( _image );
 			
-			image.graphics.beginFill(0x323232);
-			image.graphics.lineStyle(0, 0xDDDDDD);
-			image.graphics.drawRect(0,0,this.width-1,this.height-1);
+			_image.graphics.beginFill(0x323232);
+			_image.graphics.lineStyle(3, 0xFFFFFF);
+			_image.graphics.drawRect(0,0,this.width-1,this.height-1);
 			
 			var asset:BitmapAsset = new Logo();
-			image.addChild( asset );
+			_image.addChild( asset );
 			asset.x = Math.round( (this.width - asset.width)/2 );
 			asset.y = Math.round( (this.height - asset.height)/2 );
 			
@@ -61,7 +63,7 @@ package
 			text.defaultTextFormat = defaultTextFormat;
 			text.text = "©2013 The Away Foundation";
 			text.width = text.textWidth+8;
-			image.addChild( text );
+			_image.addChild( text );
 			text.x = this.width - text.width - 7;
 			text.y = this.height-23;
 			
@@ -69,9 +71,14 @@ package
 			versionText.defaultTextFormat = defaultTextFormat;
 			versionText.text = "Ver " + AwayBuilder.MAJOR_VERSION + "." + AwayBuilder.MINOR_VERSION + "." + AwayBuilder.REVISION + " " + AwayBuilder.SUFFIX;
 			versionText.width = text.textWidth+8;
-			image.addChild( versionText );
+			_image.addChild( versionText );
 			versionText.x = 10;
 			versionText.y = this.height-23;
+		}
+		
+		public function setAlpha( value:Number ):void
+		{
+			_image.alpha = value;
 		}
 		
 	}

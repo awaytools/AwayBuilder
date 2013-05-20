@@ -161,8 +161,6 @@ package awaybuilder.model
 					_document.methods.addItem( assets.GetAsset( event.asset ) );
 					break;	
 				case AssetType.LIGHT:
-					_document.lights.addItem( assets.GetAsset( event.asset ) );
-					break;
 				case AssetType.LIGHT_PICKER:
 					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;

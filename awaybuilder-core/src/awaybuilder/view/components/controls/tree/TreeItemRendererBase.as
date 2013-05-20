@@ -5,6 +5,7 @@ package awaybuilder.view.components.controls.tree
 	import flash.events.IEventDispatcher;
 	
 	import mx.collections.ICollectionView;
+	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.PropertyChangeEvent;
@@ -58,6 +59,7 @@ package awaybuilder.view.components.controls.tree
 			eventDispatcher = value as IEventDispatcher;
 			if (eventDispatcher)
 				eventDispatcher.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler);
+			
 		}
 		
 		//--------------------------------------------------------------------------
@@ -192,6 +194,39 @@ package awaybuilder.view.components.controls.tree
 		}
 		
 		//----------------------------------
+		//  drop Area
+		//----------------------------------
+		
+		private var _dropArea:UIComponent;
+		
+		public function get dropArea():UIComponent
+		{
+			return _dropArea;
+		}
+		
+		public function set dropArea(value:UIComponent):void
+		{
+			_dropArea = value;
+		} 
+		
+		//----------------------------------
+		//  drop Indicator
+		//----------------------------------
+		
+		private var _showDropIndicator:Boolean = false;
+		
+		[Bindable]
+		public function get showDropIndicator():Boolean
+		{
+			return _showDropIndicator;
+		}
+		
+		public function set showDropIndicator(value:Boolean):void
+		{
+			_showDropIndicator = value;
+		}
+		
+		//----------------------------------
 		//  indentation
 		//----------------------------------
 		
@@ -250,6 +285,14 @@ package awaybuilder.view.components.controls.tree
 					children_collectionChange);
 		}
 		
+		override protected function createChildren():void
+		{
+			super.createChildren();
+			dropArea = new UIComponent();
+			dropArea.includeInLayout = false;
+			this.addElement( dropArea );
+		} 
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden methods
@@ -259,7 +302,15 @@ package awaybuilder.view.components.controls.tree
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-		}
+			
+			if( dropArea )
+			{
+				dropArea.graphics.clear();
+				dropArea.graphics.beginFill(0xFF0000, 0.0);
+				dropArea.graphics.drawRect(indentation+18,unscaledHeight/4,unscaledWidth-(indentation+18), unscaledHeight/2);
+				this.setElementIndex( dropArea, numElements-1 );
+			}
+		} 
 		
 		//--------------------------------------------------------------------------
 		//

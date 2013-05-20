@@ -1,21 +1,32 @@
 package awaybuilder.view.components.controls.tree
 {
+	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
+	import awaybuilder.model.vo.scene.LightVO;
+	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
+	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	import mx.controls.treeClasses.DefaultDataDescriptor;
 	import mx.controls.treeClasses.ITreeDataDescriptor2;
-	import mx.controls.treeClasses.TreeItemRenderer;
 	import mx.core.ClassFactory;
+	import mx.core.DragSource;
+	import mx.core.EventPriority;
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
+	import mx.managers.DragManager;
 	
 	import spark.components.List;
+	import spark.events.RendererExistenceEvent;
+	import spark.layouts.supportClasses.DropLocation;
 	
 	use namespace mx_internal;
 	
@@ -37,6 +48,8 @@ package awaybuilder.view.components.controls.tree
 	 *  Dispatched when a branch open or close is initiated.
 	 */
 	[Event(name="itemOpening", type="awaybuilder.view.components.controls.tree.TreeEvent")]
+	
+	[Event(name="itemDropped", type="awaybuilder.view.components.controls.tree.TreeEvent")]
 	
 	//--------------------------------------
 	//  Styles
@@ -65,7 +78,7 @@ package awaybuilder.view.components.controls.tree
 			super();
 			
 			// Handle styles when getStyle() will return corrent values.
-//			itemRenderer = new ClassFactory(TreeItemRenderer);
+			//			itemRenderer = new ClassFactory(TreeItemRenderer);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -87,7 +100,7 @@ package awaybuilder.view.components.controls.tree
 		//----------------------------------
 		//  dataDescriptor
 		//----------------------------------
-	
+		
 		private var _dataDescriptor:ITreeDataDescriptor2 = new DefaultDataDescriptor();
 		
 		[Bindable("dataDescriptorChange")]
@@ -270,7 +283,7 @@ package awaybuilder.view.components.controls.tree
 			refreshRenderers();
 			dispatchEvent(new Event("useTextColorsChange"));
 		}
-	
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden methods
@@ -354,7 +367,7 @@ package awaybuilder.view.components.controls.tree
 				expandItem(selectedItem);
 			}
 		}
-			
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -379,7 +392,7 @@ package awaybuilder.view.components.controls.tree
 				if (dataDescriptor.hasChildren(item))
 				{
 					var children:IList = IList(dataDescriptor.getChildren(item));
-						_dataProvider.openBranch(children, item, true);
+					_dataProvider.openBranch(children, item, true);
 				}
 			}
 		}
@@ -440,20 +453,385 @@ package awaybuilder.view.components.controls.tree
 		//  Overriden event handlers
 		//
 		//--------------------------------------------------------------------------
-	
+		
+		override protected function dataGroup_rendererAddHandler(event:RendererExistenceEvent):void
+		{
+			super.dataGroup_rendererAddHandler( event );
+			var renderer:ITreeItemRenderer = event.renderer as ITreeItemRenderer;
+			if (!renderer)
+				return;
+			renderer.dropArea.addEventListener(DragEvent.DRAG_ENTER, renderer_dragEnterHandler);
+			renderer.dropArea.addEventListener(DragEvent.DRAG_OVER, renderer_dragOverHandler);
+			renderer.dropArea.addEventListener(DragEvent.DRAG_EXIT, renderer_dragExitHandler);
+			renderer.dropArea.addEventListener(DragEvent.DRAG_DROP, renderer_dragDropHandler);
+		}
+		override protected function dataGroup_rendererRemoveHandler(event:RendererExistenceEvent):void
+		{
+			super.dataGroup_rendererRemoveHandler( event );
+			var renderer:ITreeItemRenderer = event.renderer as ITreeItemRenderer;
+			
+			if (!renderer)
+				return;
+			
+			renderer.dropArea.removeEventListener(DragEvent.DRAG_ENTER, renderer_dragEnterHandler);
+			renderer.dropArea.removeEventListener(DragEvent.DRAG_OVER, renderer_dragOverHandler);
+			renderer.dropArea.removeEventListener(DragEvent.DRAG_EXIT, renderer_dragExitHandler);
+			renderer.dropArea.removeEventListener(DragEvent.DRAG_DROP, renderer_dragDropHandler);
+		}
+		
+		private var _druggingOverItem:Boolean = false;
+		protected function renderer_dragEnterHandler(event:DragEvent):void
+		{
+			var dropArea:UIComponent = event.target as UIComponent;
+			var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
+			if( !items ) return;
+			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
+			if( renderer.data == items[0] ) return;
+			if( ScenegraphItemVO(renderer.data).item is LightPickerVO )
+			{
+				if( ScenegraphItemVO(items[0]).item is LightVO )
+				{
+					renderer.showDropIndicator = true;
+					DragManager.acceptDragDrop(dropArea);
+					_druggingOverItem = true;
+				}
+			}
+			
+		}
+		
+		protected function renderer_dragOverHandler(event:DragEvent):void
+		{
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			var dropArea:UIComponent = event.target as UIComponent;
+			var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
+			if( !items ) return;
+			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
+			if( renderer.data == items[0] ) return;
+			if( ScenegraphItemVO(renderer.data).item is LightPickerVO )
+			{
+				if( ScenegraphItemVO(items[0]).item is LightVO )
+				{
+					renderer.showDropIndicator = true;
+					DragManager.acceptDragDrop(dropArea);
+					_druggingOverItem = true;
+				}
+			}
+			
+		}
+		
+		protected function renderer_dragDropHandler(event:DragEvent):void
+		{
+			var droppedItems:Dictionary = new Dictionary();
+			
+			var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
+			var renderer:TreeItemRenderer = UIComponent(event.target).parent as TreeItemRenderer;
+			
+			for each( var item:Object in items )
+			{
+				var droppedItem:DroppedItemVO = new DroppedItemVO( item );
+				droppedItems[item] = droppedItem;
+			}
+			
+			var indices:Vector.<int> = selectedIndices; 
+			for (var i:int = indices.length - 1; i >= 0; i--)
+			{
+				var item:Object = dataProvider.getItemAt( indices[i] );
+				var oldParent:Object = _dataProvider.getItemParent(item);
+				
+				var branch:IList = oldParent ? IList(dataDescriptor.getChildren(oldParent)) : _dataProvider;
+				var localIndex:int = branch.getItemIndex(item);
+				
+				droppedItems[item].oldPosition = localIndex;
+				droppedItems[item].oldParent = oldParent;
+			}
+			
+			for each( var item:Object in items )
+			{
+//				this.dataDescriptor.addChildAt( renderer.data, item, 0 );
+				
+				droppedItems[item].newParent = renderer.data;
+				droppedItems[item].newPosition = 0;
+			}
+			
+			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_DROPPED, false, false, droppedItems );
+			dispatchEvent( e );
+			
+			renderer.showDropIndicator = false;
+			_druggingOverItem = false;
+		}
+		
+		protected function renderer_dragExitHandler(event:DragEvent):void
+		{
+			var dropArea:UIComponent = event.target as UIComponent;
+			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
+			renderer.showDropIndicator = false;
+			_druggingOverItem = false;
+		}
+		
+		
+		private var _dragEnabled:Boolean = false;
+		
+		[Inspectable(defaultValue="false")]
+		override public function get dragEnabled():Boolean
+		{
+			return _dragEnabled;
+		}
+		
+		override public function set dragEnabled(value:Boolean):void
+		{
+			if (value == _dragEnabled)
+				return;
+			_dragEnabled = value;
+			
+			if (_dragEnabled)
+			{
+				addEventListener(DragEvent.DRAG_START, dragStartHandler, false, EventPriority.DEFAULT_HANDLER);
+				addEventListener(DragEvent.DRAG_COMPLETE, dragCompleteHandler, false, EventPriority.DEFAULT_HANDLER);
+			}
+			else
+			{
+				removeEventListener(DragEvent.DRAG_START, dragStartHandler, false);
+				removeEventListener(DragEvent.DRAG_COMPLETE, dragCompleteHandler, false);
+			}
+		}
+		
+		private var _dropEnabled:Boolean = false;
+		
+		[Inspectable(defaultValue="false")]
+		override public function get dropEnabled():Boolean
+		{
+			return _dropEnabled;
+		}
+		
+		override public function set dropEnabled(value:Boolean):void
+		{
+			if (value == _dropEnabled)
+				return;
+			_dropEnabled = value;
+			
+			if (_dropEnabled)
+			{
+				addEventListener(DragEvent.DRAG_ENTER, dragEnterHandler, false, EventPriority.DEFAULT_HANDLER);
+				addEventListener(DragEvent.DRAG_EXIT, dragExitHandler, false, EventPriority.DEFAULT_HANDLER);
+				addEventListener(DragEvent.DRAG_OVER, dragOverHandler, false, EventPriority.DEFAULT_HANDLER);
+				addEventListener(DragEvent.DRAG_DROP, dragDropHandler, false, EventPriority.DEFAULT_HANDLER);
+			}
+			else
+			{
+				removeEventListener(DragEvent.DRAG_ENTER, dragEnterHandler, false);
+				removeEventListener(DragEvent.DRAG_EXIT, dragExitHandler, false);
+				removeEventListener(DragEvent.DRAG_OVER, dragOverHandler, false);
+				removeEventListener(DragEvent.DRAG_DROP, dragDropHandler, false);
+			}
+		}
+		override protected function dragOverHandler(event:DragEvent):void
+		{
+			if (event.isDefaultPrevented())
+				return;
+			var dropLocation:DropLocation = calculateDropLocation(event);
+			if (dropLocation)
+			{
+				DragManager.acceptDragDrop(this);
+				// Show focus
+				drawFocusAnyway = true;
+				drawFocus(true);
+				
+				// Notify manager we can drop
+				DragManager.showFeedback(event.ctrlKey ? DragManager.COPY : DragManager.MOVE);
+				
+				// Show drop indicator
+				layout.showDropIndicator(dropLocation);
+			}
+			else
+			{
+				
+				// Hide if previously showing
+				layout.hideDropIndicator();
+				
+				// Hide focus
+				drawFocus(false);
+				drawFocusAnyway = false;
+				
+				if( _druggingOverItem ) return;
+				
+				// Notify manager we can't drop
+				DragManager.showFeedback(DragManager.NONE);
+			}
+		}
 		override protected function dragDropHandler(event:DragEvent):void
 		{
-			// list does not take in account that removing an open node while drag
-			// can cause list to loose more than 1 element. When element is dropped,
-			// to big index can be specified in dataProvider.addItemAt()
+			var droppedItems:Dictionary = new Dictionary();
+			if (event.isDefaultPrevented())
+				return;
+			
 			if (_dataProvider)
 				_dataProvider.allowIncorrectIndexes = true;
 			
-			super.dragDropHandler(event);
+			// Hide the drop indicator
+			layout.hideDropIndicator();
+			destroyDropIndicator();
 			
+			// Hide focus
+			drawFocus(false);
+			drawFocusAnyway = false;
+			
+			// Get the dropLocation
+			var dropLocation:DropLocation = calculateDropLocation(event);
+			if (!dropLocation)
+				return;
+			
+			// Find the dropIndex
+			var dropIndex:int = dropLocation.dropIndex;
+			
+			// Make sure the manager has the appropriate action
+			DragManager.showFeedback(event.ctrlKey ? DragManager.COPY : DragManager.MOVE);
+			
+			var dragSource:DragSource = event.dragSource;
+			var items:Vector.<Object> = dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
+			
+			for each( var item:Object in items )
+			{
+				var droppedItem:DroppedItemVO = new DroppedItemVO( item );
+				droppedItems[item] = droppedItem;
+			}
+			
+			var caretIndex:int = -1;
+			if (dragSource.hasFormat("caretIndex"))
+				caretIndex = event.dragSource.dataForFormat("caretIndex") as int;
+			
+			// Clear the selection first to avoid extra work while adding and removing items.
+			// We will set a new selection further below in the method.
+			var indices:Vector.<int> = selectedIndices; 
+			setSelectedIndices(new Vector.<int>(), false);
+			validateProperties(); // To commit the selection
+			
+			// If we are reordering the list, remove the items now,
+			// adjusting the dropIndex in the mean time.
+			// If the items are drag moved to this list from a different list,
+			// the drag initiator will remove the items when it receives the
+			// DragEvent.DRAG_COMPLETE event.
+			if (dragMoveEnabled &&
+				event.action == DragManager.MOVE &&
+				event.dragInitiator == this)
+			{
+				// Remove the previously selected items
+				indices.sort(compareValues);
+				for (var i:int = indices.length - 1; i >= 0; i--)
+				{
+					if (indices[i] < dropIndex) dropIndex--;
+					
+					var item:Object = dataProvider.getItemAt( indices[i] );
+					var oldParent:Object = _dataProvider.getItemParent(item);
+					
+					var branch:IList = oldParent ? IList(dataDescriptor.getChildren(oldParent)) : _dataProvider;
+					var localIndex:int = branch.getItemIndex(item);
+					
+					droppedItems[item].oldPosition = localIndex;
+					droppedItems[item].oldParent = oldParent;
+//					moveItemFrom(indices[i]);
+					
+				}
+			}
+			
+			// Drop the items at the dropIndex
+			var newSelection:Vector.<int> = new Vector.<int>();
+			
+			// Update the selection with the index of the caret item
+			if (caretIndex != -1)
+				newSelection.push(dropIndex + caretIndex);
+			
+			// Create dataProvider if needed
+			if (!dataProvider)
+				dataProvider = new ArrayCollection();
+			
+			var copyItems:Boolean = (event.action == DragManager.COPY);
+			for (i = 0; i < items.length; i++)
+			{
+				// Get the item, clone if needed
+				var item:Object = items[i];
+				if (copyItems)
+					item = copyItemWithUID(item);
+				
+				// Copy the data
+				var effectiveItem:Object = dataProvider.getItemAt( dropIndex );
+				var parent:Object = _dataProvider.getItemParent(effectiveItem);
+				var branch:IList = parent ? IList(dataDescriptor.getChildren(parent)) : _dataProvider;
+				var localIndex:int = branch.getItemIndex(effectiveItem);
+				
+				droppedItems[item].newParent = parent;
+				droppedItems[item].newPosition = localIndex;
+				
+//				dropItemTo( item, dropIndex + i );
+				
+				// Update the selection
+				if (i != caretIndex)
+					newSelection.push(dropIndex + i);
+			}
+			
+			// Set the selection
+			setSelectedIndices(newSelection, false);
+			
+			// Scroll the caret index in view
+			if (caretIndex != -1)
+			{
+				// Sometimes we may need to scroll several times as for virtual layouts
+				// this is not guaranteed to bring in the element in view the first try
+				// as some items in between may not be loaded yet and their size is only
+				// estimated.
+				var delta:Point;
+				var loopCount:int = 0;
+				while (loopCount++ < 10)
+				{
+					validateNow();
+					delta = layout.getScrollPositionDeltaToElement(dropIndex + caretIndex);
+					if (!delta || (delta.x == 0 && delta.y == 0))
+						break;
+					layout.horizontalScrollPosition += delta.x;
+					layout.verticalScrollPosition += delta.y;
+				}
+			}
 			if (_dataProvider)
 				_dataProvider.allowIncorrectIndexes = false;
+			
+			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_DROPPED, false, false, droppedItems );
+			dispatchEvent( e );
 		}
+		
+		private function compareValues(a:int, b:int):int
+		{
+			return a - b;
+		} 
+		
+		protected function calculateDropLocation(event:DragEvent):DropLocation
+		{
+			// Verify data format
+			if (!enabled || !event.dragSource.hasFormat("itemsByIndex"))
+				return null;
+			
+			if( _druggingOverItem ) return null;
+			
+			// Calculate the drop location
+			return layout.calculateDropLocation(event);
+		}
+		
+//		protected function moveItemFrom(indix:int):void
+//		{
+//			
+//			var item:Object = dataProvider.getItemAt( indix );
+//			var oldBranch:Object = _dataProvider.getItemParent(item);
+////			dataProvider.removeItemAt(indix);
+//			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_REMOVED, false, false, item );
+//			e.parentBranch = oldBranch;
+//			dispatchEvent( e );
+//		}
+//		protected function dropItemTo( item:Object, index:int ):void
+//		{
+////			dataProvider.addItemAt(item, index);
+//			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_ADDED, false, false, item );
+//			e.parentBranch = _dataProvider.getItemParent(item);
+//			dispatchEvent( e );
+//		}
 		
 		//--------------------------------------------------------------------------
 		//

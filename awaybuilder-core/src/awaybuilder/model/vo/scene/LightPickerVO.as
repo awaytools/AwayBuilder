@@ -30,7 +30,7 @@ package awaybuilder.model.vo.scene
 		{
 			var vo:LightPickerVO = new LightPickerVO();
 			vo.name = this.name;
-			vo.lights = new ArrayCollection( this.lights.source );
+			vo.lights = new ArrayCollection( this.lights.source.concat() );
 			vo.id = this.id;
 			return vo;
 		}

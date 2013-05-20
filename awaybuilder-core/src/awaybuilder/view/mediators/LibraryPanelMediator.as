@@ -32,12 +32,16 @@ package awaybuilder.view.mediators
 	import awaybuilder.utils.ScenegraphFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
+	import awaybuilder.view.components.controls.tree.DroppedItemVO;
+	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
 	
 	import flash.utils.getTimer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.events.CollectionEvent;
+	import mx.utils.ObjectUtil;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -57,6 +61,8 @@ package awaybuilder.view.mediators
 		private var _model:DocumentVO;
 		private var _scenegraphSelected:Vector.<Object>;
 		
+		private var _updateManually:Boolean;
+		
 		override public function onRegister():void
 		{
 			addViewListener(LibraryPanelEvent.TREE_CHANGE, view_treeChangeHandler);
@@ -71,9 +77,11 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_SKYBOX, view_addSkyBoxHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_MATERIAL, view_addMaterialHandler);
+			addViewListener(LibraryPanelEvent.LIGHT_DROPPED, view_lightDroppedHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
+			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeHandler);
 			
 			addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			
@@ -87,7 +95,63 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
+		private function view_lightDroppedHandler(event:LibraryPanelEvent):void
+		{
+			_updateManually = true;
+			for each( var item:DroppedItemVO in event.data ) 
+			{
+				var vo:ScenegraphItemVO = item.value as ScenegraphItemVO;
+				
+				if( vo.item is LightVO )
+				{
+					if( item.newParent )
+					{
+						var picker:LightPickerVO = item.newParent.item as LightPickerVO;
+						if( picker && !itemIsInList(picker.lights, vo.item as AssetVO) ) 
+						{
+							var newPicker:LightPickerVO = picker.clone();
+							newPicker.lights.addItemAt( vo.item, item.newPosition );
+							this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER,[picker], newPicker));							
+						}
+					}
+					
+					if( item.oldParent )
+					{ 
+						var picker:LightPickerVO = item.oldParent.item as LightPickerVO;
+						if( picker && itemIsInList(picker.lights, vo.item as AssetVO) ) 
+						{
+							var newPicker:LightPickerVO = picker.clone();
+							trace( " item.oldPosition = " +  item.oldPosition );
+							newPicker.lights.removeItemAt( item.oldPosition );
+							this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER,[picker], newPicker));							
+						}
+					}
+				}
+			}
+//			if( event.branch )
+//			{
+//				var picker:LightPickerVO = event.branch.item as LightPickerVO;
+//				if( picker ) 
+//				{
+//					var newPicker:LightPickerVO = picker.clone();
+//					newPicker.lights.addItem( event.data.item );
+//					this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER,[picker], newPicker));
+//				}
+//			}
+			
+			_updateManually = false;
+			updateScenegraph();
+		}
 		
+		private function itemIsInList( collection:ArrayCollection, asset:AssetVO ):Boolean
+		{
+			for each( var a:AssetVO in collection )
+			{
+				if( a.equals( asset ) ) return true;
+			}
+			trace( "itemo not in list" );
+			return false;
+		}
 		private function view_addMaterialHandler(event:LibraryPanelEvent):void
 		{
 			var m:MaterialVO = assets.CreateMaterial()
@@ -209,6 +273,10 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
+		private function eventDispatcher_changeHandler(event:SceneEvent):void
+		{
+			updateScenegraph();
+		}
 		
 		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
@@ -227,7 +295,6 @@ package awaybuilder.view.mediators
 			updateAllSelectedItems( view.model.skeletons, event.items );
 			updateAllSelectedItems( view.model.lights, event.items );
 			view.selectedItems = _scenegraphSelected;
-			
 			view.callLater( ensureIndexIsVisible );
 			
 		}
@@ -269,7 +336,8 @@ package awaybuilder.view.mediators
 						_scenegraphSelected.push( item );
 					}
 				}
-				if(  item.children ) {
+				if(  item.children ) 
+				{
 					updateAllSelectedItems( item.children, selectedItems );
 				}
 			}
@@ -287,6 +355,7 @@ package awaybuilder.view.mediators
 		}
 		private function updateScenegraph():void
 		{
+			if( _updateManually ) return;
 			if( !view.model ) 
 			{
 				view.model = new DocumentVO();
@@ -298,7 +367,7 @@ package awaybuilder.view.mediators
 			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  ScenegraphFactory.CreateBranch( document.textures ), "item" );
 			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, ScenegraphFactory.CreateBranch( document.skeletons ), "item" );
 			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry ), "item" );
-			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateBranch( document.lights ), "item" );
+			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateLightsBranch( document.lights ), "item" );
 			
 			view.sceneTree.expandAll();
 		}

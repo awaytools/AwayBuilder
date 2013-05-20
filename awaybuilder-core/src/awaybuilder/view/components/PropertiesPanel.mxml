@@ -26,6 +26,9 @@
 		<s:State name="shadingMethod"/>
 		<s:State name="skyBox"/>
 		<s:State name="textureProjector"/>
+		<s:State name="animationNode"/>
+		<s:State name="animationSet"/>
+		<s:State name="animator"/>
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -129,6 +132,9 @@
 			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="geometry,initAll" />
 			<editors:SkyBoxPropertiesEditor prevSelected="{prevSelected}" cubeTextures="{cubeTextures}" data="{_data}" includeIn="skyBox,initAll" />
 			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{_data}" includeIn="textureProjector,initAll"/>
+			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationSet,initAll"/>
+			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationNode,initAll"/>
+			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animator,initAll"/>
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

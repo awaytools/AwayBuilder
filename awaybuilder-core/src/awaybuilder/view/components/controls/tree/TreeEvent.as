@@ -20,6 +20,8 @@ public class TreeEvent extends Event
 	
 	public static const ITEM_OPENING:String = "itemOpening";
 	
+	public static const ITEM_DROPPED:String = "itemDropped";
+	
 	//--------------------------------------------------------------------------
 	//
 	//  Constructor
@@ -43,7 +45,7 @@ public class TreeEvent extends Event
 	//--------------------------------------------------------------------------
 	
 	public var item:Object;
-
+	
 	public var itemRenderer:ITreeItemRenderer;
 	
 	/**

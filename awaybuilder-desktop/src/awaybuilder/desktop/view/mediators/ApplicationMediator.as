@@ -567,62 +567,21 @@ package awaybuilder.desktop.view.mediators
 			{
 //				this.dispatch(new WebLinkEvent(WebLinkEvent.LINK_ONLINE_HELP));
 			}
-			else if(String.fromCharCode(event.charCode) == "+")
+			else if(String.fromCharCode(event.charCode) == "+" && event.ctrlKey)
 			{
-				trace(event.charCode);
 				Scene3DManager.zoomDistanceDelta( CameraManager.ZOOM_DELTA_VALUE );
-				//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
 			}
-			else if(String.fromCharCode(event.charCode) == "=")
+			else if(String.fromCharCode(event.charCode) == "=" && event.ctrlKey)
 			{
-				trace(event.charCode);
 				Scene3DManager.zoomDistanceDelta( CameraManager.ZOOM_DELTA_VALUE );
-				//this.editorModel.zoom = ZoomUtil.getNextHighestZoomPreset(this.editorModel.zoom);
 			}
-			else if(String.fromCharCode(event.charCode) == "-")
+			else if(String.fromCharCode(event.charCode) == "-" && event.ctrlKey)
 			{
-				trace(event.charCode);
 				Scene3DManager.zoomDistanceDelta( -CameraManager.ZOOM_DELTA_VALUE );
-				//this.editorModel.zoom = ZoomUtil.getNextLowestZoomPreset(this.editorModel.zoom);
 			}
-//			if(this.editorModel.selectedObjects.length > 0)
-//			{
-//				if(event.keyCode == Keyboard.DELETE || event.keyCode == Keyboard.BACKSPACE)
-//				{
-//					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.DELETE_SELECTION, null, true));
-//				}
-//			}
-//			if(this.editorModel.selectedObjects.length > 0)
-//			{
-//				if(String.fromCharCode(event.charCode) == ",")
-//				{
-//					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.ROTATE_SELECTION_COUNTER_CLOCKWISE));
-//				}
-//				else if(String.fromCharCode(event.charCode) == ".")
-//				{
-//					this.dispatch(new EditingSurfaceRequestEvent(EditingSurfaceRequestEvent.ROTATE_SELECTION_CLOCKWISE));
-//				}
-//				else if(event.keyCode == Keyboard.UP)
-//				{
-//					this.dispatch(new NudgeEvent(NudgeEvent.NUDGE_SELECTION, 0, event.shiftKey ? -this.settingsModel.gridSize : -1));
-//				}
-//				else if(event.keyCode == Keyboard.DOWN)
-//				{
-//					this.dispatch(new NudgeEvent(NudgeEvent.NUDGE_SELECTION, 0, event.shiftKey ? this.settingsModel.gridSize : 1));
-//				}
-//				else if(event.keyCode == Keyboard.RIGHT)
-//				{
-//					this.dispatch(new NudgeEvent(NudgeEvent.NUDGE_SELECTION, event.shiftKey ? this.settingsModel.gridSize : 1, 0));
-//				}
-//				else if(event.keyCode == Keyboard.LEFT)
-//				{
-//					this.dispatch(new NudgeEvent(NudgeEvent.NUDGE_SELECTION, event.shiftKey ? -this.settingsModel.gridSize : -1, 0));
-//				}
-//			}
 		}
 		
-		private function createMenuItem(text:String, data:Object, addTo:NativeMenu, index:int = -1,
-			keyEquivalent:String = null, modifiers:Array = null):NativeMenuItem
+		private function createMenuItem(text:String, data:Object, addTo:NativeMenu, index:int = -1, keyEquivalent:String = null, modifiers:Array = null):NativeMenuItem
 		{
 			var item:NativeMenuItem = new NativeMenuItem(text);
 			item.data = data;
@@ -721,8 +680,8 @@ package awaybuilder.desktop.view.mediators
 			
 			this._viewMenuItem = new NativeMenuItem("View");
 			var viewMenu:NativeMenu = new NativeMenu();
-			this.createMenuItem("Zoom In", MENU_ZOOM_IN, viewMenu, -1, "+", []);
-			this.createMenuItem("Zoom Out", MENU_ZOOM_OUT, viewMenu, -1, "-", []);
+			this.createMenuItem("Zoom In", MENU_ZOOM_IN, viewMenu, -1, "+");
+			this.createMenuItem("Zoom Out", MENU_ZOOM_OUT, viewMenu, -1, "-");
 			viewMenu.addItem(new NativeMenuItem("", true));
 			_focusItem = createMenuItem("Focus Selected", FOCUS_SELECTED, viewMenu);
             _focusItem.enabled = false;
@@ -800,10 +759,10 @@ package awaybuilder.desktop.view.mediators
 			//is active, but not the menus. this ensures that keyboard shortcuts
 			//don't stop input to textareas/textinputs in the properties window
 			//but it's okay if the user clicks something in the main window.
-			this.app.enabled = this.app.visible &&
-				(this.app.nativeApplication.activeWindow == this.app.nativeWindow ||
-				this.app.nativeApplication.activeWindow == this._propertiesWindow.nativeWindow ||
-				!this.app.nativeApplication.activeWindow);
+//			this.app.enabled = this.app.visible &&
+//				(this.app.nativeApplication.activeWindow == this.app.nativeWindow ||
+//				this.app.nativeApplication.activeWindow == this._propertiesWindow.nativeWindow ||
+//				!this.app.nativeApplication.activeWindow);
 		}
 		
 		private function updateMenus():void

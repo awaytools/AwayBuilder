@@ -87,15 +87,6 @@ package awaybuilder.model
 				case(item is ISubGeometry):
 					return fillSubGeometry( new SubGeometryVO(), item as ISubGeometry );
 					
-				case(item is AnimationNodeBase):
-					asset = fillAsset( new AnimationNodeVO(), item );
-					return asset;
-					
-				case(item is AnimationSetBase):
-					asset = fillAsset( new AnimationNodeVO(), item );
-					asset.name = "Animation Set (" + item.name +")";
-					return asset;
-					
 				case(item is AnimationStateBase):
 					asset = fillAsset( new AnimationNodeVO(), item );
 					asset.name = "Animation State (" + item.name +")";
@@ -129,6 +120,12 @@ package awaybuilder.model
 					
 				case(item is ShadingMethodBase):
 					return fillShadingMethod( new ShadingMethodVO(),  item as ShadingMethodBase );
+					
+				case(item is AnimationNodeBase):
+					return fillAnimationNode( new AnimationNodeVO(),  item as AnimationNodeBase );
+					
+				case(item is AnimationSetBase):
+					return fillAnimationSet( new AnimationSetVO(),  item as AnimationSetBase );
 			}
 			
 			return null;
@@ -433,7 +430,16 @@ package awaybuilder.model
 			}
 			return asset;
 		}
-		
+		private function fillAnimationSet( asset:AnimationSetVO, obj:AnimationSetBase ):AnimationSetVO
+		{
+			asset = fillAsset( asset, obj ) as AnimationSetVO;
+			return asset;
+		}
+		private function fillAnimationNode( asset:AnimationNodeVO, obj:AnimationNodeBase ):AnimationNodeVO
+		{
+			asset = fillAsset( asset, obj ) as AnimationNodeVO;
+			return asset;
+		}
 		private function fillShadingMethod( asset:ShadingMethodVO, obj:ShadingMethodBase ):ShadingMethodVO
 		{
 			asset.type = getQualifiedClassName( obj ).split("::")[1];

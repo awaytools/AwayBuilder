@@ -1,5 +1,7 @@
 package awaybuilder.view.components.controls.tree
 {
+	import mx.core.UIComponent;
+	
 	import spark.components.IItemRenderer;
 	
 	public interface ITreeItemRenderer extends IItemRenderer
@@ -17,6 +19,13 @@ package awaybuilder.view.components.controls.tree
 		 * <code>null</code> for top level items. If not <code>null</code> then 
 		 * <code>parents.length == level</code>.
 		 */
+		
+		function get dropArea():UIComponent;
+		function set dropArea(value:UIComponent):void;
+		
+		function get showDropIndicator():Boolean;
+		function set showDropIndicator(value:Boolean):void; 
+		
 		function get parents():Vector.<Object>;
 		function set parents(value:Vector.<Object>):void;
 		

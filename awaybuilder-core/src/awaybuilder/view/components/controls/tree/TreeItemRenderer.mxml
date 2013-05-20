@@ -20,15 +20,11 @@
 		<![CDATA[
 			import awaybuilder.model.vo.ScenegraphItemVO;
 			
+			import mx.events.DragEvent;
+			
 			private var rLum:Number = 0.2225;
 			private var gLum:Number = 0.7169;
 			private var bLum:Number = 0.0606;
-			
-			[Bindable]
-			private var bwMatrix:Array = [rLum, gLum, bLum, 0, 0,
-				rLum, gLum, bLum, 0, 0,
-				rLum, gLum, bLum, 0, 0,
-				0, 0, 0, 1, 0];
 			
 			protected function disclosureButton_clickHandler(event:MouseEvent):void
 			{
@@ -38,6 +34,14 @@
 			protected function treeitemrendererbase1_doubleClickHandler(event:MouseEvent):void
 			{
 				toggle();
+			}
+			
+			protected function disclosureButton_dragEnterHandler(event:DragEvent):void
+			{
+				if( !isOpen )
+				{
+					toggle();
+				}
 			}
 			
 		]]>
@@ -52,13 +56,20 @@
 		</s:fill>
 	</s:Rect>
 	
-    <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)"
+    <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)" dragEnter="disclosureButton_dragEnterHandler(event)"
                     selected="{isOpen}" skinClass="awaybuilder.view.components.controls.tree.TreeDisclosureButtonSkin"/>
-	<s:BitmapImage id="iconButton" source="{getStyle('icon')}">
-		<s:filters>
-			<s:ColorMatrixFilter matrix="{ScenegraphItemVO(data).item.isDefault?bwMatrix:null}"  /> 
-		</s:filters>
-	</s:BitmapImage>
+	
+	<s:BitmapImage id="iconButton" source="{getStyle('icon')}"/>
+	
     <s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
+	
+	<s:Rect x="2" y="2" width="{this.width-4}" height="{this.height-4}" includeInLayout="false" visible="{showDropIndicator}">
+		<s:stroke>
+			<s:SolidColorStroke color="0xCCCCFF" alpha="0.5" weight="2"/>
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" alpha="0.1"/>
+		</s:fill>
+	</s:Rect>
 	
 </tree:TreeItemRendererBase>

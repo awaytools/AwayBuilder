@@ -19,14 +19,64 @@ package awaybuilder.utils
 	public class ScenegraphFactory
 	{
 		
+		private var _lightsInPicker:Vector.<AssetVO> = new Vector.<AssetVO>();
+		
 		public static function CreateBranch( objects:ArrayCollection):ArrayCollection 
 		{
 			var children:ArrayCollection = new ArrayCollection();
 			for each( var asset:AssetVO in objects )
 			{
-				children.addItem( createScenegraphCild ( asset ) );
+				children.addItem( createScenegraphCild( asset ) );
 			}
 			return children;
+		}
+		
+		public static function CreateLightsBranch( objects:ArrayCollection):ArrayCollection 
+		{
+			var lights:Vector.<LightVO> = new Vector.<LightVO>();
+			var pickers:Vector.<LightPickerVO> = new Vector.<LightPickerVO>();
+			var children:ArrayCollection = new ArrayCollection();
+			for each( var asset:AssetVO in objects )
+			{
+				if( asset is LightVO ) 
+				{
+					lights.push(asset);
+				}
+				else if( asset is LightPickerVO ) 
+				{
+					pickers.push(asset);
+					children.addItem( createScenegraphCild( asset ) );
+				}
+				else
+				{
+					children.addItem( createScenegraphCild( asset ) );
+				}
+			}
+			var lightIsPresent:Boolean;
+			for each( var light:LightVO in lights )
+			{
+//				lightIsPresent = false;
+//				for each( var picker:LightPickerVO in pickers )
+//				{
+//					lightIsPresent = isLightInPicker( picker, light )
+//				}
+//				if( !lightIsPresent )
+//				{
+					children.addItem( createScenegraphCild( light ) );
+//				}
+				
+			}
+			
+			return children;
+		}
+		
+		private static function isLightInPicker( picker:LightPickerVO, light:LightVO ):Boolean
+		{
+			for each( var piclerLight:LightVO in picker.lights )
+			{
+				if( piclerLight.equals( light ) ) return true;
+			}
+			return false;
 		}
 		
 		private static function createScenegraphCild( asset:AssetVO ):ScenegraphItemVO
@@ -38,29 +88,43 @@ package awaybuilder.utils
 					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MESH );
 					item.children = CreateBranch( MeshVO(asset).children );
 					return item;
+					
 				case( asset is ContainerVO ):
 					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.CONTAINER );
 					item.children = CreateBranch( ContainerVO(asset).children );
 					return item;
+					
 				case( asset is MaterialVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MATERIAL );
+					
 				case( asset is TextureVO ):
 					return new ScenegraphItemVO( "Texture (" + asset.name.split("/").pop() +")", asset, ScenegraphItemVO.TEXTURE );
+					
 				case( asset is LightVO ):
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
+					item.children = CreateBranch( LightVO(asset).shadowMethods );
+					return item;
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
+					
 				case( asset is AnimationNodeVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_NODE );
+					
 				case( asset is SkeletonVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SKELETON );
+					
 				case( asset is GeometryVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.GEOMETRY );
+					
 				case( asset is ShadowMethodVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SHADOW );
+					
 				case( asset is EffectMethodVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.EFFECT );
-				case( asset is LightPickerVO ):
-					return new ScenegraphItemVO( asset.name, asset );
 					
+				case( asset is LightPickerVO ):
+					item = new ScenegraphItemVO( asset.name, asset );
+					item.children = CreateBranch( LightPickerVO(asset).lights );
+					return item;
 					
 				default:
 					return new ScenegraphItemVO( asset.name, asset );

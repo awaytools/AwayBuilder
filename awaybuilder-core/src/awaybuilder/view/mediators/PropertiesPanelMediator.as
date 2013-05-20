@@ -6,6 +6,9 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
+    import awaybuilder.model.vo.scene.AnimationNodeVO;
+    import awaybuilder.model.vo.scene.AnimationSetVO;
+    import awaybuilder.model.vo.scene.AnimatorVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
@@ -694,6 +697,21 @@ package awaybuilder.view.mediators
 					else if( event.items[0] is GeometryVO )
 					{
 						view.showEditor( "geometry", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is AnimationSetVO )
+					{
+						view.showEditor( "animationSet", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is AnimationNodeVO )
+					{
+						view.showEditor( "animationNode", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is AnimatorVO )
+					{
+						view.showEditor( "animator", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
                     else

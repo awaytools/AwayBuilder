@@ -159,8 +159,6 @@
 				this.cutButton.enabled = this._objectSelectionCount > 0;
 				this.copyButton.enabled = this._objectSelectionCount > 0;
 				this.deleteButton.enabled = this._connectionSelectionCount > 0 || this._objectSelectionCount > 0;
-//				this.rotateClockwiseButton.enabled = this._objectSelectionCount > 0;
-//				this.rotateCounterClockwiseButton.enabled = this._objectSelectionCount > 0;
 				this.selectionCountChanged = false;
 			}
 		}

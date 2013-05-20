@@ -73,6 +73,8 @@
 	<fx:Script>
 		<![CDATA[
 			import awaybuilder.model.vo.DocumentVO;
+			import awaybuilder.model.vo.ScenegraphItemVO;
+			import awaybuilder.view.components.controls.tree.TreeEvent;
 			import awaybuilder.view.components.events.CoreEditorEvent;
 			import awaybuilder.view.components.events.LibraryPanelEvent;
 			
@@ -286,6 +288,11 @@
 				lightsTree.selectedItems = selectedItems;
 			}
 			
+			protected function lightsTree_itemDroppedHandler(event:TreeEvent):void
+			{
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.LIGHT_DROPPED, event.item ) );
+			}
+			
 		]]>
 	</fx:Script>
 	<s:VGroup width="225" height="100%" gap="0">
@@ -345,9 +352,11 @@
 								   title="Lights" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="lightsPanel_addNewItemHandler(event)">
-			<tree:Tree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedItems}" dragMoveEnabled="false" dragEnabled="true" 
-					   dragStart="tree_dragStartHandler(event)" dragComplete="lightsTree_dragCompleteHandler(event)"
-					   change="tree_changeHandler(event)"
+			<tree:Tree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedItems}"
+					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true"
+					   dragStart="tree_dragStartHandler(event)"
+					   itemDropped="lightsTree_itemDroppedHandler(event)"
+					   change="tree_changeHandler(event)" dragComplete="lightsTree_dragCompleteHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 	</s:VGroup>

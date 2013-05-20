@@ -226,10 +226,11 @@ public class TreeDataProvider extends EventDispatcher implements IList, ICollect
 		{
 			cache[cacheIndex++] = currentItem;
 			if (currentItem == item)
+			{
 				return index;
+			}
 			
-			if (parentObjectsToOpenedBranches[currentItem] &&
-				IList(parentObjectsToOpenedBranches[currentItem]).length > 0)
+			if (parentObjectsToOpenedBranches[currentItem] && IList(parentObjectsToOpenedBranches[currentItem]).length > 0)
 			{
 				branches.push(branch);
 				branchIndexes.push(branchIndex);
