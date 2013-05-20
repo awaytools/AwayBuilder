@@ -309,7 +309,7 @@ package awaybuilder.utils.scene
 			
 			
 			if (t && t.parent) {
-				center.add(t.scenePosition);
+				center = center.add(t.scenePosition);
 			}
 			
 			TweenMax.to(CameraManager, 0.5, {radius:tr, onComplete:instance.calculateWheelSpeed, onCompleteParams:[tr, center]});
