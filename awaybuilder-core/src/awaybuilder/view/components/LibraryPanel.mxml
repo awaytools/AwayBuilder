@@ -94,7 +94,21 @@
 			public var model:DocumentVO;
 			
 			[Bindable] 
-			public var selectedItems:Vector.<Object> = new Vector.<Object>();
+			public var selectedSceneItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedMaterialsItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedTexturesItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedGeometryItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedMethodsItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedAnimationsItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedSkeletonsItems:Vector.<Object> = new Vector.<Object>();
+			[Bindable] 
+			public var selectedLightsItems:Vector.<Object> = new Vector.<Object>();
 			
 			private var _expandedPanel:CollapsiblePanel;
 			private var _panels:Array;
@@ -280,17 +294,22 @@
 			
 			protected function methodsTree_dragCompleteHandler(event:DragEvent):void
 			{
-				methodsTree.selectedItems = selectedItems;
+				methodsTree.selectedItems = selectedMethodsItems;
 			}
 			
 			protected function lightsTree_dragCompleteHandler(event:DragEvent):void
 			{
-				lightsTree.selectedItems = selectedItems;
+				lightsTree.selectedItems = selectedLightsItems;
 			}
 			
 			protected function lightsTree_itemDroppedHandler(event:TreeEvent):void
 			{
 				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.LIGHT_DROPPED, event.item ) );
+			}
+			
+			protected function animationsPanel_addNewItemHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_ANIMATOR ) );
 			}
 			
 		]]>
@@ -300,7 +319,8 @@
 								   title="Scene Objects" width="100%" collapsed="false" height="100%" addEnabled="true"
 								   addNewItem="scenePanel_addNewItemHandler(event)"
 								   collapsedChange="panel_collapsedChangeHandler(event)">
-			<tree:Tree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedItems}" indentation="10"
+			<tree:Tree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedSceneItems}" indentation="10"
+					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -308,7 +328,7 @@
 									title="Materials" height="24" width="100%" collapsed="true" addEnabled="true"
 									collapsedChange="panel_collapsedChangeHandler(event)"
 									addNewItem="materialsPanel_addNewItemHandler(event)">
-			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedItems}"
+			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedMaterialsItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -316,14 +336,14 @@
 								   title="Textures" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
-			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedItems}"
+			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedTexturesItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="geometryPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
-			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedItems}"
+			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedGeometryItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -331,20 +351,24 @@
 										  title="Effects" height="24" width="100%" collapsed="true" addEnabled="true"
 										  collapsedChange="panel_collapsedChangeHandler(event)"
 										  addNewItem="methodsPanel_addNewItemHandler(event)">
-			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedItems}" dragMoveEnabled="false" dragEnabled="true" 
+			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedMethodsItems}" indentation="10"
+					   dragMoveEnabled="false" dragEnabled="true" 
 					   dragStart="tree_dragStartHandler(event)" dragComplete="methodsTree_dragCompleteHandler(event)"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<!--<controls:CollapsiblePanel id="skeletonsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Skeletons" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
-			<tree:Tree id="skeletonsTree" dataProvider="{model.skeletons}" selectedItems="{selectedItems}"
+			<tree:Tree id="skeletonsTree" dataProvider="{model.skeletons}" selectedItems="{selectedLightsItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:CollapsiblePanel>-->
 		<controls:LibraryCollapsiblePanel id="animationsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
-								   title="Animations" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
-			<tree:Tree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedItems}"
+								   title="Animations"  addEnabled="true"
+								   height="24" width="100%" collapsed="true" 
+								   collapsedChange="panel_collapsedChangeHandler(event)"
+								   addNewItem="animationsPanel_addNewItemHandler(event)">
+			<tree:Tree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedAnimationsItems}" indentation="10"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -352,8 +376,8 @@
 								   title="Lights" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="lightsPanel_addNewItemHandler(event)">
-			<tree:Tree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedItems}"
-					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true"
+			<tree:Tree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedLightsItems}" indentation="10"
+					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
 					   dragStart="tree_dragStartHandler(event)"
 					   itemDropped="lightsTree_itemDroppedHandler(event)"
 					   change="tree_changeHandler(event)" dragComplete="lightsTree_dragCompleteHandler(event)"

@@ -11,6 +11,7 @@ package awaybuilder.view.components.events
 		public static const ADD_CUBE_TEXTURE:String = "addCubeTexture";
 		public static const ADD_MATERIAL:String = "addMaterial";
 		public static const ADD_SKYBOX:String = "addSkyBox";
+		public static const ADD_ANIMATOR:String = "addAnimator";
 		public static const ADD_MESH:String = "addMesh";
 		public static const ADD_GEOMETRY:String = "addGeometry";
 		public static const ADD_EFFECTMETHOD:String = "addEffectMethod";

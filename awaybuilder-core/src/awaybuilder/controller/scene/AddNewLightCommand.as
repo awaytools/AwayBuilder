@@ -39,11 +39,13 @@ package awaybuilder.controller.scene
 			if( event.isUndoAction )
 			{
 				document.removeAsset( document.lights, oldValue );
+				document.removeAsset( document.scene, oldValue );
 				Scene3DManager.removeLight( assets.GetObject(oldValue) as LightBase );
 			}
 			else 
 			{
 				document.lights.addItemAt( newValue, 0 );
+				document.scene.addItemAt( newValue, 0 );
 				Scene3DManager.addLight( assets.GetObject(newValue) as LightBase );
 			}
 			

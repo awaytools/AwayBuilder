@@ -13,6 +13,7 @@ package awaybuilder.model.vo
 		public static const LIGHT:String = "light";
 		public static const LIGHTPICKER:String = "lightPicker";
 		public static const MESH:String = "mesh";
+		public static const SKY_BOX:String = "skyBox";
 		public static const MATERIAL:String = "material";
 		public static const GEOMETRY:String = "geometry";
 		public static const SKELETON:String = "skeleton";
@@ -27,6 +28,7 @@ package awaybuilder.model.vo
 		public static const SHADOW:String = "shadow";
 		public static const EFFECT:String = "effect";
 		public static const SPECULAR:String = "specular";
+		public static const SHADING:String = "shading";
 		
 		public function ScenegraphItemVO( label:String, item:AssetVO, type:String="default" )
 		{

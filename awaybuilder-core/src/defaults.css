@@ -141,6 +141,10 @@ tree|TreeItemRenderer.effect
 {
 	icon: Embed("assets/images/blue-document-attribute-e.png");
 }
+tree|TreeItemRenderer.skyBox
+{
+	icon: Embed("assets/images/weather_clouds.png");
+}
 
 
 s|NumericStepper

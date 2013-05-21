@@ -12,6 +12,7 @@ package awaybuilder.utils
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import mx.collections.ArrayCollection;
@@ -89,13 +90,23 @@ package awaybuilder.utils
 					item.children = CreateBranch( MeshVO(asset).children );
 					return item;
 					
+				case( asset is SkyBoxVO ):
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SKY_BOX );
+					return item;
+					
 				case( asset is ContainerVO ):
 					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.CONTAINER );
 					item.children = CreateBranch( ContainerVO(asset).children );
 					return item;
 					
 				case( asset is MaterialVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MATERIAL );
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MATERIAL );
+					item.children = new ArrayCollection();
+					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).ambientMethod.type, MaterialVO(asset).ambientMethod ) );
+					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).diffuseMethod.type, MaterialVO(asset).diffuseMethod ) );
+					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).specularMethod.type, MaterialVO(asset).specularMethod ) );
+					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).normalMethod.type, MaterialVO(asset).normalMethod ) );
+					return item;
 					
 				case( asset is TextureVO ):
 					return new ScenegraphItemVO( "Texture (" + asset.name.split("/").pop() +")", asset, ScenegraphItemVO.TEXTURE );
@@ -104,7 +115,6 @@ package awaybuilder.utils
 					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
 					item.children = CreateBranch( LightVO(asset).shadowMethods );
 					return item;
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
 					
 				case( asset is AnimationNodeVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_NODE );

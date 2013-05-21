@@ -8,6 +8,7 @@ package awaybuilder.model
 	import away3d.library.AssetLibrary;
 	import away3d.library.assets.AssetType;
 	import away3d.library.assets.BitmapDataAsset;
+	import away3d.lights.LightBase;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.MaterialBase;
 	import away3d.primitives.SkyBox;
@@ -161,6 +162,10 @@ package awaybuilder.model
 					_document.methods.addItem( assets.GetAsset( event.asset ) );
 					break;	
 				case AssetType.LIGHT:
+					var light:LightBase = event.asset as LightBase;
+					_objects.push( light );
+					_document.lights.addItem( assets.GetAsset( event.asset ) );
+					break;
 				case AssetType.LIGHT_PICKER:
 					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;

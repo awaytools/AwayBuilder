@@ -1,5 +1,7 @@
 package awaybuilder.model
 {
+	import away3d.animators.AnimatorBase;
+	import away3d.animators.SkeletonAnimator;
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
@@ -84,6 +86,15 @@ package awaybuilder.model
 			_assets[obj] = asset;
 			_objectsByAsset[asset] = obj;
 			return asset;
+		}
+		
+		public function CreateAniamtor():AnimatorVO
+		{
+//			var textureMaterial:SkeletonAnimator = new SkeletonAnimator();
+//			newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
+//			newMaterial.name = "Animator" + AssetUtil.GetNextId("Animator");
+//			return GetAsset(newMaterial) as MaterialVO;
+			return null;
 		}
 		
 		public function CreateMaterial( clone:MaterialVO = null ):MaterialVO

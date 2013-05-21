@@ -16,6 +16,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
@@ -59,7 +60,16 @@ package awaybuilder.view.mediators
 		public var assets:AssetsModel;
 		
 		private var _model:DocumentVO;
-		private var _scenegraphSelected:Vector.<Object>;
+//		private var _scenegraphSelected:Vector.<Object>;
+		
+		private var _selectedSceneItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedMaterialsItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedTexturesItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedGeometryItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedMethodsItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedAnimationsItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedSkeletonsItems:Vector.<Object> = new Vector.<Object>();
+		private var _selectedLightsItems:Vector.<Object> = new Vector.<Object>();
 		
 		private var _updateManually:Boolean;
 		
@@ -77,6 +87,8 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_SKYBOX, view_addSkyBoxHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_MATERIAL, view_addMaterialHandler);
+			addViewListener(LibraryPanelEvent.ADD_ANIMATOR, view_addAnimatorHandler);
+			
 			addViewListener(LibraryPanelEvent.LIGHT_DROPPED, view_lightDroppedHandler);
 			
 			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, eventDispatcher_documentUpdatedHandler);
@@ -121,7 +133,6 @@ package awaybuilder.view.mediators
 						if( picker && itemIsInList(picker.lights, vo.item as AssetVO) ) 
 						{
 							var newPicker:LightPickerVO = picker.clone();
-							trace( " item.oldPosition = " +  item.oldPosition );
 							newPicker.lights.removeItemAt( item.oldPosition );
 							this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHTPICKER,[picker], newPicker));							
 						}
@@ -157,6 +168,13 @@ package awaybuilder.view.mediators
 			var m:MaterialVO = assets.CreateMaterial()
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[], m));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[m]));
+		}
+		private function view_addAnimatorHandler(event:LibraryPanelEvent):void
+		{
+			Alert.show( "Animators not implemented", "Warning" );
+			var asset:AnimatorVO = assets.CreateAniamtor();
+//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[], m));
+//			this.dispatch(new SceneEvent(SceneEvent.SELECT,[m]));
 		}
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
 		{
@@ -247,21 +265,21 @@ package awaybuilder.view.mediators
 				items.push(ScenegraphItemVO(selectedItems[i]).item);
 			}
 			
-			if( items.length == view.selectedItems.length ) // fix: preventing second change event after selectedItems update
-			{
-				var isSame:Boolean = true;
-				for( var j:int=0; j<items.length; j++ )
-				{
-					if( items[j] != view.selectedItems[j].item )
-					{
-						isSame = false;
-					}
-				}
-				if( isSame )
-				{
-					return;
-				}
-			}
+//			if( items.length == view.selectedItems.length ) // fix: preventing second change event after selectedItems update
+//			{
+//				var isSame:Boolean = true;
+//				for( var j:int=0; j<items.length; j++ )
+//				{
+//					if( items[j] != view.selectedItems[j].item )
+//					{
+//						isSame = false;
+//					}
+//				}
+//				if( isSame )
+//				{
+//					return;
+//				}
+//			}
 			
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
 			
@@ -285,16 +303,30 @@ package awaybuilder.view.mediators
 		
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
-			_scenegraphSelected = new Vector.<Object>();
-			updateAllSelectedItems( view.model.scene, event.items );
-			updateAllSelectedItems( view.model.materials, event.items );
-			updateAllSelectedItems( view.model.textures, event.items );
-			updateAllSelectedItems( view.model.geometry, event.items );
-			updateAllSelectedItems( view.model.methods, event.items );
-			updateAllSelectedItems( view.model.animations, event.items );
-			updateAllSelectedItems( view.model.skeletons, event.items );
-			updateAllSelectedItems( view.model.lights, event.items );
-			view.selectedItems = _scenegraphSelected;
+			_selectedSceneItems = new Vector.<Object>();
+			_selectedMaterialsItems = new Vector.<Object>();
+			_selectedTexturesItems = new Vector.<Object>();
+			_selectedGeometryItems = new Vector.<Object>();
+			_selectedMethodsItems = new Vector.<Object>();
+			_selectedAnimationsItems = new Vector.<Object>();
+			_selectedSkeletonsItems = new Vector.<Object>();
+			_selectedLightsItems = new Vector.<Object>();
+			updateAllSelectedItems( view.model.scene, event.items.concat(), _selectedSceneItems  );
+			updateAllSelectedItems( view.model.materials, event.items.concat(), _selectedMaterialsItems );
+			updateAllSelectedItems( view.model.textures, event.items.concat(), _selectedTexturesItems );
+			updateAllSelectedItems( view.model.geometry, event.items.concat(), _selectedGeometryItems );
+			updateAllSelectedItems( view.model.methods, event.items.concat(), _selectedMethodsItems );
+			updateAllSelectedItems( view.model.animations, event.items.concat(), _selectedAnimationsItems );
+			updateAllSelectedItems( view.model.skeletons, event.items.concat(), _selectedSkeletonsItems );
+			updateAllSelectedItems( view.model.lights, event.items.concat(), _selectedLightsItems, view.lightsTree.selectedItems );
+			view.selectedSceneItems = _selectedSceneItems;
+			view.selectedMaterialsItems = _selectedMaterialsItems;
+			view.selectedTexturesItems = _selectedTexturesItems;
+			view.selectedGeometryItems = _selectedGeometryItems;
+			view.selectedMethodsItems = _selectedMethodsItems;
+			view.selectedAnimationsItems = _selectedAnimationsItems;
+			view.selectedSkeletonsItems = _selectedSkeletonsItems;
+			view.selectedLightsItems = _selectedLightsItems;
 			view.callLater( ensureIndexIsVisible );
 			
 		}
@@ -325,20 +357,36 @@ package awaybuilder.view.mediators
 			}
 			
 		}
-		private function updateAllSelectedItems( children:ArrayCollection, selectedItems:Array ):void
+		private function updateAllSelectedItems( children:ArrayCollection, selectedItems:Array, currentSelcted:Vector.<Object>, alreadySelected:Vector.<Object>=null ):void
 		{
+			if( alreadySelected )
+			{
+				
+				for each( var alreadySelectedItem:ScenegraphItemVO in alreadySelected )
+				{
+					for( var i:int = 0; i < selectedItems.length; i++ )
+					{
+						if( AssetVO(selectedItems[i]).equals( alreadySelectedItem.item ) )
+						{
+							currentSelcted.push( alreadySelectedItem );
+							selectedItems.splice( i, 1 );
+							i--;
+						}
+					}
+				}
+			}
 			for each( var item:ScenegraphItemVO in children )
 			{
 				if( item.item )
 				{
 					if( getItemIsSelected( item.item.id, selectedItems ) )
 					{
-						_scenegraphSelected.push( item );
+						currentSelcted.push( item );
 					}
 				}
-				if(  item.children ) 
+				if( item.children ) 
 				{
-					updateAllSelectedItems( item.children, selectedItems );
+					updateAllSelectedItems( item.children, selectedItems, currentSelcted );
 				}
 			}
 		}
@@ -360,6 +408,7 @@ package awaybuilder.view.mediators
 			{
 				view.model = new DocumentVO();
 			}
+			
 			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, ScenegraphFactory.CreateBranch( document.scene ), "item" );
 			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, ScenegraphFactory.CreateBranch( document.materials ), "item" );
 			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, ScenegraphFactory.CreateBranch( document.animations ), "item" );
