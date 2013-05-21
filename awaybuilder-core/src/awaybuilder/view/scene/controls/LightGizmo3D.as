@@ -22,14 +22,14 @@ package awaybuilder.view.scene.controls
 		[Embed(source="/assets/spritetextures/light_source.png")]
 		private var LightSourceImage:Class;
 
-		public var light:LightBase;
-		public var cone : Mesh;
+		public var sceneObject : LightBase;
+		public var representation : Mesh;
 		
 		public var type : String;
 		
 		public function LightGizmo3D(light:LightBase)
 		{
-			this.light = light;
+			this.sceneObject = light;
 			
 			type = (light is DirectionalLight) ? DIRECTIONAL_LIGHT : POINT_LIGHT;
 				
@@ -37,36 +37,35 @@ package awaybuilder.view.scene.controls
 			lightTexture.alphaBlending = true;
 			lightTexture.bothSides = true;
 			if (type == DIRECTIONAL_LIGHT) {
-				cone = new Mesh(new PlaneGeometry(50, 50, 1, 1), lightTexture);
-				cone.y = 150;
+				representation = new Mesh(new PlaneGeometry(50, 50, 1, 1), lightTexture);
+				representation.y = 150;
 				var wC:WireframeCylinder = new WireframeCylinder(100, 100, 300, 8, 1, 0xffff00, 0.25);
 				wC.y = -150;
-				cone.addChild(wC);
-				cone.rotationX = -90;
-				cone.pivotPoint = new Vector3D(0, -150, 0);
-				cone.material.depthCompareMode = wC.material.depthCompareMode = Context3DCompareMode.ALWAYS;
+				representation.addChild(wC);
+				representation.rotationX = -90;
+				representation.pivotPoint = new Vector3D(0, -150, 0);
+				representation.material.depthCompareMode = wC.material.depthCompareMode = Context3DCompareMode.ALWAYS;
 			} else {
-				cone = new Mesh(new PlaneGeometry(100, 100, 1, 1), lightTexture);
+				representation = new Mesh(new PlaneGeometry(100, 100, 1, 1), lightTexture);
 			}
-			cone.castsShadows=false;
-			cone.name = light.name;
-			cone.mouseEnabled = true;
-			cone.pickingCollider = PickingColliderType.AS3_BEST_HIT;
-			this.addChild(cone);
+			representation.castsShadows=false;
+			representation.name = light.name;
+			representation.mouseEnabled = true;
+			representation.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			this.addChild(representation);
 		}
 
-		public function updateLight() : void {
+		public function updateRepresentation() : void {
 			if (type == DIRECTIONAL_LIGHT) {
-				cone.eulers = light.eulers.clone();
-				cone.rotationX -= 90;
-				//trace("DIRLight:"+cone.eulers);
+				representation.eulers = sceneObject.eulers.clone();
+				representation.rotationX -= 90;
 			} else {
-				cone.eulers = CameraManager.camera.eulers.clone();
-				cone.rotationX -= 90;
-				cone.rotationY -= 1; // Temporary fix for bounds visiblity
-				var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(cone.scenePosition);
-				cone.scaleX = cone.scaleZ = dist.length/1500;
-				cone.position = light.position.clone();
+				representation.eulers = CameraManager.camera.eulers.clone();
+				representation.rotationX -= 90;
+				representation.rotationY -= 1; // Temporary fix for bounds visiblity
+				var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(representation.scenePosition);
+				representation.scaleX = representation.scaleZ = dist.length/1500;
+				representation.position = sceneObject.position.clone();
 			}
 		}
 	}

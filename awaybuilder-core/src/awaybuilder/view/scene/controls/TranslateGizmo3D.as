@@ -178,10 +178,13 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
 				
-			actualMesh = (currentMesh.parent is ContainerGizmo3D) ? currentMesh.parent.parent : (currentMesh.parent is LightGizmo3D) ? (currentMesh.parent as LightGizmo3D).light : currentMesh;
+			if (currentMesh.parent is LightGizmo3D) actualMesh = (currentMesh.parent as LightGizmo3D).sceneObject;
+			else if (currentMesh.parent is ContainerGizmo3D) actualMesh = (currentMesh.parent as ContainerGizmo3D).sceneObject;
+			else if (currentMesh.parent is TextureProjectorGizmo3D) actualMesh = (currentMesh.parent as TextureProjectorGizmo3D).sceneObject;
+			else actualMesh = currentMesh;
 			
 			startValue = actualMesh.position;
-
+trace("StartValue:"+startValue);
 			switch(currentAxis)
 			{
 				case "xAxis":
@@ -269,6 +272,7 @@ package awaybuilder.view.scene.controls
 			
 			//if (actualMesh.parent is ContainerGizmo3D) actualMesh.parent.parent.position = this.position.clone() 
 			//else 
+			trace("amPos:"+actualMesh.position+" tGPos:"+this.position);
 			actualMesh.position = this.position.clone();
 
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
@@ -289,6 +293,8 @@ package awaybuilder.view.scene.controls
 			yCylinder.material = yAxisMaterial;			
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
+
+trace("EndValue:"+actualMesh.position);
 
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position.clone()));
 		}		

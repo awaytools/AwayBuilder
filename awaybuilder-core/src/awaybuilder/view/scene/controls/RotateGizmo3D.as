@@ -208,7 +208,10 @@ package awaybuilder.view.scene.controls
 			click2.x = Scene3DManager.stage.mouseX;
 			click2.y = Scene3DManager.stage.mouseY;			
 			
-			actualMesh = (currentMesh.parent is ContainerGizmo3D) ? currentMesh.parent.parent : isLightGizmo ? isLightGizmo.light : currentMesh;
+			if (currentMesh.parent is LightGizmo3D) actualMesh = (currentMesh.parent as LightGizmo3D).sceneObject;
+			else if (currentMesh.parent is ContainerGizmo3D) actualMesh = (currentMesh.parent as ContainerGizmo3D).sceneObject;
+			else if (currentMesh.parent is TextureProjectorGizmo3D) actualMesh = (currentMesh.parent as TextureProjectorGizmo3D).sceneObject;
+			else actualMesh = currentMesh;
 			
 			switch(currentAxis)
 			{
@@ -374,7 +377,7 @@ package awaybuilder.view.scene.controls
 			xDirection.visible = !zTorus.visible;
 
 			if (isLightGizmo && isLightGizmo.type == LightGizmo3D.DIRECTIONAL_LIGHT) {
-				var dirLight:DirectionalLight = isLightGizmo.light as DirectionalLight;
+				var dirLight:DirectionalLight = isLightGizmo.sceneObject as DirectionalLight;
 				xTorus.rotate(new Vector3D(0, 0, 1), Math.round(-Math.asin( dirLight.direction.y )*180/Math.PI) - 90);
 				var a:Number = Math.atan2(dirLight.direction.x, dirLight.direction.z )*180/Math.PI;
 				content.rotationY = Math.round(a<0?a+360:a);

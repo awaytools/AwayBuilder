@@ -1,5 +1,6 @@
 package awaybuilder.view.mediators
 {
+    import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
     import away3d.core.base.Object3D;
@@ -1147,6 +1148,11 @@ package awaybuilder.view.mediators
 						var mesh:MeshVO = event.items[0] as MeshVO;
 						selectObjectsScene( assets.GetObject( mesh ) as Object3D );
 					}
+					else if( event.items[0] is TextureProjectorVO )
+					{
+						var textureProjector:TextureProjectorVO = event.items[0] as TextureProjectorVO;
+						selectTextureProjectorsScene( assets.GetObject( textureProjector ) as TextureProjector );
+					}
 					else if( event.items[0] is ContainerVO)
 					{
 						var container:ContainerVO = event.items[0] as ContainerVO;
@@ -1188,9 +1194,9 @@ package awaybuilder.view.mediators
 		{
 			for each( var containerGizmo:ContainerGizmo3D in Scene3DManager.containerGizmos )
 			{
-				if( containerGizmo.container == c )
+				if( containerGizmo.sceneObject == c )
 				{
-					selectObjectsScene(containerGizmo.containerGizmo);
+					selectObjectsScene(containerGizmo.representation);
 					return;
 				}
 			}
@@ -1199,9 +1205,20 @@ package awaybuilder.view.mediators
 		{
 			for each( var lightGizmo:LightGizmo3D in Scene3DManager.lightGizmos )
 			{
-				if( lightGizmo.light == l )
+				if( lightGizmo.sceneObject == l )
 				{
-					selectObjectsScene(lightGizmo.cone);
+					selectObjectsScene(lightGizmo.representation);
+					return;
+				}
+			}
+		}
+		private function selectTextureProjectorsScene( tP:TextureProjector ):void
+		{
+			for each( var textureProjectorGizmo:TextureProjectorGizmo3D in Scene3DManager.textureProjectorGizmos )
+			{
+				if( textureProjectorGizmo.sceneObject == tP )
+				{
+					selectObjectsScene(textureProjectorGizmo.representation);
 					return;
 				}
 			}
@@ -1244,16 +1261,19 @@ package awaybuilder.view.mediators
 			var asset:AssetVO;
 			var isLight:LightGizmo3D;
 			var isContainer:ContainerGizmo3D;
+			var isTextureProjector:TextureProjectorGizmo3D;
 				
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
 				mesh = item as Mesh;
 				if( mesh ) 
 				{
-					if ((isLight = (mesh.parent as LightGizmo3D)))
-						asset = assets.GetAsset(isLight.light);
-					else if ((isContainer = (mesh.parent as ContainerGizmo3D)))
-						asset = assets.GetAsset(isContainer.parent);
+					if ((isContainer = (mesh.parent as ContainerGizmo3D))!=null)
+						asset = assets.GetAsset(isContainer.sceneObject);
+					else if ((isLight = (mesh.parent as LightGizmo3D))!=null)
+						asset = assets.GetAsset(isLight.sceneObject);
+					else if ((isTextureProjector = (mesh.parent as TextureProjectorGizmo3D))!=null)
+						asset = assets.GetAsset(isTextureProjector.sceneObject);
 					else
 						asset = assets.GetAsset(mesh);
 					selected.push(asset);
@@ -1264,28 +1284,18 @@ package awaybuilder.view.mediators
 
 		private function scene_meshSelectedFromViewHandler(event:Scene3DManagerEvent) : void {
 			if (Scene3DManager.mouseSelection) {
-				var asset:AssetVO;
-				if (Scene3DManager.mouseSelection.parent is ContainerGizmo3D)
-					asset = assets.GetAsset( (Scene3DManager.mouseSelection.parent as ContainerGizmo3D).container );
-				else 
-					asset = assets.GetAsset( Scene3DManager.mouseSelection );
+				var asset:AssetVO = assets.GetAsset( Scene3DManager.mouseSelection );
 				this.dispatch(new SceneEvent(SceneEvent.SELECT, [ asset ]));
 			}
 		}
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-			var m:ObjectContainer3D = event.object as ObjectContainer3D;
-			var vo:ObjectVO;
-			var lvo:LightVO;
 			var dL:DirectionalLight = event.object as DirectionalLight;
-			if (m.parent is ContainerGizmo3D) 
-				vo = assets.GetAsset( (m.parent as ContainerGizmo3D).container ) as ObjectVO;
-            else 
-				vo = assets.GetAsset( event.object ) as ObjectVO;
 
-			vo = vo.clone() as ObjectVO;
-			lvo = vo.clone() as LightVO;
+			var originalVO:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
+			var vo:ObjectVO = originalVO.clone() as ObjectVO;
+			var lvo:LightVO = originalVO.clone() as LightVO;
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:
@@ -1317,14 +1327,8 @@ package awaybuilder.view.mediators
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
-			var m:ObjectContainer3D = event.object as ObjectContainer3D;
 			var vo:ObjectVO;
-			if (m.parent is LightGizmo3D)
-				vo = assets.GetAsset( (m.parent as LightGizmo3D).light ) as ObjectVO;
-			else if (m.parent is ContainerGizmo3D)
-				vo = assets.GetAsset( (m.parent as ContainerGizmo3D).container ) as ObjectVO;
-            else
-            	vo = assets.GetAsset( event.object ) as ObjectVO;
+            vo = assets.GetAsset( event.object ) as ObjectVO;
 
             switch( event.gizmoMode ) 
 			{

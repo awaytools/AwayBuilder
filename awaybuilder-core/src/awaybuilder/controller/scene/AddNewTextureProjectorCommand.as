@@ -1,5 +1,7 @@
 package awaybuilder.controller.scene
 {
+	import awaybuilder.utils.scene.Scene3DManager;
+	import away3d.entities.TextureProjector;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
@@ -26,12 +28,12 @@ package awaybuilder.controller.scene
 			if( event.isUndoAction )
 			{
 				document.removeAsset( document.scene, oldValue );
-//				Scene3DManager.removeSkyBox( assets.GetObject(oldValue) as SkyBox );
+				Scene3DManager.removeTextureProjector( assets.GetObject(oldValue) as TextureProjector );
 			}
 			else
 			{
 				document.scene.addItemAt( newValue, 0 );
-//				Scene3DManager.addSkybox( assets.GetObject(newValue) as SkyBox );
+				Scene3DManager.addTextureProjector( assets.GetObject(newValue) as TextureProjector, newValue.texture.bitmapData );
 			}
 			
 			addToHistory( event );

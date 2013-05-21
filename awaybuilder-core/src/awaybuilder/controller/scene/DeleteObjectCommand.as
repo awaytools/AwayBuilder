@@ -1,5 +1,7 @@
 package awaybuilder.controller.scene
 {
+	import away3d.entities.TextureProjector;
+	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.lights.LightBase;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -45,6 +47,9 @@ package awaybuilder.controller.scene
 				if( vo is MeshVO ) {
 					
 					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
+				}
+				else if( vo is TextureProjectorVO ) {
+					Scene3DManager.removeTextureProjector( assets.GetObject(vo) as TextureProjector );
 				}
 				else if( vo is ContainerVO ) {
 					Scene3DManager.removeContainer( assets.GetObject(vo) as ObjectContainer3D );

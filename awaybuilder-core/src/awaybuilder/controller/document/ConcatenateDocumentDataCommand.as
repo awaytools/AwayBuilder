@@ -161,6 +161,15 @@ package awaybuilder.controller.document
 				Scene3DManager.addLight( assets.GetObject(light) as LightBase );
 			}
 		}
+//		private function addTextureProjector( value:Object ):void
+//		{
+//			var textureProjector:TextureProjectorVO = value as TextureProjectorVO;
+//			if( TextureProjectorVO ) 
+//			{
+//				var projectorBitmap:BitmapData = textureProjector.texture.bitmapData;
+//				Scene3DManager.addTextureProjector( assets.GetObject(textureProjector) as TextureProjector, projectorBitmap );
+//			}
+//		}
 		
 	}
 }

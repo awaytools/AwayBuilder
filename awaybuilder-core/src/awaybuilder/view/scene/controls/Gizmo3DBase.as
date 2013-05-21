@@ -37,6 +37,7 @@ package awaybuilder.view.scene.controls
 		protected var cubeMaterial:ColorMaterial = new ColorMaterial();
 		protected var isLightGizmo:LightGizmo3D;
 		protected var isContainerGizmo:ContainerGizmo3D;
+		protected var isTextureProjectorGizmo:TextureProjectorGizmo3D;
 		protected var type : String = BASE_GIZMO;
 		
 		private var ambientLight : DirectionalLight;
@@ -89,10 +90,22 @@ package awaybuilder.view.scene.controls
 			
 			isLightGizmo = currentMesh.parent as LightGizmo3D;
 			isContainerGizmo = currentMesh.parent as ContainerGizmo3D;
+			isTextureProjectorGizmo = currentMesh.parent as TextureProjectorGizmo3D;
 			if (isLightGizmo) 
 			{
-				this.position = isLightGizmo.light.scenePosition;
+				this.position = isLightGizmo.sceneObject.scenePosition;
 				content.rotationX = content.rotationY = content.rotationZ = 0;		
+			}
+			else if (isTextureProjectorGizmo) 
+			{
+				this.position = isTextureProjectorGizmo.sceneObject.scenePosition;
+				if (type == TRANSLATE_GIZMO) {
+					content.rotationX = content.rotationY = content.rotationZ = 0;		
+				} else {
+					content.rotationX = isTextureProjectorGizmo.sceneObject.rotationX;		
+					content.rotationY = isTextureProjectorGizmo.sceneObject.rotationY;		
+					content.rotationZ = isTextureProjectorGizmo.sceneObject.rotationZ;		
+				}
 			}
 			else
  			{

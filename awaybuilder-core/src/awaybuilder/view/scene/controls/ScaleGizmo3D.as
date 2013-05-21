@@ -208,9 +208,11 @@ package awaybuilder.view.scene.controls
 		
 		protected function handleMouseDown(e:Event):void
 		{
-			currentAxis = e.target.name
+			currentAxis = e.target.name;
 			
-			actualMesh = (currentMesh.parent is ContainerGizmo3D) ? currentMesh.parent.parent : currentMesh;			
+			if (currentMesh.parent is ContainerGizmo3D) actualMesh = (currentMesh.parent as ContainerGizmo3D).sceneObject;
+			else if (currentMesh.parent is TextureProjectorGizmo3D) actualMesh = (currentMesh.parent as TextureProjectorGizmo3D).sceneObject;
+			else actualMesh = currentMesh;
 			
 			var maxScale:Number = Math.max( actualMesh.scaleX,  actualMesh.scaleY,  actualMesh.scaleZ );
 			scaleRatio.x = actualMesh.scaleX / maxScale;

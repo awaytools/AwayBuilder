@@ -11,7 +11,7 @@ package awaybuilder.model.vo.scene
 
 		override public function clone():ObjectVO
 		{
-			var clone:TextureProjectorVO = new TextureProjectorVO()
+			var clone:TextureProjectorVO = new TextureProjectorVO();
 			clone.fillFromTextureProjector( this );
 			return clone;
 		}
