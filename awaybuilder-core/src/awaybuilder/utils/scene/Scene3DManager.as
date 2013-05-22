@@ -587,8 +587,9 @@ package awaybuilder.utils.scene
 			textureProjectorGizmos.push(gizmo);
 			
 			textureProjectors.addItem(tP);
-			
+						
 			scene.addChild(gizmo);
+			if (tP.parent == null) scene.addChild(tP);
 		}
 		
 		private static function attachGizmos(container:ObjectContainer3D) : void {			
@@ -656,6 +657,9 @@ package awaybuilder.utils.scene
 				if (textureProjectors.getItemAt(i) == tP)
 				{
 					textureProjectors.removeItemAt(i);
+					var tPG:TextureProjectorGizmo3D = textureProjectorGizmos[i];
+					scene.removeChild(tPG);
+					textureProjectorGizmos.splice(i, 1);
 					break;
 				}
 			}
