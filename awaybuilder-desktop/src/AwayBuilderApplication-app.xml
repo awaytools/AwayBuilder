@@ -30,7 +30,7 @@
 	<versionNumber>0.9.1</versionNumber>
 	
 	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
-	<versionLabel>Alpha</versionLabel>
+	<versionLabel>0.9.1 Alpha</versionLabel>
 
 	<!-- Description, displayed in the AIR application installer.
 	May have multiple values for each language. See samples or xsd schema file. Optional. -->
