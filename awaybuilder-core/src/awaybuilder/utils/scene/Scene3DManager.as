@@ -25,7 +25,6 @@ package awaybuilder.utils.scene
 	import away3d.primitives.SkyBox;
 	import away3d.primitives.WireframePlane;
 	
-	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.utils.MathUtils;
 	import awaybuilder.utils.scene.modes.GizmoMode;
 	import awaybuilder.view.scene.OrientationTool;
@@ -879,6 +878,16 @@ package awaybuilder.utils.scene
 
 		public static function zoomToDistance(distance:Number) : void {
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ZOOM_TO_DISTANCE, "", null, new Vector3D(distance, 0, 0)));
+		}
+
+		public static function updateTextureProjectorBitmap(projector : TextureProjector, bitmap:BitmapData) : void {
+			var tPG:TextureProjectorGizmo3D;
+			for each (tPG in textureProjectorGizmos) {
+				if (tPG.sceneObject == projector) {
+					tPG.projectorBitmap.bitmapData = bitmap;
+					tPG.projectorBitmap.invalidateContent();
+				}
+			}
 		}
 	}
 }

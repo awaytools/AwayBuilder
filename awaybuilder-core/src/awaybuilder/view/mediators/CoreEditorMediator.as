@@ -349,6 +349,8 @@ package awaybuilder.view.mediators
 			obj.aspectRatio = asset.aspectRatio;
 			obj.texture = assets.GetObject(asset.texture) as Texture2DBase;
 			applyObject( asset );
+			
+			Scene3DManager.updateTextureProjectorBitmap(obj, asset.texture.bitmapData);
 		}
 		private function applySkyBox( asset:SkyBoxVO ):void
 		{
@@ -883,6 +885,10 @@ package awaybuilder.view.mediators
 				if( event.items[0] is EffectMethodVO ) 
 				{
 					applyEffectMethod( event.items[0] as EffectMethodVO );
+				}
+				if( event.items[0] is TextureProjectorVO ) 
+				{
+					applyTextureProjector( event.items[0] as TextureProjectorVO );
 				}
 			}
 		}

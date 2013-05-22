@@ -1,5 +1,7 @@
 package awaybuilder.view.scene.controls
 {
+	import flash.geom.Matrix3D;
+	import away3d.textures.BitmapTexture;
 	import away3d.primitives.PlaneGeometry;
 	import away3d.utils.Cast;
 	import flash.display.BitmapData;
@@ -19,18 +21,22 @@ package awaybuilder.view.scene.controls
 		public var sceneObject : TextureProjector;
 		public var representation : Mesh;
 		
-		public var projectorBitmap:BitmapData;
+		public var projectorBitmap:BitmapTexture;
 		
-		public function TextureProjectorGizmo3D(projector:TextureProjector, projectorBitmap:BitmapData)
+		public function TextureProjectorGizmo3D(projector:TextureProjector, projectorBitmapData:BitmapData)
 		{
 			this.sceneObject = projector;
-			this.projectorBitmap = projectorBitmap;
+			this.projectorBitmap = Cast.bitmapTexture(projectorBitmapData);
 						
-			var projectorTexture:TextureMaterial = new TextureMaterial(Cast.bitmapTexture(projectorBitmap));
+			var projectorTexture:TextureMaterial = new TextureMaterial(projectorBitmap);
 			projectorTexture.alphaBlending = true;
 			projectorTexture.bothSides = true;
 			
-			representation = new Mesh(new ConeGeometry(100, 200, 4, 1, false), new ColorMaterial(0xffffff, 0.2));
+			var geom:ConeGeometry = new ConeGeometry(100, 200, 4, 1, false);
+			var mat:Matrix3D = new Matrix3D();
+			mat.appendRotation(45, new Vector3D(0, 1, 0));
+			geom.applyTransformation(mat);
+			representation = new Mesh(geom, new ColorMaterial(0xffffff, 0.2));
 			representation.name = projector.name + "_representation";
 			representation.mouseEnabled = true;
 			representation.pickingCollider = PickingColliderType.AS3_BEST_HIT;
