@@ -32,7 +32,6 @@ package awaybuilder.utils.scene
 		
 		// Singleton instance declaration
 		private static const self : CameraManager = new CameraManager();
-		private var _lastRadius : Number;
 		public static function get instance():CameraManager { return self; }			
 		public function CameraManager() { if ( instance ) throw new Error("CameraManager is a singleton"); }			
 		
@@ -71,7 +70,6 @@ package awaybuilder.utils.scene
         private var _zSpeed:Number = 0;
 		private var _runMultiplier:Number = 3;
 		private var _pause:Boolean = false;
-		private var tm:Number;
 		private var ispanning:Boolean = false;
 		private var _mouseOutDetected:Boolean = false;
 		
@@ -193,11 +191,6 @@ package awaybuilder.utils.scene
 					case CameraMode.TARGET: processTargetMode();
 						break;				
 				}
-				
-				if (_lastRadius != radius || mode == CameraMode.FREE) {
-					Scene3DManager.updateDefaultCameraFarPlane();
-					_lastRadius = radius;		
-				}
 			}				
 		}					
 		
@@ -222,6 +215,8 @@ package awaybuilder.utils.scene
 			camera.moveRight(_xSpeed * _runMultiplier);
 						
 			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));	
+			
+			if (active && dragging || (_zSpeed!=0 || _xSpeed!=0)) Scene3DManager.updateDefaultCameraFarPlane();
 		}
 		
 		
@@ -257,7 +252,10 @@ package awaybuilder.utils.scene
 			camera.position = getCameraPosition(_xDeg, -_yDeg);							
 			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));
 			Scene3DManager.updateGizmo();
-			if (hasMoved) radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
+			if (hasMoved) {
+				radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
+				Scene3DManager.updateDefaultCameraFarPlane();
+ 			}
 		}			
 		
 		

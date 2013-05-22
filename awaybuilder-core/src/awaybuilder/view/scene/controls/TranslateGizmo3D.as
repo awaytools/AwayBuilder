@@ -271,6 +271,8 @@ package awaybuilder.view.scene.controls
 			click.y = Scene3DManager.stage.mouseY;			
 			
 			actualMesh.position = this.position.clone();
+			
+			Scene3DManager.updateDefaultCameraFarPlane();
 
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
 		}
