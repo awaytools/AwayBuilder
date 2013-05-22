@@ -184,7 +184,7 @@ package awaybuilder.view.scene.controls
 			else actualMesh = currentMesh;
 			
 			startValue = actualMesh.position;
-trace("StartValue:"+startValue);
+
 			switch(currentAxis)
 			{
 				case "xAxis":
@@ -270,9 +270,6 @@ trace("StartValue:"+startValue);
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
 			
-			//if (actualMesh.parent is ContainerGizmo3D) actualMesh.parent.parent.position = this.position.clone() 
-			//else 
-			trace("amPos:"+actualMesh.position+" tGPos:"+this.position);
 			actualMesh.position = this.position.clone();
 
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
@@ -293,8 +290,6 @@ trace("StartValue:"+startValue);
 			yCylinder.material = yAxisMaterial;			
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
-
-trace("EndValue:"+actualMesh.position);
 
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position.clone()));
 		}		
