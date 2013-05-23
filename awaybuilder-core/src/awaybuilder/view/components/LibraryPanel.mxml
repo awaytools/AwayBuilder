@@ -75,14 +75,17 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
-				<s:Button width="100%" label="New Texture Projector" styleName="addItemButton" cornerRadius="0" click="close(true,'TextureProjector')"/>
+				<s:Button width="100%" label="New ObjectContainer3D" styleName="addItemButton" cornerRadius="0" click="close(true,'ObjectContainer3D')"/>
 				<s:Button width="100%" label="New Mesh" styleName="addItemButton" cornerRadius="0" click="close(true,'Mesh')"/>
 				<s:Button width="100%" label="New SkyBox" styleName="addItemButton" cornerRadius="0" click="close(true,'SkyBox')"/>
+				<s:Button width="100%" label="New Texture Projector" styleName="addItemButton" cornerRadius="0" click="close(true,'TextureProjector')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import away3d.containers.ObjectContainer3D;
+			
 			import awaybuilder.model.vo.DocumentVO;
 			import awaybuilder.model.vo.ScenegraphItemVO;
 			import awaybuilder.view.components.controls.tree.TreeEvent;
@@ -216,6 +219,9 @@
 				if (!event.commit) return;
 				switch(event.data)
 				{
+					case "ObjectContainer3D":
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_CONTAINER ) );
+						break;
 					case "Mesh":
 						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_MESH ) );
 						break;

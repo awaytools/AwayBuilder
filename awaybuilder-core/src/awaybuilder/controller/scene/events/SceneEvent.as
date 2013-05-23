@@ -37,6 +37,7 @@ import flash.events.Event;
 		public static const ADD_NEW_LIGHT:String = "addNewLight";
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";
 		public static const ADD_NEW_MESH:String = "addNewMesh";
+		public static const ADD_NEW_CONTAINER:String = "addNewContainer";
 		public static const ADD_NEW_TEXTURE_PROJECTOR:String = "addNewTextureProjector";
 		public static const ADD_NEW_SKYBOX:String = "addNewSkyBox";
 		public static const ADD_NEW_SHADOW_METHOD:String = "addNewShadowMethod";

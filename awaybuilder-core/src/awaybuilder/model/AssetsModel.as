@@ -7,6 +7,7 @@ package awaybuilder.model
 	import away3d.animators.VertexAnimationSet;
 	import away3d.animators.VertexAnimator;
 	import away3d.animators.data.Skeleton;
+	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
@@ -212,6 +213,12 @@ package awaybuilder.model
 			var projector:TextureProjector = new TextureProjector( GetObject(defaultTexture) as Texture2DBase );
 			projector.name = "TextureProjector" + AssetUtil.GetNextId("TextureProjector");
 			return GetAsset( projector ) as TextureProjectorVO;
+		}
+		public function CreateContainer():ContainerVO
+		{
+			var obj:ObjectContainer3D = new ObjectContainer3D();
+			obj.name = "Container" + AssetUtil.GetNextId("ObjectContainer3D");
+			return GetAsset( obj ) as ContainerVO;
 		}
 		public function CreateMesh( geometry:GeometryVO ):MeshVO
 		{

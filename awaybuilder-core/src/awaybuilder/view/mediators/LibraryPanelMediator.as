@@ -23,6 +23,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
@@ -89,6 +90,7 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_CUBE_TEXTURE, view_addCubeTextureHandler);
 			addViewListener(LibraryPanelEvent.ADD_GEOMETRY, view_addGeometryHandler);
 			addViewListener(LibraryPanelEvent.ADD_MESH, view_addMeshHandler);
+			addViewListener(LibraryPanelEvent.ADD_CONTAINER, view_addContainerHandler);
 			addViewListener(LibraryPanelEvent.ADD_TEXTURE_PROJECTOR, view_addTextureProjectorHandler);
 			addViewListener(LibraryPanelEvent.ADD_SKYBOX, view_addSkyBoxHandler);
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
@@ -272,6 +274,13 @@ package awaybuilder.view.mediators
 		{
 			var asset:SkyBoxVO = assets.CreateSkyBox();
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_SKYBOX,null,asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		
+		private function view_addContainerHandler(event:LibraryPanelEvent):void
+		{
+			var asset:ContainerVO = assets.CreateContainer();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_CONTAINER,null,asset));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
 		private function view_addMeshHandler(event:LibraryPanelEvent):void

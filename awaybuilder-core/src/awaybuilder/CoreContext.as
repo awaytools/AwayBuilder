@@ -28,6 +28,7 @@ package awaybuilder
 	import awaybuilder.controller.history.UndoRedoEvent;
 	import awaybuilder.controller.scene.AddNewAnimationSetCommand;
 	import awaybuilder.controller.scene.AddNewAnimatorCommand;
+	import awaybuilder.controller.scene.AddNewContainerCommand;
 	import awaybuilder.controller.scene.AddNewCubeTextureCommand;
 	import awaybuilder.controller.scene.AddNewEffectMethodCommand;
 	import awaybuilder.controller.scene.AddNewGeometryCommand;
@@ -155,6 +156,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, AddNewEffectMethodCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_GEOMETRY, AddNewGeometryCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MESH, AddNewMeshCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_CONTAINER, AddNewContainerCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, AddNewTextureProjectorCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_ANIMATOR, AddNewAnimatorCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_ANIMATION_SET, AddNewAnimationSetCommand);

@@ -13,6 +13,7 @@ package awaybuilder.view.components.events
 		public static const ADD_SKYBOX:String = "addSkyBox";
 		public static const ADD_ANIMATOR:String = "addAnimator";
 		public static const ADD_MESH:String = "addMesh";
+		public static const ADD_CONTAINER:String = "addContainer";
 		public static const ADD_GEOMETRY:String = "addGeometry";
 		public static const ADD_EFFECTMETHOD:String = "addEffectMethod";
 		
