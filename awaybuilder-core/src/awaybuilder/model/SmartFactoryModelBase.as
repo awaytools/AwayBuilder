@@ -1,6 +1,7 @@
 package awaybuilder.model
 {
 	import away3d.animators.AnimationSetBase;
+	import away3d.animators.AnimatorBase;
 	import away3d.animators.data.Skeleton;
 	import away3d.animators.data.SkeletonPose;
 	import away3d.animators.nodes.AnimationNodeBase;
@@ -126,6 +127,9 @@ package awaybuilder.model
 					
 				case(item is AnimationSetBase):
 					return fillAnimationSet( new AnimationSetVO(),  item as AnimationSetBase );
+					
+				case(item is AnimatorBase):
+					return fillAnimator( new AnimatorVO,  item as AnimatorBase );
 			}
 			
 			return null;
@@ -430,14 +434,23 @@ package awaybuilder.model
 			}
 			return asset;
 		}
+		
+		private function fillAnimator( asset:AnimatorVO, obj:AnimatorBase ):AnimatorVO
+		{
+			asset = fillAsset( asset, obj ) as AnimatorVO;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			return asset;
+		}
 		private function fillAnimationSet( asset:AnimationSetVO, obj:AnimationSetBase ):AnimationSetVO
 		{
 			asset = fillAsset( asset, obj ) as AnimationSetVO;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			return asset;
 		}
 		private function fillAnimationNode( asset:AnimationNodeVO, obj:AnimationNodeBase ):AnimationNodeVO
 		{
 			asset = fillAsset( asset, obj ) as AnimationNodeVO;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			return asset;
 		}
 		private function fillShadingMethod( asset:ShadingMethodVO, obj:ShadingMethodBase ):ShadingMethodVO

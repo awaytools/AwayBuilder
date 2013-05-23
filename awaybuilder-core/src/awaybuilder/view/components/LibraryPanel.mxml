@@ -8,6 +8,17 @@
 	<fx:Declarations>
 		<s:Power id="collapseEaser" exponent="2" easeInFraction="0.1" />
 		<s:Resize id="collapseEffect" duration="150" easer="{collapseEaser}" heightTo="24" />
+		<fx:Component className="NewAnimatorPopup">
+			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();">
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				<s:Button width="100%" label="New SkeletonAnimator" styleName="addItemButton" cornerRadius="0" click="close(true,'SkeletonAnimator')"/>
+				<s:Button width="100%" label="New VertexAnimator" styleName="addItemButton" cornerRadius="0" click="close(true,'VertexAnimator')"/>
+				<s:Button width="100%" label="New SkeletonAnimationSet" styleName="addItemButton" cornerRadius="0" click="close(true,'SkeletonAnimationSet')"/>
+				<s:Button width="100%" label="New VertexAnimationSet" styleName="addItemButton" cornerRadius="0" click="close(true,'VertexAnimationSet')"/>
+			</s:SkinnablePopUpContainer>
+		</fx:Component>
 		<fx:Component className="NewTexturePopup">
 			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();">
 				<s:layout>
@@ -309,8 +320,21 @@
 			
 			protected function animationsPanel_addNewItemHandler(event:MouseEvent):void
 			{
+				
+				var button:ButtonBase = event.relatedObject as ButtonBase;
+				var popup:NewAnimatorPopup = new NewAnimatorPopup();
+				popup.open(this);
+				popup.addEventListener('close', newNewAnimatorPopup_closeHandler);
+				var pos:Point = button.localToGlobal( new Point() );
+				popup.move( pos.x-4,  Math.min(pos.y-4, stage.height-popup.height-8) );
+				
 				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_ANIMATOR ) );
 			}
+			private function newNewAnimatorPopup_closeHandler(event:PopUpEvent):void 
+			{
+				if (!event.commit) return;
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_ANIMATOR, event.data ) );
+			}   
 			
 		]]>
 	</fx:Script>

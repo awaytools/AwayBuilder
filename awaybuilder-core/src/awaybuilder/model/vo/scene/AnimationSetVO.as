@@ -1,7 +1,11 @@
 package awaybuilder.model.vo.scene
 {
+	[Bindable]
 	public class AnimationSetVO extends AssetVO
 	{
+		
+		public var type:String;
+		
 		public function clone():AnimationSetVO
 		{
 			var vo:AnimationSetVO = new AnimationSetVO();

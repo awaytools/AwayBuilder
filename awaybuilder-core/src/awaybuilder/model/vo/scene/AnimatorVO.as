@@ -1,7 +1,12 @@
 package awaybuilder.model.vo.scene
 {
+	
+	[Bindable]
 	public class AnimatorVO extends AssetVO
 	{
+
+		public var type:String;
+		
 		public function clone():AnimatorVO
 		{
 			var vo:AnimatorVO = new AnimatorVO();

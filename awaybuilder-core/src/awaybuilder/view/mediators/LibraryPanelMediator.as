@@ -1,5 +1,9 @@
 package awaybuilder.view.mediators
 {
+	import away3d.animators.SkeletonAnimationSet;
+	import away3d.animators.SkeletonAnimator;
+	import away3d.animators.VertexAnimationSet;
+	import away3d.animators.VertexAnimator;
 	import away3d.core.base.Object3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.lightpickers.LightPickerBase;
@@ -16,6 +20,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
@@ -26,6 +31,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.AssetUtil;
@@ -171,10 +177,73 @@ package awaybuilder.view.mediators
 		}
 		private function view_addAnimatorHandler(event:LibraryPanelEvent):void
 		{
-			Alert.show( "Animators not implemented", "Warning" );
-			var asset:AnimatorVO = assets.CreateAniamtor();
-//			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[], m));
-//			this.dispatch(new SceneEvent(SceneEvent.SELECT,[m]));
+			var vertexAnimationSets:Vector.<AnimationSetVO> = new Vector.<AnimationSetVO>();
+			var skeletonAnimationSets:Vector.<AnimationSetVO> = new Vector.<AnimationSetVO>();
+			var skeletons:Vector.<SkeletonVO> = new Vector.<SkeletonVO>();
+			for each( var asset:AssetVO in document.animations )
+			{
+				var animSet:AnimationSetVO = asset as AnimationSetVO;
+				if( animSet ) 
+				{
+					if( animSet.type == "VertexAnimationSet" )
+					{
+						vertexAnimationSets.push( animSet );
+					}
+					else if( animSet.type == "SkeletonAnimationSet" )
+					{
+						skeletonAnimationSets.push( animSet );
+					}
+				}
+			}
+			for each( var asset:AssetVO in document.skeletons )
+			{
+				if( asset is SkeletonVO )
+				{
+					skeletons.push(asset);
+				}
+			}
+			var animator:AnimatorVO;
+			var animation:AnimationSetVO
+			switch( event.data )
+			{
+				case "VertexAnimator":
+					if( !vertexAnimationSets.length )
+					{
+						Alert.show( "VertexAnimationSet is missing", "Warning" );
+						return;
+					}
+					animator = assets.CreateAnimator( event.data as String, vertexAnimationSets[0] );
+					break;
+				case "SkeletonAnimator":
+					if( !skeletonAnimationSets.length )
+					{
+						Alert.show( "SkeletonAnimationSet is missing", "Warning" );
+						return;
+					}
+					if( !skeletons.length )
+					{
+						Alert.show( "Skeleton is missing", "Warning" );
+						return;
+					}
+					animator = assets.CreateAnimator( event.data as String, skeletonAnimationSets[0], skeletons[0] );
+					break;
+				case "VertexAnimationSet":
+					animation = assets.CreateAnimationSet( event.data as String );
+					break;
+				case "SkeletonAnimationSet":
+					animation = assets.CreateAnimationSet( event.data as String );
+					break;
+			}
+			if( animation )
+			{
+				this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_ANIMATION_SET,[], animation));
+				this.dispatch(new SceneEvent(SceneEvent.SELECT,[animation]));
+			}
+			if( animator )
+			{
+				this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_ANIMATOR,[], animator));
+				this.dispatch(new SceneEvent(SceneEvent.SELECT,[animator]));
+			}
 		}
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void
 		{

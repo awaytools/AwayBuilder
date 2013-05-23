@@ -1,7 +1,12 @@
 package awaybuilder.model
 {
+	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
+	import away3d.animators.SkeletonAnimationSet;
 	import away3d.animators.SkeletonAnimator;
+	import away3d.animators.VertexAnimationSet;
+	import away3d.animators.VertexAnimator;
+	import away3d.animators.data.Skeleton;
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
@@ -87,14 +92,45 @@ package awaybuilder.model
 			_objectsByAsset[asset] = obj;
 			return asset;
 		}
-		
-		public function CreateAniamtor():AnimatorVO
+		public function CreateAnimationSet( type:String ):AnimationSetVO
+		{
+			var animation:AnimationSetBase;
+			switch( type )
+			{
+				case "VertexAnimationSet":
+					animation = new VertexAnimationSet();
+					animation.name =  "VertexAnimationSet" + AssetUtil.GetNextId("VertexAnimationSet");
+					break;
+				case "SkeletonAnimationSet":
+					animation = new SkeletonAnimationSet();
+					animation.name =  "SkeletonAnimationSet" + AssetUtil.GetNextId("SkeletonAnimationSet");
+					break;
+			}
+			return GetAsset( animation ) as AnimationSetVO;
+		}
+		public function CreateAnimator( type:String, animationSet:AnimationSetVO, skeleton:SkeletonVO=null ):AnimatorVO
 		{
 //			var textureMaterial:SkeletonAnimator = new SkeletonAnimator();
 //			newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
 //			newMaterial.name = "Animator" + AssetUtil.GetNextId("Animator");
 //			return GetAsset(newMaterial) as MaterialVO;
-			return null;
+			var animator:AnimatorBase;
+			switch( type )
+			{
+				case "UVAnimator":
+					break;
+				case "ParticleAnimator":
+					break;
+				case "SkeletonAnimator":
+					animator = new SkeletonAnimator(GetObject(animationSet) as SkeletonAnimationSet,GetObject(skeleton) as Skeleton );
+//					animator.name =  "SkeletonAnimator" + AssetUtil.GetNextId("SkeletonAnimator");
+					break;
+				case "VertexAnimator":
+					animator = new VertexAnimator(GetObject(animationSet) as VertexAnimationSet);
+//					animator.name =  "VertexAnimator" + AssetUtil.GetNextId("VertexAnimator");
+					break;
+			}
+			return GetAsset( animator ) as AnimatorVO;
 		}
 		
 		public function CreateMaterial( clone:MaterialVO = null ):MaterialVO
