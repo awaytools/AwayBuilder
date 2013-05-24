@@ -64,7 +64,7 @@ package awaybuilder.view.components.controls
 			if( _druggingOverItem ) return null;
 			
 			// Calculate the drop location
-//			var dropLocation:DropLocation = layout.calculateDropLocation(event);
+			var dropLocation:DropLocation = layout.calculateDropLocation(event);
 //			
 //			var effectiveItem:Object = dataProvider.getItemAt( Math.min(dropLocation.dropIndex, dataProvider.length-1) );
 //			var parent:Object = TreeDataProvider(dataProvider).getItemParent(effectiveItem);
