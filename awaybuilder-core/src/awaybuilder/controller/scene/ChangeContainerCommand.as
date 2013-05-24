@@ -18,18 +18,20 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var mesh:ContainerVO = event.newValue as ContainerVO;
+			var asset:ContainerVO = event.newValue as ContainerVO;
 			var vo:ContainerVO = event.items[0] as ContainerVO;
 			
 			saveOldValue( event, vo.clone() );
 			
-			vo.name = mesh.name;
-			vo.pivotX = mesh.pivotX;
-			vo.pivotY = mesh.pivotY;
-			vo.pivotZ = mesh.pivotZ;
+			vo.name = asset.name;
+			vo.pivotX = asset.pivotX;
+			vo.pivotY = asset.pivotY;
+			vo.pivotZ = asset.pivotZ;
+			
+			vo.children = new ArrayCollection( asset.children.source.concat() );
 			
 			var e:Array = new Array();
-			for each( var extra:ExtraItemVO in mesh.extras )
+			for each( var extra:ExtraItemVO in asset.extras )
 			{
 				e.push(extra.clone());
 			}

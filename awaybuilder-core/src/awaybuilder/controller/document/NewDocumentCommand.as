@@ -36,7 +36,7 @@ package awaybuilder.controller.document
 			
 			if (Scene3DManager.scene) CameraManager.focusTarget();
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_CREATED));
 		}
 		
 	}

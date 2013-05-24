@@ -38,9 +38,6 @@
 		<fx:Component className="NewEffectPopup">
 			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb"
 									   mouseDownOutside="close();">
-				<s:layout>
-					<s:VerticalLayout gap="0"/>
-				</s:layout>
 				<s:Button width="100%" label="New LightMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'LightMapMethod')"/>
 				<s:Button width="100%" label="New ProjectiveTextureMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ProjectiveTextureMethod')"/>
 				<s:Button width="100%" label="New RimLightMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'RimLightMethod')"/>

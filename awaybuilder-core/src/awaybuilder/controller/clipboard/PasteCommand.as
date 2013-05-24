@@ -73,7 +73,7 @@ package awaybuilder.controller.clipboard
 			
 			addToHistory( event );
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		private function undo():void
@@ -86,7 +86,7 @@ package awaybuilder.controller.clipboard
 			}
 			removeItems( document.scene, objects );
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		private function removeItems( source:ArrayCollection, items:Vector.<AssetVO> ):void

@@ -1,9 +1,5 @@
 package awaybuilder.utils.scene
 {
-	import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
-	import flash.display.BitmapData;
-	import away3d.entities.TextureProjector;
-	import away3d.tools.utils.Bounds;
 	import avmplus.getQualifiedClassName;
 	
 	import away3d.cameras.Camera3D;
@@ -16,6 +12,7 @@ package awaybuilder.utils.scene
 	import away3d.core.pick.PickingType;
 	import away3d.entities.Entity;
 	import away3d.entities.Mesh;
+	import away3d.entities.TextureProjector;
 	import away3d.events.MouseEvent3D;
 	import away3d.events.Stage3DEvent;
 	import away3d.library.AssetLibrary;
@@ -24,6 +21,8 @@ package awaybuilder.utils.scene
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.primitives.SkyBox;
 	import away3d.primitives.WireframePlane;
+	import away3d.textures.BitmapTexture;
+	import away3d.tools.utils.Bounds;
 	
 	import awaybuilder.utils.MathUtils;
 	import awaybuilder.utils.scene.modes.GizmoMode;
@@ -33,10 +32,12 @@ package awaybuilder.utils.scene
 	import awaybuilder.view.scene.controls.LightGizmo3D;
 	import awaybuilder.view.scene.controls.RotateGizmo3D;
 	import awaybuilder.view.scene.controls.ScaleGizmo3D;
+	import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
 	import awaybuilder.view.scene.controls.TranslateGizmo3D;
 	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	import awaybuilder.view.scene.events.Scene3DManagerEvent;
 	
+	import flash.display.BitmapData;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -579,8 +580,12 @@ package awaybuilder.utils.scene
 			objects.addItem(o);
 		}
 		
-		public static function addTextureProjector(tP:TextureProjector, projectorBitmap:BitmapData):void
+		public static function addTextureProjector(tP:TextureProjector, projectorBitmap:BitmapData=null):void
 		{		
+			if( projectorBitmap )
+			{
+				projectorBitmap = BitmapTexture(tP.texture).bitmapData;
+			}
 			var gizmo:TextureProjectorGizmo3D = new TextureProjectorGizmo3D(tP, projectorBitmap); 
 			gizmo.representation.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);
 			textureProjectorGizmos.push(gizmo);

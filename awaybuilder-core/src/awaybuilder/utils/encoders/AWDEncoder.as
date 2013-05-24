@@ -47,7 +47,6 @@ package awaybuilder.utils.encoders
 	import away3d.textures.TextureProxyBase;
 	
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;

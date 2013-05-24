@@ -44,17 +44,20 @@ package awaybuilder.controller.scene
 			}
 			var objects:Vector.<AssetVO> = event.newValue as Vector.<AssetVO>;
 			for each( var vo:AssetVO in objects ) {
-				if( vo is MeshVO ) {
-					
+				if( vo is MeshVO ) 
+				{
 					Scene3DManager.removeMesh( assets.GetObject(vo) as Mesh );
 				}
-				else if( vo is TextureProjectorVO ) {
+				else if( vo is TextureProjectorVO ) 
+				{
 					Scene3DManager.removeTextureProjector( assets.GetObject(vo) as TextureProjector );
 				}
-				else if( vo is ContainerVO ) {
+				else if( vo is ContainerVO ) 
+				{
 					Scene3DManager.removeContainer( assets.GetObject(vo) as ObjectContainer3D );
 				}
-				else if( vo is LightVO ) {
+				else if( vo is LightVO ) 
+				{
 					Scene3DManager.removeLight( assets.GetObject(vo) as LightBase );
 				}
 			}
@@ -102,7 +105,7 @@ package awaybuilder.controller.scene
 //				}
 			}
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
+//			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		private function removeItemsFromDocument( items:Vector.<AssetVO> ):void
 		{

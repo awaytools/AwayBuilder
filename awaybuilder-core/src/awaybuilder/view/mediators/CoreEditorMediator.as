@@ -1,6 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
     import away3d.core.base.Object3D;
@@ -78,7 +77,6 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
-    import awaybuilder.model.vo.ScenegraphGroupItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
@@ -103,9 +101,11 @@ package awaybuilder.view.mediators
     import awaybuilder.utils.scene.modes.CameraMode;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
+    import awaybuilder.view.components.controls.tree.DroppedItemVO;
     import awaybuilder.view.components.events.CoreEditorEvent;
     import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import awaybuilder.view.scene.controls.LightGizmo3D;
+    import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
     import flash.display.BitmapData;
@@ -165,6 +165,9 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SKYBOX, eventDispatcher_changeSkyboxHandler);
 			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, eventDispatcher_changeTextureProjectorHandler);
 			
+			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
+			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
+			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewCubeTextureHandler);
@@ -205,10 +208,6 @@ package awaybuilder.view.mediators
 			var selectedItems:Vector.<Object> = event.data as Vector.<Object>;
 			for (var i:int=0;i<selectedItems.length;i++)
 			{
-                var groupItem:ScenegraphGroupItemVO = selectedItems[i] as ScenegraphGroupItemVO;
-                if( groupItem ) {
-                     continue;
-                }
 				items.push(ScenegraphItemVO(selectedItems[i]).item);
 			}
 
@@ -311,23 +310,19 @@ package awaybuilder.view.mediators
 			return children;
 		}
 		
-		private function compareGroupItems( a:Object, b:Object, fields:Array=null ):int
-		{
-			var group1:ScenegraphGroupItemVO = a as ScenegraphGroupItemVO;
-			var group2:ScenegraphGroupItemVO = b as ScenegraphGroupItemVO;
-			if (group1 == null && group2 == null) return 0;
-			if (group1 == null)	return 1;
-			if (group2 == null)	return -1;
-			if (group1.weight < group2.weight) return -1;
-			if (group1.weight > group2.weight) return 1;
-			return 0;
-		}
-		
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
 		//
 		//----------------------------------------------------------------------
+		
+		private function eventDispatcher_reparentLightsHandler(event:SceneEvent):void
+		{
+		}
+		
+		private function eventDispatcher_reparentObjectsHandler(event:SceneEvent):void
+		{
+		}
 		
 		private function eventDispatcher_translateHandler(event:SceneEvent):void
 		{

@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tree:TreeItemRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
-                            xmlns:s="library://ns.adobe.com/flex/spark"
-                            xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
-                            doubleClick="treeitemrendererbase1_doubleClickHandler(event)" 
-							doubleClickEnabled="true"
-							styleName="{data.type}"
-                            height="24" xmlns:tree="awaybuilder.view.components.controls.tree.*">
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" autoDrawBackground="false"
+						   doubleClick="treeitemrendererbase1_doubleClickHandler(event)" 
+						   doubleClickEnabled="true"
+						   styleName="{data.type}"
+						   height="24" xmlns:tree="awaybuilder.view.components.controls.tree.*">
 	
 	<tree:states>
 		<s:State name="normal" />
 		<s:State name="hovered" />
 		<s:State name="selected" />
 	</tree:states>
-
-    <tree:layout>
-        <s:HorizontalLayout paddingLeft="{indentation + 2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="4"/>
-    </tree:layout>
+	
+	<tree:layout>
+		<s:HorizontalLayout paddingLeft="{indentation + 2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1"/>
+	</tree:layout>
 	<fx:Script>
 		<![CDATA[
-			import awaybuilder.model.vo.ScenegraphItemVO;
-			
 			import mx.events.DragEvent;
-			
-			private var rLum:Number = 0.2225;
-			private var gLum:Number = 0.7169;
-			private var bLum:Number = 0.0606;
 			
 			protected function disclosureButton_clickHandler(event:MouseEvent):void
 			{
@@ -56,12 +50,12 @@
 		</s:fill>
 	</s:Rect>
 	
-    <s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)" dragEnter="disclosureButton_dragEnterHandler(event)"
-                    selected="{isOpen}" skinClass="awaybuilder.view.components.controls.tree.TreeDisclosureButtonSkin"/>
+	<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)" dragEnter="disclosureButton_dragEnterHandler(event)"
+					selected="{isOpen}" skinClass="awaybuilder.view.components.controls.tree.TreeDisclosureButtonSkin"/>
 	
 	<s:BitmapImage id="iconButton" source="{getStyle('icon')}"/>
 	
-    <s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" />
+	<s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
 	
 	<s:Rect x="2" y="2" width="{this.width-4}" height="{this.height-4}" includeInLayout="false" visible="{showDropIndicator}">
 		<s:stroke>

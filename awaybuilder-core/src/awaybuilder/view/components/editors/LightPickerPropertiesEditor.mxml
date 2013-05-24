@@ -9,14 +9,9 @@
 	<fx:Declarations>
 		<fx:Component className="NewLightPopup">
 			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer"
-									   chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();"
-									   >
-				<s:layout>
-					<s:VerticalLayout gap="0"/>
-				</s:layout>
-				<s:Button width="100%" label="New Directional Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newDirectionalLight')"/>
-				<s:Button width="100%" label="New Point Light" styleName="addItemButton" cornerRadius="0" click="close(true,'newPointLight')"/>
+									   chromeColor="0x1d1d1c" color="0xdbdbdb" mouseDownOutside="close();">
+				<s:Button width="100%" label="New DirectionalLight" styleName="addItemButton" cornerRadius="0" click="close(true,'newDirectionalLight')"/>
+				<s:Button width="100%" label="New PointLight" styleName="addItemButton" cornerRadius="0" click="close(true,'newPointLight')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 	</fx:Declarations>

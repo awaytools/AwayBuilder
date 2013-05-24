@@ -13,6 +13,7 @@ package awaybuilder.view.components.controls.tree
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	import mx.controls.treeClasses.DefaultDataDescriptor;
+	import mx.controls.treeClasses.ITreeDataDescriptor;
 	import mx.controls.treeClasses.ITreeDataDescriptor2;
 	import mx.core.ClassFactory;
 	import mx.core.DragSource;
@@ -87,6 +88,8 @@ package awaybuilder.view.components.controls.tree
 		//
 		//--------------------------------------------------------------------------
 		
+		protected var _druggingOverItem:Boolean = false;
+		
 		private var refreshRenderersCalled:Boolean = false;
 		
 		private var renderersToRefresh:Vector.<ITreeItemRenderer> = new Vector.<ITreeItemRenderer>();
@@ -101,15 +104,15 @@ package awaybuilder.view.components.controls.tree
 		//  dataDescriptor
 		//----------------------------------
 		
-		private var _dataDescriptor:ITreeDataDescriptor2 = new DefaultDataDescriptor();
+		private var _dataDescriptor:ITreeDataDescriptor = new DefaultDataDescriptor();
 		
 		[Bindable("dataDescriptorChange")]
-		public function get dataDescriptor():ITreeDataDescriptor2
+		public function get dataDescriptor():ITreeDataDescriptor
 		{
 			return _dataDescriptor;
 		}
 		
-		public function set dataDescriptor(value:ITreeDataDescriptor2):void
+		public function set dataDescriptor(value:ITreeDataDescriptor):void
 		{
 			if (_dataDescriptor == value)
 				return;
@@ -479,23 +482,10 @@ package awaybuilder.view.components.controls.tree
 			renderer.dropArea.removeEventListener(DragEvent.DRAG_DROP, renderer_dragDropHandler);
 		}
 		
-		private var _druggingOverItem:Boolean = false;
 		protected function renderer_dragEnterHandler(event:DragEvent):void
 		{
 			var dropArea:UIComponent = event.target as UIComponent;
 			var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
-			if( !items ) return;
-			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
-			if( renderer.data == items[0] ) return;
-			if( ScenegraphItemVO(renderer.data).item is LightPickerVO )
-			{
-				if( ScenegraphItemVO(items[0]).item is LightVO )
-				{
-					renderer.showDropIndicator = true;
-					DragManager.acceptDragDrop(dropArea);
-					_druggingOverItem = true;
-				}
-			}
 			
 		}
 		
@@ -503,21 +493,6 @@ package awaybuilder.view.components.controls.tree
 		{
 			event.stopPropagation();
 			event.stopImmediatePropagation();
-			var dropArea:UIComponent = event.target as UIComponent;
-			var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
-			if( !items ) return;
-			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
-			if( renderer.data == items[0] ) return;
-			if( ScenegraphItemVO(renderer.data).item is LightPickerVO )
-			{
-				if( ScenegraphItemVO(items[0]).item is LightVO )
-				{
-					renderer.showDropIndicator = true;
-					DragManager.acceptDragDrop(dropArea);
-					_druggingOverItem = true;
-				}
-			}
-			
 		}
 		
 		protected function renderer_dragDropHandler(event:DragEvent):void
@@ -797,7 +772,6 @@ package awaybuilder.view.components.controls.tree
 			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_DROPPED, false, false, droppedItems );
 			dispatchEvent( e );
 		}
-		
 		private function compareValues(a:int, b:int):int
 		{
 			return a - b;
@@ -814,24 +788,6 @@ package awaybuilder.view.components.controls.tree
 			// Calculate the drop location
 			return layout.calculateDropLocation(event);
 		}
-		
-//		protected function moveItemFrom(indix:int):void
-//		{
-//			
-//			var item:Object = dataProvider.getItemAt( indix );
-//			var oldBranch:Object = _dataProvider.getItemParent(item);
-////			dataProvider.removeItemAt(indix);
-//			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_REMOVED, false, false, item );
-//			e.parentBranch = oldBranch;
-//			dispatchEvent( e );
-//		}
-//		protected function dropItemTo( item:Object, index:int ):void
-//		{
-////			dataProvider.addItemAt(item, index);
-//			var e:TreeEvent = new TreeEvent( TreeEvent.ITEM_ADDED, false, false, item );
-//			e.parentBranch = _dataProvider.getItemParent(item);
-//			dispatchEvent( e );
-//		}
 		
 		//--------------------------------------------------------------------------
 		//

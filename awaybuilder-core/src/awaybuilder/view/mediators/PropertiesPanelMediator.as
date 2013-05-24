@@ -79,7 +79,7 @@ package awaybuilder.view.mediators
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
 			addContextListener(SceneEvent.DELETE_OBJECTS, context_deleteObjectsHandler);
 			
-			addContextListener(DocumentModelEvent.DOCUMENT_UPDATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );

@@ -1,6 +1,9 @@
 package awaybuilder.model.vo.scene
 {
+	
 	import away3d.library.assets.NamedAssetBase;
+	
+	import flash.utils.getQualifiedClassName;
 
 	
 	[Bindable]
@@ -18,6 +21,11 @@ package awaybuilder.model.vo.scene
 		public function equals( asset:AssetVO ):Boolean
 		{
 			return (asset.id == this.id); 
+		}
+		
+		public function toString():String
+		{
+			return "[asset " + getQualifiedClassName( this ).split("::")[1] + "("+name+")]"; 
 		}
 	}
 }

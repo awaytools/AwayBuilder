@@ -22,6 +22,7 @@ package awaybuilder.view.components.events
 		public static const ADD_LIGHTPICKER:String = "addLightPicker";
 		
 		public static const LIGHT_DROPPED:String = "lightDropped";
+		public static const SCENEOBJECT_DROPPED:String = "sceneObjectDropped";
 		
 		public function LibraryPanelEvent(type:String, data:Object=null )
 		{

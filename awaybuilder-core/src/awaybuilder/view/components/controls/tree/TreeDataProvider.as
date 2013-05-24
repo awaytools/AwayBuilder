@@ -27,8 +27,7 @@ import mx.collections.ICollectionView;
 import mx.collections.IList;
 import mx.collections.ISort;
 import mx.collections.IViewCursor;
-import mx.collections.Sort;
-import mx.controls.treeClasses.ITreeDataDescriptor2;
+import mx.controls.treeClasses.ITreeDataDescriptor;
 import mx.events.CollectionEvent;
 import mx.events.CollectionEventKind;
 import mx.events.PropertyChangeEvent;
@@ -421,7 +420,7 @@ public class TreeDataProvider extends EventDispatcher implements IList, ICollect
 	/**
 	 * Should be set before operating.
 	 */
-	public var dataDescriptor:ITreeDataDescriptor2;
+	public var dataDescriptor:ITreeDataDescriptor;
 	
 	/**
 	 * Cache contains currently visible items in the correct order. Cache can

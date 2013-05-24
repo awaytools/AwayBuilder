@@ -28,8 +28,6 @@
             vo.scaleY = vector.y;
             vo.scaleZ = vector.z;
 
-//			vo.apply();
-
             addToHistory( event );
         }
     }

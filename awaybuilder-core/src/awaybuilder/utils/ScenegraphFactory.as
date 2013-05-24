@@ -27,7 +27,7 @@ package awaybuilder.utils
 			var children:ArrayCollection = new ArrayCollection();
 			for each( var asset:AssetVO in objects )
 			{
-				children.addItem( createScenegraphCild( asset ) );
+				children.addItem( CreateScenegraphChild( asset ) );
 			}
 			return children;
 		}
@@ -46,11 +46,11 @@ package awaybuilder.utils
 				else if( asset is LightPickerVO ) 
 				{
 					pickers.push(asset);
-					children.addItem( createScenegraphCild( asset ) );
+					children.addItem( CreateScenegraphChild( asset ) );
 				}
 				else
 				{
-					children.addItem( createScenegraphCild( asset ) );
+					children.addItem( CreateScenegraphChild( asset ) );
 				}
 			}
 			var lightIsPresent:Boolean;
@@ -63,7 +63,7 @@ package awaybuilder.utils
 //				}
 //				if( !lightIsPresent )
 //				{
-					children.addItem( createScenegraphCild( light ) );
+					children.addItem( CreateScenegraphChild( light ) );
 //				}
 				
 			}
@@ -80,7 +80,7 @@ package awaybuilder.utils
 			return false;
 		}
 		
-		private static function createScenegraphCild( asset:AssetVO ):ScenegraphItemVO
+		public static function CreateScenegraphChild( asset:AssetVO ):ScenegraphItemVO
 		{
 			var item:ScenegraphItemVO;
 			switch( true )

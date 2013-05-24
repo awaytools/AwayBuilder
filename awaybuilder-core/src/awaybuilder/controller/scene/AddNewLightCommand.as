@@ -63,7 +63,7 @@ package awaybuilder.controller.scene
 			
 			addToHistory( event );
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 			document.empty = false;
 			document.edited = true;
 		}

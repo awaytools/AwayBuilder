@@ -24,7 +24,7 @@ package awaybuilder.model.vo.scene
 		public function fillFromContainer( asset:ContainerVO ):void
 		{
 			this.fillFromObject( asset );
-			this.children = children;
+			this.children = new ArrayCollection( asset.children.source.concat() );
 		}
 	}
 }

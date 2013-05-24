@@ -71,7 +71,7 @@ package awaybuilder.controller.document
 			CursorManager.setBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_CREATED));
 		}
 		
 		private function undo():void
@@ -90,7 +90,7 @@ package awaybuilder.controller.document
 			removeItems( document.textures, data.textures );
 			removeItems( document.lights, data.lights );
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		private function removeItems( source:ArrayCollection, items:ArrayCollection ):void

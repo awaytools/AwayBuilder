@@ -55,6 +55,8 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.ChangeTextureProjectorCommand;
 	import awaybuilder.controller.scene.DeleteObjectCommand;
+	import awaybuilder.controller.scene.ReparentLightCommand;
+	import awaybuilder.controller.scene.ReparentObjectCommand;
 	import awaybuilder.controller.scene.RotateObjectCommand;
 	import awaybuilder.controller.scene.ScaleObjectCommand;
 	import awaybuilder.controller.scene.SelectCommand;
@@ -130,6 +132,9 @@ package awaybuilder
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE, ImportBitmapCommand);
 			
 			commandMap.mapEvent(SceneEvent.CHANGE_GLOBAL_OPTIONS, ChangeGlobalOptionsCommand);
+			
+			commandMap.mapEvent(SceneEvent.REPARENT_OBJECTS, ReparentObjectCommand);
+			commandMap.mapEvent(SceneEvent.REPARENT_LIGHTS, ReparentLightCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CONTAINER, ChangeContainerCommand);
