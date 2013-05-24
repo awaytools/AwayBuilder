@@ -71,7 +71,7 @@ package awaybuilder.controller.document
 			CursorManager.setBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
 			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_CREATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 		}
 		
 		private function undo():void
