@@ -70,7 +70,6 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.view.scene.controls.ContainerGizmo3D;
 	
-	import com.adobe.images.PNGEncoder;
 	
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
@@ -88,7 +87,6 @@ package awaybuilder.utils.encoders
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.Container;
-	import mx.graphics.codec.JPEGEncoder;
 	
 	// to do: check if any imports can be removed
 	
@@ -698,7 +696,7 @@ package awaybuilder.utils.encoders
 			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  _matrixNrType);
 			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  _matrixNrType);
 			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  _matrixNrType);
-			if(mesh.castsShadows==true)_encodeProperty(5,mesh.castsShadows,  BOOL);
+			if(mesh.castsShadows==false)_encodeProperty(5,mesh.castsShadows,  BOOL);
 			_endElement(); // Prop list
 			
 			
