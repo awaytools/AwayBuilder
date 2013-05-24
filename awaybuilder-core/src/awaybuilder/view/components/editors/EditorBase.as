@@ -80,15 +80,15 @@ package awaybuilder.view.components.editors
 			_geometry = value;
 		}
 		
-		private var _animator:ArrayCollection;
+		private var _animators:ArrayCollection;
 		[Bindable]
-		public function get animator():ArrayCollection
+		public function get animators():ArrayCollection
 		{
-			return _animator;
+			return _animators;
 		}
-		public function set animator(value:ArrayCollection):void
+		public function set animators(value:ArrayCollection):void
 		{
-			_animator = value;
+			_animators = value;
 		}
 		
 		private var _lightPickers:ArrayCollection;

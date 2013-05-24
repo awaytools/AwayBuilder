@@ -29,6 +29,8 @@
 		<s:State name="animationNode"/>
 		<s:State name="animationSet"/>
 		<s:State name="animator"/>
+		<s:State name="skeleton"/>
+		
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -79,6 +81,9 @@
 		public var geometry:ArrayCollection;
 		
 		[Bindable]
+		public var animators:ArrayCollection;
+		
+		[Bindable]
 		public var cubeTextures:ArrayCollection;
 		
 		[Bindable]
@@ -115,7 +120,7 @@
 			
 			<editors:GlobalOptionPropertiesEditor data="{_data}" includeIn="global" />
 			
-			<editors:MeshPropertyEditor geometry="{geometry}" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
+			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
@@ -135,6 +140,7 @@
 			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationSet,initAll"/>
 			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationNode,initAll"/>
 			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animator,initAll"/>
+			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="skeleton,initAll"/>
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

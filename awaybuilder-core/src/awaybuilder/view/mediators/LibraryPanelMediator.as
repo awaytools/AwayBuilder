@@ -42,7 +42,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.utils.ScenegraphFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
-	import awaybuilder.view.components.controls.tree.DroppedItemVO;
+	import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
 	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
 	
@@ -88,7 +88,7 @@ package awaybuilder.view.mediators
 		private var _selectedGeometryItems:Vector.<Object> = new Vector.<Object>();
 		private var _selectedMethodsItems:Vector.<Object> = new Vector.<Object>();
 		private var _selectedAnimationsItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedSkeletonsItems:Vector.<Object> = new Vector.<Object>();
+//		private var _selectedSkeletonsItems:Vector.<Object> = new Vector.<Object>();
 		private var _selectedLightsItems:Vector.<Object> = new Vector.<Object>();
 		
 //		private var _updateManually:Boolean;
@@ -113,6 +113,8 @@ package awaybuilder.view.mediators
 			
 			addViewListener(LibraryPanelEvent.LIGHT_DROPPED, view_lightDroppedHandler);
 			addViewListener(LibraryPanelEvent.SCENEOBJECT_DROPPED, view_sceneObjectDroppedHandler);
+			addViewListener(LibraryPanelEvent.ANIMATIONS_DROPPED, view_animationsDroppedHandler);
+			
 			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, eventDispatcher_documentCreatedHandler);
@@ -128,6 +130,11 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
+		
+		private function view_animationsDroppedHandler(event:LibraryPanelEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.REPARENT_ANIMATIONS,[], event.data));		
+		}
 		private function view_sceneObjectDroppedHandler(event:LibraryPanelEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.REPARENT_OBJECTS,[], event.data));		
@@ -171,9 +178,6 @@ package awaybuilder.view.mediators
 						skeletonAnimationSets.push( animSet );
 					}
 				}
-			}
-			for each( var asset:AssetVO in document.skeletons )
-			{
 				if( asset is SkeletonVO )
 				{
 					skeletons.push(asset);
@@ -367,7 +371,7 @@ package awaybuilder.view.mediators
 			_selectedGeometryItems = new Vector.<Object>();
 			_selectedMethodsItems = new Vector.<Object>();
 			_selectedAnimationsItems = new Vector.<Object>();
-			_selectedSkeletonsItems = new Vector.<Object>();
+//			_selectedSkeletonsItems = new Vector.<Object>();
 			_selectedLightsItems = new Vector.<Object>();
 			updateAllSelectedItems( view.model.scene, event.items.concat(), _selectedSceneItems  );
 			updateAllSelectedItems( view.model.materials, event.items.concat(), _selectedMaterialsItems );
@@ -375,7 +379,7 @@ package awaybuilder.view.mediators
 			updateAllSelectedItems( view.model.geometry, event.items.concat(), _selectedGeometryItems );
 			updateAllSelectedItems( view.model.methods, event.items.concat(), _selectedMethodsItems );
 			updateAllSelectedItems( view.model.animations, event.items.concat(), _selectedAnimationsItems );
-			updateAllSelectedItems( view.model.skeletons, event.items.concat(), _selectedSkeletonsItems );
+//			updateAllSelectedItems( view.model.skeletons, event.items.concat(), _selectedSkeletonsItems );
 			updateAllSelectedItems( view.model.lights, event.items.concat(), _selectedLightsItems, view.lightsTree.selectedItems );
 			view.selectedSceneItems = _selectedSceneItems;
 			view.selectedMaterialsItems = _selectedMaterialsItems;
@@ -383,7 +387,7 @@ package awaybuilder.view.mediators
 			view.selectedGeometryItems = _selectedGeometryItems;
 			view.selectedMethodsItems = _selectedMethodsItems;
 			view.selectedAnimationsItems = _selectedAnimationsItems;
-			view.selectedSkeletonsItems = _selectedSkeletonsItems;
+//			view.selectedSkeletonsItems = _selectedSkeletonsItems;
 			view.selectedLightsItems = _selectedLightsItems;
 			view.callLater( ensureIndexIsVisible );
 			
@@ -466,7 +470,6 @@ package awaybuilder.view.mediators
 			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, ScenegraphFactory.CreateBranch( document.animations ), "item" );
 			view.model.methods = DataMerger.syncArrayCollections( view.model.methods,  ScenegraphFactory.CreateBranch( document.methods ), "item" );
 			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  ScenegraphFactory.CreateBranch( document.textures ), "item" );
-			view.model.skeletons = DataMerger.syncArrayCollections( view.model.skeletons, ScenegraphFactory.CreateBranch( document.skeletons ), "item" );
 			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry ), "item" );
 			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateLightsBranch( document.lights ), "item" );
 			

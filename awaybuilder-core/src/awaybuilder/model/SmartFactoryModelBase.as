@@ -89,12 +89,12 @@ package awaybuilder.model
 					return fillSubGeometry( new SubGeometryVO(), item as ISubGeometry );
 					
 				case(item is AnimationStateBase):
-					asset = fillAsset( new AnimationNodeVO(), item );
+					asset = fillAsset( new AssetVO(), item );
 					asset.name = "Animation State (" + item.name +")";
-					
 					return asset;
+					
 				case(item is SkeletonPose):
-					asset = fillAsset( new AnimationNodeVO(), item );
+					asset = fillAsset( new SkeletonPoseVO(), item );
 					asset.name = "Skeleton Pose (" + item.name +")";
 					return asset;
 					

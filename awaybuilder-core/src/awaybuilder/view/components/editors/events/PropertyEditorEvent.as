@@ -31,6 +31,9 @@ package awaybuilder.view.components.editors.events
 		public static const TEXTURE_CHANGE:String = "textureChange";
 		public static const TEXTURE_STEPPER_CHANGE:String = "textureStepperChange";
 		
+		public static const SKELETON_CHANGE:String = "skeletonChange";
+		public static const SKELETON_STEPPER_CHANGE:String = "skeletonStepperChange";
+		
 		public static const TEXTURE_PROJECTOR_CHANGE:String = "textureProjectorChange";
 		public static const TEXTURE_PROJECTOR_ADD_TEXTURE:String = "textureProjectorAddTexture";
 		public static const TEXTURE_PROJECTOR_STEPPER_CHANGE:String = "textureProjectorStepperChange";

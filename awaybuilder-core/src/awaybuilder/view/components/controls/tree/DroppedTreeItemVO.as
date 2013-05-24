@@ -1,8 +1,8 @@
 package awaybuilder.view.components.controls.tree
 {
-	public class DroppedItemVO
+	public class DroppedTreeItemVO
 	{
-		public function DroppedItemVO( value:Object ):void
+		public function DroppedTreeItemVO( value:Object ):void
 		{
 			this.value = value;
 		}

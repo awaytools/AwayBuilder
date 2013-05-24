@@ -504,7 +504,7 @@ package awaybuilder.view.components.controls.tree
 			
 			for each( var item:Object in items )
 			{
-				var droppedItem:DroppedItemVO = new DroppedItemVO( item );
+				var droppedItem:DroppedTreeItemVO = new DroppedTreeItemVO( item );
 				droppedItems[item] = droppedItem;
 			}
 			
@@ -667,7 +667,7 @@ package awaybuilder.view.components.controls.tree
 			
 			for each( var item:Object in items )
 			{
-				var droppedItem:DroppedItemVO = new DroppedItemVO( item );
+				var droppedItem:DroppedTreeItemVO = new DroppedTreeItemVO( item );
 				droppedItems[item] = droppedItem;
 			}
 			

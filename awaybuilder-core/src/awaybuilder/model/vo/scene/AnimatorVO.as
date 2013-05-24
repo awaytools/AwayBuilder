@@ -7,6 +7,10 @@ package awaybuilder.model.vo.scene
 
 		public var type:String;
 		
+		public var animationSet:AnimationSetVO;
+		
+		public var skeleton:SkeletonVO;
+		
 		public function clone():AnimatorVO
 		{
 			var vo:AnimatorVO = new AnimatorVO();

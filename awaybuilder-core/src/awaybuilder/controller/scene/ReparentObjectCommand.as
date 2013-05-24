@@ -21,7 +21,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.scene.Scene3DManager;
-	import awaybuilder.view.components.controls.tree.DroppedItemVO;
+	import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
 	
 	import flash.utils.Dictionary;
 	
@@ -45,7 +45,7 @@ package awaybuilder.controller.scene
 			var container:ContainerVO;
 			var newContainer:ContainerVO;
 			
-			for each( var item:DroppedItemVO in event.newValue ) 
+			for each( var item:DroppedTreeItemVO in event.newValue ) 
 			{
 				var vo:ScenegraphItemVO = item.value as ScenegraphItemVO;
 				
@@ -172,9 +172,9 @@ package awaybuilder.controller.scene
 			if( !event.oldValue ) 
 			{
 				var oldValue:Dictionary = new Dictionary();
-				for each( var item:DroppedItemVO in event.newValue ) 
+				for each( var item:DroppedTreeItemVO in event.newValue ) 
 				{
-					var newItem:DroppedItemVO = new DroppedItemVO( item.value );
+					var newItem:DroppedTreeItemVO = new DroppedTreeItemVO( item.value );
 					newItem.newParent = item.oldParent;
 					newItem.newPosition = item.newPosition;
 					newItem.oldParent = item.newParent;

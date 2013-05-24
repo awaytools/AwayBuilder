@@ -119,14 +119,14 @@ package awaybuilder.model
 			_documentVO.scene = value;
 		}
 		
-		public function get skeletons():ArrayCollection
-		{
-			return _documentVO.skeletons;
-		}
-		public function set skeletons(value:ArrayCollection):void
-		{
-			_documentVO.skeletons = value;
-		}
+//		public function get skeletons():ArrayCollection
+//		{
+//			return _documentVO.skeletons;
+//		}
+//		public function set skeletons(value:ArrayCollection):void
+//		{
+//			_documentVO.skeletons = value;
+//		}
 		
 		public function get textures():ArrayCollection
 		{

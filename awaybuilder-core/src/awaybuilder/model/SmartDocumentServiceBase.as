@@ -181,11 +181,9 @@ package awaybuilder.model
 				case AssetType.ANIMATION_SET:
 				case AssetType.ANIMATION_STATE:
 				case AssetType.ANIMATION_NODE:
-					_document.animations.addItem( assets.GetAsset( event.asset ) );
-					break;
 				case AssetType.SKELETON:
-				case AssetType.SKELETON_POSE:
-					_document.skeletons.addItem( assets.GetAsset( event.asset ) );
+				//case AssetType.SKELETON_POSE:
+					_document.animations.addItem( assets.GetAsset( event.asset ) );
 					break;
 			}
 		}

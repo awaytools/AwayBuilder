@@ -1,11 +1,16 @@
 package awaybuilder.view.mediators
 {
+    import away3d.animators.AnimationSetBase;
+    import away3d.animators.AnimatorBase;
+    import away3d.animators.SkeletonAnimator;
+    import away3d.animators.nodes.AnimationNodeBase;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
     import away3d.core.base.Object3D;
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
     import away3d.entities.TextureProjector;
+    import away3d.errors.AnimationSetError;
     import away3d.library.assets.NamedAssetBase;
     import away3d.lights.DirectionalLight;
     import away3d.lights.LightBase;
@@ -77,7 +82,10 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
+    import awaybuilder.model.vo.DroppedAssetVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
+    import awaybuilder.model.vo.scene.AnimationNodeVO;
+    import awaybuilder.model.vo.scene.AnimationSetVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
@@ -101,7 +109,7 @@ package awaybuilder.view.mediators
     import awaybuilder.utils.scene.modes.CameraMode;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
-    import awaybuilder.view.components.controls.tree.DroppedItemVO;
+    import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
     import awaybuilder.view.components.events.CoreEditorEvent;
     import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import awaybuilder.view.scene.controls.LightGizmo3D;
@@ -167,6 +175,7 @@ package awaybuilder.view.mediators
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
 			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
+			addContextListener(SceneEvent.REPARENT_ANIMATIONS, eventDispatcher_reparentAnimationHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, eventDispatcher_addNewTextureHandler);
@@ -322,6 +331,24 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_reparentObjectsHandler(event:SceneEvent):void
 		{
+		}
+		private function eventDispatcher_reparentAnimationHandler(event:SceneEvent):void
+		{
+			for each( var item:DroppedAssetVO in event.newValue ) 
+			{
+				if( item.value is AnimationNodeVO && item.newParent && item.newParent is AnimationSetVO ) {
+					var newAnimationSet:AnimationSetBase = assets.GetObject(item.newParent) as AnimationSetBase;
+					try
+					{
+						newAnimationSet.addAnimation( assets.GetObject(item.value) as AnimationNodeBase );
+					}
+					catch( e:AnimationSetError )
+					{
+						trace( e.message );
+						trace( "// TODO: handle animations update" );
+					}
+				}
+			}
 		}
 		
 		private function eventDispatcher_translateHandler(event:SceneEvent):void
@@ -815,6 +842,7 @@ package awaybuilder.view.mediators
 				applyContainer( item );
 				obj.castsShadows = item.castsShadows;
 				obj.geometry = assets.GetObject( item.geometry ) as Geometry;
+				obj.animator = assets.GetObject( item.animator ) as SkeletonAnimator;
 				
 				for( var i:int = 0; i < obj.subMeshes.length; i++ )
 				{

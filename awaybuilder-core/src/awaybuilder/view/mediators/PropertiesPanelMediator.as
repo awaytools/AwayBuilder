@@ -21,6 +21,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
+    import awaybuilder.model.vo.scene.SkeletonVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureProjectorVO;
@@ -80,6 +81,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.DELETE_OBJECTS, context_deleteObjectsHandler);
 			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
@@ -165,6 +167,7 @@ package awaybuilder.view.mediators
 			
 			view.currentState = "global";
 			view.SetData(document.globalOptions);
+			
         }
 
         //----------------------------------------------------------------------
@@ -714,6 +717,11 @@ package awaybuilder.view.mediators
 						view.showEditor( "animator", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
+					else if( event.items[0] is SkeletonVO )
+					{
+						view.showEditor( "skeleton", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
                     else
                     {
 						view.showEditor( "global", event.newValue, event.oldValue );
@@ -763,7 +771,7 @@ package awaybuilder.view.mediators
 			if( getAssetIsInList( asset, document.geometry ) ) return true;
 			if( getAssetIsInList( asset, document.lights ) ) return true;
 			if( getAssetIsInList( asset, document.animations ) ) return true;
-			if( getAssetIsInList( asset, document.skeletons ) ) return true;
+//			if( getAssetIsInList( asset, document.skeletons ) ) return true;
 			return false;
 		}
 		private function getAssetIsInList( asset:AssetVO, list:ArrayCollection ):Boolean
@@ -831,6 +839,16 @@ package awaybuilder.view.mediators
 				}
 			}
 			view.geometry = new ArrayCollection(geometry);
+			
+			var animators:Array = [null];
+			for each( asset in document.animations )
+			{
+				if( asset is AnimatorVO ) 
+				{
+					animators.push( asset );
+				}
+			}
+			view.animators = new ArrayCollection(animators);
 			
 			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
 			materials.addItemAt( assets.defaultMaterial, 0 );

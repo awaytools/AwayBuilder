@@ -114,7 +114,7 @@ package awaybuilder.controller.scene
 			removeItems( document.animations, items );
 			removeItems( document.geometry, items );
 			removeItems( document.textures, items );
-			removeItems( document.skeletons, items );
+//			removeItems( document.skeletons, items );
 			removeItems( document.lights, items );
 		}
 		private function removeItems( source:ArrayCollection, items:Vector.<AssetVO> ):void

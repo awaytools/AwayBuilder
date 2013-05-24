@@ -6,7 +6,10 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.DroppedAssetVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -16,7 +19,7 @@ package awaybuilder.controller.scene
 	
 	import mx.collections.ArrayCollection;
 
-	public class ReparentLightCommand extends HistoryCommandBase
+	public class ReparentAnimationCommand extends HistoryCommandBase
 	{
 		[Inject]
 		public var event:SceneEvent;
@@ -31,40 +34,39 @@ package awaybuilder.controller.scene
 		{
 			saveOldValue( event, event.newValue );
 			
-			var picker:LightPickerVO;
+			var animationSet:AnimationSetVO;
 			
-			for each( var item:DroppedTreeItemVO in event.newValue ) 
+			for each( var item:DroppedAssetVO in event.newValue ) 
 			{
-				var vo:ScenegraphItemVO = item.value as ScenegraphItemVO;
 				
-				if( vo.item is LightVO )
+				if( item.value is AnimationNodeVO )
 				{
 					if( item.newParent == item.oldParent ) return;
 					
 					if( item.newParent )
 					{
-						picker = item.newParent.item as LightPickerVO;
-						if( picker && !itemIsInList(picker.lights, vo.item as AssetVO) ) 
+						animationSet = item.newParent as AnimationSetVO;
+						if( animationSet && !itemIsInList(animationSet.animations, item.value) ) 
 						{
-							if( item.newPosition < picker.lights.length )
+							if( item.newPosition < animationSet.animations.length )
 							{
-								picker.lights.addItemAt( vo.item, item.newPosition );
+								animationSet.animations.addItemAt( item.value, item.newPosition );
 							}
 							else
 							{
-								picker.lights.addItem( vo.item );
+								animationSet.animations.addItem( item.value );
 							}
 						}
 					}
 					
-					if( item.oldParent )
-					{ 
-						picker = item.oldParent.item as LightPickerVO;
-						if( picker && itemIsInList(picker.lights, vo.item as AssetVO) ) 
-						{
-							removeItem( picker.lights, vo.item as AssetVO );
-						}
-					}
+//					if( item.oldParent )
+//					{ 
+//						animationSet = item.oldParent as AnimationSetVO;
+//						if( animationSet && itemIsInList(animationSet.animations, item.value) ) 
+//						{
+//							removeItem( animationSet.animations, item.value );
+//						}
+//					}
 				}
 			}
 			
@@ -98,15 +100,16 @@ package awaybuilder.controller.scene
 		{
 			if( !event.oldValue ) 
 			{
-				var oldValue:Dictionary = new Dictionary();
-				for each( var item:DroppedTreeItemVO in event.newValue ) 
+				var oldValue:Vector.<DroppedAssetVO> = new Vector.<DroppedAssetVO>();
+				for each( var item:DroppedAssetVO in event.newValue ) 
 				{
-					var newItem:DroppedTreeItemVO = new DroppedTreeItemVO( item.value );
+					var newItem:DroppedAssetVO = new DroppedAssetVO();
+					newItem.value = item.value;
 					newItem.newParent = item.oldParent;
 					newItem.newPosition = item.newPosition;
 					newItem.oldParent = item.newParent;
 					newItem.oldPosition = item.oldPosition;
-					oldValue[item.value] = newItem;
+					oldValue.push(newItem);
 				}
 				event.oldValue = oldValue;
 			}

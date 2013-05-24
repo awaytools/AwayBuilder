@@ -55,7 +55,7 @@ package awaybuilder.controller.document
 			document.geometry = new ArrayCollection(document.geometry.source.concat( data.geometry.source ));
 			document.materials = new ArrayCollection(document.materials.source.concat( data.materials.source ));
 			document.scene = new ArrayCollection(document.scene.source.concat( data.scene.source ));
-			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
+//			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
 			document.textures = new ArrayCollection(document.textures.source.concat( data.textures.source ));
 			document.lights = new ArrayCollection(document.lights.source.concat( data.lights.source ));
 			
@@ -86,7 +86,7 @@ package awaybuilder.controller.document
 			removeItems( document.geometry, data.geometry );
 			removeItems( document.materials, data.materials );
 			removeItems( document.scene, data.scene );
-			removeItems( document.skeletons, data.skeletons );
+//			removeItems( document.skeletons, data.skeletons );
 			removeItems( document.textures, data.textures );
 			removeItems( document.lights, data.lights );
 			

@@ -7,6 +7,7 @@
     <fx:Script><![CDATA[
 		import away3d.entities.Mesh;
 		
+		import awaybuilder.model.vo.scene.AnimatorVO;
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.ExtraItemVO;
 		import awaybuilder.model.vo.scene.MeshVO;
@@ -137,7 +138,12 @@
 		
 		protected function animatorDropDownListButton_clickHandler(event:MouseEvent):void
 		{
-//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.animator));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.animator));
+		}
+		
+		public function animatorDropDownLabelFunction(item:AnimatorVO):String {
+			if( item ) return item.name;
+			return "Null"; 
 		}
 		
 	]]></fx:Script>
@@ -163,24 +169,24 @@
 	</s:Form>
 	<s:Spacer height="6"/>
 	
-    <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
+    <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
+		<s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
+			</s:FormItem>
+		</s:Form>
 		<controls:PropertiesItemContainer label="Geometry" width="100%">
 			<s:DropDownList id="geometryDropDownList" requireSelection="true" labelField="name"
 							change="geometryDropDownList_changeHandler(event)" width="100%"
 							selectedItem="@{_asset.geometry}" dataProvider="{geometry}"/>
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="geometryDropDownListButton_clickHandler(event)" />
 		</controls:PropertiesItemContainer>
-		<controls:PropertiesItemContainer label="Animator" width="100%" enabled="false">
-			<s:DropDownList id="animatorDropDownList" requireSelection="true" labelField="name"
+		<controls:PropertiesItemContainer label="Animator" width="100%">
+			<s:DropDownList id="animatorDropDownList" labelFunction="animatorDropDownLabelFunction" prompt="Null"
 							change="animatorDropDownList_changeHandler(event)" width="100%"
-							selectedItem="" dataProvider="{animator}"/>
-			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animatorDropDownListButton_clickHandler(event)" />
+							selectedItem="@{_asset.animator}" dataProvider="{animators}"/>
+			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animatorDropDownListButton_clickHandler(event)" enabled="{_asset.animator!=null}" />
 		</controls:PropertiesItemContainer>
-        <s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-            <s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
-            </s:FormItem>
-        </s:Form>
     </controls:CollapsiblePanel>
     <controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
