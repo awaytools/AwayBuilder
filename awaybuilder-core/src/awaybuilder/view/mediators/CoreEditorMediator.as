@@ -1120,6 +1120,11 @@ package awaybuilder.view.mediators
 			{
 				var obj:ShadowMapperBase = assets.GetObject( asset ) as ShadowMapperBase;
 				obj.depthMapSize = asset.depthMapSize;
+				if ( obj is CubeMapShadowMapper )
+				{
+					obj.depthMapSize = asset.depthMapSizeCube;
+				}
+				else
 				if( obj is NearDirectionalShadowMapper )
 				{
 					var nearDirectionalShadowMapper:NearDirectionalShadowMapper = obj as NearDirectionalShadowMapper;

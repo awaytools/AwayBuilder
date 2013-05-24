@@ -47,6 +47,11 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMAPPER_CHANGE, _asset, true));
 		}
 		
+		protected function depthDropDownListCube_changeHandler(event:IndexChangeEvent):void
+		{
+			_asset.depthMapSizeCube = depthDropDownListCube.selectedItem;
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADOWMAPPER_CHANGE, _asset, true));
+		}
 		protected function depthDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
 			_asset.depthMapSize = depthDropDownList.selectedItem;
@@ -68,7 +73,7 @@
 		</s:HGroup>
 	</s:Group>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-		<s:FormItem label="Depth Map Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="DirectionalShadowMapper,NearDirectionalShadowMapper,CascadeShadowMapper,CubeMapShadowMapper">
+		<s:FormItem label="Depth Map Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="DirectionalShadowMapper,NearDirectionalShadowMapper,CascadeShadowMapper">
 			<s:DropDownList id="depthDropDownList" requireSelection="true" selectedItem="{_asset.depthMapSize}"
 							width="100%" change="depthDropDownList_changeHandler(event)"
 							>
@@ -77,6 +82,19 @@
 						<fx:Number>256</fx:Number>
 						<fx:Number>512</fx:Number>
 						<fx:Number>2048</fx:Number>
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+		</s:FormItem>
+		<s:FormItem label="Depth Map Size" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="CubeMapShadowMapper">
+			<s:DropDownList id="depthDropDownListCube" requireSelection="true" selectedItem="{_asset.depthMapSizeCube}"
+							width="100%" change="depthDropDownListCube_changeHandler(event)"
+							>
+				<s:dataProvider>
+					<s:ArrayList>
+						<fx:Number>256</fx:Number>
+						<fx:Number>512</fx:Number>
+						<fx:Number>1024</fx:Number>
 					</s:ArrayList>
 				</s:dataProvider>
 			</s:DropDownList>

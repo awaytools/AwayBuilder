@@ -177,6 +177,7 @@ package awaybuilder.utils.encoders
 			_depthSizeDic[256]=0;
 			_depthSizeDic[512]=1;
 			_depthSizeDic[2048]=2;
+			_depthSizeDic[1024]=3;
 		}
 		
 		// this function is called from the app...
@@ -804,7 +805,7 @@ package awaybuilder.utils.encoders
 						break;
 					case "CubeMapShadowMapper":
 						_encodeProperty(9,4, UINT8);
-						if(mapperVO.depthMapSize!=2048)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSize], UINT8);
+						if(mapperVO.depthMapSizeCube!=512)_encodeProperty(10,_depthSizeDic[mapperVO.depthMapSizeCube], UINT8);
 						break;
 				}
 			}			

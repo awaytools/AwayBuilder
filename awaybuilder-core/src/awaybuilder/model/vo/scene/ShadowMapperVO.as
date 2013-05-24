@@ -8,6 +8,7 @@ package awaybuilder.model.vo.scene
 		public var coverage:Number = 1;
 		
 		public var depthMapSize:Number;
+		public var depthMapSizeCube:Number;
 		
 		public var type:String;
 		
@@ -25,6 +26,7 @@ package awaybuilder.model.vo.scene
 			this.coverage = asset.coverage;
 			this.type = asset.type;
 			this.depthMapSize = asset.depthMapSize;
+			this.depthMapSizeCube = asset.depthMapSizeCube;
 		}
 		
 	}

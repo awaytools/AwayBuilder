@@ -117,7 +117,7 @@
 											 change="alphaStepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Epsilon" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="HardShadowMapMethod,SoftShadowMapMethod,DitheredShadowMapMethod,FilteredShadowMapMethod">
-			<controls:DragableNumericStepper id="epsilonStepper" stepSize="0.001" snapInterval="0.001" minimum="0" maximum="1"
+			<controls:DragableNumericStepper id="epsilonStepper" stepSize="0.0001" snapInterval="0.0000000000001" minimum="0" maximum="1"
 											 width="40" value="{_asset.epsilon}"
 											 change="epsilonStepper_changeHandler(event)" />
 		</s:FormItem>

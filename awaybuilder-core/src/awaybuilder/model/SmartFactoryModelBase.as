@@ -535,6 +535,7 @@ package awaybuilder.model
 		private function fillShadowMapper( asset:ShadowMapperVO, obj:ShadowMapperBase ):ShadowMapperVO
 		{
 			asset.depthMapSize = obj.depthMapSize;
+			asset.depthMapSizeCube = obj.depthMapSize;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			if( obj is NearDirectionalShadowMapper )
 			{
