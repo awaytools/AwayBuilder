@@ -3,6 +3,7 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.history.UndoRedoEvent;
+    import awaybuilder.controller.scene.events.AnimationEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
@@ -156,6 +157,13 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_STEPPER_CHANGE, view_lightPickerStepperChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_DIRECTIONAL_LIGHT, view_lightPickerAddDirectionalLightHandler );
 			addViewListener( PropertyEditorEvent.LIGHTPICKER_ADD_POINT_LIGHT, view_lightPickerAddPointLightHandler );
+			
+			addViewListener( PropertyEditorEvent.ANIMATOR_CHANGE, view_animatorChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATOR_STEPPER_CHANGE, view_animatorStepperChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATOR_PLAY, view_animatorPlayHandler );
+			addViewListener( PropertyEditorEvent.ANIMATOR_STOP, view_animatorStopHandler );
+			addViewListener( PropertyEditorEvent.ANIMATOR_SEEK, view_animatorSeekHandler );
+			addViewListener( PropertyEditorEvent.ANIMATOR_PAUSE, view_animatorPauseHandler );
 			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
@@ -548,7 +556,30 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		
-		
+		private function view_animatorChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATOR,[view.data], event.data));
+		}
+		private function view_animatorStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATOR, [view.data], event.data, true));
+		}
+		private function view_animatorPlayHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new AnimationEvent(AnimationEvent.PLAY, view.data as AnimatorVO, event.data as AnimationNodeVO ));
+		}
+		private function view_animatorPauseHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new AnimationEvent(AnimationEvent.PAUSE, view.data as AnimatorVO, event.data as AnimationNodeVO));
+		}
+		private function view_animatorStopHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new AnimationEvent(AnimationEvent.STOP, view.data as AnimatorVO, event.data as AnimationNodeVO));
+		}
+		private function view_animatorSeekHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new AnimationEvent(AnimationEvent.SEEK, view.data as AnimatorVO, event.data as AnimationNodeVO));
+		}
         //----------------------------------------------------------------------
         //
         //	context handlers
@@ -841,14 +872,26 @@ package awaybuilder.view.mediators
 			view.geometry = new ArrayCollection(geometry);
 			
 			var animators:Array = [null];
+			var animationSets:Array = [];
+			var skeletons:Array = [];
 			for each( asset in document.animations )
 			{
 				if( asset is AnimatorVO ) 
 				{
 					animators.push( asset );
 				}
+				else if( asset is AnimationSetVO ) 
+				{
+					animationSets.push( asset );
+				}
+				else if( asset is SkeletonVO ) 
+				{
+					skeletons.push( asset );
+				}
 			}
 			view.animators = new ArrayCollection(animators);
+			view.animationSets = new ArrayCollection(animationSets);
+			view.skeletons = new ArrayCollection(skeletons);
 			
 			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
 			materials.addItemAt( assets.defaultMaterial, 0 );

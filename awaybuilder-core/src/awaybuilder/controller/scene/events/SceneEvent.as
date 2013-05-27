@@ -38,6 +38,10 @@ import flash.events.Event;
 		public static const CHANGE_SHADOW_MAPPER:String = "changeShadowMapper";
 		public static const CHANGE_EFFECT_METHOD:String = "changeEffectMethod";
 		
+		public static const CHANGE_ANIMATOR:String = "changeAnimator";
+		
+		public static const CHANGE_SKELETON:String = "changeSkeleton";
+		
 		public static const ADD_NEW_LIGHT:String = "addNewLight";
 		public static const ADD_NEW_MATERIAL:String = "addNewMaterial";
 		public static const ADD_NEW_MESH:String = "addNewMesh";

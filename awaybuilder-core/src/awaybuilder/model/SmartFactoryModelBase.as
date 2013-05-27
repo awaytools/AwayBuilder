@@ -2,9 +2,12 @@ package awaybuilder.model
 {
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
+	import away3d.animators.SkeletonAnimator;
 	import away3d.animators.data.Skeleton;
 	import away3d.animators.data.SkeletonPose;
 	import away3d.animators.nodes.AnimationNodeBase;
+	import away3d.animators.nodes.SkeletonClipNode;
+	import away3d.animators.nodes.VertexClipNode;
 	import away3d.animators.states.AnimationStateBase;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
@@ -41,10 +44,12 @@ package awaybuilder.model
 	import awaybuilder.utils.AssetUtil;
 	
 	import flash.display.BitmapData;
+	import flash.geom.Utils3D;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
+	import mx.utils.UIDUtil;
 
 
 	public class SmartFactoryModelBase
@@ -439,18 +444,39 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, obj ) as AnimatorVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			asset.animationSet = GetAsset(obj.animationSet) as AnimationSetVO;
+			asset.playbackSpeed = obj.playbackSpeed;
+			var skeletonAnimator:SkeletonAnimator = obj as SkeletonAnimator;
+			if( skeletonAnimator )
+			{
+				asset.skeleton = GetAsset(skeletonAnimator.skeleton) as SkeletonVO;
+			}
 			return asset;
 		}
 		private function fillAnimationSet( asset:AnimationSetVO, obj:AnimationSetBase ):AnimationSetVO
 		{
 			asset = fillAsset( asset, obj ) as AnimationSetVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			for each( var animationNodeBase:AnimationNodeBase in obj.animations )
+			{
+				asset.animations.addItem( GetAsset( animationNodeBase ) );
+			}
 			return asset;
 		}
 		private function fillAnimationNode( asset:AnimationNodeVO, obj:AnimationNodeBase ):AnimationNodeVO
 		{
 			asset = fillAsset( asset, obj ) as AnimationNodeVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			var skeletonClipNode:SkeletonClipNode = obj as SkeletonClipNode;
+			if( skeletonClipNode )
+			{
+				asset.totalDuration = skeletonClipNode.totalDuration;
+			}
+			var vertexClipNode:VertexClipNode = obj as VertexClipNode;
+			if( vertexClipNode )
+			{
+				asset.totalDuration = vertexClipNode.frames.length;
+			}
 			return asset;
 		}
 		private function fillShadingMethod( asset:ShadingMethodVO, obj:ShadingMethodBase ):ShadingMethodVO
@@ -780,6 +806,10 @@ package awaybuilder.model
 			if( item is NamedAssetBase )
 			{
 				asset.name = NamedAssetBase(item).name;
+			}
+			if( asset.name == null )
+			{
+				asset.name = getQualifiedClassName( item ).split("::")[1] + AssetUtil.GetNextId(getQualifiedClassName( item ).split("::")[1]);
 			}
 			return asset;
 		}

@@ -2,8 +2,14 @@ package awaybuilder.view.mediators
 {
     import away3d.animators.AnimationSetBase;
     import away3d.animators.AnimatorBase;
+    import away3d.animators.SkeletonAnimationSet;
     import away3d.animators.SkeletonAnimator;
+    import away3d.animators.VertexAnimationSet;
+    import away3d.animators.VertexAnimator;
+    import away3d.animators.data.Skeleton;
+    import away3d.animators.nodes.AnimationClipNodeBase;
     import away3d.animators.nodes.AnimationNodeBase;
+    import away3d.animators.states.SkeletonClipState;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
     import away3d.core.base.Object3D;
@@ -79,6 +85,7 @@ package awaybuilder.view.mediators
     import away3d.textures.Texture2DBase;
     
     import awaybuilder.controller.events.SceneReadyEvent;
+    import awaybuilder.controller.scene.events.AnimationEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
@@ -86,6 +93,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AnimationNodeVO;
     import awaybuilder.model.vo.scene.AnimationSetVO;
+    import awaybuilder.model.vo.scene.AnimatorVO;
     import awaybuilder.model.vo.scene.AssetVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
@@ -120,6 +128,7 @@ package awaybuilder.view.mediators
     import flash.display3D.textures.Texture;
     import flash.display3D.textures.TextureBase;
     import flash.events.ErrorEvent;
+    import flash.events.Event;
     import flash.events.KeyboardEvent;
     import flash.events.UncaughtErrorEvent;
     import flash.geom.ColorTransform;
@@ -131,6 +140,7 @@ package awaybuilder.view.mediators
     import mx.controls.Alert;
     import mx.controls.Text;
     import mx.core.FlexGlobals;
+    import mx.utils.ObjectUtil;
     
     import org.robotlegs.mvcs.Mediator;
     
@@ -155,6 +165,11 @@ package awaybuilder.view.mediators
 		{
 			FlexGlobals.topLevelApplication.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, uncaughtErrorHandler);
 			
+			addContextListener(AnimationEvent.PLAY, contect_playHandler);
+			addContextListener(AnimationEvent.STOP, contect_stopHandler);
+			addContextListener(AnimationEvent.SEEK, contect_seekHandler);
+			addContextListener(AnimationEvent.PAUSE, contect_pauseHandler);
+			
 			addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
@@ -171,6 +186,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_TEXTURE, eventDispatcher_changeTextureHandler);
 			addContextListener(SceneEvent.CHANGE_GEOMETRY, eventDispatcher_changeGeometryHandler);
 			addContextListener(SceneEvent.CHANGE_SKYBOX, eventDispatcher_changeSkyboxHandler);
+			addContextListener(SceneEvent.CHANGE_ANIMATOR, eventDispatcher_changeAnimatorHandler);
 			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, eventDispatcher_changeTextureProjectorHandler);
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
@@ -210,18 +226,6 @@ package awaybuilder.view.mediators
 		//	view handlers
 		//
 		//----------------------------------------------------------------------
-		
-		private function view_treeChangeHandler(event:CoreEditorEvent):void
-		{
-			var items:Array = [];
-			var selectedItems:Vector.<Object> = event.data as Vector.<Object>;
-			for (var i:int=0;i<selectedItems.length;i++)
-			{
-				items.push(ScenegraphItemVO(selectedItems[i]).item);
-			}
-
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
-		}
 		
 		private function keyDownHandler(e:KeyboardEvent):void
 		{
@@ -300,30 +304,92 @@ package awaybuilder.view.mediators
 			
 		}	
 		
-		private function getBranchCildren( objects:ArrayCollection ):ArrayCollection
-		{
-			var children:ArrayCollection = new ArrayCollection();
-			for each( var o:AssetVO in objects )
-			{
-				children.addItem( new ScenegraphItemVO( o.name, o ) );
-			}
-			return children;
-		}
-		private function getTextureBranchCildren( objects:ArrayCollection ):ArrayCollection
-		{
-			var children:ArrayCollection = new ArrayCollection();
-			for each( var o:AssetVO in objects )
-			{
-				children.addItem( new ScenegraphItemVO( "Texture (" + o.name.split("/").pop() +")", o ) );
-			}
-			return children;
-		}
 		
+		private function view_enterFrameHandler(event:Event):void
+		{
+		
+			if( _currentAnimator && _currentAnimation )
+			{
+				var animator:SkeletonAnimator = assets.GetObject(_currentAnimator ) as SkeletonAnimator;
+				if( animator.activeState is SkeletonClipState )
+				{
+					var time:int = animator.time*animator.playbackSpeed;
+					if ( animator.time >= _currentAnimation.totalDuration ) 
+					{
+						time %= _currentAnimation.totalDuration;
+						
+					}
+					if ( time < 0)
+					{
+						time += _currentAnimation.totalDuration;
+					}
+					_currentAnimation.currentPosition = time;
+				}
+			}
+		}
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
 		//
 		//----------------------------------------------------------------------
+		
+		private var _currentAnimation:AnimationNodeVO;
+		private var _currentAnimator:AnimatorVO;
+		
+		private function contect_playHandler(event:AnimationEvent):void
+		{
+			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			animator.updatePosition = false;
+			event.animation.isPlaying = true;
+			if( event.animation.name == event.animator.activeAnimationNodeName )
+			{
+				animator.start();
+			}
+			else
+			{
+				animator.play(event.animation.name, null, event.animation.currentPosition);
+				event.animator.activeAnimationNodeName = event.animation.name;
+			}
+			
+			_currentAnimation = event.animation;
+			_currentAnimator = event.animator;
+			this.view.addEventListener(Event.ENTER_FRAME, view_enterFrameHandler );
+		}
+		private function contect_pauseHandler(event:AnimationEvent):void
+		{
+			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			event.animation.isPlaying = false;
+			animator.stop();
+			this.view.removeEventListener(Event.ENTER_FRAME, view_enterFrameHandler );
+		}
+		
+		private function contect_stopHandler(event:AnimationEvent):void
+		{
+			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			event.animation.isPlaying = false;
+			animator.stop();
+			animator.time = 0;
+			this.view.removeEventListener(Event.ENTER_FRAME, view_enterFrameHandler );
+			
+			_currentAnimation.currentPosition = 0;
+			
+		}
+		private function contect_seekHandler(event:AnimationEvent):void
+		{
+			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			event.animation.isPlaying = false;
+			if( event.animation.name != event.animator.activeAnimationNodeName )
+			{
+				animator.play(event.animation.name, null, event.animation.currentPosition);
+				animator.stop();
+				event.animator.activeAnimationNodeName = event.animation.name;
+			}
+			
+			animator.time = event.animation.currentPosition;
+			
+			_currentAnimation = event.animation;
+			_currentAnimator = event.animator;
+		}
 		
 		private function eventDispatcher_reparentLightsHandler(event:SceneEvent):void
 		{
@@ -575,6 +641,51 @@ package awaybuilder.view.mediators
 			{
 				var nearShadowMapMethod:NearShadowMapMethod = obj as NearShadowMapMethod;
 				nearShadowMapMethod.baseMethod = assets.GetObject( asset.baseMethod ) as SimpleShadowMapMethodBase;
+			}
+		}
+		
+		private function applyAnimator( asset:AnimatorVO ):void
+		{
+			var obj:AnimatorBase = assets.GetObject( asset ) as AnimatorBase;
+			applyName( obj, asset );
+			obj.playbackSpeed = asset.playbackSpeed;
+			var newAnimatorBase:AnimatorBase;
+			
+			var newAnimationSet:AnimationSetBase = assets.GetObject( asset.animationSet ) as AnimationSetBase;
+			
+			var skeletonAnimator:SkeletonAnimator = obj as SkeletonAnimator;
+			if( skeletonAnimator )
+			{
+				var newSkeleton:Skeleton = assets.GetObject( asset.skeleton ) as Skeleton;
+				if( skeletonAnimator.skeleton != newSkeleton )
+				{
+					newAnimatorBase = new SkeletonAnimator( newAnimationSet as SkeletonAnimationSet, newSkeleton );
+				}
+			}
+			else
+			{
+				if( obj.animationSet != newAnimationSet )
+				{
+					newAnimatorBase = new VertexAnimator( newAnimationSet as VertexAnimationSet );
+				}
+			}
+			
+			if( newAnimatorBase ) 
+			{
+				assets.ReplaceObject( obj, newAnimatorBase );
+				
+				// TODO: use document, not assets
+				var meshes:Vector.<Object> = assets.GetObjectsByType( Mesh, "animator", obj ) as Vector.<Object>;
+				for each(var mesh:Mesh in meshes)
+				{
+					if( newAnimatorBase is SkeletonAnimator )
+						mesh.animator = SkeletonAnimator(newAnimatorBase);
+					if( newAnimatorBase is VertexAnimator )
+						mesh.animator = VertexAnimator(newAnimatorBase);
+					
+					var vo:MeshVO = assets.GetAsset( mesh ) as MeshVO;
+					vo.animator = assets.GetAsset( newAnimatorBase ) as AnimatorVO;
+				}
 			}
 		}
 		private function applyContainer( asset:ContainerVO ):void
@@ -843,7 +954,6 @@ package awaybuilder.view.mediators
 				obj.castsShadows = item.castsShadows;
 				obj.geometry = assets.GetObject( item.geometry ) as Geometry;
 				obj.animator = assets.GetObject( item.animator ) as SkeletonAnimator;
-				
 				for( var i:int = 0; i < obj.subMeshes.length; i++ )
 				{
 					assets.ReplaceObject( assets.GetObject( item.subMeshes.getItemAt(i) as AssetVO ), obj.subMeshes[i] );
@@ -933,6 +1043,14 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+		private function eventDispatcher_changeAnimatorHandler(event:SceneEvent):void
+		{
+			var asset:AnimatorVO = event.items[0] as AnimatorVO;
+			if( asset ) 
+			{
+				applyAnimator( asset );
+			}
+		}
 		private function eventDispatcher_changeContainerHandler(event:SceneEvent):void
 		{
 			var asset:ContainerVO = event.items[0] as ContainerVO;

@@ -3,6 +3,7 @@ package awaybuilder.utils
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
+	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
@@ -116,12 +117,15 @@ package awaybuilder.utils
 					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
 					item.children = CreateBranch( LightVO(asset).shadowMethods );
 					return item;
+				
+				case( asset is AnimatorVO ):
+					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATOR );
 					
 				case( asset is AnimationNodeVO ):
 					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_NODE );
 					
 				case( asset is AnimationSetVO ):
-					item = new ScenegraphItemVO( asset.name, asset );
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_SET );
 					item.children = CreateBranch( AnimationSetVO(asset).animations );
 					return item;
 					

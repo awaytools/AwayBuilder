@@ -31,6 +31,13 @@ package awaybuilder.view.components.editors.events
 		public static const TEXTURE_CHANGE:String = "textureChange";
 		public static const TEXTURE_STEPPER_CHANGE:String = "textureStepperChange";
 		
+		public static const ANIMATOR_CHANGE:String = "animatorChange";
+		public static const ANIMATOR_STEPPER_CHANGE:String = "animatorStepperChange";
+		public static const ANIMATOR_PLAY:String = "animatorPlay";
+		public static const ANIMATOR_STOP:String = "animatorStop";
+		public static const ANIMATOR_PAUSE:String = "animatorPause";
+		public static const ANIMATOR_SEEK:String = "animatorSeek";
+		
 		public static const SKELETON_CHANGE:String = "skeletonChange";
 		public static const SKELETON_STEPPER_CHANGE:String = "skeletonStepperChange";
 		

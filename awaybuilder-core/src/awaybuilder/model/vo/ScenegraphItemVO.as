@@ -21,6 +21,8 @@ package awaybuilder.model.vo
 		public static const CONTAINER:String = "container";
 		public static const BEAR:String = "bear";
 		public static const ANIMATION_NODE:String = "animationNode";
+		public static const ANIMATION_SET:String = "animationSet";
+		public static const ANIMATOR:String = "animator";
 		public static const TEXTURE:String = "texture";
 		public static const AMBIENT:String = "ambient";
 		public static const NORMAL:String = "normal";
@@ -40,7 +42,7 @@ package awaybuilder.model.vo
 		
 		public var label:String;
 		
-		public var item:AssetVO;
+		public var item:AssetVO; // key field, used to compare items
 		
 		public var children:ArrayCollection;
 		
@@ -49,6 +51,8 @@ package awaybuilder.model.vo
 		public function merge( item:Object ):void
 		{
 			var newItem:ScenegraphItemVO = item as ScenegraphItemVO;
+			
+			this.label = newItem.label;
 			if( newItem.children && this.children )
 			{
 				this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "item" );

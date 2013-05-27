@@ -88,21 +88,20 @@
 	<s:FormItem label="Name:" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 		<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
 	</s:FormItem>
-	<s:VGroup width="100%" paddingLeft="10" paddingRight="6" paddingTop="8">
-		<s:HGroup width="100%">
-			<s:Label text="Lights:" fontWeight="bold"/>
-			<controls:HorizontalFormSeparator/>
-		</s:HGroup>
+	<controls:PropertiesItemContainer label="Lights" width="100%"  paddingLeft="10" paddingRight="6" paddingTop="8">
+		<controls:layout>
+			<s:VerticalLayout/>
+		</controls:layout>
 		<controls:DroppableLightsList id="lightsList" dataProvider="{_asset.lights}" 
 									  dropEnabled="true" width="100%" 
 									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 
 									  itemRenderer="awaybuilder.view.components.editors.renderers.LightItemRenderer"
 									  dropped="lightsList_droppedHandler(event)"/>
 		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
-			<s:Button id="addButton" toolTip="Add New" styleName="addButton" click="addButton_clickHandler(event)"/>
-			<s:Button id="deleteButton" enabled="{lightsList.selectedItem}" toolTip="Remove" styleName="removeButton"
+			<s:Button id="addButton" toolTip="Add New" styleName="addButton" click="addButton_clickHandler(event)" height="22" width="22"/>
+			<s:Button id="deleteButton" enabled="{lightsList.selectedItem}" toolTip="Remove" styleName="removeButton" height="22" width="22"
 					  click="deleteButton_clickHandler(event)"/>
 		</s:HGroup>
-	</s:VGroup>
+	</controls:PropertiesItemContainer>
  	
 </editors:EditorBase>

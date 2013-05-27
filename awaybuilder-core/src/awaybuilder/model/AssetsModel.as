@@ -131,6 +131,7 @@ package awaybuilder.model
 //					animator.name =  "VertexAnimator" + AssetUtil.GetNextId("VertexAnimator");
 					break;
 			}
+			animator.updatePosition = false;
 			return GetAsset( animator ) as AnimatorVO;
 		}
 		

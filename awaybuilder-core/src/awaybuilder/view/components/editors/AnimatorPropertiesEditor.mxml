@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
 					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:editors="awaybuilder.view.components.editors.*">
+					xmlns:editors="awaybuilder.view.components.editors.*" xmlns:controls="awaybuilder.view.components.controls.*">
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AnimatorVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		
+		import spark.events.IndexChangeEvent;
 		
 		[Bindable]
 		private var _asset:AnimatorVO;
@@ -17,14 +19,39 @@
 			_asset = AnimatorVO(asset).clone();
 		}
 		
-		private function name_changeHandler( event:Event ):void
+		private function stepper_changeHandler( event:Event ):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_STEPPER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_STEPPER_CHANGE, _asset));
 		}
 		
-		protected function replaceButton_clickHandler(event:MouseEvent):void
+//		protected function button1_clickHandler(event:MouseEvent):void
+//		{
+//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_PLAY, _asset));
+//		}
+//		
+//		protected function button2_clickHandler(event:MouseEvent):void
+//		{
+//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_STOP, _asset));
+//		}
+		
+		protected function animationSets_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.animationSet));
+		}
+		
+		protected function skeletons_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.skeleton));
+		}
+		
+		protected function skeletonsList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_CHANGE, _asset));
+		}
+		
+		protected function animationSetsList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_CHANGE, _asset));
 		}
 		
 	]]></fx:Script>
@@ -44,8 +71,35 @@
 	
 	<s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
+			<s:TextInput width="100%" text="@{_asset.name}" change="stepper_changeHandler(event)" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
+		<s:FormItem label="PlayBack Speed" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper stepSize="0.01" snapInterval="0.001" minimum="-1000" maximum="1000" width="42" value="@{_asset.playbackSpeed}" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		
 	</s:Form>
+	
+	<controls:PropertiesItemContainer label="Animation Set" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8">
+		<s:DropDownList requireSelection="true" width="100%" labelField="name"
+						change="animationSetsList_changeHandler(event)"
+						selectedItem="@{_asset.animationSet}" dataProvider="{animationSets}"
+						/>
+		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animationSets_clickHandler(event)" />
+	</controls:PropertiesItemContainer>
+	<controls:PropertiesItemContainer label="Skeleton" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8">
+		<s:DropDownList requireSelection="true" width="100%" labelField="name"
+						change="skeletonsList_changeHandler(event)"
+						selectedItem="@{_asset.skeleton}" dataProvider="{skeletons}"
+						/>
+		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="skeletons_clickHandler(event)" />
+	</controls:PropertiesItemContainer>
+	<controls:PropertiesItemContainer label="Animations" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8">
+		<s:List dataProvider="{_asset.animationSet.animations}" 
+				width="100%" 
+				skinClass="awaybuilder.view.skins.AnimationsListSkin"
+				requireSelection="true"/>
+	</controls:PropertiesItemContainer>
+	<!--<s:Button label="Play" click="button1_clickHandler(event)"/>
+	<s:Button label="Stop" click="button2_clickHandler(event)"/>-->
 	
 </editors:EditorBase>

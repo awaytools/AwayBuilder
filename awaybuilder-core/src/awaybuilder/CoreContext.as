@@ -40,6 +40,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewSkyBoxCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.AddNewTextureProjectorCommand;
+	import awaybuilder.controller.scene.ChangeAnimatorCommand;
 	import awaybuilder.controller.scene.ChangeContainerCommand;
 	import awaybuilder.controller.scene.ChangeCubeTextureCommand;
 	import awaybuilder.controller.scene.ChangeEffectMethodCommand;
@@ -152,6 +153,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_CUBE_TEXTURE, ChangeCubeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE, ChangeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR, ChangeTextureProjectorCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATOR, ChangeAnimatorCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);

@@ -84,6 +84,12 @@
 		public var animators:ArrayCollection;
 		
 		[Bindable]
+		public var animationSets:ArrayCollection;
+		
+		[Bindable]
+		public var skeletons:ArrayCollection;
+		
+		[Bindable]
 		public var cubeTextures:ArrayCollection;
 		
 		[Bindable]
@@ -139,7 +145,7 @@
 			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{_data}" includeIn="textureProjector,initAll"/>
 			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationSet,initAll"/>
 			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationNode,initAll"/>
-			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animator,initAll"/>
+			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" animationSets="{animationSets}" data="{_data}" includeIn="animator,initAll"/>
 			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="skeleton,initAll"/>
 		</s:Group>
 	</controls:CrutchScroller>

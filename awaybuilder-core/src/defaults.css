@@ -115,7 +115,7 @@ tree|TreeItemRenderer.geometry
 }
 tree|TreeItemRenderer.skeleton
 {
-	icon: Embed("assets/images/chart_line.png");
+	icon: Embed("assets/images/skull.png");
 }
 tree|TreeItemRenderer.mesh
 {
@@ -127,7 +127,15 @@ tree|TreeItemRenderer.container
 }
 tree|TreeItemRenderer.animationNode
 {
-	icon: Embed("assets/images/film.png");
+	icon: Embed("assets/images/film-medium.png");
+}
+tree|TreeItemRenderer.animationSet
+{
+	icon: Embed("assets/images/inbox-film.png");
+}
+tree|TreeItemRenderer.animator
+{
+	icon: Embed("assets/images/walk.png");
 }
 tree|TreeItemRenderer.bear
 {
@@ -374,18 +382,46 @@ s|Button.addItemButton
 	icon: Embed("assets/images/add.png");
 }
 
+s|Button.playButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+	icon: Embed("assets/images/control.png");
+}
+s|Button.pauseButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+	icon: Embed("assets/images/control-pause.png");
+}
+s|Button.stopButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+	icon: Embed("assets/images/control-stop-square.png");
+}
+s|Button.stepForwardButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+	icon: Embed("assets/images/control-double.png");
+}
+s|Button.stepBackButton
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+	icon: Embed("assets/images/control-double-180.png");
+}
 s|Button.addButton
 {
 	chromeColor: #004F8F;
 	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
-/*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");*/
 	icon: Embed("assets/images/add.png");
 }
 s|Button.removeButton
 {
 	chromeColor: #004F8F;
 	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
-/*	skinClass: ClassReference("awaybuilder.view.skins.AddButtonSkin");*/
 	icon: Embed("assets/images/delete.png");
 }
 
