@@ -1269,7 +1269,7 @@ package awaybuilder.utils.encoders
 					break;
 				case "ProjectiveTextureMethod":
 					texID=_getBlockIDorEncodeAsset(methVO.textureProjector);
-					returnID=_encodeSharedMethodBlock(methVO.name,405, [1,401], [texID,blendModeDic[methVO.mode],texProjectorID], [0,10], [BADDR,UINT8]);
+					returnID=_encodeSharedMethodBlock(methVO.name,405, [1,401], [texID,blendModeDic[methVO.mode]], [0,10], [BADDR,UINT8]);
 					break;
 				case "RimLightMethod"://EffectMethodVO.RIM_LIGHT:
 					returnID=_encodeSharedMethodBlock(methVO.name,406, [601,101,102], [methVO.color,methVO.strength,methVO.power], [0xffffff,0.4,2], [COLOR,_propNrType,_propNrType]);
@@ -1424,7 +1424,7 @@ package awaybuilder.utils.encoders
 					if(valuesAr[i] is Array){
 						encodeProp=false;
 						for(s=0;s<valuesAr[i].length;s++){
-							if ((defaultValuesAr[i])as Array[s]!=(valuesAr[i])as Array[s]){
+							if (defaultValuesAr[i][s]!=valuesAr[i][s]){
 								encodeProp=true;
 							}							
 						}
