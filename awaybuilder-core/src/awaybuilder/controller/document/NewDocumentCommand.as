@@ -1,13 +1,14 @@
 package awaybuilder.controller.document
 {
-	import awaybuilder.utils.scene.CameraManager;
 	import away3d.library.AssetLibrary;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.utils.AssetUtil;
+	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import org.robotlegs.mvcs.Command;
@@ -35,6 +36,8 @@ package awaybuilder.controller.document
 			document.path = null;
 			
 			if (Scene3DManager.scene) CameraManager.focusTarget();
+			
+			this.dispatch(new SceneEvent(SceneEvent.SELECT, []));
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.DOCUMENT_CREATED));
 		}
