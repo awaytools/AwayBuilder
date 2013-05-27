@@ -1023,6 +1023,10 @@ package awaybuilder.view.mediators
 				{
 					applyTextureProjector( event.items[0] as TextureProjectorVO );
 				}
+				if( event.items[0] is ShadingMethodVO ) 
+				{
+					applyShadingMethod( event.items[0] as ShadingMethodVO );
+				}
 			}
 		}
 		private function eventDispatcher_addNewCubeTextureHandler(event:SceneEvent):void
