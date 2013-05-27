@@ -28,7 +28,7 @@ package awaybuilder.controller.scene
             vo.y = vector.y;
             vo.z = vector.z;
 
-            addToHistory( event );
+			commitHistoryEvent( event );
         }
     }
 }

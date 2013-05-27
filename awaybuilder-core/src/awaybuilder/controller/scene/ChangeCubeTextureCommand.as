@@ -16,9 +16,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var newAsset:CubeTextureVO = event.newValue as CubeTextureVO;
@@ -27,7 +24,7 @@ package awaybuilder.controller.scene
 			saveOldValue( event, vo.clone() );
 			vo.fillFromCubeTexture( newAsset );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

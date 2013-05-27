@@ -10,9 +10,6 @@ package awaybuilder.controller.scene
 	    [Inject]
 	    public var event:SceneEvent;
 	
-	    [Inject]
-	    public var document:DocumentModel;
-	
 	    override public function execute():void
 	    {
 	        var newMaterial:MaterialVO = event.newValue as MaterialVO;
@@ -23,6 +20,8 @@ package awaybuilder.controller.scene
 			vo.fillFromMaterial( newMaterial );
 			
 	        addToHistory( event );
+			
+			commitHistoryEvent( event );
 	    }
 	}
 }

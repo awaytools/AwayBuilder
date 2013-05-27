@@ -14,9 +14,6 @@ package awaybuilder.controller.scene
         [Inject]
         public var event:SceneEvent;
 
-        [Inject]
-        public var document:DocumentModel;
-
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
@@ -27,18 +24,18 @@ package awaybuilder.controller.scene
 			}
 			
 			var lvo:LightVO = vo as LightVO;
-			if (lvo && lvo.type == LightVO.DIRECTIONAL) {
+			if (lvo && lvo.type == LightVO.DIRECTIONAL) 
+			{
 				lvo.elevationAngle = ((vector.x + 360 + 90) % 360) - 90;
 				lvo.azimuthAngle = (vector.y + 360) % 360;
-			} else {
+			} else 
+			{
 	            vo.rotationX = vector.x;
 	            vo.rotationY = vector.y;
 	            vo.rotationZ = vector.z;
 			}
 
-//			vo.apply();
-
-            addToHistory( event );
+			commitHistoryEvent( event );
         }
     }
 }

@@ -14,8 +14,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
 		
 		override public function execute():void
 		{
@@ -25,7 +23,7 @@ package awaybuilder.controller.scene
 			saveOldValue( event, vo.clone() );
 			vo.fillFromTextureProjector(newAsset);
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

@@ -30,8 +30,6 @@ package awaybuilder.controller.document
 
 	public class ConcatenateDocumentDataCommand extends HistoryCommandBase
 	{
-		[Inject]
-		public var document:DocumentModel;
 		
 		[Inject]
 		public var assets:AssetsModel;

@@ -21,9 +21,6 @@ package awaybuilder.controller.scene
         [Inject]
         public var event:SceneEvent;
 
-        [Inject]
-        public var document:DocumentModel;
-
         override public function execute():void
         {
             var mesh:MeshVO = event.newValue as MeshVO;
@@ -52,7 +49,7 @@ package awaybuilder.controller.scene
 			}
 			vo.extras = new ArrayCollection( e );
 			
-            addToHistory( event );
+			commitHistoryEvent( event );
         }
     }
 }

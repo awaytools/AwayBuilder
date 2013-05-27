@@ -11,9 +11,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			
@@ -27,7 +24,7 @@ package awaybuilder.controller.scene
 			
 			DataMerger.syncArrays( vo.lights, newAsset.lights, "id" );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

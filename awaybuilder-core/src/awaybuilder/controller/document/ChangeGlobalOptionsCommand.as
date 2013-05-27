@@ -10,9 +10,6 @@ package awaybuilder.controller.document
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var globalOptions:GlobalOptionsVO = event.newValue as GlobalOptionsVO;
@@ -22,6 +19,7 @@ package awaybuilder.controller.document
 			document.globalOptions.fill( globalOptions );
 			
 			event.items = [document.globalOptions];
+			
 			addToHistory( event );
 		}
 	}

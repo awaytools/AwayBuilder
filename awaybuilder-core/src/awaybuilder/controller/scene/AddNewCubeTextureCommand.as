@@ -17,9 +17,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var asset:AssetVO;
@@ -49,11 +46,7 @@ package awaybuilder.controller.scene
 				asset[event.options] = newValue;
 			}
 			
-			addToHistory( event );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-			document.empty = false;
-			document.edited = true;
+			commitHistoryEvent( event );
 		}
 		
 	}

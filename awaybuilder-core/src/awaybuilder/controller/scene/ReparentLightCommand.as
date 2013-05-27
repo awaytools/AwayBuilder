@@ -24,9 +24,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			saveOldValue( event, event.newValue );
@@ -68,9 +65,7 @@ package awaybuilder.controller.scene
 				}
 			}
 			
-			addToHistory( event );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
+			commitHistoryEvent( event );
 		}
 		private function itemIsInList( collection:ArrayCollection, asset:AssetVO ):Boolean
 		{

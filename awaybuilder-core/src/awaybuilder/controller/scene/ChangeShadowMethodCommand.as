@@ -10,9 +10,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var newAsset:ShadowMethodVO = event.newValue as ShadowMethodVO;
@@ -29,7 +26,7 @@ package awaybuilder.controller.scene
 			vo.range = newAsset.range;
 			vo.baseMethod = newAsset.baseMethod;
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

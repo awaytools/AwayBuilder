@@ -10,9 +10,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var newAsset:ShadowMapperVO = event.newValue as ShadowMapperVO;
@@ -22,7 +19,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromShadowMapper( newAsset );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

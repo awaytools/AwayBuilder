@@ -10,9 +10,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var newAsset:ShadingMethodVO = event.newValue as ShadingMethodVO;
@@ -22,7 +19,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromShadingMethod( newAsset );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

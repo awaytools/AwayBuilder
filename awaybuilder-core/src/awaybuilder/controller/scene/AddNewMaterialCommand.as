@@ -12,9 +12,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var subMesh:SubMeshVO = event.items[0] as SubMeshVO;
@@ -43,11 +40,7 @@ package awaybuilder.controller.scene
 				document.materials.addItemAt( newMaterial, 0 );
 			}
 			
-			addToHistory( event );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-			document.empty = false;
-			document.edited = true;
+			commitHistoryEvent( event );
 		}
 		
 	}

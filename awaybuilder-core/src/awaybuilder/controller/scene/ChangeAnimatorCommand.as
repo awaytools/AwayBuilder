@@ -10,9 +10,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var asset:AnimatorVO = event.newValue as AnimatorVO;
@@ -22,7 +19,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromAnimator( asset );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

@@ -19,7 +19,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromGeometry( newValue );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

@@ -14,9 +14,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var asset:LightVO;
@@ -46,10 +43,7 @@ package awaybuilder.controller.scene
 				
 			}
 			
-			addToHistory( event );
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-			document.empty = false;
-			document.edited = true;
+			commitHistoryEvent( event );
 		}
 		
 		

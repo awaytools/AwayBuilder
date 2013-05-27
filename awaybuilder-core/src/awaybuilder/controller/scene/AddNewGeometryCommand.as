@@ -11,9 +11,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var oldValue:GeometryVO = event.oldValue as GeometryVO;
@@ -28,11 +25,7 @@ package awaybuilder.controller.scene
 				document.geometry.addItemAt( newValue, 0 );
 			}
 			
-			addToHistory( event );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-			document.empty = false;
-			document.edited = true;
+			commitHistoryEvent( event );
 		}
 		
 	}

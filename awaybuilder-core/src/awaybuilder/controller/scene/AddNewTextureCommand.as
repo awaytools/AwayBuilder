@@ -25,9 +25,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var event:SceneEvent;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var asset:AssetVO;
@@ -66,10 +63,7 @@ package awaybuilder.controller.scene
 				this.dispatch(new SceneEvent(SceneEvent.SELECT,[newTexture]));
 			}
 			
-			addToHistory( event );
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-			document.empty = false;
-			document.edited = true;
+			commitHistoryEvent( event );
 		}
 		
 		protected function saveOldTexture( event:HistoryEvent, prevValue:AssetVO, option:String ):void 

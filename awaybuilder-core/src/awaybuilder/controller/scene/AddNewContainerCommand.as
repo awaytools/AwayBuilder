@@ -16,9 +16,6 @@ package awaybuilder.controller.scene
 		public var event:SceneEvent;
 		
 		[Inject]
-		public var document:DocumentModel;
-		
-		[Inject]
 		public var assets:AssetsModel;
 		
 		override public function execute():void
@@ -37,11 +34,7 @@ package awaybuilder.controller.scene
 				Scene3DManager.addObject( assets.GetObject(newValue) as ObjectContainer3D );
 			}
 			
-			addToHistory( event );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-			document.empty = false;
-			document.edited = true;
+			commitHistoryEvent( event );
 		}
 		
 	}

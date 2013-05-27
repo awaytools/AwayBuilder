@@ -14,9 +14,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var newAsset:TextureVO = event.newValue as TextureVO;
@@ -26,7 +23,7 @@ package awaybuilder.controller.scene
 			vo.name = newAsset.name;
 			vo.bitmapData = newAsset.bitmapData;
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

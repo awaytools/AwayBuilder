@@ -19,7 +19,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromSkyBox( newValue );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

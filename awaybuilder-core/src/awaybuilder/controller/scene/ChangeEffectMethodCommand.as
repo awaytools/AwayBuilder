@@ -19,7 +19,7 @@ package awaybuilder.controller.scene
 			
 			vo.fillFromEffectMethod( newAsset );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package awaybuilder.controller.history
 {
     import awaybuilder.controller.events.DocumentModelEvent;
+    import awaybuilder.model.DocumentModel;
     import awaybuilder.model.UndoRedoModel;
     
     import org.robotlegs.mvcs.Command;
@@ -10,6 +11,17 @@ package awaybuilder.controller.history
         [Inject]
         public var undoRedoModel:UndoRedoModel;
 		
+		[Inject]
+		public var document:DocumentModel;
+		
+		protected function commitHistoryEvent( event:HistoryEvent ):void 
+		{
+			addToHistory( event );
+			
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
+			document.empty = false;
+			document.edited = true;
+		}
 		
 		protected function saveOldValue( event:HistoryEvent, prevValue:Object ):void 
 		{

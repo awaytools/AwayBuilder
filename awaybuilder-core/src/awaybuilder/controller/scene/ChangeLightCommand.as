@@ -28,9 +28,6 @@ package awaybuilder.controller.scene
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			var newAsset:LightVO = event.newValue as LightVO;
@@ -53,7 +50,7 @@ package awaybuilder.controller.scene
 			}
 			vo.fillFromLight( newAsset );
 			
-			addToHistory( event );
+			commitHistoryEvent( event );
 		}
 	}
 }

@@ -12,9 +12,6 @@
         [Inject]
         public var event:SceneEvent;
 
-        [Inject]
-        public var document:DocumentModel;
-
         override public function execute():void
         {
             var vector:Vector3D = event.newValue as Vector3D;
@@ -28,7 +25,7 @@
             vo.scaleY = vector.y;
             vo.scaleZ = vector.z;
 
-            addToHistory( event );
+			commitHistoryEvent( event );
         }
     }
 }

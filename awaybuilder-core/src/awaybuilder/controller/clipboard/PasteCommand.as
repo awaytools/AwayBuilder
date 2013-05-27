@@ -30,9 +30,6 @@ package awaybuilder.controller.clipboard
 		[Inject]
 		public var assets:AssetsModel;
 		
-		[Inject]
-		public var document:DocumentModel;
-		
 		override public function execute():void
 		{
 			if( event.isUndoAction )
@@ -71,9 +68,7 @@ package awaybuilder.controller.clipboard
 				}
 			}
 			
-			addToHistory( event );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
+			commitHistoryEvent( event );
 		}
 		
 		private function undo():void
