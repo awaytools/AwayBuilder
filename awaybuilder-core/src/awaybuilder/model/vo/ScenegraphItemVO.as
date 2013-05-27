@@ -53,7 +53,6 @@ package awaybuilder.model.vo
 			var newItem:ScenegraphItemVO = item as ScenegraphItemVO;
 			
 			this.label = newItem.label;
-			trace( this.label );
 			if( newItem.children && this.children )
 			{
 				this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "item" );

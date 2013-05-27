@@ -40,8 +40,10 @@
 
         private function invokeHandler(event:InvokeEvent):void
         {
+			trace("event.arguments = " + event.arguments );
             if(event.arguments.length == 1)
             {
+				
                 const extensions:Vector.<String> = new <String>["awd"];
                 var filePath:String = event.arguments[0];
                 var file:File = new File(filePath);

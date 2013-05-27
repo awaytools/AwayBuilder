@@ -30,7 +30,6 @@ package awaybuilder.controller.document
 
 	public class ConcatenateDocumentDataCommand extends HistoryCommandBase
 	{
-		
 		[Inject]
 		public var assets:AssetsModel;
 		
@@ -64,6 +63,10 @@ package awaybuilder.controller.document
 			if( event.canUndo ) 
 			{
 				addToHistory( event );
+			}
+			else
+			{
+				document.name = data.name;
 			}
 			
 			CursorManager.setBusyCursor();

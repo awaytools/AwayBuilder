@@ -9,5 +9,7 @@ package awaybuilder.model
 		function open( type:String, event:HistoryEvent ):void;
 		
 		function openBitmap( items:Array, property:String ):void;
+		
+		function load( url:String, name:String, event:HistoryEvent  ):void;
 	}
 }

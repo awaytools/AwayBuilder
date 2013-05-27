@@ -31,11 +31,20 @@ package awaybuilder.web.model
 		
 		private var _items:Array;
 		
+		private var _name:String;
+		
 		private var _property:String;
 		
 		private var _fileToData:Dictionary = new Dictionary();
 		
 		private var _file:FileReference;
+		
+		public function load( url:String, name:String, event:HistoryEvent ):void
+		{
+			_name = name;
+			_nextEvent = event;
+			loadAssets( url );
+		}
 		
 		public function openBitmap( items:Array, property:String ):void
 		{

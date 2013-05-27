@@ -62,7 +62,7 @@ package awaybuilder.model
 			bitmapReady(loader.content as Bitmap);
 		}
 		
-		protected function load( url:String ):void
+		protected function loadAssets( url:String):void
 		{
 			_document = new DocumentVO();
 			_objects.length = 0;

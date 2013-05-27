@@ -32,9 +32,18 @@ package awaybuilder.desktop.model
 		
 		private var _nextEvent:HistoryEvent;
 		
+		private var _name:String;
+		
 		private var _items:Array;
 		
 		private var _property:String;
+		
+		public function load( url:String, name:String, event:HistoryEvent ):void
+		{
+			_name = name;
+			_nextEvent = event;
+			loadAssets( url );
+		}
 		
 		public function openBitmap( items:Array, property:String ):void
 		{
@@ -178,8 +187,8 @@ package awaybuilder.desktop.model
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
-			
-			load( file.url );
+			_name = file.name;
+			loadAssets( file.url );
 		}
 		
 		private function file_open_cancelHandler(event:Event):void
@@ -191,6 +200,7 @@ package awaybuilder.desktop.model
 		
 		override protected function documentReady( _document:DocumentVO ):void 
 		{
+			_document.name = _name;
 			_nextEvent.newValue = _document;
 			dispatch( _nextEvent );
 		}
