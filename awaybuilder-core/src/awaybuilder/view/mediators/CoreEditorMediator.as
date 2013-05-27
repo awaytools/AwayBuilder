@@ -307,7 +307,6 @@ package awaybuilder.view.mediators
 		
 		private function view_enterFrameHandler(event:Event):void
 		{
-		
 			if( _currentAnimator && _currentAnimation )
 			{
 				var animator:SkeletonAnimator = assets.GetObject(_currentAnimator ) as SkeletonAnimator;
@@ -385,10 +384,22 @@ package awaybuilder.view.mediators
 				event.animator.activeAnimationNodeName = event.animation.name;
 			}
 			
-			animator.time = event.animation.currentPosition;
-			
 			_currentAnimation = event.animation;
 			_currentAnimator = event.animator;
+			
+			var time:int = event.animation.currentPosition;
+			if ( time >= _currentAnimation.totalDuration ) 
+			{
+				time %= _currentAnimation.totalDuration;
+			}
+			if ( time < 0)
+			{
+				time += _currentAnimation.totalDuration;
+			}
+			
+			animator.time = time;
+			
+			
 		}
 		
 		private function eventDispatcher_reparentLightsHandler(event:SceneEvent):void
@@ -873,7 +884,6 @@ package awaybuilder.view.mediators
 				{
 					var colorMultiPassMaterial:ColorMultiPassMaterial = m as ColorMultiPassMaterial;
 					colorMultiPassMaterial.color = asset.diffuseColor;
-//					colorMultiPassMaterial.alpha = asset.alpha;
 					colorMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 					colorMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
 					colorMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;

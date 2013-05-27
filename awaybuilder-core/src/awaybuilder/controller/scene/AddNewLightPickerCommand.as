@@ -42,7 +42,7 @@ package awaybuilder.controller.scene
 				material.lightPicker = newValue;
 			}
 			
-			commitHistoryEvent( event );
+			commitHistoryEvent( event, true );
 		}
 		
 		

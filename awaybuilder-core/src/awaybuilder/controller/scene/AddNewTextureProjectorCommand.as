@@ -35,7 +35,7 @@ package awaybuilder.controller.scene
 			
 			addToHistory( event );
 			
-			commitHistoryEvent( event );
+			commitHistoryEvent( event, true );
 		}
 		
 	}

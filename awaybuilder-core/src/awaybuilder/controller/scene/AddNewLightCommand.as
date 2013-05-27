@@ -58,7 +58,7 @@ package awaybuilder.controller.scene
 				}
 			}
 			
-			commitHistoryEvent( event );
+			commitHistoryEvent( event, true );
 		}
 		
 	}

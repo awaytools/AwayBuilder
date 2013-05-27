@@ -40,7 +40,7 @@ package awaybuilder.controller.scene
 				document.materials.addItemAt( newMaterial, 0 );
 			}
 			
-			commitHistoryEvent( event );
+			commitHistoryEvent( event, true );
 		}
 		
 	}

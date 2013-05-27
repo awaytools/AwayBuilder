@@ -25,7 +25,7 @@ package awaybuilder.controller.scene
 				document.geometry.addItemAt( newValue, 0 );
 			}
 			
-			commitHistoryEvent( event );
+			commitHistoryEvent( event, true );
 		}
 		
 	}

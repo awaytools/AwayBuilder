@@ -216,6 +216,7 @@ package awaybuilder.view.mediators
 		
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
+			trace( "event.data.animator " + event.data.animator );
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data));
         }
         private function view_meshNameChangeHandler(event:PropertyEditorEvent):void
@@ -821,6 +822,10 @@ package awaybuilder.view.mediators
 		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
+			this.view.callLater( updateLists );
+		}
+		private function updateLists():void
+		{
 			var nullItem:AssetVO = new AssetVO();
 			nullItem.name = "Null";
 			nullItem.isNull = true;
@@ -890,6 +895,9 @@ package awaybuilder.view.mediators
 				}
 			}
 			view.animators = new ArrayCollection(animators);
+			
+			trace(" view.animators  = " +  view.animators )
+			
 			view.animationSets = new ArrayCollection(animationSets);
 			view.skeletons = new ArrayCollection(skeletons);
 			
