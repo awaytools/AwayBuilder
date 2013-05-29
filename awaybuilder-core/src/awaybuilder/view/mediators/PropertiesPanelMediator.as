@@ -11,10 +11,12 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.AnimationSetVO;
     import awaybuilder.model.vo.scene.AnimatorVO;
     import awaybuilder.model.vo.scene.AssetVO;
+    import awaybuilder.model.vo.scene.CameraVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.GeometryVO;
+    import awaybuilder.model.vo.scene.LensVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
@@ -754,6 +756,16 @@ package awaybuilder.view.mediators
 						view.showEditor( "skeleton", event.newValue, event.oldValue );
 						view.SetData(event.items[0]);
 					}
+					else if( event.items[0] is CameraVO )
+					{
+						view.showEditor( "camera", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
+					else if( event.items[0] is LensVO )
+					{
+						view.showEditor( "lens", event.newValue, event.oldValue );
+						view.SetData(event.items[0]);
+					}
                     else
                     {
 						view.showEditor( "global", event.newValue, event.oldValue );
@@ -895,8 +907,6 @@ package awaybuilder.view.mediators
 				}
 			}
 			view.animators = new ArrayCollection(animators);
-			
-			trace(" view.animators  = " +  view.animators )
 			
 			view.animationSets = new ArrayCollection(animationSets);
 			view.skeletons = new ArrayCollection(skeletons);

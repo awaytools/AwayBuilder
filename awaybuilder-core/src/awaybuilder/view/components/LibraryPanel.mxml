@@ -61,6 +61,7 @@
 				<s:Button width="100%" label="New Mesh" styleName="addItemButton" cornerRadius="0" click="close(true,'Mesh')"/>
 				<s:Button width="100%" label="New SkyBox" styleName="addItemButton" cornerRadius="0" click="close(true,'SkyBox')"/>
 				<s:Button width="100%" label="New Texture Projector" styleName="addItemButton" cornerRadius="0" click="close(true,'TextureProjector')"/>
+				<s:Button width="100%" label="New Camera" styleName="addItemButton" cornerRadius="0" click="close(true,'Camera')"/>
 			</s:SkinnablePopUpContainer>
 		</fx:Component>
 	</fx:Declarations>
@@ -210,6 +211,9 @@
 						break;
 					case "TextureProjector":
 						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_TEXTURE_PROJECTOR ) );
+						break;
+					case "Camera":
+						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_CAMERA ) );
 						break;
 					default:
 						this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.ADD_SKYBOX ) );

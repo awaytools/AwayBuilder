@@ -4,6 +4,8 @@ package awaybuilder.model.vo.scene
 	public class SubGeometryVO extends AssetVO
 	{
 		
+		public var type : String;
+		
 		public var vertexData : Vector.<Number>;
 		public var vertexOffset : int;
 		public var vertexStride: uint;
@@ -28,7 +30,7 @@ package awaybuilder.model.vo.scene
 		{
 			var vo:SubGeometryVO = new SubGeometryVO();
 			vo.id = this.id;
-			
+			vo.type = this.type;
 			vo.vertexData = this.vertexData;
 			vo.vertexOffset = this.vertexOffset;
 			vo.vertexStride = this.vertexStride;

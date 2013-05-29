@@ -9,10 +9,17 @@ package awaybuilder.model
 	import away3d.animators.nodes.SkeletonClipNode;
 	import away3d.animators.nodes.VertexClipNode;
 	import away3d.animators.states.AnimationStateBase;
+	import away3d.arcane;
+	import away3d.cameras.Camera3D;
+	import away3d.cameras.lenses.LensBase;
+	import away3d.cameras.lenses.OrthographicLens;
+	import away3d.cameras.lenses.OrthographicOffCenterLens;
+	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
 	import away3d.core.base.ISubGeometry;
 	import away3d.core.base.Object3D;
+	import away3d.core.base.SkinnedSubGeometry;
 	import away3d.core.base.SubMesh;
 	import away3d.entities.Entity;
 	import away3d.entities.Mesh;
@@ -44,13 +51,12 @@ package awaybuilder.model
 	import awaybuilder.utils.AssetUtil;
 	
 	import flash.display.BitmapData;
-	import flash.geom.Utils3D;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
-	import mx.utils.UIDUtil;
 
+	use namespace arcane;
 
 	public class SmartFactoryModelBase
 	{
@@ -76,6 +82,9 @@ package awaybuilder.model
 					
 				case(item is TextureProjector):
 					return fillTextureProjector( new TextureProjectorVO(), item as TextureProjector  );
+					
+				case(item is Camera3D):
+					return fillCamera( new CameraVO(),  item as Camera3D );
 					
 				case(item is Entity):
 				case(item is ObjectContainer3D):
@@ -132,6 +141,9 @@ package awaybuilder.model
 					
 				case(item is AnimationSetBase):
 					return fillAnimationSet( new AnimationSetVO(),  item as AnimationSetBase );
+					
+				case(item is LensBase):
+					return fillLens( new LensVO(),  item as LensBase );
 					
 				case(item is AnimatorBase):
 					return fillAnimator( new AnimatorVO,  item as AnimatorBase );
@@ -346,22 +358,23 @@ package awaybuilder.model
 			return asset;
 		}
 		
-		private function fillSubGeometry( asset:SubGeometryVO, item:ISubGeometry ):SubGeometryVO
+		private function fillSubGeometry( asset:SubGeometryVO, obj:ISubGeometry ):SubGeometryVO
 		{
-			asset = fillAsset( asset, item ) as SubGeometryVO;
-			asset.vertexData = item.vertexData;
-			asset.vertexOffset = item.vertexOffset;
-			asset.vertexStride = item.vertexStride;
-			asset.UVData = item.UVData;
-			asset.UVStride = item.UVStride;
-			asset.UVOffset = item.UVOffset;
-			asset.vertexNormalData = item.vertexNormalData;
-			asset.vertexNormalOffset = item.vertexNormalOffset;
-			asset.vertexNormalStride = item.vertexNormalStride;
-			asset.vertexTangentData = item.vertexTangentData;
-			asset.vertexTangentOffset = item.vertexTangentOffset;
-			asset.vertexTangentStride = item.vertexTangentStride;
-			asset.indexData = item.indexData;
+			asset = fillAsset( asset, obj ) as SubGeometryVO;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			asset.vertexData = obj.vertexData;
+			asset.vertexOffset = obj.vertexOffset;
+			asset.vertexStride = obj.vertexStride;
+			asset.UVData = obj.UVData;
+			asset.UVStride = obj.UVStride;
+			asset.UVOffset = obj.UVOffset;
+			asset.vertexNormalData = obj.vertexNormalData;
+			asset.vertexNormalOffset = obj.vertexNormalOffset;
+			asset.vertexNormalStride = obj.vertexNormalStride;
+			asset.vertexTangentData = obj.vertexTangentData;
+			asset.vertexTangentOffset = obj.vertexTangentOffset;
+			asset.vertexTangentStride = obj.vertexTangentStride;
+			asset.indexData = obj.indexData;
 			return asset;
 		}
 		private function fillGeometry( asset:GeometryVO, obj:Geometry ):GeometryVO
@@ -450,6 +463,36 @@ package awaybuilder.model
 			if( skeletonAnimator )
 			{
 				asset.skeleton = GetAsset(skeletonAnimator.skeleton) as SkeletonVO;
+			}
+			return asset;
+		}
+		private function fillCamera( asset:CameraVO, obj:Camera3D ):CameraVO
+		{
+			asset = fillObject( asset, obj ) as CameraVO;
+			asset.lens = GetAsset(obj.lens) as LensVO;
+			return asset;
+		}
+		private function fillLens( asset:LensVO, obj:LensBase ):LensVO
+		{
+			asset = fillAsset( asset, obj ) as LensVO;
+			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			var perspectiveLens:PerspectiveLens = obj as PerspectiveLens;
+			if( perspectiveLens )
+			{
+				asset.value = perspectiveLens.fieldOfView;
+			}
+			var orthographicLens:OrthographicLens = obj as OrthographicLens;
+			if( orthographicLens )
+			{
+				asset.value = orthographicLens.projectionHeight;
+			}
+			var orthographicOffCenterLens:OrthographicOffCenterLens = obj as OrthographicOffCenterLens;
+			if( orthographicOffCenterLens )
+			{
+				asset.minX = orthographicOffCenterLens.minX;
+				asset.minY = orthographicOffCenterLens.minY;
+				asset.maxX = orthographicOffCenterLens.maxX;
+				asset.maxY = orthographicOffCenterLens.maxY;
 			}
 			return asset;
 		}
@@ -759,6 +802,10 @@ package awaybuilder.model
 			{
 				var sm:SubMeshVO = GetAsset(subMesh) as SubMeshVO;
 				sm.parentMesh = asset;
+				if( sm.subGeometry.type == "SkinnedSubGeometry" )
+				{
+					asset.jointsPerVertex = SkinnedSubGeometry(subMesh.subGeometry).arcane::jointWeightsData.length / SkinnedSubGeometry(subMesh.subGeometry).numVertices;
+				}
 				asset.subMeshes.addItem( sm );
 			}
 			return asset;

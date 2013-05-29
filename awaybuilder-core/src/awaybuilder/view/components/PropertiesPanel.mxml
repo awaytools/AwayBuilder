@@ -30,7 +30,8 @@
 		<s:State name="animationSet"/>
 		<s:State name="animator"/>
 		<s:State name="skeleton"/>
-		
+		<s:State name="camera"/>
+		<s:State name="lens"/>
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -147,6 +148,8 @@
 			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationNode,initAll"/>
 			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" animationSets="{animationSets}" data="{_data}" includeIn="animator,initAll"/>
 			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="skeleton,initAll"/>
+			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="camera,initAll"/>
+			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lens,initAll"/>
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

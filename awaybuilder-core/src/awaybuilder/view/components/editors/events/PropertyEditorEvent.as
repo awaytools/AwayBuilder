@@ -56,6 +56,13 @@ package awaybuilder.view.components.editors.events
 		public static const CONTAINER_CHANGE:String = "containerChange";
 		public static const CONTAINER_STEPPER_CHANGE:String = "containerStepperChange";
 		
+		public static const CAMERA_CHANGE:String = "cameraChange";
+		public static const CAMERA_STEPPER_CHANGE:String = "cameraStepperChange";
+		public static const CAMERA_LENS_CHANGE:String = "cameraLensChange";
+		
+		public static const LENS_CHANGE:String = "lensChange";
+		public static const LENS_STEPPER_CHANGE:String = "lensStepperChange";
+		
 		public static const LIGHT_CHANGE:String = "lightChange";
 		public static const LIGHT_MAPPER_CHANGE:String = "lightMapperChange";
 		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";

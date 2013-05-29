@@ -20,7 +20,10 @@ package awaybuilder.model.vo.scene
 		public var geometry:GeometryVO;
 		
 		public var animator:AnimatorVO;
-				
+		
+		[Transient]
+		public var jointsPerVertex:uint = 0;
+		
 		override public function clone():ObjectVO
         {
 			var m:MeshVO = new MeshVO();

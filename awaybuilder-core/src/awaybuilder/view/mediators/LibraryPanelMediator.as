@@ -19,11 +19,11 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.ScenegraphGroupItemVO;
 	import awaybuilder.model.vo.ScenegraphItemVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
@@ -109,6 +109,7 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_EFFECTMETHOD, view_addEffectMethodHandler);
 			addViewListener(LibraryPanelEvent.ADD_MATERIAL, view_addMaterialHandler);
 			addViewListener(LibraryPanelEvent.ADD_ANIMATOR, view_addAnimatorHandler);
+			addViewListener(LibraryPanelEvent.ADD_CAMERA, view_addCameraHandler);
 			
 			
 			addViewListener(LibraryPanelEvent.LIGHT_DROPPED, view_lightDroppedHandler);
@@ -155,9 +156,16 @@ package awaybuilder.view.mediators
 		}
 		private function view_addMaterialHandler(event:LibraryPanelEvent):void
 		{
-			var m:MaterialVO = assets.CreateMaterial()
-			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[], m));
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[m]));
+			var asset:MaterialVO = assets.CreateMaterial()
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_MATERIAL,[], asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
+		}
+		
+		private function view_addCameraHandler(event:LibraryPanelEvent):void
+		{
+			var asset:CameraVO = assets.CreateCamera();
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_CAMERA,[], asset));
+			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
 		private function view_addAnimatorHandler(event:LibraryPanelEvent):void
 		{
@@ -315,10 +323,6 @@ package awaybuilder.view.mediators
 			
 			for (var i:int=0;i<selectedItems.length;i++)
 			{
-				var groupItem:ScenegraphGroupItemVO = selectedItems[i] as ScenegraphGroupItemVO;
-				if( groupItem ) {
-					continue;
-				}
 				items.push(ScenegraphItemVO(selectedItems[i]).item);
 			}
 			

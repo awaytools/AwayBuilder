@@ -7,34 +7,42 @@
 					xmlns:editors="awaybuilder.view.components.editors.*" 
 					>
 	<fx:Declarations>
+		<s:ArrayCollection id="lensList">
+			<fx:Object label="PerspectiveLens" value="PerspectiveLens"/>
+			<fx:Object label="OrthographicLens" value="OrthographicLens"/>
+			<fx:Object label="OrthographicOffCenterLens" value="OrthographicOffCenterLens"/>
+		</s:ArrayCollection>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
-		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.CameraVO;
 		import awaybuilder.model.vo.scene.ExtraItemVO;
 		import awaybuilder.model.vo.scene.ObjectVO;
 		import awaybuilder.model.vo.scene.TextureProjectorVO;
-		import awaybuilder.model.vo.scene.TextureVO;
-		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.controls.Alert;
 		
 		import spark.events.GridItemEditorEvent;
+		import spark.events.IndexChangeEvent;
 		
 		[Bindable]
-		private var _asset:TextureProjectorVO;
+		private var _asset:CameraVO;
 		
 		[Bindable]
-		private var _directionalMappersSelectedItem:Object;
-		
-		[Bindable]
-		private var _pointMappersSelectedItem:Object;
-		
+		private var _selectedLens:Object;
 		
 		override protected function validate(asset:Object):void
 		{
-			if( !(asset is TextureProjectorVO) ) return;
-			_asset = TextureProjectorVO(asset).clone() as TextureProjectorVO;
+			if( !(asset is CameraVO) ) return;
+			_asset = CameraVO(asset).clone() as CameraVO;
+			
+			var item:Object;
+			for each(item in lensList) 
+			{
+				if( item.value == _asset.lens.type ) {
+					_selectedLens = item;
+				}
+			}
 		}
 		
 		private function position_commitHandler(event:Event):void {
@@ -45,7 +53,7 @@
 			_asset.pivotX = pivotXStepper.value;
 			_asset.pivotY = pivotYStepper.value;
 			_asset.pivotZ = pivotZStepper.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_STEPPER_CHANGE, _asset));
 		}
 		private function rotation_commitHandler(event:Event):void 
 		{
@@ -60,34 +68,14 @@
 		
 		protected function stepper_changeHandler(event:Event):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_STEPPER_CHANGE, _asset));
 		}
 		
 		protected function value_changeHandler(event:Event):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, _asset));
-			
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_CHANGE, _asset));
 		}
 		
-		protected function textureDropDownList_addNewItemHandler(event:ExtendedDropDownEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, _asset, true));
-		}
-		
-		protected function textureDropDownList_editSharedHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.texture));
-		}
-		
-		private function dropDownIconFunction(item:TextureVO):Object 
-		{
-			return item.bitmapData;
-		}
-		
-		private function dropDownLabelFunction(item:AssetVO):Object 
-		{
-			return item.name.split("/").pop();
-		}
 		protected function extrasGrid_gridItemEditorSessionSaveHandler(event:GridItemEditorEvent):void
 		{
 			var extra:ExtraItemVO = _asset.extras.getItemAt( event.rowIndex ) as ExtraItemVO;
@@ -100,7 +88,7 @@
 					return;
 				}
 			}
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_STEPPER_CHANGE, _asset));
 		}
 		private function addExtraButton_clickHandler(event:MouseEvent):void
 		{
@@ -112,7 +100,7 @@
 			}
 			extra.name = "key"+i;
 			_asset.extras.addItem(extra);
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_CHANGE, _asset));
 		}
 		private function deleteExtraButton_clickHandler(event:MouseEvent):void
 		{
@@ -120,7 +108,7 @@
 			{
 				_asset.extras.removeItemAt( extrasGrid.selectedIndex );
 			}
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, _asset));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_CHANGE, _asset));
 		}
 		private function isCorrectName( extra:String ):Boolean
 		{
@@ -139,6 +127,16 @@
 			return true;
 		}
 		
+		protected function lensDropDownList_changeHandler(event:IndexChangeEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CAMERA_LENS_CHANGE, lensDropDownList.selectedItem.value));
+		}
+		
+		protected function lens_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.lens, true));
+		}
+		
 	]]></fx:Script>
 	
 	<s:Group width="100%" top="0">
@@ -150,7 +148,7 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="TextureProjector" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="Camera3D" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	
@@ -159,34 +157,14 @@
 			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="stepper_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
-	<s:Spacer height="6"/>
 	
-	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
-		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-			<s:FormItem label="Aspect ratio" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper stepSize="0.1" snapInterval="0.01" minimum="0" maximum="10"
-												 width="40" value="@{_asset.aspectRatio}"
-												 change="stepper_changeHandler(event)" />
-			</s:FormItem>
-			<s:FormItem label="Field of View" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper stepSize="0.1" snapInterval="0.01" minimum="0" maximum="170"
-												 width="40" value="@{_asset.fov}"
-												 change="stepper_changeHandler(event)" />
-			</s:FormItem>
-		</s:Form>
-		<controls:PropertiesItemContainer width="100%" label="Texture">
-			<controls:ExtendedDropDownList id="textureDropDownList" width="100%" height="40"
-										   itemRenderer="awaybuilder.view.components.editors.renderers.TextureItemRenderer"
-										   dataProvider="{textures}" requireSelection="true" selectedItem="@{_asset.texture}"
-										   labelFunction="{dropDownLabelFunction}" iconFunction="{dropDownIconFunction}"
-										   newItemLabel="New Texture"
-										   change="value_changeHandler(event)"
-										   addNewItem="textureDropDownList_addNewItemHandler(event)"
-										   />
-			<s:Button styleName="editSharedObjectButtonStyle"
-					  width="23" height="100%" click="textureDropDownList_editSharedHandler(event)" enabled="{!textureDropDownList.selectedItem.isDefault}"/>
-		</controls:PropertiesItemContainer>
-	</controls:CollapsiblePanel>
+	<controls:PropertiesItemContainer label="Lens" width="100%" paddingLeft="10" paddingRight="8" paddingTop="6">
+		<s:DropDownList id="lensDropDownList" requireSelection="true"
+						change="lensDropDownList_changeHandler(event)" width="100%"
+						selectedItem="{_selectedLens}" dataProvider="{lensList}"
+						/>
+		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="lens_clickHandler(event)" />
+	</controls:PropertiesItemContainer>
 	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">

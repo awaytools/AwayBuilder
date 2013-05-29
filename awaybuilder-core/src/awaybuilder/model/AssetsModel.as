@@ -7,6 +7,7 @@ package awaybuilder.model
 	import away3d.animators.VertexAnimationSet;
 	import away3d.animators.VertexAnimator;
 	import away3d.animators.data.Skeleton;
+	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
@@ -147,6 +148,13 @@ package awaybuilder.model
 			newMaterial.name = "Material" + AssetUtil.GetNextId("Material");
 			newMaterial.gloss = 50;
 			return GetAsset(newMaterial) as MaterialVO;
+		}
+		
+		public function CreateCamera():CameraVO
+		{
+			var camera:Camera3D = new Camera3D();
+			camera.name = "Camera" + AssetUtil.GetNextId("Camera");
+			return GetAsset(camera) as CameraVO;
 		}
 		
 		public function CreateEffectMethod( type:String ):EffectMethodVO

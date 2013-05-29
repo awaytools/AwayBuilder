@@ -338,8 +338,10 @@ package awaybuilder.view.mediators
 		private function contect_playHandler(event:AnimationEvent):void
 		{
 			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			
 			animator.updatePosition = false;
 			event.animation.isPlaying = true;
+			
 			if( event.animation.name == event.animator.activeAnimationNodeName )
 			{
 				animator.start();
@@ -963,7 +965,43 @@ package awaybuilder.view.mediators
 				applyContainer( item );
 				obj.castsShadows = item.castsShadows;
 				obj.geometry = assets.GetObject( item.geometry ) as Geometry;
-				obj.animator = assets.GetObject( item.animator ) as SkeletonAnimator;
+				var animator:AnimatorBase = assets.GetObject( item.animator ) as AnimatorBase;
+				
+				if( animator is SkeletonAnimator )
+				{
+					var skeletonAnimator:SkeletonAnimator = animator as SkeletonAnimator;
+					var skeletonAnimationSet:SkeletonAnimationSet = skeletonAnimator.animationSet as SkeletonAnimationSet;
+					
+					if( skeletonAnimationSet && skeletonAnimationSet.jointsPerVertex != item.jointsPerVertex )
+					{
+						var newSkeletonAnimationSet:SkeletonAnimationSet = new SkeletonAnimationSet( item.jointsPerVertex );
+						
+						for each( var node:AnimationNodeBase in skeletonAnimationSet.animations )
+						{
+							newSkeletonAnimationSet.addAnimation( node );
+						}
+						
+						assets.ReplaceObject( skeletonAnimationSet, newSkeletonAnimationSet ); 
+						
+						var newAnimator:SkeletonAnimator = new SkeletonAnimator( newSkeletonAnimationSet, SkeletonAnimator(animator).skeleton );
+						assets.ReplaceObject( animator, newAnimator ); 
+						
+						skeletonAnimator = newAnimator;
+					}
+					
+					obj.animator = skeletonAnimator;
+				}
+				else if( animator is VertexAnimator )
+				{
+					var vertexAnimator:VertexAnimator = animator as VertexAnimator;
+					obj.animator = vertexAnimator;
+				}
+				else
+				{
+					obj.animator = null;
+				}
+				
+				
 				for( var i:int = 0; i < obj.subMeshes.length; i++ )
 				{
 					assets.ReplaceObject( assets.GetObject( item.subMeshes.getItemAt(i) as AssetVO ), obj.subMeshes[i] );

@@ -31,6 +31,8 @@ package awaybuilder.model.vo
 		public static const EFFECT:String = "effect";
 		public static const SPECULAR:String = "specular";
 		public static const SHADING:String = "shading";
+		public static const CAMERA:String = "camera";
+		public static const LENS:String = "lens";
 		
 		public function ScenegraphItemVO( label:String, item:AssetVO, type:String="default" )
 		{
