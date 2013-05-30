@@ -360,6 +360,7 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_documentCreatedHandler(event:DocumentModelEvent):void
 		{
 			updateScenegraph();
+			view.sceneTree.expandAll();
 		}
 		
 		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
@@ -476,8 +477,6 @@ package awaybuilder.view.mediators
 			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  ScenegraphFactory.CreateBranch( document.textures ), "item" );
 			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry ), "item" );
 			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateLightsBranch( document.lights ), "item" );
-			
-			view.sceneTree.expandAll();
 		}
 		
 	}

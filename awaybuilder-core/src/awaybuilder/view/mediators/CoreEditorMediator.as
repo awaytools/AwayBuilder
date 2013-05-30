@@ -30,6 +30,11 @@ package awaybuilder.view.mediators
     import away3d.animators.nodes.AnimationClipNodeBase;
     import away3d.animators.nodes.AnimationNodeBase;
     import away3d.animators.states.SkeletonClipState;
+    import away3d.cameras.Camera3D;
+    import away3d.cameras.lenses.LensBase;
+    import away3d.cameras.lenses.OrthographicLens;
+    import away3d.cameras.lenses.OrthographicOffCenterLens;
+    import away3d.cameras.lenses.PerspectiveLens;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
     import away3d.core.base.Object3D;
@@ -115,11 +120,13 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.AnimationSetVO;
     import awaybuilder.model.vo.scene.AnimatorVO;
     import awaybuilder.model.vo.scene.AssetVO;
+    import awaybuilder.model.vo.scene.CameraVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
     import awaybuilder.model.vo.scene.EffectMethodVO;
     import awaybuilder.model.vo.scene.ExtraItemVO;
     import awaybuilder.model.vo.scene.GeometryVO;
+    import awaybuilder.model.vo.scene.LensVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
@@ -188,6 +195,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_SKYBOX, eventDispatcher_changeSkyboxHandler);
 			addContextListener(SceneEvent.CHANGE_ANIMATOR, eventDispatcher_changeAnimatorHandler);
 			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, eventDispatcher_changeTextureProjectorHandler);
+			addContextListener(SceneEvent.CHANGE_CAMERA, eventDispatcher_changeCameraHandler);
+			addContextListener(SceneEvent.CHANGE_LENS, eventDispatcher_changeLensHandler);
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
 			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
@@ -499,6 +508,34 @@ package awaybuilder.view.mediators
 			Scene3DManager.updateDefaultCameraFarPlane();
 		}
 		
+		private function applyLens( asset:LensVO ):void
+		{
+			var obj:LensBase = assets.GetObject( asset ) as LensBase;
+			var perspectiveLens:PerspectiveLens = obj as PerspectiveLens;
+			if( perspectiveLens )
+			{
+				perspectiveLens.fieldOfView = asset.value;
+			}
+			var orthographicLens:OrthographicLens = obj as OrthographicLens;
+			if( orthographicLens )
+			{
+				orthographicLens.projectionHeight = asset.value;
+			}
+			var orthographicOffCenterLens:OrthographicOffCenterLens = obj as OrthographicOffCenterLens;
+			if( orthographicOffCenterLens )
+			{
+				orthographicOffCenterLens.minX = asset.minX;
+				orthographicOffCenterLens.maxX = asset.maxX;
+				orthographicOffCenterLens.minY = asset.minY;
+				orthographicOffCenterLens.maxY = asset.maxY;
+			}
+		}
+		private function applyCamera( asset:CameraVO ):void
+		{
+			var obj:Camera3D = assets.GetObject( asset ) as Camera3D;
+			obj.lens = assets.GetObject(asset.lens) as LensBase;
+			applyObject( asset );
+		}
 		private function applyTextureProjector( asset:TextureProjectorVO ):void
 		{
 			var obj:TextureProjector = assets.GetObject( asset ) as TextureProjector;
@@ -1174,6 +1211,22 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applyEffectMethod( asset );
+			}
+		}
+		private function eventDispatcher_changeCameraHandler(event:SceneEvent):void
+		{
+			var asset:CameraVO = event.items[0] as CameraVO;
+			if( asset ) 
+			{
+				applyCamera( asset );
+			}
+		}
+		private function eventDispatcher_changeLensHandler(event:SceneEvent):void
+		{
+			var asset:LensVO = event.items[0] as LensVO;
+			if( asset ) 
+			{
+				applyLens( asset );
 			}
 		}
 		

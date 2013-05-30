@@ -12,6 +12,10 @@ package awaybuilder.model
 	import away3d.animators.VertexAnimator;
 	import away3d.animators.data.Skeleton;
 	import away3d.cameras.Camera3D;
+	import away3d.cameras.lenses.LensBase;
+	import away3d.cameras.lenses.OrthographicLens;
+	import away3d.cameras.lenses.OrthographicOffCenterLens;
+	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
@@ -214,6 +218,24 @@ package awaybuilder.model
 			newMaterial.name = "Material" + AssetUtil.GetNextId("Material");
 			newMaterial.gloss = 50;
 			return GetAsset(newMaterial) as MaterialVO;
+		}
+		
+		public function CreateLens( type:String ):LensVO
+		{
+			var lens:LensBase = new LensBase();
+			switch( type )
+			{
+				case "PerspectiveLens":
+					lens = new PerspectiveLens();
+					break;
+				case "OrthographicLens":
+					lens = new OrthographicLens( 600 );
+					break;
+				case "OrthographicOffCenterLens":
+					lens = new OrthographicOffCenterLens( -400, 400, -300, 300 );
+					break;
+			}
+			return GetAsset(lens) as LensVO;
 		}
 		
 		public function CreateCamera():CameraVO

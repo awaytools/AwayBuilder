@@ -28,16 +28,15 @@
 		{
 			if( !(asset is LensVO) ) return;
 			_asset = LensVO(asset).clone();
-			
 		}
 		
 		private function stepper_changeHandler(event:Event):void 
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADINGMETHOD_STEPPER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LENS_STEPPER_CHANGE, _asset, true));
 		}
 		private function value_changeHandler(event:Event):void 
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHADINGMETHOD_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LENS_CHANGE, _asset, true));
 		}
 		
 	]]></fx:Script>
@@ -51,25 +50,29 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="{_asset.type}" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="{_asset.type}" maxDisplayedLines="1" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Field of View" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="PerspectiveLens">
-			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="170" change="stepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="170" width="40" change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Projection Height" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicLens">
-			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="1" snapInterval="1" minimum="0" maximum="4096" change="stepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="1" snapInterval="1" minimum="0" maximum="4096" width="40" change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicOffCenterLens">
-			<controls:DragableNumericStepper value="@{_asset.minX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" change="stepper_changeHandler(event)" />
-			<s:Label text="-"/>
-			<controls:DragableNumericStepper value="@{_asset.maxX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" change="stepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.minX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42" textAlign="right"
+											 change="stepper_changeHandler(event)" />
+			<s:Label text="-" fontWeight="bold" verticalAlign="middle" paddingLeft="2" paddingRight="2" height="100%"/>
+			<controls:DragableNumericStepper value="@{_asset.maxX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42"
+											 change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicOffCenterLens">
-			<controls:DragableNumericStepper value="@{_asset.minY}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" change="stepper_changeHandler(event)" />
-			<s:Label text="-"/>
-			<controls:DragableNumericStepper value="@{_asset.maxY}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" change="stepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.minY}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42" textAlign="right"
+											 change="stepper_changeHandler(event)" />
+			<s:Label text="-" fontWeight="bold" verticalAlign="middle" paddingLeft="2" paddingRight="2" height="100%"/>
+			<controls:DragableNumericStepper value="@{_asset.maxY}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42"
+											 change="stepper_changeHandler(event)" />
 		</s:FormItem>
 	</s:Form>
 </editors:EditorBase>

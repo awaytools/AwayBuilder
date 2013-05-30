@@ -407,6 +407,13 @@ s|Button.stopButton
 	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
 	icon: Embed("assets/images/control-stop-square.png");
 }
+s|Button.rewindButton 
+{
+	chromeColor: #004F8F;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolbarButtonSkin");
+	icon: Embed("assets/images/control-stop-180.png");
+}
+
 s|Button.stepForwardButton
 {
 	chromeColor: #004F8F;

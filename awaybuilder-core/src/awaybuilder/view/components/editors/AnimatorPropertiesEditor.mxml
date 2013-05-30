@@ -24,16 +24,6 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_STEPPER_CHANGE, _asset));
 		}
 		
-//		protected function button1_clickHandler(event:MouseEvent):void
-//		{
-//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_PLAY, _asset));
-//		}
-//		
-//		protected function button2_clickHandler(event:MouseEvent):void
-//		{
-//			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_STOP, _asset));
-//		}
-		
 		protected function animationSets_clickHandler(event:MouseEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.animationSet));

@@ -71,6 +71,9 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_SKYBOX, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_CAMERA, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_LENS, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_ANIMATOR, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -131,6 +134,13 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.TEXTURE_PROJECTOR_CHANGE, view_textureProjectorChangeHandler );
 			addViewListener( PropertyEditorEvent.TEXTURE_PROJECTOR_ADD_TEXTURE, view_textureProjectorAddTextureHandler );
 			addViewListener( PropertyEditorEvent.TEXTURE_PROJECTOR_STEPPER_CHANGE, view_textureProjectorChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.CAMERA_CHANGE, view_cameraChangeHandler );
+			addViewListener( PropertyEditorEvent.CAMERA_LENS_CHANGE, view_cameraLensChangeHandler );
+			addViewListener( PropertyEditorEvent.CAMERA_STEPPER_CHANGE, view_cameraChangeStepperHandler );
+			
+			addViewListener( PropertyEditorEvent.LENS_CHANGE, view_lensChangeHandler );
+			addViewListener( PropertyEditorEvent.LENS_STEPPER_CHANGE, view_lensChangeStepperHandler );
 			
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_CHANGE, view_effectmethodChangeHandler );
 			addViewListener( PropertyEditorEvent.EFFECTMETHOD_ADD_TEXTURE, view_effectmethodAddTextureHandler );
@@ -297,6 +307,31 @@ package awaybuilder.view.mediators
 		private function view_textureProjectorChangeStepperHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR,[view.data], event.data, true));
+		}
+		
+		private function view_cameraChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CAMERA,[view.data], event.data));
+		}
+		private function view_cameraChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CAMERA,[view.data], event.data, true));
+		}
+		private function view_cameraLensChangeHandler(event:PropertyEditorEvent):void
+		{
+			var newCamera:CameraVO = CameraVO(view.data).clone() as CameraVO;
+			var lens:LensVO = assets.CreateLens( event.data.toString() );
+			newCamera.lens = lens;
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_CAMERA,[view.data], newCamera));
+		}
+		
+		private function view_lensChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LENS,[view.data], event.data));
+		}
+		private function view_lensChangeStepperHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LENS,[view.data], event.data, true));
 		}
 		
 		private function view_effectmethodChangeHandler(event:PropertyEditorEvent):void
