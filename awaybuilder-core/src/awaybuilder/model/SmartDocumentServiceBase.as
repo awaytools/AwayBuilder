@@ -1,24 +1,5 @@
 package awaybuilder.model
 {
-	import away3d.containers.ObjectContainer3D;
-	import away3d.entities.Mesh;
-	import away3d.entities.TextureProjector;
-	import away3d.events.AssetEvent;
-	import away3d.events.LoaderEvent;
-	import away3d.library.AssetLibrary;
-	import away3d.library.assets.AssetType;
-	import away3d.library.assets.BitmapDataAsset;
-	import away3d.lights.LightBase;
-	import away3d.loaders.parsers.Parsers;
-	import away3d.materials.MaterialBase;
-	import away3d.primitives.SkyBox;
-	
-	import awaybuilder.controller.events.ErrorLogEvent;
-	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
-	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
@@ -30,9 +11,29 @@ package awaybuilder.model
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
 	
-	import org.robotlegs.mvcs.Actor;
-	
 	import spark.components.Application;
+	
+	import away3d.containers.ObjectContainer3D;
+	import away3d.entities.Mesh;
+	import away3d.entities.TextureProjector;
+	import away3d.events.AssetEvent;
+	import away3d.events.LoaderEvent;
+	import away3d.library.AssetLibrary;
+	import away3d.library.assets.AssetType;
+	import away3d.library.assets.BitmapDataAsset;
+	import away3d.lights.LightBase;
+	import away3d.loaders.parsers.AWDParser;
+	import away3d.loaders.parsers.Parsers;
+	import away3d.materials.MaterialBase;
+	import away3d.primitives.SkyBox;
+	
+	import awaybuilder.controller.events.ErrorLogEvent;
+	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
+	
+	import org.robotlegs.mvcs.Actor;
 	
 	public class SmartDocumentServiceBase extends Actor
 	{
@@ -182,6 +183,7 @@ package awaybuilder.model
 				case AssetType.ANIMATION_STATE:
 				case AssetType.ANIMATION_NODE:
 				case AssetType.SKELETON:
+				case AssetType.ANIMATOR:
 				//case AssetType.SKELETON_POSE:
 					_document.animations.addItem( assets.GetAsset( event.asset ) );
 					break;

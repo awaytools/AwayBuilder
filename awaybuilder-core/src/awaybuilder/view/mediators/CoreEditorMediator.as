@@ -1,5 +1,25 @@
 package awaybuilder.view.mediators
 {
+    import flash.display.BitmapData;
+    import flash.display3D.textures.Texture;
+    import flash.display3D.textures.TextureBase;
+    import flash.events.ErrorEvent;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.UncaughtErrorEvent;
+    import flash.geom.ColorTransform;
+    import flash.geom.Matrix;
+    import flash.geom.Vector3D;
+    import flash.ui.Keyboard;
+    
+    import mx.collections.ArrayCollection;
+    import mx.controls.Alert;
+    import mx.controls.Text;
+    import mx.core.FlexGlobals;
+    import mx.utils.ObjectUtil;
+    
+    import spark.collections.Sort;
+    
     import away3d.animators.AnimationSetBase;
     import away3d.animators.AnimatorBase;
     import away3d.animators.SkeletonAnimationSet;
@@ -124,27 +144,7 @@ package awaybuilder.view.mediators
     import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
-    import flash.display.BitmapData;
-    import flash.display3D.textures.Texture;
-    import flash.display3D.textures.TextureBase;
-    import flash.events.ErrorEvent;
-    import flash.events.Event;
-    import flash.events.KeyboardEvent;
-    import flash.events.UncaughtErrorEvent;
-    import flash.geom.ColorTransform;
-    import flash.geom.Matrix;
-    import flash.geom.Vector3D;
-    import flash.ui.Keyboard;
-    
-    import mx.collections.ArrayCollection;
-    import mx.controls.Alert;
-    import mx.controls.Text;
-    import mx.core.FlexGlobals;
-    import mx.utils.ObjectUtil;
-    
     import org.robotlegs.mvcs.Mediator;
-    
-    import spark.collections.Sort;
 
     public class CoreEditorMediator extends Mediator
 	{
@@ -309,8 +309,17 @@ package awaybuilder.view.mediators
 		{
 			if( _currentAnimator && _currentAnimation )
 			{
-				var animator:SkeletonAnimator = assets.GetObject(_currentAnimator ) as SkeletonAnimator;
-				if( animator.activeState is SkeletonClipState )
+				var animator:AnimatorBase;
+				switch (_currentAnimator.type){
+					case "SkeletonAnimator":
+						animator = assets.GetObject(_currentAnimator ) as SkeletonAnimator;
+						break;
+					case "VertexAnimator":
+						animator = assets.GetObject(_currentAnimator ) as VertexAnimator;
+						break;
+						
+				}
+				if( animator.activeState)
 				{
 					var time:int = animator.time*animator.playbackSpeed;
 					if ( animator.time >= _currentAnimation.totalDuration ) 
@@ -337,7 +346,16 @@ package awaybuilder.view.mediators
 		
 		private function contect_playHandler(event:AnimationEvent):void
 		{
-			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			//trace(event.animator.type);
+			var animator:AnimatorBase;
+			switch (event.animator.type){
+				case "SkeletonAnimator":
+					animator = assets.GetObject( event.animator ) as SkeletonAnimator;
+					break;
+				case "VertexAnimator":
+					animator = assets.GetObject( event.animator ) as VertexAnimator;
+					break;
+			}
 			
 			animator.updatePosition = false;
 			event.animation.isPlaying = true;
@@ -348,7 +366,14 @@ package awaybuilder.view.mediators
 			}
 			else
 			{
-				animator.play(event.animation.name, null, event.animation.currentPosition);
+				switch (event.animator.type){
+					case "SkeletonAnimator":
+						SkeletonAnimator(animator).play(event.animation.name, null, event.animation.currentPosition);
+						break;
+					case "VertexAnimator":
+						VertexAnimator(animator).play(event.animation.name, null, event.animation.currentPosition);
+						break;
+				}
 				event.animator.activeAnimationNodeName = event.animation.name;
 			}
 			
@@ -358,7 +383,15 @@ package awaybuilder.view.mediators
 		}
 		private function contect_pauseHandler(event:AnimationEvent):void
 		{
-			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			var animator:AnimatorBase;
+			switch (event.animator.type){
+				case "SkeletonAnimator":
+					animator = assets.GetObject( event.animator ) as SkeletonAnimator;
+					break;
+				case "VertexAnimator":
+					animator = assets.GetObject( event.animator ) as VertexAnimator;
+					break;
+			}
 			event.animation.isPlaying = false;
 			animator.stop();
 			this.view.removeEventListener(Event.ENTER_FRAME, view_enterFrameHandler );
@@ -366,7 +399,15 @@ package awaybuilder.view.mediators
 		
 		private function contect_stopHandler(event:AnimationEvent):void
 		{
-			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			var animator:AnimatorBase;
+			switch (event.animator.type){
+				case "SkeletonAnimator":
+					animator = assets.GetObject( event.animator ) as SkeletonAnimator;
+					break;
+				case "VertexAnimator":
+					animator = assets.GetObject( event.animator ) as VertexAnimator;
+					break;
+			}
 			event.animation.isPlaying = false;
 			animator.stop();
 			animator.time = 0;
@@ -377,11 +418,26 @@ package awaybuilder.view.mediators
 		}
 		private function contect_seekHandler(event:AnimationEvent):void
 		{
-			var animator:SkeletonAnimator = assets.GetObject( event.animator ) as SkeletonAnimator;
+			var animator:AnimatorBase;
+			switch (event.animator.type){
+				case "SkeletonAnimator":
+					animator = assets.GetObject( event.animator ) as SkeletonAnimator;
+					break;
+				case "VertexAnimator":
+					animator = assets.GetObject( event.animator ) as VertexAnimator;
+					break;
+			}
 			event.animation.isPlaying = false;
 			if( event.animation.name != event.animator.activeAnimationNodeName )
 			{
-				animator.play(event.animation.name, null, event.animation.currentPosition);
+				switch (event.animator.type){
+					case "SkeletonAnimator":
+						SkeletonAnimator(animator).play(event.animation.name, null, event.animation.currentPosition);
+						break;
+					case "VertexAnimator":
+						VertexAnimator(animator).play(event.animation.name, null, event.animation.currentPosition);
+						break;
+				}
 				animator.stop();
 				event.animator.activeAnimationNodeName = event.animation.name;
 			}
