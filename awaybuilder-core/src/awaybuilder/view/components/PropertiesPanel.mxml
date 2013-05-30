@@ -85,7 +85,10 @@
 		public var animators:ArrayCollection;
 		
 		[Bindable]
-		public var animationSets:ArrayCollection;
+		public var vertexAnimationSets:ArrayCollection;
+		
+		[Bindable]
+		public var skeletonsAnimationSets:ArrayCollection;
 		
 		[Bindable]
 		public var skeletons:ArrayCollection;
@@ -146,7 +149,7 @@
 			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{_data}" includeIn="textureProjector,initAll"/>
 			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationSet,initAll"/>
 			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationNode,initAll"/>
-			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" animationSets="{animationSets}" data="{_data}" includeIn="animator,initAll"/>
+			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" vertexAnimationSets="{vertexAnimationSets}" skeletonsAnimationSets="{skeletonsAnimationSets}" data="{_data}" includeIn="animator,initAll"/>
 			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="skeleton,initAll"/>
 			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="camera,initAll"/>
 			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lens,initAll"/>

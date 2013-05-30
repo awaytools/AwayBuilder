@@ -34,6 +34,7 @@ package awaybuilder.model.vo.scene
 			this.animationPoses = new ArrayCollection( asset.animationPoses.source.concat() );
 			this.frameDurations = new ArrayCollection( asset.frameDurations.source.concat() );
 			this.id = asset.id;
+			this.type = asset.type;
 		}
 	}
 }

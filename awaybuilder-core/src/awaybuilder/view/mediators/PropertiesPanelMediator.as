@@ -924,7 +924,8 @@ package awaybuilder.view.mediators
 			view.geometry = new ArrayCollection(geometry);
 			
 			var animators:Array = [null];
-			var animationSets:Array = [];
+			var vertexAnimationSets:Array = [];
+			var skeletonsAnimationSets:Array = [];
 			var skeletons:Array = [];
 			for each( asset in document.animations )
 			{
@@ -934,7 +935,15 @@ package awaybuilder.view.mediators
 				}
 				else if( asset is AnimationSetVO ) 
 				{
-					animationSets.push( asset );
+					if( AnimationSetVO( asset ).type == "SkeletonAnimationSet" )
+					{
+						skeletonsAnimationSets.push( asset );
+					}
+					if( AnimationSetVO( asset ).type == "VertexAnimationSet" )
+					{
+						vertexAnimationSets.push( asset );
+					}
+					
 				}
 				else if( asset is SkeletonVO ) 
 				{
@@ -943,7 +952,8 @@ package awaybuilder.view.mediators
 			}
 			view.animators = new ArrayCollection(animators);
 			
-			view.animationSets = new ArrayCollection(animationSets);
+			view.vertexAnimationSets = new ArrayCollection(vertexAnimationSets);
+			view.skeletonsAnimationSets = new ArrayCollection(skeletonsAnimationSets);
 			view.skeletons = new ArrayCollection(skeletons);
 			
 			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );

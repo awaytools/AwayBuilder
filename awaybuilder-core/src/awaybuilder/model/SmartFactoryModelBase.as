@@ -545,6 +545,7 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, obj ) as AnimatorVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			trace( "asset.type = " + asset.type );
 			asset.animationSet = GetAsset(obj.animationSet) as AnimationSetVO;
 			asset.playbackSpeed = obj.playbackSpeed;
 			var skeletonAnimator:SkeletonAnimator = obj as SkeletonAnimator;

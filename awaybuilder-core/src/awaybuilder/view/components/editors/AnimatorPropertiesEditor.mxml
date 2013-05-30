@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
 					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:editors="awaybuilder.view.components.editors.*" xmlns:controls="awaybuilder.view.components.controls.*">
+					xmlns:editors="awaybuilder.view.components.editors.*" xmlns:controls="awaybuilder.view.components.controls.*" currentState="{_asset.type}">
 	<fx:Declarations>
 	</fx:Declarations>
+	<editors:states>
+		<s:State name="SkeletonAnimator"/>
+		<s:State name="VertexAnimator"/>
+	</editors:states>
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AnimatorVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
+		import mx.collections.ArrayCollection;
+		
 		import spark.events.IndexChangeEvent;
+		
+		[Bindable]
+		public var vertexAnimationSets:ArrayCollection;
+		
+		[Bindable]
+		public var skeletonsAnimationSets:ArrayCollection;
 		
 		[Bindable]
 		private var _asset:AnimatorVO;
@@ -55,7 +67,7 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="Animator" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="{_asset.type}" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	
@@ -69,14 +81,21 @@
 		
 	</s:Form>
 	
-	<controls:PropertiesItemContainer label="Animation Set" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8">
+	<controls:PropertiesItemContainer label="Animation Set" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8" includeIn="SkeletonAnimator">
 		<s:DropDownList requireSelection="true" width="100%" labelField="name"
 						change="animationSetsList_changeHandler(event)"
-						selectedItem="@{_asset.animationSet}" dataProvider="{animationSets}"
+						selectedItem="@{_asset.animationSet}" dataProvider="{skeletonsAnimationSets}"
 						/>
 		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animationSets_clickHandler(event)" />
 	</controls:PropertiesItemContainer>
-	<controls:PropertiesItemContainer label="Skeleton" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8">
+	<controls:PropertiesItemContainer label="Animation Set" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8" includeIn="VertexAnimator">
+		<s:DropDownList requireSelection="true" width="100%" labelField="name"
+						change="animationSetsList_changeHandler(event)"
+						selectedItem="@{_asset.animationSet}" dataProvider="{vertexAnimationSets}"
+						/>
+		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animationSets_clickHandler(event)" />
+	</controls:PropertiesItemContainer>
+	<controls:PropertiesItemContainer label="Skeleton" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8" includeIn="SkeletonAnimator">
 		<s:DropDownList requireSelection="true" width="100%" labelField="name"
 						change="skeletonsList_changeHandler(event)"
 						selectedItem="@{_asset.skeleton}" dataProvider="{skeletons}"

@@ -91,17 +91,6 @@ package awaybuilder.view.components.editors
 			_animators = value;
 		}
 		
-		private var _animationSets:ArrayCollection;
-		[Bindable]
-		public function get animationSets():ArrayCollection
-		{
-			return _animationSets;
-		}
-		public function set animationSets(value:ArrayCollection):void
-		{
-			_animationSets = value;
-		}
-		
 		private var _skeletons:ArrayCollection;
 		[Bindable]
 		public function get skeletons():ArrayCollection
