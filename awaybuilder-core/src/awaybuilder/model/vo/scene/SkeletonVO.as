@@ -1,9 +1,11 @@
 package awaybuilder.model.vo.scene
 {
 	import away3d.animators.data.Skeleton;
+	import away3d.animators.data.SkeletonJoint;
 
 	public class SkeletonVO extends AssetVO
 	{
+		public var joints : Vector.<SkeletonJoint>;
 		public function clone():SkeletonVO
 		{
 			var clone:SkeletonVO = new SkeletonVO();
@@ -15,6 +17,7 @@ package awaybuilder.model.vo.scene
 		{
 			this.id = asset.id;
 			this.name = asset.name;
+			this.joints = asset.joints;
 		}
 	}
 }

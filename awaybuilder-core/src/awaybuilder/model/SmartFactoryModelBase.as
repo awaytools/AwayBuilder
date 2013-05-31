@@ -1,15 +1,24 @@
 package awaybuilder.model
 {
+	import flash.display.BitmapData;
+	import flash.geom.Matrix3D;
+	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
+	
+	import mx.collections.ArrayCollection;
+	
+	import away3d.arcane;
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
 	import away3d.animators.SkeletonAnimator;
+	import away3d.animators.data.JointPose;
 	import away3d.animators.data.Skeleton;
+	import away3d.animators.data.SkeletonJoint;
 	import away3d.animators.data.SkeletonPose;
 	import away3d.animators.nodes.AnimationNodeBase;
 	import away3d.animators.nodes.SkeletonClipNode;
 	import away3d.animators.nodes.VertexClipNode;
 	import away3d.animators.states.AnimationStateBase;
-	import away3d.arcane;
 	import away3d.cameras.Camera3D;
 	import away3d.cameras.lenses.LensBase;
 	import away3d.cameras.lenses.OrthographicLens;
@@ -31,10 +40,43 @@ package awaybuilder.model
 	import away3d.lights.shadowmaps.CascadeShadowMapper;
 	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
 	import away3d.lights.shadowmaps.ShadowMapperBase;
-	import away3d.materials.*;
+	import away3d.materials.ColorMaterial;
+	import away3d.materials.ColorMultiPassMaterial;
+	import away3d.materials.MaterialBase;
+	import away3d.materials.SinglePassMaterialBase;
+	import away3d.materials.SkyBoxMaterial;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.TextureMultiPassMaterial;
 	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
-	import away3d.materials.methods.*;
+	import away3d.materials.methods.AlphaMaskMethod;
+	import away3d.materials.methods.CascadeShadowMapMethod;
+	import away3d.materials.methods.CelDiffuseMethod;
+	import away3d.materials.methods.CelSpecularMethod;
+	import away3d.materials.methods.ColorMatrixMethod;
+	import away3d.materials.methods.ColorTransformMethod;
+	import away3d.materials.methods.DitheredShadowMapMethod;
+	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.EnvMapAmbientMethod;
+	import away3d.materials.methods.EnvMapMethod;
+	import away3d.materials.methods.FogMethod;
+	import away3d.materials.methods.FresnelEnvMapMethod;
+	import away3d.materials.methods.FresnelSpecularMethod;
+	import away3d.materials.methods.GradientDiffuseMethod;
+	import away3d.materials.methods.HeightMapNormalMethod;
+	import away3d.materials.methods.LightMapDiffuseMethod;
+	import away3d.materials.methods.LightMapMethod;
+	import away3d.materials.methods.NearShadowMapMethod;
+	import away3d.materials.methods.OutlineMethod;
+	import away3d.materials.methods.ProjectiveTextureMethod;
+	import away3d.materials.methods.RefractionEnvMapMethod;
+	import away3d.materials.methods.RimLightMethod;
+	import away3d.materials.methods.ShadingMethodBase;
+	import away3d.materials.methods.ShadowMapMethodBase;
+	import away3d.materials.methods.SimpleWaterNormalMethod;
+	import away3d.materials.methods.SoftShadowMapMethod;
+	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
+	import away3d.materials.methods.WrapDiffuseMethod;
 	import away3d.materials.utils.DefaultMaterialManager;
 	import away3d.primitives.CapsuleGeometry;
 	import away3d.primitives.ConeGeometry;
@@ -47,14 +89,33 @@ package awaybuilder.model
 	import away3d.textures.BitmapCubeTexture;
 	import away3d.textures.BitmapTexture;
 	
-	import awaybuilder.model.vo.scene.*;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
+	import awaybuilder.model.vo.scene.AnimatorVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CameraVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.ExtraItemVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.LensVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
+	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.model.vo.scene.ShadingMethodVO;
+	import awaybuilder.model.vo.scene.ShadowMapperVO;
+	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkeletonPoseVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
+	import awaybuilder.model.vo.scene.SubGeometryVO;
+	import awaybuilder.model.vo.scene.SubMeshVO;
+	import awaybuilder.model.vo.scene.TextureProjectorVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.AssetUtil;
-	
-	import flash.display.BitmapData;
-	import flash.utils.Dictionary;
-	import flash.utils.getQualifiedClassName;
-	
-	import mx.collections.ArrayCollection;
 
 	use namespace arcane;
 
@@ -108,12 +169,10 @@ package awaybuilder.model
 					return asset;
 					
 				case(item is SkeletonPose):
-					asset = fillAsset( new SkeletonPoseVO(), item );
-					asset.name = "Skeleton Pose (" + item.name +")";
-					return asset;
+					return fillSkeletonPose( new SkeletonPoseVO(), item as SkeletonPose );
 					
 				case(item is Skeleton):
-					return fillAsset( new SkeletonVO(), item as Skeleton );
+					return fillSkeleton( new SkeletonVO(), item as Skeleton );
 					
 				case(item is ShadowMapMethodBase):
 					return fillShadowMethod( new ShadowMethodVO(), item as ShadowMapMethodBase );
@@ -150,6 +209,31 @@ package awaybuilder.model
 			}
 			
 			return null;
+		}
+		private function fillSkeletonPose( asset:SkeletonPoseVO, item:SkeletonPose ):SkeletonPoseVO
+		{
+			asset = fillAsset( asset, item ) as SkeletonPoseVO;
+			asset.name = "Skeleton Pose (" + item.name +")";
+			asset.jointTransforms = new ArrayCollection();
+			var jointMatrix:Matrix3D;
+			for each( var jointTranform:JointPose in item.jointPoses )
+			{
+				jointMatrix=new Matrix3D();
+				jointTranform.toMatrix3D(jointMatrix);
+				asset.jointTransforms.addItem(jointMatrix);
+			}
+			return asset;
+		}
+		private function fillSkeleton( asset:SkeletonVO, item:Skeleton ):SkeletonVO
+		{
+			asset = fillAsset( asset, item ) as SkeletonVO;
+			asset.name = item.name;
+			asset.joints = new Vector.<SkeletonJoint>;
+			for each( var joint:SkeletonJoint in item.joints )
+			{
+				asset.joints.push( joint );
+			}
+			return asset;
 		}
 		private function fillLightPicker( asset:LightPickerVO, item:StaticLightPicker ):LightPickerVO
 		{
@@ -375,6 +459,10 @@ package awaybuilder.model
 			asset.vertexTangentOffset = obj.vertexTangentOffset;
 			asset.vertexTangentStride = obj.vertexTangentStride;
 			asset.indexData = obj.indexData;
+			if (obj is SkinnedSubGeometry){
+				asset.jointIndexData = SkinnedSubGeometry(obj).jointIndexData;
+				asset.jointWeightsData = SkinnedSubGeometry(obj).jointWeightsData;
+			}
 			return asset;
 		}
 		private function fillGeometry( asset:GeometryVO, obj:Geometry ):GeometryVO
@@ -510,14 +598,26 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, obj ) as AnimationNodeVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			var poseCnt:uint=0;
 			var skeletonClipNode:SkeletonClipNode = obj as SkeletonClipNode;
 			if( skeletonClipNode )
 			{
+				for each (var skeletonPose:SkeletonPose in skeletonClipNode.frames){					
+					asset.animationPoses.addItem( GetAsset( skeletonPose ) as SkeletonPoseVO );
+					asset.frameDurations.addItem(skeletonClipNode.durations[poseCnt] );
+					poseCnt++;
+				}
 				asset.totalDuration = skeletonClipNode.totalDuration;
+				return asset;
 			}
 			var vertexClipNode:VertexClipNode = obj as VertexClipNode;
 			if( vertexClipNode )
 			{
+			 	for each (var vertexPose:Geometry in vertexClipNode.frames){						
+						asset.animationPoses.addItem( vertexPose );
+						asset.frameDurations.addItem(vertexClipNode.durations[poseCnt] );
+						poseCnt++;
+					}
 				asset.totalDuration = vertexClipNode.frames.length;
 			}
 			return asset;

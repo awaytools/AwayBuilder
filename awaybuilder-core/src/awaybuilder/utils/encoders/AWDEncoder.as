@@ -1,53 +1,26 @@
 package awaybuilder.utils.encoders
 {
-	import away3d.cameras.Camera3D;
-	import away3d.containers.ObjectContainer3D;
+	import flash.display.BitmapData;
+	import flash.display.BlendMode;
+	import flash.display.JPEGEncoderOptions;
+	import flash.display.PNGEncoderOptions;
+	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
+	import flash.utils.ByteArray;
+	import flash.utils.CompressionAlgorithm;
+	import flash.utils.Dictionary;
+	import flash.utils.Endian;
+	
+	import mx.collections.ArrayCollection;
+	
+	import away3d.animators.data.SkeletonJoint;
 	import away3d.core.base.Geometry;
-	import away3d.core.base.ISubGeometry;
-	import away3d.core.base.Object3D;
-	import away3d.core.base.SkinnedSubGeometry;
-	import away3d.core.base.SubMesh;
 	import away3d.core.math.MathConsts;
-	import away3d.core.math.Matrix3DUtils;
-	import away3d.entities.Mesh;
-	import away3d.entities.TextureProjector;
-	import away3d.lights.DirectionalLight;
-	import away3d.lights.LightBase;
-	import away3d.lights.PointLight;
-	import away3d.lights.shadowmaps.CascadeShadowMapper;
-	import away3d.lights.shadowmaps.CubeMapShadowMapper;
-	import away3d.lights.shadowmaps.DirectionalShadowMapper;
-	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
-	import away3d.lights.shadowmaps.ShadowMapperBase;
-	import away3d.materials.ColorMaterial;
-	import away3d.materials.ColorMultiPassMaterial;
-	import away3d.materials.MaterialBase;
-	import away3d.materials.MultiPassMaterialBase;
-	import away3d.materials.SinglePassMaterialBase;
-	import away3d.materials.SkyBoxMaterial;
-	import away3d.materials.TextureMaterial;
-	import away3d.materials.TextureMultiPassMaterial;
-	import away3d.materials.lightpickers.LightPickerBase;
-	import away3d.materials.methods.*;
-	import away3d.materials.methods.ShadingMethodBase;
-	import away3d.materials.utils.DefaultMaterialManager;
-	import away3d.primitives.CapsuleGeometry;
-	import away3d.primitives.ConeGeometry;
-	import away3d.primitives.CubeGeometry;
-	import away3d.primitives.CylinderGeometry;
-	import away3d.primitives.PlaneGeometry;
-	import away3d.primitives.PrimitiveBase;
-	import away3d.primitives.SkyBox;
-	import away3d.primitives.SphereGeometry;
-	import away3d.primitives.TorusGeometry;
-	import away3d.primitives.WireframePrimitiveBase;
-	import away3d.textures.BitmapTexture;
-	import away3d.textures.CubeTextureBase;
-	import away3d.textures.Texture2DBase;
-	import away3d.textures.TextureProxyBase;
 	
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
+	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
@@ -56,37 +29,19 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.model.vo.scene.MaterialBaseVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
 	import awaybuilder.model.vo.scene.ShadingMethodVO;
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkeletonPoseVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.SubGeometryVO;
 	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.view.scene.controls.ContainerGizmo3D;
-	
-	
-	import flash.display.BitmapData;
-	import flash.display.BlendMode;
-	import flash.display.JPEGEncoderOptions;
-	import flash.display.PNGEncoderOptions;
-	import flash.display3D.textures.TextureBase;
-	import flash.geom.ColorTransform;
-	import flash.geom.Matrix3D;
-	import flash.geom.Orientation3D;
-	import flash.geom.Vector3D;
-	import flash.utils.ByteArray;
-	import flash.utils.CompressionAlgorithm;
-	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-	
-	import mx.collections.ArrayCollection;
-	import mx.core.Container;
 	
 	// to do: check if any imports can be removed
 	
@@ -145,6 +100,9 @@ package awaybuilder.utils.encoders
 		
 		private var _depthSizeDic:Dictionary=new Dictionary();
 		private var _shadowMethodsToLightsDic:Dictionary=new Dictionary();
+		private var _translateAnimatiorToMesh:Dictionary=new Dictionary();
+		private var _translateAnimationSetToMesh:Dictionary=new Dictionary();
+		private var _translateAnimationNodesToMesh:Dictionary=new Dictionary();
 		
 		private var _nameSpaceString:String; 
 		private var _nameSpaceID:uint; 
@@ -239,7 +197,7 @@ package awaybuilder.utils.encoders
 			_createAwdBlocks(document.lights);
 			_createAwdBlocks(document.materials);
 			_createAwdBlocks(document.geometry);
-			// to do: add export of Animations
+			_createAwdBlocks(document.animations);
 			
 			_encodeMetaDataBlock();
 			
@@ -260,7 +218,7 @@ package awaybuilder.utils.encoders
 			_encodeAddionalBlocks(document.lights);
 			_encodeAddionalBlocks(document.materials);
 			_encodeAddionalBlocks(document.geometry);
-			// to do: add export of Animations
+			_encodeAddionalBlocks(document.animations);
 			
 			// Header
 			output.endian = Endian.LITTLE_ENDIAN;
@@ -308,6 +266,11 @@ package awaybuilder.utils.encoders
 			{
 				if (asset.isDefault)return;
 				switch(true){
+					case (asset is AnimationNodeVO):
+					case (asset is AnimationSetVO):
+					case (asset is SkeletonPoseVO):
+					case (asset is SkeletonVO):
+					case (asset is AnimatorVO):
 					case (asset is TextureVO):
 					case (asset is CubeTextureVO):
 					case (asset is ShadowMethodVO):
@@ -324,39 +287,7 @@ package awaybuilder.utils.encoders
 				
 			}
 		}
-		
-		// encodes the BlockHeader - is called for every block that gets enncoded
-		private function _encodeBlockHeader(type : uint) : uint
-		{
-			_blockId++;
-			_body.writeUnsignedInt(_blockId);
-			_body.writeByte(0);
-			_body.writeByte(type);
-			
-			var compressBool:int=0;
-			var lzmaBool:int=0;
-			if (_blockCompress>0){
-				compressBool=1;
-				if (_blockCompress>1){
-					lzmaBool=1;}				
-			}
-			var bf:uint = 0;
-			bf = 0<<7; //Set bit 8
-			bf |= 0<<6; //Set bit 7
-			bf |= 0<<5; //Set bit 6
-			bf |= int(lzmaBool)<<4; //Set bit 5 - if true, LZMA is used for Compression
-			bf |= int(compressBool)<<3; //Set bit 4 - if true, the block is compressed
-			bf |= _propsStoragePrecision<<2; //Set bit 3 - reserved for propsStoragePrecision
-			bf |= _geomStoragePrecision<<1; //Set bit 2 - reserved for geomStoragePrecision
-			bf |= _matrixStoragePrecision;    //Set bit 1 - reserved for matrixStoragePrecisicn
-			_body.writeByte(bf);
-			_blockBody = new ByteArray();
-			_blockBody.endian = Endian.LITTLE_ENDIAN;
-			return _blockId;
-		}
-		
-		
-		
+				
 		// creates AWDBlocks for a list of Assets
 		private function _createAwdBlocks(assetList:ArrayCollection) : void
 		{
@@ -373,6 +304,11 @@ package awaybuilder.utils.encoders
 				}
 				if (asset.isDefault)return;
 				switch(true){
+					case (asset is AnimationNodeVO):
+					case (asset is AnimationSetVO):
+					case (asset is SkeletonPoseVO):
+					case (asset is SkeletonVO):
+					case (asset is AnimatorVO):
 					case (asset is TextureVO):
 					case (asset is CubeTextureVO):
 					case (asset is ShadowMethodVO):
@@ -441,6 +377,26 @@ package awaybuilder.utils.encoders
 					returnID=_encodeGeometry(GeometryVO(asset));
 					if(_debug)trace("start encoding Geometry = "+asset.name);
 					break;
+				case (asset is AnimationNodeVO):
+					returnID=_encodeAnimation(AnimationNodeVO(asset));
+					if(_debug)trace("start encoding AnimationNode = "+asset.name);
+					break;
+				case (asset is AnimationSetVO):
+					returnID=_encodeAnimationSet(AnimationSetVO(asset));
+					if(_debug)trace("start encoding AnimationSetVO = "+asset.name);
+					break;
+				case (asset is SkeletonPoseVO):
+					returnID=_encodeSkeletonPose(SkeletonPoseVO(asset));
+					if(_debug)trace("start encoding SkeletonPoseVO = "+asset.name);
+					break;
+				case (asset is SkeletonVO):
+					returnID=_encodeSkeleton(SkeletonVO(asset));
+					if(_debug)trace("start encoding SkeletonVO = "+asset.name);
+					break;
+				case (asset is AnimatorVO):
+					returnID=_encodeAnimator(AnimatorVO(asset));
+					if(_debug)trace("start encoding SkeletonVO = "+asset.name);
+					break;
 				default:
 					if(_debug)trace("unknown asset");
 					break;
@@ -462,6 +418,14 @@ package awaybuilder.utils.encoders
 					break;
 				case (vo is MeshVO):					
 					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID);
+					
+					if (MeshVO(vo).animator){
+						_translateAnimatiorToMesh[MeshVO(vo).animator.id]=MeshVO(vo);
+						_translateAnimationSetToMesh[MeshVO(vo).animator.animationSet.id]=MeshVO(vo);
+						for each (var anim:AnimationNodeVO in MeshVO(vo).animator.animationSet.animations){
+							_translateAnimationNodesToMesh[anim.id]=MeshVO(vo);
+						}
+					}
 					_blockCache[vo]=thisBlock;
 					newParentID=_encodeMesh(MeshVO(vo),parentID);
 					thisBlock.id=newParentID;
@@ -492,6 +456,37 @@ package awaybuilder.utils.encoders
 		}	
 		
 		
+		// encodes the BlockHeader - is called for every block that gets enncoded
+		private function _encodeBlockHeader(type : uint) : uint
+		{
+			_blockId++;
+			_body.writeUnsignedInt(_blockId);
+			_body.writeByte(0);
+			_body.writeByte(type);
+			
+			var compressBool:int=0;
+			var lzmaBool:int=0;
+			if (_blockCompress>0){
+				compressBool=1;
+				if (_blockCompress>1){
+					lzmaBool=1;}				
+			}
+			var bf:uint = 0;
+			bf = 0<<7; //Set bit 8
+			bf |= 0<<6; //Set bit 7
+			bf |= 0<<5; //Set bit 6
+			bf |= int(lzmaBool)<<4; //Set bit 5 - if true, LZMA is used for Compression
+			bf |= int(compressBool)<<3; //Set bit 4 - if true, the block is compressed
+			bf |= _propsStoragePrecision<<2; //Set bit 3 - reserved for propsStoragePrecision
+			bf |= _geomStoragePrecision<<1; //Set bit 2 - reserved for geomStoragePrecision
+			bf |= _matrixStoragePrecision;    //Set bit 1 - reserved for matrixStoragePrecisicn
+			_body.writeByte(bf);
+			_blockBody = new ByteArray();
+			_blockBody.endian = Endian.LITTLE_ENDIAN;
+			return _blockId;
+		}
+		
+		
 		// encode Geometry (id=1)
 		private function _encodeGeometry(geom : GeometryVO) : uint
 		{	
@@ -519,6 +514,12 @@ package awaybuilder.utils.encoders
 				_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride);
 				if (_exportNormals)	_encodeStream(4, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
 				if (_exportTangents) _encodeStream(5, sub.vertexTangentData, sub.vertexTangentOffset, sub.vertexTangentStride);
+				if (sub.jointIndexData){
+					_encodeStream(6, sub.jointIndexData, 0, 0);
+				}
+				if (sub.jointWeightsData){
+					_encodeStream(7, sub.jointWeightsData, 0, 0);
+				}
 				/*if(sub is SkinnedSubGeometry){
 				var skinnedSub:SkinnedSubGeometry= sub as SkinnedSubGeometry;
 				_encodeStream(6, skinnedSub., sub.vertexNormalOffset, sub.vertexNormalStride);
@@ -672,14 +673,14 @@ package awaybuilder.utils.encoders
 			var geomId : uint;
 			var materialIds : Vector.<uint>;
 			var returnID:uint;
-			// for this function to work, we need MeshVO.material and MeshVO.geometry
 			
 			geomId = _getBlockIDorEncodeAsset(mesh.geometry);
 			materialIds=new Vector.<uint>;
 			var subMeshVo:SubMeshVO;
 			for each (subMeshVo in mesh.subMeshes) {
 				materialIds.push( _getBlockIDorEncodeAsset(subMeshVo.material));
-			}
+			}			
+			
 			
 			returnID=_encodeBlockHeader(23);
 			
@@ -1356,6 +1357,267 @@ package awaybuilder.utils.encoders
 		}
 		
 		
+		
+		// encode Skeleton (id=101)
+		private function _encodeSkeleton(skeleton:SkeletonVO) : uint
+		{	
+			var returnID:uint;
+			returnID=_encodeBlockHeader(101);
+			
+			_blockBody.writeUTF(skeleton.name);
+			_blockBody.writeShort(skeleton.joints.length);
+			
+			
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+			var jointID:int=0;
+			var inversMtx:Matrix3D;
+			for each (var joint:SkeletonJoint in skeleton.joints){
+				
+				
+				_blockBody.writeShort(jointID);//ignored by parser
+				_blockBody.writeShort(int(joint.parentIndex +1));//ignored by parser
+				_blockBody.writeUTF(joint.name);
+				
+				_encodeMatrix3D(new Matrix3D(joint.inverseBindPose));
+				
+				_beginElement(); // User attr
+				_endElement(); // User attr				
+				_beginElement(); // User attr
+				_endElement(); // User attr
+				jointID+=1;
+			}
+			
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		
+		// encode SkeletonPose (id=102)
+		private function _encodeSkeletonPose(skeletPose:SkeletonPoseVO) : uint
+		{	
+			var returnID:uint;
+			returnID=_encodeBlockHeader(102);
+			
+			_blockBody.writeUTF(skeletPose.name);			
+			_blockBody.writeShort(skeletPose.jointTransforms.length);
+			
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+			
+			var frameCnt:uint=0;
+			for each (var skeletonPoseID:Matrix3D in skeletPose.jointTransforms){
+				_blockBody.writeByte(1);
+				_encodeMatrix3D(skeletonPoseID);
+				
+			}
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		// encode AnimationClip (id=112/103)
+		private function _encodeAnimation(animClip:AnimationNodeVO) : uint
+		{	
+			var returnID:uint;
+			var typeID:uint;
+			switch (animClip.type){
+				case "SkeletonClipNode":
+					returnID=_encodeSkeletonAnimation(animClip)
+					break;
+				case "VertexClipNode":
+					returnID=_encodeVertexAnimation(animClip)
+					break;
+			}
+						
+			return returnID;
+		}
+		
+		// encode AnimationClip (id=103)
+		private function _encodeSkeletonAnimation(animClip:AnimationNodeVO) : uint
+		{	
+			
+			var skeletonPoseIDs:Vector.<uint>=new Vector.<uint>;
+			for each (var skeletonPose:SkeletonPoseVO in animClip.animationPoses)
+				skeletonPoseIDs.push(_getBlockIDorEncodeAsset(skeletonPose));
+				
+			var returnID:uint =_encodeBlockHeader(103);
+			_blockBody.writeUTF(animClip.name);
+			_blockBody.writeShort(animClip.animationPoses.length);
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+			var frameCnt:uint=0;
+			for each (var skeletonPoseID:uint in skeletonPoseIDs){
+				_blockBody.writeUnsignedInt(skeletonPoseID);
+				_blockBody.writeShort(animClip.frameDurations[frameCnt]);				
+				frameCnt++;
+			}
+			
+						
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		
+		
+		// encode AnimationClip (id=112) 
+		private function _encodeVertexAnimation(animClip:AnimationNodeVO) : uint
+		{	
+			var geoId:uint=0;
+			if (_translateAnimationNodesToMesh[animClip.id]){
+				geoId=_getBlockIDorEncodeAsset(MeshVO(_translateAnimationNodesToMesh[animClip.id]).geometry);
+			}
+			
+			var returnID:uint=_encodeBlockHeader(112);			
+			_blockBody.writeUTF(animClip.name);		
+			_blockBody.writeUnsignedInt(geoId);
+			_blockBody.writeShort(animClip.animationPoses.length);	
+			_blockBody.writeShort(Geometry(animClip.animationPoses[0]).subGeometries.length);
+			_blockBody.writeShort(1);
+			_blockBody.writeShort(1);			
+			
+			_beginElement(); // Prop list
+			_endElement(); // Prop list
+			
+			var frameCnt:uint=0;
+			var i:int=0;
+			var k:int=0;
+			for each (var animGeo:Geometry in animClip.animationPoses){
+				_blockBody.writeShort(animClip.frameDurations[frameCnt]);	
+				//optional parsingStyle
+				for (i=0;i<animGeo.subGeometries.length;i++){
+					
+					_beginElement(); // Prop list
+					_encodeFloatStream( animGeo.subGeometries[i].vertexData.concat(), 3, 0, 13);
+					_endElement(); // Prop list
+				}
+				frameCnt+=1;
+			}
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		
+		// encode AnimationSet (id=113)
+		private function _encodeAnimationSet(animSet:AnimationSetVO) : uint
+		{	
+			// make shure all frames are exported before the animationSet:
+			var animationIDs:Vector.<uint>=new Vector.<uint>;
+			for each (var frame:AnimationNodeVO in animSet.animations){
+				animationIDs.push(_getBlockIDorEncodeAsset(frame));				
+			}
+			
+			var returnID:uint;
+			returnID=_encodeBlockHeader(113);			
+			
+			_blockBody.writeUTF(animSet.name);
+			_blockBody.writeShort(animSet.animations.length);
+			
+			_beginElement(); // Prop list
+			switch (animSet.type){
+				case "SkeletonAnimationSet"://to do: add jointPerVerticle here
+					
+					if (_translateAnimationSetToMesh[animSet.id]){
+						var jpv:uint=MeshVO(_translateAnimationSetToMesh[animSet.id]).jointsPerVertex;
+						_encodeProperty(1,jpv, UINT16);
+					}
+					//
+					break;
+				case "VertexAnimationSet":
+					break;
+			}			
+			_endElement(); // Prop list
+			
+			for each (var animID:uint in animationIDs){
+				_blockBody.writeUnsignedInt(animID);
+				
+			}
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		
+		// encode Animator (id=122)
+		private function _encodeAnimator(animator : AnimatorVO) : uint
+		{	
+			var animSetID:uint=_getBlockIDorEncodeAsset(animator.animationSet);
+			
+			var meshID:uint=0;
+			if (_translateAnimatiorToMesh[animator.id]){
+				meshID=_getBlockIDorEncodeAsset(_translateAnimatiorToMesh[animator.id]);
+			}
+			var skeletID:uint;
+			var returnID:uint;
+			var animType:uint=0;
+			switch (animator.type){
+				case "SkeletonAnimator":
+					animType=1;
+					skeletID =_getBlockIDorEncodeAsset(animator.skeleton);
+					break;
+				case "VertexAnimator":
+					animType=2;
+					break;
+				default:
+					trace ("can not export unsupported Animation-Type");
+					return 0;
+					break;
+			}	
+			
+			returnID=_encodeBlockHeader(122);
+			_blockBody.writeUTF(animator.name);
+			_blockBody.writeShort(animType);
+			
+			_beginElement(); // Prop list
+			switch (animator.type){
+				case "SkeletonAnimator":
+					_encodeProperty(1,skeletID,BADDR);
+					break;
+				case "VertexAnimator":
+					animType=2;
+					break;
+				default:
+					trace ("can not export unsupported Animation-Type");
+					return 0;
+					break;
+			}	
+			_endElement(); // Prop list
+			
+			_blockBody.writeUnsignedInt(animSetID);
+			_blockBody.writeUnsignedInt(meshID);
+			_blockBody.writeShort(0);
+			_blockBody.writeByte(0);
+						
+			_beginElement(); // Prop list
+			_endElement(); // Prop list			
+			
+			_beginElement(); // User attr
+			_endElement(); // User attr
+			
+			_finalizeBlock();
+			
+			return returnID;
+		}
+		
+		
+		
 		// encode NameSpace (id=254)
 		private function _encodeNameSpaceBlock() : uint
 		{	
@@ -1467,13 +1729,46 @@ package awaybuilder.utils.encoders
 					_encodeFloatStream( Vector.<Number>(data), 2, offset, stride);
 					_endElement();
 					break;
+				
+				case 6:
+					_blockBody.writeByte(_geoNrType);
+					_beginElement();
+					_encodeJointIndexStream( Vector.<Number>(data));
+					_endElement();
+					break;
+				
+				case 7:
+					_blockBody.writeByte(_geoNrType);
+					_beginElement();
+					_encodeJointWeightStream( Vector.<Number>(data));
+					_endElement();
+					break;
+			}
+		}
+		
+		private function _encodeJointIndexStream(str : Vector.<Number>) : void
+		{
+			var i : uint;
+			
+			i = 0;
+			for (i=0; i < str.length; i++) {
+				_blockBody.writeShort(int(str[i])/3);
+			}
+		}
+		
+		private function _encodeJointWeightStream(str : Vector.<Number>) : void
+		{
+			var i : uint;
+			
+			i = 0;
+			for (i=0; i < str.length; i++) {
+				_writeNumber(_geomStoragePrecision,(str[i]));
 			}
 		}
 		
 		private function _encodeFloatStream(str : Vector.<Number>, numPerVertex : uint, offset : uint, stride : uint) : void
 		{
-			var i : uint;
-			
+			var i : uint;			
 			i = 0;
 			for (i=offset; i < str.length; i += stride) {
 				var elem : uint;
@@ -1521,7 +1816,7 @@ package awaybuilder.utils.encoders
 		}
 		
 		
-		// wirtes a Number into the byteArray. This takes the storagePrecision into account that.
+		// writes a Number into the byteArray. This takes the storagePrecision into account.
 		private function _writeNumber(precision:uint,value:Number) : void
 		{
 			if (precision>0){

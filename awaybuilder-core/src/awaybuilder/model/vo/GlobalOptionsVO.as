@@ -24,7 +24,7 @@ package awaybuilder.model.vo
 		
 		public var includeTangent:Boolean = false;
 		
-		public var streaming:Boolean = true;
+		public var streaming:Boolean = false;
 		
 		public function clone():GlobalOptionsVO
 		{

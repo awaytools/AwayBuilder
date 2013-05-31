@@ -22,6 +22,9 @@ package awaybuilder.model.vo.scene
 		public var vertexTangentOffset : int;
 		public var vertexTangentStride : uint;
 		
+		public var jointWeightsData : Vector.<Number>;
+		public var jointIndexData : Vector.<Number>;
+		
 		public var indexData : Vector.<uint>;
 		
 //		public var parentGeometry:GeometryVO;
@@ -44,6 +47,8 @@ package awaybuilder.model.vo.scene
 			vo.vertexTangentOffset = this.vertexTangentOffset;
 			vo.vertexTangentStride = this.vertexTangentStride;
 			vo.indexData = this.indexData;
+			vo.jointWeightsData = this.jointWeightsData;
+			vo.jointIndexData = this.jointIndexData;
 			return vo;
 		}
 	}

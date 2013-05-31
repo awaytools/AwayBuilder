@@ -1,5 +1,7 @@
 package awaybuilder.model.vo.scene
 {
+	import mx.collections.ArrayCollection;
+	
 	import away3d.animators.nodes.AnimationNodeBase;
 
 	[Bindable]
@@ -13,6 +15,11 @@ package awaybuilder.model.vo.scene
 		
 		public var isPlaying:Boolean;
 		
+		// this will contain a list of SkeletonPosesVO for SkeletonAnimations
+		// or a List of Geometry for VertexAnimations
+		public var animationPoses:ArrayCollection = new ArrayCollection();
+		public var frameDurations:ArrayCollection = new ArrayCollection();
+				
 		public function clone():AnimationNodeVO
 		{
 			var vo:AnimationNodeVO = new AnimationNodeVO();
@@ -24,6 +31,8 @@ package awaybuilder.model.vo.scene
 		{
 			this.name = asset.name;
 			this.totalDuration = asset.totalDuration;
+			this.animationPoses = new ArrayCollection( asset.animationPoses.source.concat() );
+			this.frameDurations = new ArrayCollection( asset.frameDurations.source.concat() );
 			this.id = asset.id;
 		}
 	}

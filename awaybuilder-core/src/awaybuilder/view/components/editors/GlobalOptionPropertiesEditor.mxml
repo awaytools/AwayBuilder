@@ -103,9 +103,6 @@
 		<s:FormItem label="Include Tangent data" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 			<s:CheckBox change="value_changeHandler(event)" selected="@{_asset.includeTangent}" />
 		</s:FormItem>
-		<s:FormItem label="Streaming " skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-			<s:CheckBox change="value_changeHandler(event)" selected="@{_asset.streaming}" />
-		</s:FormItem>
 	</s:Form>
 		
 	
