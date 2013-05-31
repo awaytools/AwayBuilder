@@ -13,8 +13,6 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
-			
 			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
 			nextEvent.canUndo = false;
 			this.fileService.open( "open", nextEvent );

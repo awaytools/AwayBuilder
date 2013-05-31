@@ -129,6 +129,7 @@ package awaybuilder.utils
 				case( asset is AnimationSetVO ):
 					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_SET );
 					item.children = CreateBranch( AnimationSetVO(asset).animations );
+					item.children.addAll(CreateBranch( AnimationSetVO(asset).animators ));
 					return item;
 					
 				case( asset is SkeletonVO ):
@@ -150,8 +151,12 @@ package awaybuilder.utils
 					return item;
 					
 				case( asset is LightPickerVO ):
-					item = new ScenegraphItemVO( asset.name, asset );
+					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHTPICKER );
 					item.children = CreateBranch( LightPickerVO(asset).lights );
+					for each( var light:ScenegraphItemVO in item.children )
+					{
+						light.isLinkToSharedObject = true;
+					}
 					return item;
 					
 				default:

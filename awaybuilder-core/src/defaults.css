@@ -91,11 +91,15 @@ awaybuilder|CoreEditor
 }
 tree|Tree
 {
-	skinClass: ClassReference("awaybuilder.view.skins.TreeSkin")
+	skinClass: ClassReference("awaybuilder.view.skins.tree.TreeSkin")
 }
 tree|TreeItemRenderer.light
 {
 	icon: Embed("assets/images/weather_sun.png");
+}
+tree|TreeItemRenderer.lightPicker
+{
+	icon: Embed("assets/images/category.png");
 }
 tree|TreeItemRenderer.default
 {

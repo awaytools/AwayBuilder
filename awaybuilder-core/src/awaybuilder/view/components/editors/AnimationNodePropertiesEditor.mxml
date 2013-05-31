@@ -20,12 +20,7 @@
 		
 		private function name_changeHandler( event:Event ):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_STEPPER_CHANGE, _asset, true));
-		}
-		
-		protected function replaceButton_clickHandler(event:MouseEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATRION_NODE_STEPPER_CHANGE, _asset, true));
 		}
 		
 	]]></fx:Script>

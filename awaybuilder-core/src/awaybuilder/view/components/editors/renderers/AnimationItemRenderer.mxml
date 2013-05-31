@@ -33,7 +33,6 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _animation));
 		}
 		
-		
 		protected function playButton_clickHandler(event:MouseEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATOR_PLAY, _animation));

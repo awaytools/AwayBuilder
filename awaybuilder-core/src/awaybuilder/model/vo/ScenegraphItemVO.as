@@ -50,6 +50,8 @@ package awaybuilder.model.vo
 		
 		public var type:String = "default";
 		
+		public var isLinkToSharedObject:Boolean = false;
+		
 		public function merge( item:Object ):void
 		{
 			var newItem:ScenegraphItemVO = item as ScenegraphItemVO;

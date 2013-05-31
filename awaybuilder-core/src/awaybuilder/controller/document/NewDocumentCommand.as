@@ -3,6 +3,7 @@ package awaybuilder.controller.document
 	import away3d.library.AssetLibrary;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
+	import awaybuilder.controller.scene.events.AnimationEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
@@ -26,6 +27,7 @@ package awaybuilder.controller.document
 
 		override public function execute():void
 		{
+			this.dispatch(new AnimationEvent(AnimationEvent.STOP, null, null));
 			assets.Clear();
 			undoRedo.clear();
 			Scene3DManager.clear();

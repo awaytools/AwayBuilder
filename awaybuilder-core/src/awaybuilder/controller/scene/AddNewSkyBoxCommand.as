@@ -35,7 +35,7 @@ package awaybuilder.controller.scene
 				Scene3DManager.addSkybox( assets.GetObject(newValue) as SkyBox );
 			}
 			
-			commitHistoryEvent( event, true );
+			commitHistoryEvent( event );
 		}
 		
 	}

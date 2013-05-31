@@ -10,7 +10,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
+	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	import flash.utils.Dictionary;
 	

@@ -1,5 +1,6 @@
 package awaybuilder.desktop.model
 {
+	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
@@ -184,6 +185,8 @@ package awaybuilder.desktop.model
 		
 		private function file_open_selectHandler(event:Event):void
 		{
+			this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
+			
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);

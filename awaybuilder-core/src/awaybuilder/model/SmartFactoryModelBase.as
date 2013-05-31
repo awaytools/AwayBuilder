@@ -545,8 +545,15 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, obj ) as AnimatorVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
-			trace( "asset.type = " + asset.type );
 			asset.animationSet = GetAsset(obj.animationSet) as AnimationSetVO;
+			
+			var alreadyAdded:Boolean = false;
+			for each( var animator:AnimatorVO in asset.animationSet.animators )
+			{
+				if( animator.equals( asset ) ) alreadyAdded = true;	
+			}
+			if( !alreadyAdded )	asset.animationSet.animators.addItem( asset ); // AnimationSet is container for Animators, but not store it directly
+			
 			asset.playbackSpeed = obj.playbackSpeed;
 			var skeletonAnimator:SkeletonAnimator = obj as SkeletonAnimator;
 			if( skeletonAnimator )

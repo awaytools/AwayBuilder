@@ -10,18 +10,21 @@ package awaybuilder.model.vo.scene
 		
 		public var animations:ArrayCollection = new ArrayCollection();
 		
+		public var animators:ArrayCollection = new ArrayCollection();
+		
 		public function clone():AnimationSetVO
 		{
 			var vo:AnimationSetVO = new AnimationSetVO();
-			vo.fillAnimationSet( this );
+			vo.fillFromAnimationSet( this );
 			return vo;
 		}
 		
-		public function fillAnimationSet( asset:AnimationSetVO ):void
+		public function fillFromAnimationSet( asset:AnimationSetVO ):void
 		{
 			this.name = asset.name;
 			this.type = asset.type;
 			this.animations = new ArrayCollection( asset.animations.source.concat() );
+			this.animators = new ArrayCollection( asset.animators.source.concat() );
 			this.id = asset.id;
 		}
 	}

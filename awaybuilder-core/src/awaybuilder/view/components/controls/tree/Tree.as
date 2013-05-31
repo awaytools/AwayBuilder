@@ -28,6 +28,7 @@ package awaybuilder.view.components.controls.tree
 	import spark.components.List;
 	import spark.events.RendererExistenceEvent;
 	import spark.layouts.supportClasses.DropLocation;
+	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	use namespace mx_internal;
 	

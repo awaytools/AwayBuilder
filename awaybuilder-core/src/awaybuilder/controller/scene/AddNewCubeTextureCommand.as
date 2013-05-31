@@ -46,7 +46,7 @@ package awaybuilder.controller.scene
 				asset[event.options] = newValue;
 			}
 			
-			commitHistoryEvent( event, true );
+			commitHistoryEvent( event );
 		}
 		
 	}

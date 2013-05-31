@@ -63,7 +63,7 @@ package awaybuilder.controller.scene
 				this.dispatch(new SceneEvent(SceneEvent.SELECT,[newTexture]));
 			}
 			
-			commitHistoryEvent( event, true );
+			commitHistoryEvent( event );
 		}
 		
 		protected function saveOldTexture( event:HistoryEvent, prevValue:AssetVO, option:String ):void 

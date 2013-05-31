@@ -34,7 +34,7 @@ package awaybuilder.controller.scene
 				Scene3DManager.addObject( assets.GetObject(newValue) as ObjectContainer3D );
 			}
 			
-			commitHistoryEvent( event, true );
+			commitHistoryEvent( event );
 		}
 		
 	}

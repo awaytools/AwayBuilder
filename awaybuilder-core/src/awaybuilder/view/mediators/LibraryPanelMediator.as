@@ -42,7 +42,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.utils.ScenegraphFactory;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
-	import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
+	import awaybuilder.model.vo.DroppedTreeItemVO;
 	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
 	
@@ -169,53 +169,9 @@ package awaybuilder.view.mediators
 		}
 		private function view_addAnimatorHandler(event:LibraryPanelEvent):void
 		{
-			var vertexAnimationSets:Vector.<AnimationSetVO> = new Vector.<AnimationSetVO>();
-			var skeletonAnimationSets:Vector.<AnimationSetVO> = new Vector.<AnimationSetVO>();
-			var skeletons:Vector.<SkeletonVO> = new Vector.<SkeletonVO>();
-			for each( var asset:AssetVO in document.animations )
-			{
-				var animSet:AnimationSetVO = asset as AnimationSetVO;
-				if( animSet ) 
-				{
-					if( animSet.type == "VertexAnimationSet" )
-					{
-						vertexAnimationSets.push( animSet );
-					}
-					else if( animSet.type == "SkeletonAnimationSet" )
-					{
-						skeletonAnimationSets.push( animSet );
-					}
-				}
-				if( asset is SkeletonVO )
-				{
-					skeletons.push(asset);
-				}
-			}
-			var animator:AnimatorVO;
 			var animation:AnimationSetVO
 			switch( event.data )
 			{
-				case "VertexAnimator":
-					if( !vertexAnimationSets.length )
-					{
-						Alert.show( "VertexAnimationSet is missing", "Warning" );
-						return;
-					}
-					animator = assets.CreateAnimator( event.data as String, vertexAnimationSets[0] );
-					break;
-				case "SkeletonAnimator":
-					if( !skeletonAnimationSets.length )
-					{
-						Alert.show( "SkeletonAnimationSet is missing", "Warning" );
-						return;
-					}
-					if( !skeletons.length )
-					{
-						Alert.show( "Skeleton is missing", "Warning" );
-						return;
-					}
-					animator = assets.CreateAnimator( event.data as String, skeletonAnimationSets[0], skeletons[0] );
-					break;
 				case "VertexAnimationSet":
 					animation = assets.CreateAnimationSet( event.data as String );
 					break;
@@ -227,11 +183,6 @@ package awaybuilder.view.mediators
 			{
 				this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_ANIMATION_SET,[], animation));
 				this.dispatch(new SceneEvent(SceneEvent.SELECT,[animation]));
-			}
-			if( animator )
-			{
-				this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_ANIMATOR,[], animator));
-				this.dispatch(new SceneEvent(SceneEvent.SELECT,[animator]));
 			}
 		}
 		private function view_addEffectMethodHandler(event:LibraryPanelEvent):void

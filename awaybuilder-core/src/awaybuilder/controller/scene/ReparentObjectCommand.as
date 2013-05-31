@@ -21,7 +21,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.scene.Scene3DManager;
-	import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
+	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	import flash.utils.Dictionary;
 	

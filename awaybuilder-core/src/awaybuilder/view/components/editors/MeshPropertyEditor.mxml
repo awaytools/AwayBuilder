@@ -33,8 +33,6 @@
 		{
 			if( !(asset is MeshVO) ) return;
 			if( asset is MeshVO ) _asset = MeshVO(asset).clone() as MeshVO;
-			
-			trace( _asset.animator );
 		}
 
         private function position_commitHandler(event:Event):void 

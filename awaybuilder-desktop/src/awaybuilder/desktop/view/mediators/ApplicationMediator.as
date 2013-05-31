@@ -33,6 +33,7 @@ package awaybuilder.desktop.view.mediators
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
 	import flash.ui.Keyboard;
 	
 	import mx.core.DragSource;
@@ -579,6 +580,13 @@ package awaybuilder.desktop.view.mediators
 			{
 				Scene3DManager.zoomDistanceDelta( -CameraManager.ZOOM_DELTA_VALUE );
 			}
+			else if((event.keyCode == Keyboard.DELETE) || (event.keyCode == Keyboard.BACKSPACE && event.ctrlKey))
+			{
+				if(this.documentModel.selectedAssets.length > 0)
+				{
+					this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, documentModel.selectedAssets));
+				}
+			}
 		}
 		
 		private function createMenuItem(text:String, data:Object, addTo:NativeMenu, index:int = -1, keyEquivalent:String = null, modifiers:Array = null):NativeMenuItem
@@ -607,6 +615,9 @@ package awaybuilder.desktop.view.mediators
 		
 		private function populateMenus():void
 		{
+			var isWin:Boolean = (Capabilities.os.indexOf("Windows") >= 0); 
+			var isMac:Boolean = (Capabilities.os.indexOf("Mac OS") >= 0); 
+			
 			if(NativeApplication.supportsMenu)
 			{
 				this._mainMenu = NativeApplication.nativeApplication.menu;
@@ -668,8 +679,15 @@ package awaybuilder.desktop.view.mediators
 			this._copyItem = this.createMenuItem("Copy", MENU_COPY, editMenu, -1, "c");
 			this.createMenuItem("Paste", MENU_PASTE, editMenu, -1, "v");
 			editMenu.addItem(new NativeMenuItem("", true));
-			_deleteItem = createMenuItem("Delete",MENU_DELETE, editMenu);
-            _deleteItem.enabled = false;
+			if( isWin )
+			{
+				_deleteItem = createMenuItem("Delete",MENU_DELETE, editMenu, -1, "del", []);
+			}
+			else
+			{
+				_deleteItem = createMenuItem("Delete",MENU_DELETE, editMenu);
+			}
+			
 			editMenu.addItem(new NativeMenuItem("", true));
 			this.createMenuItem("Select All", MENU_SELECT_ALL, editMenu, -1, "a");
 			this.createMenuItem("Select None", MENU_SELECT_NONE, editMenu, -1, "A");

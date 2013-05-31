@@ -1,25 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import flash.display.BitmapData;
-    import flash.display3D.textures.Texture;
-    import flash.display3D.textures.TextureBase;
-    import flash.events.ErrorEvent;
-    import flash.events.Event;
-    import flash.events.KeyboardEvent;
-    import flash.events.UncaughtErrorEvent;
-    import flash.geom.ColorTransform;
-    import flash.geom.Matrix;
-    import flash.geom.Vector3D;
-    import flash.ui.Keyboard;
-    
-    import mx.collections.ArrayCollection;
-    import mx.controls.Alert;
-    import mx.controls.Text;
-    import mx.core.FlexGlobals;
-    import mx.utils.ObjectUtil;
-    
-    import spark.collections.Sort;
-    
     import away3d.animators.AnimationSetBase;
     import away3d.animators.AnimatorBase;
     import away3d.animators.SkeletonAnimationSet;
@@ -109,12 +89,14 @@ package awaybuilder.view.mediators
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
+    import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.events.SceneReadyEvent;
     import awaybuilder.controller.scene.events.AnimationEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.DroppedAssetVO;
+    import awaybuilder.model.vo.DroppedTreeItemVO;
     import awaybuilder.model.vo.ScenegraphItemVO;
     import awaybuilder.model.vo.scene.AnimationNodeVO;
     import awaybuilder.model.vo.scene.AnimationSetVO;
@@ -144,14 +126,33 @@ package awaybuilder.view.mediators
     import awaybuilder.utils.scene.modes.CameraMode;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
-    import awaybuilder.view.components.controls.tree.DroppedTreeItemVO;
     import awaybuilder.view.components.events.CoreEditorEvent;
     import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
+    import flash.display.BitmapData;
+    import flash.display3D.textures.Texture;
+    import flash.display3D.textures.TextureBase;
+    import flash.events.ErrorEvent;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.UncaughtErrorEvent;
+    import flash.geom.ColorTransform;
+    import flash.geom.Matrix;
+    import flash.geom.Vector3D;
+    import flash.ui.Keyboard;
+    
+    import mx.collections.ArrayCollection;
+    import mx.controls.Alert;
+    import mx.controls.Text;
+    import mx.core.FlexGlobals;
+    import mx.utils.ObjectUtil;
+    
     import org.robotlegs.mvcs.Mediator;
+    
+    import spark.collections.Sort;
 
     public class CoreEditorMediator extends Mediator
 	{
@@ -167,6 +168,9 @@ package awaybuilder.view.mediators
 		private var _scenegraphSort:Sort = new Sort();
 		private var _scenegraph:ArrayCollection;
 		private var _scenegraphSelected:Vector.<Object>;
+		
+		private var _currentAnimation:AnimationNodeVO;
+		private var _currentAnimator:AnimatorVO;
 		
 		override public function onRegister():void
 		{
@@ -210,6 +214,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewShadowMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewEffectMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightHandler);
+			
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
@@ -350,12 +356,8 @@ package awaybuilder.view.mediators
 		//
 		//----------------------------------------------------------------------
 		
-		private var _currentAnimation:AnimationNodeVO;
-		private var _currentAnimator:AnimatorVO;
-		
 		private function contect_playHandler(event:AnimationEvent):void
 		{
-			//trace(event.animator.type);
 			var animator:AnimatorBase;
 			switch (event.animator.type){
 				case "SkeletonAnimator":
@@ -408,22 +410,24 @@ package awaybuilder.view.mediators
 		
 		private function contect_stopHandler(event:AnimationEvent):void
 		{
+			if( !_currentAnimator || !_currentAnimation ) return;
 			var animator:AnimatorBase;
-			switch (event.animator.type){
+			switch (_currentAnimator.type){
 				case "SkeletonAnimator":
-					animator = assets.GetObject( event.animator ) as SkeletonAnimator;
+					animator = assets.GetObject( _currentAnimator ) as SkeletonAnimator;
 					break;
 				case "VertexAnimator":
-					animator = assets.GetObject( event.animator ) as VertexAnimator;
+					animator = assets.GetObject( _currentAnimator ) as VertexAnimator;
 					break;
 			}
-			event.animation.isPlaying = false;
+			_currentAnimation.isPlaying = false;
 			animator.stop();
 			animator.time = 0;
 			this.view.removeEventListener(Event.ENTER_FRAME, view_enterFrameHandler );
 			
 			_currentAnimation.currentPosition = 0;
-			
+			_currentAnimator = null;
+			_currentAnimation = null;
 		}
 		private function contect_seekHandler(event:AnimationEvent):void
 		{
@@ -465,10 +469,12 @@ package awaybuilder.view.mediators
 			}
 			
 			animator.time = time;
-			
-			
 		}
 		
+		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
+		{
+			contect_stopHandler( null );
+		}
 		private function eventDispatcher_reparentLightsHandler(event:SceneEvent):void
 		{
 		}

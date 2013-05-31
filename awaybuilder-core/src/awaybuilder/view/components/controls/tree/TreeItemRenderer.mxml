@@ -5,6 +5,7 @@
 						   doubleClick="treeitemrendererbase1_doubleClickHandler(event)" 
 						   doubleClickEnabled="true"
 						   styleName="{data.type}"
+						   alpha="{data.isLinkToSharedObject==true?0.95:1}"
 						   height="24" xmlns:tree="awaybuilder.view.components.controls.tree.*">
 	
 	<tree:states>
@@ -14,7 +15,7 @@
 	</tree:states>
 	
 	<tree:layout>
-		<s:HorizontalLayout paddingLeft="{indentation + 2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1"/>
+		<s:BasicLayout/>
 	</tree:layout>
 	<fx:Script>
 		<![CDATA[
@@ -50,12 +51,18 @@
 		</s:fill>
 	</s:Rect>
 	
-	<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)" dragEnter="disclosureButton_dragEnterHandler(event)"
-					selected="{isOpen}" skinClass="awaybuilder.view.components.controls.tree.TreeDisclosureButtonSkin"/>
+	<s:HGroup paddingLeft="{indentation + 2}" verticalAlign="middle" paddingBottom="4" paddingTop="4" gap="1" height="24">
+		<s:ToggleButton id="disclosureButton" visible="{disclosureIconVisible}" click="disclosureButton_clickHandler(event)" dragEnter="disclosureButton_dragEnterHandler(event)"
+						selected="{isOpen}" skinClass="awaybuilder.view.skins.tree.TreeDisclosureButtonSkin"/>
+		
+		<s:BitmapImage source="{getStyle('icon')}"/>
+		
+		<s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
+		
+	</s:HGroup>
 	
-	<s:BitmapImage id="iconButton" source="{getStyle('icon')}"/>
-	
-	<s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
+	<s:Image source="@Embed('assets/images/linkArrow.png')" visible="{data.isLinkToSharedObject}" includeInLayout="{data.isLinkToSharedObject}" alpha="0.75" right="6" verticalCenter="0" 
+			 toolTip="Usage of Shared Resource"/>
 	
 	<s:Rect x="2" y="2" width="{this.width-4}" height="{this.height-4}" includeInLayout="false" visible="{showDropIndicator}">
 		<s:stroke>

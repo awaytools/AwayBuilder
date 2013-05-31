@@ -1,4 +1,4 @@
-package awaybuilder.view.components.controls.tree
+package awaybuilder.model.vo
 {
 	public class DroppedTreeItemVO
 	{

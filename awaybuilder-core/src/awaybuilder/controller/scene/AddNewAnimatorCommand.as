@@ -6,6 +6,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AnimatorVO;
 
+	[Deprecated]
 	public class AddNewAnimatorCommand extends HistoryCommandBase
 	{
 		[Inject]
@@ -25,7 +26,7 @@ package awaybuilder.controller.scene
 				document.animations.addItemAt( newValue, 0 );
 			}
 			
-			commitHistoryEvent( event, true );
+			commitHistoryEvent( event );
 		}
 		
 	}

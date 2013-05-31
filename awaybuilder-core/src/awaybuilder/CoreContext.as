@@ -41,6 +41,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewSkyBoxCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.AddNewTextureProjectorCommand;
+	import awaybuilder.controller.scene.ChangeAnimationSetCommand;
 	import awaybuilder.controller.scene.ChangeAnimatorCommand;
 	import awaybuilder.controller.scene.ChangeCameraCommand;
 	import awaybuilder.controller.scene.ChangeContainerCommand;
@@ -156,6 +157,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE, ChangeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR, ChangeTextureProjectorCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATOR, ChangeAnimatorCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATION_SET, ChangeAnimationSetCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CAMERA, ChangeCameraCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
@@ -170,7 +172,6 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MESH, AddNewMeshCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_CONTAINER, AddNewContainerCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, AddNewTextureProjectorCommand);
-			commandMap.mapEvent(SceneEvent.ADD_NEW_ANIMATOR, AddNewAnimatorCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_ANIMATION_SET, AddNewAnimationSetCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_CAMERA, AddNewCameraCommand);
 			

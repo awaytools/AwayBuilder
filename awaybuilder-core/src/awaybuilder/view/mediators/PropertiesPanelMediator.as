@@ -1,5 +1,7 @@
 package awaybuilder.view.mediators
 {
+    import away3d.animators.AnimatorBase;
+    
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.history.UndoRedoEvent;
@@ -74,6 +76,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_CAMERA, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_LENS, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_ANIMATOR, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_ANIMATION_SET, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.CHANGE_ANIMATION_NODE, context_simpleUpdateHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -177,6 +181,11 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.ANIMATOR_SEEK, view_animatorSeekHandler );
 			addViewListener( PropertyEditorEvent.ANIMATOR_PAUSE, view_animatorPauseHandler );
 			
+			addViewListener( PropertyEditorEvent.ANIMATRION_SET_CHANGE, view_animationSetChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATRION_SET_STEPPER_CHANGE, view_animationSetStepperChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATRION_SET_ADD_ANIMATOR, view_animationAddAnimatorHandler );
+			addViewListener( PropertyEditorEvent.ANIMATRION_SET_REMOVE_ANIMATOR, view_animationRemoveAnimatorHandler );
+			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
 			addViewListener( PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES, view_showParentMeshHandler );
@@ -228,7 +237,6 @@ package awaybuilder.view.mediators
 		
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
-			trace( "event.data.animator " + event.data.animator );
             this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data));
         }
         private function view_meshNameChangeHandler(event:PropertyEditorEvent):void
@@ -594,6 +602,56 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		
+		private function view_animationSetChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET,[view.data], event.data));
+		}
+		private function view_animationSetStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET, [view.data], event.data, true));
+		}
+		private function view_animationAddAnimatorHandler(event:PropertyEditorEvent):void
+		{
+			var newAnimationSet:AnimationSetVO = AnimationSetVO(view.data).clone();
+			var animator:AnimatorVO;
+			switch( newAnimationSet.type )
+			{
+				case "VertexAnimationSet":
+					animator = assets.CreateAnimator( "VertexAnimator", view.data as AnimationSetVO );
+					break;
+				case "SkeletonAnimationSet":
+					var skeletons:Vector.<SkeletonVO> = new Vector.<SkeletonVO>();
+					for each( var asset:AssetVO in document.animations )
+					{
+						if( asset is SkeletonVO )
+						{
+							skeletons.push(asset);
+						}
+					}
+					if( !skeletons.length )
+					{
+						Alert.show( "Skeleton is missing", "Warning" );
+						return;
+					}
+					animator = assets.CreateAnimator( "SkeletonAnimator", view.data as AnimationSetVO, skeletons[0] );
+					break;
+			}
+			newAnimationSet.animators.addItem( animator );
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET,[view.data], newAnimationSet));
+		}
+		private function view_animationRemoveAnimatorHandler(event:PropertyEditorEvent):void
+		{
+			var newAnimationSet:AnimationSetVO = AnimationSetVO(view.data).clone();
+			var animator:AnimatorVO = event.data as AnimatorVO;
+			for( var i:int = 0; i < newAnimationSet.animators.length; i++ )
+			{
+				if( animator.equals(newAnimationSet.animators.getItemAt(i) as AnimatorVO) )
+					newAnimationSet.animators.removeItemAt( i );
+			}
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET,[view.data], newAnimationSet));
+		}
+		
+		
 		private function view_animatorChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATOR,[view.data], event.data));
@@ -929,11 +987,8 @@ package awaybuilder.view.mediators
 			var skeletons:Array = [];
 			for each( asset in document.animations )
 			{
-				if( asset is AnimatorVO ) 
-				{
-					animators.push( asset );
-				}
-				else if( asset is AnimationSetVO ) 
+				
+				if( asset is AnimationSetVO ) 
 				{
 					if( AnimationSetVO( asset ).type == "SkeletonAnimationSet" )
 					{
@@ -942,6 +997,11 @@ package awaybuilder.view.mediators
 					if( AnimationSetVO( asset ).type == "VertexAnimationSet" )
 					{
 						vertexAnimationSets.push( asset );
+					}
+					
+					for each( var animator:AnimatorVO in AnimationSetVO(asset).animators )
+					{
+						animators.push( animator );
 					}
 					
 				}

@@ -182,10 +182,6 @@ package awaybuilder.model
 		}
 		public function CreateAnimator( type:String, animationSet:AnimationSetVO, skeleton:SkeletonVO=null ):AnimatorVO
 		{
-//			var textureMaterial:SkeletonAnimator = new SkeletonAnimator();
-//			newMaterial = new TextureMaterial( textureMaterial.texture, textureMaterial.smooth, textureMaterial.repeat, textureMaterial.mipmap );
-//			newMaterial.name = "Animator" + AssetUtil.GetNextId("Animator");
-//			return GetAsset(newMaterial) as MaterialVO;
 			var animator:AnimatorBase;
 			switch( type )
 			{

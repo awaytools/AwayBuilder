@@ -20,12 +20,17 @@
 		
 		private function name_changeHandler( event:Event ):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TEXTURE_STEPPER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATRION_SET_STEPPER_CHANGE, _asset, true));
 		}
 		
-		protected function replaceButton_clickHandler(event:MouseEvent):void
+		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.REPLACE_TEXTURE, _asset, true));
+			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATRION_SET_ADD_ANIMATOR ) );
+		}
+		
+		protected function deleteButton_clickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATRION_SET_REMOVE_ANIMATOR, animatorsList.selectedItem ) );
 		}
 		
 	]]></fx:Script>
@@ -49,11 +54,28 @@
 		</s:FormItem>
 	</s:Form>
 	
-	<controls:PropertiesItemContainer label="Animation Nodes" width="100%"  paddingLeft="10" paddingRight="6" paddingTop="8">
+	<controls:PropertiesItemContainer label="Animation Nodes" width="100%"  paddingLeft="10" paddingRight="6" paddingTop="10">
 		<controls:DroppableLightsList dataProvider="{_asset.animations}"  width="100%" 
 									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 
 									  itemRenderer="awaybuilder.view.components.editors.renderers.AnimationNodeItemRenderer"
 									 />
+	</controls:PropertiesItemContainer>
+	
+	
+	<controls:PropertiesItemContainer label="Animators" width="100%"  paddingLeft="10" paddingRight="6" paddingTop="10">
+		<controls:layout>
+			<s:VerticalLayout/>
+		</controls:layout>
+		<s:List id="animatorsList" dataProvider="{_asset.animators}"
+				width="100%" 
+				skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 
+				itemRenderer="awaybuilder.view.components.editors.renderers.AssetChildItemRenderer"
+				/>
+		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
+			<s:Button id="addButton" toolTip="Add New" styleName="addButton" click="addButton_clickHandler(event)" height="22" width="22"/>
+			<s:Button id="deleteButton" enabled="{animatorsList.selectedItem}" toolTip="Remove" styleName="removeButton" height="22" width="22"
+					  click="deleteButton_clickHandler(event)"/>
+		</s:HGroup>
 	</controls:PropertiesItemContainer>
 	
 </editors:EditorBase>

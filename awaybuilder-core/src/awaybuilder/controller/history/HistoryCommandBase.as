@@ -14,12 +14,11 @@ package awaybuilder.controller.history
 		[Inject]
 		public var document:DocumentModel;
 		
-		protected function commitHistoryEvent( event:HistoryEvent, dispatchUpdate:Boolean = false ):void 
+		protected function commitHistoryEvent( event:HistoryEvent ):void 
 		{
 			addToHistory( event );
 			
-			if( dispatchUpdate )
-				this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
 			document.empty = false;
 			document.edited = true;
 		}
