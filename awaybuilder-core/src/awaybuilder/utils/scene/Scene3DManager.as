@@ -1,5 +1,16 @@
 package awaybuilder.utils.scene
 {
+	import flash.display.BitmapData;
+	import flash.display.Stage;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.geom.Vector3D;
+	
+	import mx.collections.ArrayList;
+	import mx.core.UIComponent;
+	
 	import avmplus.getQualifiedClassName;
 	
 	import away3d.cameras.Camera3D;
@@ -16,6 +27,7 @@ package awaybuilder.utils.scene
 	import away3d.events.MouseEvent3D;
 	import away3d.events.Stage3DEvent;
 	import away3d.library.AssetLibrary;
+	import away3d.library.assets.IAsset;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
@@ -36,17 +48,6 @@ package awaybuilder.utils.scene
 	import awaybuilder.view.scene.controls.TranslateGizmo3D;
 	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	import awaybuilder.view.scene.events.Scene3DManagerEvent;
-	
-	import flash.display.BitmapData;
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import flash.geom.Vector3D;
-	
-	import mx.collections.ArrayList;
-	import mx.core.UIComponent;
 	
 
 	public class Scene3DManager extends EventDispatcher
@@ -701,7 +702,6 @@ package awaybuilder.utils.scene
 			if (m || o.numChildren>0)
 				o.addEventListener(MouseEvent3D.CLICK, instance.handleMouseEvent3D);			
 		}
-		
 		private function handleMouseEvent3D(e:Event):void 
 		{
 			if (!CameraManager.hasMoved && !currentGizmo.hasMoved && active)
@@ -785,30 +785,30 @@ package awaybuilder.utils.scene
 //			//instance.dispatchEvent(new SceneEvent(SceneEvent.SELECT, );
 //		}
 		
-		public static function selectObject(meshName:String):void 
+		public static function selectObject(objID:String):void 
 		{			
 			if (!multiSelection) unselectAll();
 			
 			// TODO: Check if object already selected
 			for each(var m:ObjectContainer3D in objects.source)
 			{
-				selectObjectInContainer(m, meshName);
+				selectObjectInContainer(m, objID);
 			}
 			for each(var l:LightBase in lights.source)
 			{
-				selectLightInContainer(l, meshName);
+				selectLightInContainer(l, objID);
 			}
 			for each(var tP:TextureProjector in textureProjectors.source)
 			{
-				selectTextureProjectorInContainer(tP, meshName);
+				selectTextureProjectorInContainer(tP, objID);
 			}
 		}
 
-		private static function selectObjectInContainer(o : ObjectContainer3D, meshName : String) : void {
+		private static function selectObjectInContainer(o : ObjectContainer3D, meshID : String) : void {
 
 			var m:Mesh = o as Mesh;
 
-			if (m && m.name == meshName)
+			if (m && m.id == meshID)
 			{
 				if (!m.showBounds)
 				{
@@ -822,18 +822,18 @@ package awaybuilder.utils.scene
 			} else {
 				for (var c:int = 0; c<o.numChildren; c++) {
 					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
-					selectObjectInContainer(container, meshName);
+					selectObjectInContainer(container, meshID);
 				}
 			}
 		}
 
-		private static function selectLightInContainer(o : ObjectContainer3D, meshName : String) : void {
+		private static function selectLightInContainer(o : ObjectContainer3D, meshID : String) : void {
 
 			var l:LightBase = o as LightBase;
 			var m:Mesh;
 			var lG:LightGizmo3D;
 			for each (lG in lightGizmos) {
-				if (lG.sceneObject == l && lG.representation.name == meshName) {
+				if (lG.sceneObject == l && lG.representation.id == meshID) {
 					m = lG.representation;
 
 					m.showBounds = true;
@@ -847,18 +847,18 @@ package awaybuilder.utils.scene
 			if (m==null) {
 				for (var c:int = 0; c<o.numChildren; c++) {
 					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
-					selectLightInContainer(container, meshName);
+					selectLightInContainer(container, meshID);
 				}
 			}
 		}
 
-		private static function selectTextureProjectorInContainer(o : ObjectContainer3D, meshName : String) : void {
+		private static function selectTextureProjectorInContainer(o : ObjectContainer3D, meshID : String) : void {
 
 			var tP:TextureProjector = o as TextureProjector;
 			var m:Mesh;
 			var tPG:TextureProjectorGizmo3D;
 			for each (tPG in textureProjectorGizmos) {
-				if (tPG.sceneObject == tP && tPG.representation.name == meshName) {
+				if (tPG.sceneObject == tP && tPG.representation.id == meshID) {
 					m = tPG.representation;
 
 					m.showBounds = true;
@@ -872,7 +872,7 @@ package awaybuilder.utils.scene
 			if (m==null) {
 				for (var c:int = 0; c<o.numChildren; c++) {
 					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
-					selectTextureProjectorInContainer(container, meshName);
+					selectTextureProjectorInContainer(container, meshID);
 				}
 			}
 		}

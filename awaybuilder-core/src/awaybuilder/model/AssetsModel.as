@@ -1,5 +1,9 @@
 package awaybuilder.model
 {
+	import flash.geom.ColorTransform;
+	
+	import mx.utils.UIDUtil;
+	
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
 	import away3d.animators.SkeletonAnimationSet;
@@ -12,11 +16,53 @@ package awaybuilder.model
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
-	import away3d.lights.*;
-	import away3d.lights.shadowmaps.*;
-	import away3d.materials.*;
-	import away3d.materials.lightpickers.*;
-	import away3d.materials.methods.*;
+	import away3d.library.assets.IAsset;
+	import away3d.lights.DirectionalLight;
+	import away3d.lights.LightBase;
+	import away3d.lights.PointLight;
+	import away3d.lights.shadowmaps.CascadeShadowMapper;
+	import away3d.lights.shadowmaps.CubeMapShadowMapper;
+	import away3d.lights.shadowmaps.DirectionalShadowMapper;
+	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
+	import away3d.lights.shadowmaps.ShadowMapperBase;
+	import away3d.materials.SinglePassMaterialBase;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.materials.methods.AlphaMaskMethod;
+	import away3d.materials.methods.AnisotropicSpecularMethod;
+	import away3d.materials.methods.BasicAmbientMethod;
+	import away3d.materials.methods.BasicDiffuseMethod;
+	import away3d.materials.methods.BasicNormalMethod;
+	import away3d.materials.methods.BasicSpecularMethod;
+	import away3d.materials.methods.CascadeShadowMapMethod;
+	import away3d.materials.methods.CelDiffuseMethod;
+	import away3d.materials.methods.CelSpecularMethod;
+	import away3d.materials.methods.ColorMatrixMethod;
+	import away3d.materials.methods.ColorTransformMethod;
+	import away3d.materials.methods.DepthDiffuseMethod;
+	import away3d.materials.methods.DitheredShadowMapMethod;
+	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.EnvMapAmbientMethod;
+	import away3d.materials.methods.EnvMapMethod;
+	import away3d.materials.methods.FilteredShadowMapMethod;
+	import away3d.materials.methods.FogMethod;
+	import away3d.materials.methods.FresnelEnvMapMethod;
+	import away3d.materials.methods.FresnelSpecularMethod;
+	import away3d.materials.methods.GradientDiffuseMethod;
+	import away3d.materials.methods.HardShadowMapMethod;
+	import away3d.materials.methods.HeightMapNormalMethod;
+	import away3d.materials.methods.LightMapDiffuseMethod;
+	import away3d.materials.methods.LightMapMethod;
+	import away3d.materials.methods.NearShadowMapMethod;
+	import away3d.materials.methods.OutlineMethod;
+	import away3d.materials.methods.PhongSpecularMethod;
+	import away3d.materials.methods.RefractionEnvMapMethod;
+	import away3d.materials.methods.RimLightMethod;
+	import away3d.materials.methods.ShadingMethodBase;
+	import away3d.materials.methods.SimpleWaterNormalMethod;
+	import away3d.materials.methods.SoftShadowMapMethod;
+	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
+	import away3d.materials.methods.WrapDiffuseMethod;
 	import away3d.primitives.CapsuleGeometry;
 	import away3d.primitives.ConeGeometry;
 	import away3d.primitives.CubeGeometry;
@@ -26,16 +72,29 @@ package awaybuilder.model
 	import away3d.primitives.SkyBox;
 	import away3d.primitives.SphereGeometry;
 	import away3d.primitives.TorusGeometry;
-	import away3d.textures.*;
+	import away3d.textures.BitmapCubeTexture;
+	import away3d.textures.CubeTextureBase;
+	import away3d.textures.Texture2DBase;
 	
-	import awaybuilder.model.vo.scene.*;
-	import awaybuilder.utils.*;
-	
-	import flash.display.*;
-	import flash.geom.*;
-	import flash.utils.*;
-	
-	import mx.utils.*;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
+	import awaybuilder.model.vo.scene.AnimatorVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CameraVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
+	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.ShadingMethodVO;
+	import awaybuilder.model.vo.scene.ShadowMapperVO;
+	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
+	import awaybuilder.model.vo.scene.TextureProjectorVO;
+	import awaybuilder.utils.AssetUtil;
 
 	public class AssetsModel extends SmartFactoryModelBase
 	{
@@ -88,7 +147,14 @@ package awaybuilder.model
 			if( _assets[obj] ) return _assets[obj];
 			
 			var asset:AssetVO = createAsset( obj );
-			asset.id = UIDUtil.createUID();
+			if ((obj is IAsset) && (obj.id))
+				asset.id = obj.id;
+			else{
+				asset.id = UIDUtil.createUID();
+				if (obj is IAsset)
+					obj.id = asset.id;
+				
+			}
 			
 			_assets[obj] = asset;
 			_objectsByAsset[asset] = obj;

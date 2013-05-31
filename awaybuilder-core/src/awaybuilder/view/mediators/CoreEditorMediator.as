@@ -1447,7 +1447,7 @@ package awaybuilder.view.mediators
 					return;
 				}
 			}
-			Scene3DManager.selectObject(o.name);
+			Scene3DManager.selectObject(o.id);
 			
 		}
 		private function selectContainersScene( c:ObjectContainer3D ):void
