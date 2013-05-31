@@ -420,10 +420,15 @@ package awaybuilder.utils.encoders
 					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID);
 					
 					if (MeshVO(vo).animator){
-						_translateAnimatiorToMesh[MeshVO(vo).animator.id]=MeshVO(vo);
-						_translateAnimationSetToMesh[MeshVO(vo).animator.animationSet.id]=MeshVO(vo);
+						
+						if(!_translateAnimatiorToMesh[MeshVO(vo).animator.id])
+							_translateAnimatiorToMesh[MeshVO(vo).animator.id]=new Vector.<MeshVO>;
+						_translateAnimatiorToMesh[MeshVO(vo).animator.id].push(MeshVO(vo));
+						
+						_translateAnimationSetToMesh[MeshVO(vo).animator.animationSet.id] = MeshVO(vo);
+						
 						for each (var anim:AnimationNodeVO in MeshVO(vo).animator.animationSet.animations){
-							_translateAnimationNodesToMesh[anim.id]=MeshVO(vo);
+							_translateAnimationNodesToMesh[anim.id] = MeshVO(vo);
 						}
 					}
 					_blockCache[vo]=thisBlock;
@@ -1560,9 +1565,10 @@ package awaybuilder.utils.encoders
 		{	
 			var animSetID:uint=_getBlockIDorEncodeAsset(animator.animationSet);
 			
-			var meshID:uint=0;
+			var meshIDs:Vector.<uint>= new Vector.<uint>;
 			if (_translateAnimatiorToMesh[animator.id]){
-				meshID=_getBlockIDorEncodeAsset(_translateAnimatiorToMesh[animator.id]);
+				for each (var meshvo:MeshVO in _translateAnimatiorToMesh[animator.id])
+					meshIDs.push(_getBlockIDorEncodeAsset(meshvo));
 			}
 			var skeletID:uint;
 			var returnID:uint;
@@ -1601,7 +1607,9 @@ package awaybuilder.utils.encoders
 			_endElement(); // Prop list
 			
 			_blockBody.writeUnsignedInt(animSetID);
-			_blockBody.writeUnsignedInt(meshID);
+			_blockBody.writeShort(meshIDs.length);
+			for each (var meshid:uint in meshIDs)
+				_blockBody.writeUnsignedInt(meshid);
 			_blockBody.writeShort(0);
 			_blockBody.writeByte(0);
 						
