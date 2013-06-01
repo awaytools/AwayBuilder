@@ -1,9 +1,5 @@
 package awaybuilder.model
 {
-	import flash.geom.ColorTransform;
-	
-	import mx.utils.UIDUtil;
-	
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
 	import away3d.animators.SkeletonAnimationSet;
@@ -88,6 +84,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.LensVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
@@ -99,6 +96,10 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.AssetUtil;
+	
+	import flash.geom.ColorTransform;
+	
+	import mx.utils.UIDUtil;
 
 	public class AssetsModel extends SmartFactoryModelBase
 	{
