@@ -17,5 +17,10 @@ package awaybuilder.model.vo
 		public var owner:AssetVO;
 		
 		public var index:uint;
+		
+		public function toString():String
+		{
+			return "[DeleteStateVO"+asset+"]"
+		}
 	}
 }

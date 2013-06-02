@@ -321,12 +321,58 @@ package awaybuilder.view.mediators
 				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
 			}
 			
-			if( states.length )
+			var additionalStates:Vector.<DeleteStateVO> = new Vector.<DeleteStateVO>();
+			var assetsList:Vector.<AssetVO>;
+			var asset:AssetVO;
+			for each( var state:DeleteStateVO in states )
 			{
-				this.dispatch(new SceneEvent(SceneEvent.DELETE, null, states));
+				if( state.asset is ShadowMethodVO )
+				{
+					assetsList = document.getAssetsByType( MaterialVO, materialsWithShadowMethodFilterFunciton, state.asset );
+					for each( asset in assetsList )
+					{
+						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+					}
+					
+				}
+				if( state.asset is LightVO )
+				{
+					assetsList = document.getAssetsByType( LightPickerVO, lightPickersWithLightFilterFunciton, state.asset );
+					for each( asset in assetsList )
+					{
+						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+					}
+					assetsList = document.getAssetsByType( MaterialVO, materialsWithLightFilterFunciton, state.asset );
+					for each( asset in assetsList )
+					{
+						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+					}
+					
+				}
 			}
 			
+			
+			this.dispatch(new SceneEvent(SceneEvent.DELETE, null, states.concat( additionalStates )));
+			
 		}
+		
+		private function materialsWithShadowMethodFilterFunciton( asset:MaterialVO, filter:AssetVO ):Boolean
+		{
+			return (asset.shadowMethod == filter);
+		}
+		private function materialsWithLightFilterFunciton( asset:MaterialVO, filter:AssetVO ):Boolean
+		{
+			return (asset.light == filter);
+		}
+		private function lightPickersWithLightFilterFunciton( asset:LightPickerVO, filter:AssetVO ):Boolean
+		{
+			for each( var light:LightVO in asset.lights )
+			{
+				if( light.equals( filter ) )  return true;
+			}
+			return false;
+		}
+		
 		public function removeAsset( source:ArrayCollection, oddItem:AssetVO ):void
 		{
 			for (var i:int = 0; i < source.length; i++) 

@@ -5,8 +5,23 @@ package awaybuilder.controller.scene
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
 	import away3d.lights.LightBase;
+	import away3d.materials.ColorMaterial;
+	import away3d.materials.ColorMultiPassMaterial;
+	import away3d.materials.MaterialBase;
+	import away3d.materials.MultiPassMaterialBase;
+	import away3d.materials.SinglePassMaterialBase;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.TextureMultiPassMaterial;
+	import away3d.materials.lightpickers.LightPickerBase;
 	import away3d.materials.lightpickers.StaticLightPicker;
+	import away3d.materials.methods.BasicAmbientMethod;
+	import away3d.materials.methods.BasicDiffuseMethod;
+	import away3d.materials.methods.BasicNormalMethod;
+	import away3d.materials.methods.BasicSpecularMethod;
+	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.ShadowMapMethodBase;
 	import away3d.primitives.SkyBox;
+	import away3d.textures.Texture2DBase;
 	
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
@@ -19,12 +34,14 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
@@ -118,12 +135,25 @@ package awaybuilder.controller.scene
 			if( lightVO )
 			{
 				removeAsset( lightVO.shadowMethods, asset );
+				
 			}
 			var lightPickerVO:LightPickerVO = holder as LightPickerVO;
 			if( lightPickerVO )
 			{
 				removeAsset( lightPickerVO.lights, asset );
 				applyLightPicker( lightPickerVO );
+			}
+			var materialVO:MaterialVO = holder as MaterialVO;
+			if( materialVO )
+			{
+				if( asset is LightVO )
+				{
+					materialVO.light = null;
+				}
+				else if( asset is ShadowMethodVO )
+				{
+					materialVO.shadowMethod = null;
+				}
 			}
 		}
 		
@@ -146,6 +176,18 @@ package awaybuilder.controller.scene
 			{
 				lightPickerVO.lights.addItemAt( asset, index );
 				applyLightPicker( lightPickerVO );
+			}
+			var materialVO:MaterialVO = holder as MaterialVO;
+			if( materialVO )
+			{
+				if( asset is LightVO )
+				{
+					materialVO.light = asset as LightVO;
+				}
+				else if( asset is ShadowMethodVO )
+				{
+					materialVO.shadowMethod = asset as ShadowMethodVO;
+				}
 			}
 		}
 		
@@ -225,7 +267,6 @@ package awaybuilder.controller.scene
 
 		}
 		
-		
 		// Copied from CoreEditorMediator
 		// TODO: Separate code
 		
@@ -238,6 +279,128 @@ package awaybuilder.controller.scene
 				lights.push( assets.GetObject(light) );
 			}
 			picker.lights = lights;
+		}
+		private function applyMaterial( asset:MaterialVO ):void
+		{
+			var m:MaterialBase = MaterialBase( assets.GetObject(asset) );
+			var classType:Class;
+			
+			m.alphaPremultiplied = asset.alphaPremultiplied;
+			m.repeat = asset.repeat;
+			m.bothSides = asset.bothSides;
+			m.extra = asset.extra;
+			
+			m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
+			m.mipmap = asset.mipmap;
+			m.smooth = asset.smooth;
+			m.blendMode = asset.blendMode;
+			
+			var effect:EffectMethodVO;
+			var singlePassMaterialBase:SinglePassMaterialBase = m as SinglePassMaterialBase;
+			if( singlePassMaterialBase ) 
+			{
+				singlePassMaterialBase.diffuseMethod = assets.GetObject(asset.diffuseMethod) as BasicDiffuseMethod;
+				singlePassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
+				singlePassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
+				singlePassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
+				
+				if( m is ColorMaterial )
+				{
+					var colorMaterial:ColorMaterial = m as ColorMaterial;
+					colorMaterial.color = asset.diffuseColor;
+					colorMaterial.alpha = asset.alpha;
+					colorMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					colorMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					colorMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+					//					colorMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					colorMaterial.ambient = asset.ambientLevel;
+					colorMaterial.ambientColor = asset.ambientColor;
+					colorMaterial.specular = asset.specularLevel;
+					colorMaterial.specularColor = asset.specularColor;
+					colorMaterial.gloss = asset.specularGloss;
+				}
+				else if( m is TextureMaterial )
+				{
+					var textureMaterial:TextureMaterial = m as TextureMaterial;
+					textureMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					textureMaterial.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
+					textureMaterial.alpha = asset.alpha;
+					textureMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					textureMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+					textureMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					textureMaterial.ambient = asset.ambientLevel;
+					textureMaterial.ambientColor = asset.ambientColor;
+					textureMaterial.specular = asset.specularLevel;
+					textureMaterial.specularColor = asset.specularColor;
+					textureMaterial.gloss = asset.specularGloss;
+				}
+				
+				var i:int;
+				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
+				while( singlePassMaterialBase.numMethods )
+				{
+					singlePassMaterialBase.removeMethod(singlePassMaterialBase.getMethodAt(0));
+				}
+				for each( effect in asset.effectMethods )
+				{
+					singlePassMaterialBase.addMethod(assets.GetObject( effect ) as EffectMethodBase);
+				}
+				
+			}
+			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
+			if( multiPassMaterialBase ) 
+			{
+				multiPassMaterialBase.diffuseMethod = assets.GetObject(asset.diffuseMethod) as BasicDiffuseMethod;
+				multiPassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
+				multiPassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
+				multiPassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
+				
+				if( m is ColorMultiPassMaterial )
+				{
+					var colorMultiPassMaterial:ColorMultiPassMaterial = m as ColorMultiPassMaterial;
+					colorMultiPassMaterial.color = asset.diffuseColor;
+					colorMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					colorMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					colorMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+					//					colorMultiPassMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					colorMultiPassMaterial.ambient = asset.ambientLevel;
+					colorMultiPassMaterial.ambientColor = asset.ambientColor;
+					colorMultiPassMaterial.specular = asset.specularLevel;
+					colorMultiPassMaterial.specularColor = asset.specularColor;
+					colorMultiPassMaterial.gloss = asset.specularGloss;
+					
+				}
+				else if( m is TextureMultiPassMaterial )
+				{
+					var textureMultiPassMaterial:TextureMultiPassMaterial = m as TextureMultiPassMaterial;
+					
+					textureMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
+					textureMultiPassMaterial.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
+					
+					//					textureMultiPassMaterial.alpha = asset.alpha;
+					textureMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
+					textureMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
+					textureMultiPassMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
+					textureMultiPassMaterial.ambient = asset.ambientLevel;
+					textureMultiPassMaterial.ambientColor = asset.ambientColor;
+					textureMultiPassMaterial.specular = asset.specularLevel;
+					textureMultiPassMaterial.specularColor = asset.specularColor;
+					textureMultiPassMaterial.gloss = asset.specularGloss;
+				}
+				
+				multiPassMaterialBase.alphaThreshold = asset.alphaThreshold;
+				while( multiPassMaterialBase.numMethods )
+				{
+					multiPassMaterialBase.removeMethod(multiPassMaterialBase.getMethodAt(0));
+				}
+				for each( effect in asset.effectMethods )
+				{
+					multiPassMaterialBase.addMethod(assets.GetObject( effect ) as EffectMethodBase);
+				}
+				
+			}
+			
+			
 		}
 	}
 }

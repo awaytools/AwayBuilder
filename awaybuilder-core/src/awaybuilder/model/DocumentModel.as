@@ -253,5 +253,30 @@ package awaybuilder.model
 			
 		}
 		
+		// Idea: use compare function instead of property name 
+		public function getAssetsByType( type:Class, assetsFilterFunction:Function = null, filterItem:AssetVO = null ):Vector.<AssetVO> 
+		{
+			var allAssets:Array = getAllAssets();
+			var objects:Vector.<AssetVO> = new Vector.<AssetVO>();
+			for each( var asset:AssetVO in allAssets )
+			{
+				if( asset is type )
+				{
+					if( assetsFilterFunction != null )
+					{
+						if( assetsFilterFunction(asset, filterItem) ) 
+						{
+							objects.push( asset );
+						}
+					}
+					else 
+					{
+						objects.push( asset );
+					}
+				}
+			}
+			return objects;
+		}
+		
 	}
 }
