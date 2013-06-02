@@ -49,7 +49,7 @@ package awaybuilder.controller.clipboard
 			document.copiedObjects = copiedObjects;
 			if(event.type == ClipboardEvent.CLIPBOARD_CUT)
 			{
-				this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, [], document.selectedAssets.concat() ));
+				this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION, [] ));
 			}
 		}
 	}

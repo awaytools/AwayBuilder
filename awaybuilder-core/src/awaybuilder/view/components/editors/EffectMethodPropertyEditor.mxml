@@ -176,10 +176,10 @@
 			<s:Label text="Texture Projector:" fontWeight="bold"/>
 			<controls:HorizontalFormSeparator/>
 		</s:HGroup>
-		<s:DropDownList id="textureProjectorDropDownList" requireSelection="true" selectionColor="0x111111"
+		<!--<s:DropDownList id="textureProjectorDropDownList" requireSelection="true" selectionColor="0x111111"
 						change="" width="100%"
 						>
-		</s:DropDownList>
+		</s:DropDownList>-->
 	</s:VGroup>
 	
 	<s:VGroup width="100%" paddingLeft="10" includeIn="ColorMatrixMethod">

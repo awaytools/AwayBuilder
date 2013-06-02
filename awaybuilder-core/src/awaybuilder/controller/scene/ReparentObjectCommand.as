@@ -12,7 +12,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -44,9 +44,9 @@ package awaybuilder.controller.scene
 			
 			for each( var item:DroppedTreeItemVO in event.newValue ) 
 			{
-				var vo:ScenegraphItemVO = item.value as ScenegraphItemVO;
+				var vo:LibraryItemVO = item.value as LibraryItemVO;
 				
-				if( vo.item is ObjectVO )
+				if( vo.asset is ObjectVO )
 				{
 					
 					if( item.newParent == item.oldParent ) return;
@@ -54,36 +54,36 @@ package awaybuilder.controller.scene
 					if( item.newParent )
 					{
 						container = item.newParent.item as ContainerVO;
-						if( container && !itemIsInList(container.children, vo.item as AssetVO) ) 
+						if( container && !itemIsInList(container.children, vo.asset as AssetVO) ) 
 						{
 							if( item.newPosition < container.children.length )
 							{
-								container.children.addItemAt( vo.item, item.newPosition );
+								container.children.addItemAt( vo.asset, item.newPosition );
 							}
 							else
 							{
-								container.children.addItem( vo.item );
-								addObjectToScene( vo.item );
+								container.children.addItem( vo.asset );
+								addObjectToScene( vo.asset );
 							}
 						}
 					}
 					else
 					{
-						document.scene.addItemAt( vo.item, item.newPosition );
+						document.scene.addItemAt( vo.asset, item.newPosition );
 					}
 					
 					if( item.oldParent )
 					{ 
 						container = item.oldParent.item as ContainerVO;
-						if( container && itemIsInList(container.children, vo.item as AssetVO) ) 
+						if( container && itemIsInList(container.children, vo.asset as AssetVO) ) 
 						{
-							removeItem( container.children, vo.item );
+							removeItem( container.children, vo.asset );
 						}
 					}
 					else
 					{
-						removeItem( document.scene, vo.item );
-						removeObjectFromScene( vo.item );
+						removeItem( document.scene, vo.asset );
+						removeObjectFromScene( vo.asset );
 					}
 				}
 			}

@@ -493,7 +493,7 @@ package awaybuilder.desktop.view.mediators
 				{
 					if(this.documentModel.selectedAssets.length > 0)
 					{
-						this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, documentModel.selectedAssets));
+						this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION));
 					}
 					break;
 				}
@@ -584,7 +584,7 @@ package awaybuilder.desktop.view.mediators
 			{
 				if(this.documentModel.selectedAssets.length > 0)
 				{
-					this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, documentModel.selectedAssets));
+					this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION));
 				}
 			}
 		}

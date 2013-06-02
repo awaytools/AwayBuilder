@@ -138,7 +138,7 @@ package awaybuilder.view.mediators
 						isSceneItemsSelected = false;
 				}
 					
-                this.toolBar.deleteButton.enabled = isSceneItemsSelected;
+                this.toolBar.deleteButton.enabled = true;
                 this.toolBar.focusButton.enabled = isSceneItemsSelected;
 				this.toolBar.copyButton.enabled = isSceneItemsSelected;
 				this.toolBar.cutButton.enabled = isSceneItemsSelected;
@@ -169,7 +169,7 @@ package awaybuilder.view.mediators
 		
 		private function toolBar_deleteSelectionHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.DELETE_OBJECTS, null, document.selectedAssets));
+			this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION));
 		}
 		
 		private function toolBar_focusObjectHandler(event:ToolBarEvent):void

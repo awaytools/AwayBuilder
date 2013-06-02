@@ -61,7 +61,7 @@
 		
 	</s:HGroup>
 	
-	<s:Image source="@Embed('assets/images/linkArrow.png')" visible="{data.isLinkToSharedObject}" includeInLayout="{data.isLinkToSharedObject}" alpha="0.75" right="6" verticalCenter="0" 
+	<s:Image source="@Embed('assets/images/linkArrow.png')" visible="{data.isLinkToSharedObject}" includeInLayout="{data.isLinkToSharedObject}" alpha="0.75" right="4" verticalCenter="0" 
 			 toolTip="Usage of Shared Resource"/>
 	
 	<s:Rect x="2" y="2" width="{this.width-4}" height="{this.height-4}" includeInLayout="false" visible="{showDropIndicator}">

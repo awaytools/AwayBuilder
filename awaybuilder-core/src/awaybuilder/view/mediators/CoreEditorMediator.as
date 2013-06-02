@@ -97,7 +97,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.DroppedAssetVO;
     import awaybuilder.model.vo.DroppedTreeItemVO;
-    import awaybuilder.model.vo.ScenegraphItemVO;
+    import awaybuilder.model.vo.LibraryItemVO;
     import awaybuilder.model.vo.scene.AnimationNodeVO;
     import awaybuilder.model.vo.scene.AnimationSetVO;
     import awaybuilder.model.vo.scene.AnimatorVO;
@@ -846,17 +846,18 @@ package awaybuilder.view.mediators
 			}
 			
 			applyObject( asset );
-			if( asset.type == LightVO.DIRECTIONAL ) 
+			
+			var directionalLight:DirectionalLight = light as DirectionalLight;
+			if( directionalLight ) 
 			{
-				var dl:DirectionalLight = light as DirectionalLight;
 				var y:Number = -Math.sin( asset.elevationAngle*Math.PI/180);
 				var x:Number =  Math.sin(Math.PI/2 - asset.elevationAngle*Math.PI/180)*Math.sin( asset.azimuthAngle*Math.PI/180);
 				var z:Number =  Math.sin(Math.PI/2 - asset.elevationAngle*Math.PI/180)*Math.cos( asset.azimuthAngle*Math.PI/180);
-				dl.direction = new Vector3D( x, y, z);
+				directionalLight.direction = new Vector3D( x, y, z);
 			}
-			else if( asset.type == LightVO.POINT ) 
+			var pointLight:PointLight = light as PointLight;
+			if( pointLight ) 
 			{
-				var pointLight:PointLight = light as PointLight;
 				pointLight.radius = asset.radius;
 				pointLight.fallOff = asset.fallOff;
 			}

@@ -162,9 +162,20 @@
 		
 		protected function deleteButton_clickHandler(event:MouseEvent):void
 		{
-			// TODO Auto-generated method stub
+			removeAsset( _asset.shadowMethods, shadowMethodsList.selectedItem );
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_CHANGE, _asset));
 		}
-		
+		public function removeAsset( source:ArrayCollection, oddItem:AssetVO ):void
+		{
+			for (var i:int = 0; i < source.length; i++) 
+			{
+				if( source[i].id == oddItem.id )
+				{
+					source.removeItemAt( i );
+					i--;
+				}
+			}
+		}
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
 			if( _asset.shadowMapper.type == "CubeMapShadowMapper" )

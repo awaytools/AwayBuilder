@@ -1,6 +1,6 @@
 package awaybuilder.view.components.controls
 {
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
@@ -42,11 +42,11 @@ package awaybuilder.view.components.controls
 			if( !items ) return;
 			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
 			if( renderer.data == items[0] ) return;
-			if( ScenegraphItemVO(renderer.data).item is MeshVO ) return;
-			if( ScenegraphItemVO(renderer.data).item is TextureProjectorVO ) return;
-			if( ScenegraphItemVO(renderer.data).item is ContainerVO )
+			if( LibraryItemVO(renderer.data).asset is MeshVO ) return;
+			if( LibraryItemVO(renderer.data).asset is TextureProjectorVO ) return;
+			if( LibraryItemVO(renderer.data).asset is ContainerVO )
 			{
-				if( ScenegraphItemVO(items[0]).item is ObjectVO )
+				if( LibraryItemVO(items[0]).asset is ObjectVO )
 				{
 					renderer.showDropIndicator = true;
 					DragManager.acceptDragDrop(dropArea);

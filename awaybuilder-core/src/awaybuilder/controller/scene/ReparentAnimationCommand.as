@@ -7,7 +7,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DroppedAssetVO;
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AssetVO;

@@ -38,6 +38,7 @@ package awaybuilder.view.components.editors.events
 		public static const ANIMATRION_SET_STEPPER_CHANGE:String = "animationSetStepperChange";
 		public static const ANIMATRION_SET_ADD_ANIMATOR:String = "animationSetAddAnimator";
 		public static const ANIMATRION_SET_REMOVE_ANIMATOR:String = "animationSetRemoveAnimator";
+		public static const ANIMATRION_SET_REMOVE_ANIMATION:String = "animationSetRemoveAnimation";
 		
 		public static const ANIMATOR_CHANGE:String = "animatorChange";
 		public static const ANIMATOR_STEPPER_CHANGE:String = "animatorStepperChange";

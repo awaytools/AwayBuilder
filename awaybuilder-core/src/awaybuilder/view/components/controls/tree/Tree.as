@@ -1,6 +1,6 @@
 package awaybuilder.view.components.controls.tree
 {
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	
@@ -499,11 +499,11 @@ package awaybuilder.view.components.controls.tree
 		protected function renderer_dragDropHandler(event:DragEvent):void
 		{
 			var droppedItems:Dictionary = new Dictionary();
-			
+			var item:Object;
 			var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
 			var renderer:TreeItemRenderer = UIComponent(event.target).parent as TreeItemRenderer;
 			
-			for each( var item:Object in items )
+			for each( item in items )
 			{
 				var droppedItem:DroppedTreeItemVO = new DroppedTreeItemVO( item );
 				droppedItems[item] = droppedItem;
@@ -512,7 +512,7 @@ package awaybuilder.view.components.controls.tree
 			var indices:Vector.<int> = selectedIndices; 
 			for (var i:int = indices.length - 1; i >= 0; i--)
 			{
-				var item:Object = dataProvider.getItemAt( indices[i] );
+				item = dataProvider.getItemAt( indices[i] );
 				var oldParent:Object = _dataProvider.getItemParent(item);
 				
 				var branch:IList = oldParent ? IList(dataDescriptor.getChildren(oldParent)) : _dataProvider;
@@ -522,7 +522,7 @@ package awaybuilder.view.components.controls.tree
 				droppedItems[item].oldParent = oldParent;
 			}
 			
-			for each( var item:Object in items )
+			for each( item in items )
 			{
 //				this.dataDescriptor.addChildAt( renderer.data, item, 0 );
 				
@@ -644,6 +644,10 @@ package awaybuilder.view.components.controls.tree
 			if (_dataProvider)
 				_dataProvider.allowIncorrectIndexes = true;
 			
+			var branch:IList;
+			var localIndex:int;
+			var item:Object;
+			
 			// Hide the drop indicator
 			layout.hideDropIndicator();
 			destroyDropIndicator();
@@ -666,7 +670,7 @@ package awaybuilder.view.components.controls.tree
 			var dragSource:DragSource = event.dragSource;
 			var items:Vector.<Object> = dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
 			
-			for each( var item:Object in items )
+			for each( item in items )
 			{
 				var droppedItem:DroppedTreeItemVO = new DroppedTreeItemVO( item );
 				droppedItems[item] = droppedItem;
@@ -687,6 +691,7 @@ package awaybuilder.view.components.controls.tree
 			// If the items are drag moved to this list from a different list,
 			// the drag initiator will remove the items when it receives the
 			// DragEvent.DRAG_COMPLETE event.
+			
 			if (dragMoveEnabled &&
 				event.action == DragManager.MOVE &&
 				event.dragInitiator == this)
@@ -697,11 +702,11 @@ package awaybuilder.view.components.controls.tree
 				{
 					if (indices[i] < dropIndex) dropIndex--;
 					
-					var item:Object = dataProvider.getItemAt( indices[i] );
+					item = dataProvider.getItemAt( indices[i] );
 					var oldParent:Object = _dataProvider.getItemParent(item);
 					
-					var branch:IList = oldParent ? IList(dataDescriptor.getChildren(oldParent)) : _dataProvider;
-					var localIndex:int = branch.getItemIndex(item);
+					branch = oldParent ? IList(dataDescriptor.getChildren(oldParent)) : _dataProvider;
+					localIndex = branch.getItemIndex(item);
 					
 					droppedItems[item].oldPosition = localIndex;
 					droppedItems[item].oldParent = oldParent;
@@ -725,15 +730,15 @@ package awaybuilder.view.components.controls.tree
 			for (i = 0; i < items.length; i++)
 			{
 				// Get the item, clone if needed
-				var item:Object = items[i];
+				item = items[i];
 				if (copyItems)
 					item = copyItemWithUID(item);
 				
 				// Copy the data
 				var effectiveItem:Object = dataProvider.getItemAt( dropIndex );
 				var parent:Object = _dataProvider.getItemParent(effectiveItem);
-				var branch:IList = parent ? IList(dataDescriptor.getChildren(parent)) : _dataProvider;
-				var localIndex:int = branch.getItemIndex(effectiveItem);
+				branch = parent ? IList(dataDescriptor.getChildren(parent)) : _dataProvider;
+				localIndex = branch.getItemIndex(effectiveItem);
 				
 				droppedItems[item].newParent = parent;
 				droppedItems[item].newPosition = localIndex;

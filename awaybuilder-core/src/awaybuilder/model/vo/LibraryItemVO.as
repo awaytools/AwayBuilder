@@ -7,7 +7,7 @@ package awaybuilder.model.vo
 	import mx.collections.ArrayCollection;
 	
 	[Bindable]
-	public class ScenegraphItemVO implements IMergeable
+	public class LibraryItemVO implements IMergeable
 	{
 		
 		public static const LIGHT:String = "light";
@@ -34,32 +34,37 @@ package awaybuilder.model.vo
 		public static const CAMERA:String = "camera";
 		public static const LENS:String = "lens";
 		
-		public function ScenegraphItemVO( label:String, item:AssetVO, type:String="default" )
+		public function LibraryItemVO( label:String, item:AssetVO, parent:LibraryItemVO, type:String="default" )
 		{
 			this.label = label;
-			this.item = item;
-			
+			this.asset = item;
+			this.parent = parent;
 			this.type = type;
 		}
 		
 		public var label:String;
 		
-		public var item:AssetVO; // key field, used to compare items
+		public var asset:AssetVO; // key field, used to compare items
 		
 		public var children:ArrayCollection;
 		
 		public var type:String = "default";
 		
+		public var parent:LibraryItemVO;
+		
 		public var isLinkToSharedObject:Boolean = false;
 		
 		public function merge( item:Object ):void
 		{
-			var newItem:ScenegraphItemVO = item as ScenegraphItemVO;
+			var newItem:LibraryItemVO = item as LibraryItemVO;
 			
 			this.label = newItem.label;
+			
+			this.parent = newItem.parent;
+			
 			if( newItem.children && this.children )
 			{
-				this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "item" );
+				this.children = DataMerger.syncArrayCollections( this.children, newItem.children, "asset" );
 			}
 			else if( newItem.children )
 			{

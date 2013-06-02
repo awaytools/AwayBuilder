@@ -307,7 +307,7 @@ package awaybuilder.view.components.controls.tree
 			{
 				dropArea.graphics.clear();
 				dropArea.graphics.beginFill(0xFF0000, 0.0);
-				dropArea.graphics.drawRect(indentation+18,unscaledHeight/4,unscaledWidth-(indentation+18), unscaledHeight/2);
+				dropArea.graphics.drawRect(indentation+18,unscaledHeight/4,unscaledWidth-(indentation+18)-19, unscaledHeight/2);
 				this.setElementIndex( dropArea, numElements-1 );
 			}
 		} 

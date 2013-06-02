@@ -58,7 +58,7 @@ package awaybuilder.model.vo.scene
 
 			this.shadowMapper = asset.shadowMapper;
 			
-			this.shadowMethods = new ArrayCollection(asset.shadowMethods.source);
+			this.shadowMethods = new ArrayCollection(asset.shadowMethods.source.concat());
 			
 			this.azimuthAngle = asset.azimuthAngle;
 			this.elevationAngle = asset.elevationAngle;
@@ -72,6 +72,5 @@ package awaybuilder.model.vo.scene
 		
 		public static const DIRECTIONAL:String = "directionalType";
 		public static const POINT:String = "pointType";
-		
 	}
 }

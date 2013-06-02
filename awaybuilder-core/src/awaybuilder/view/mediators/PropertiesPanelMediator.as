@@ -88,7 +88,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
 			
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
-			addContextListener(SceneEvent.DELETE_OBJECTS, context_deleteObjectsHandler);
+			addContextListener(SceneEvent.DELETE, context_deleteHandler);
 			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
@@ -884,7 +884,7 @@ package awaybuilder.view.mediators
         }
 
 		
-		private function context_deleteObjectsHandler(event:SceneEvent):void
+		private function context_deleteHandler(event:SceneEvent):void
 		{
 			if( (view.data is AssetVO) && !getCurrentIsPresent( view.data as AssetVO ) ) 
 			{
@@ -901,17 +901,9 @@ package awaybuilder.view.mediators
 		
 		private function getCurrentIsPresent( asset:AssetVO ):Boolean
 		{
-			if( getAssetIsInList( asset, document.scene ) ) return true;
-			if( getAssetIsInList( asset, document.textures ) ) return true;
-			if( getAssetIsInList( asset, document.materials ) ) return true;
-			if( getAssetIsInList( asset, document.methods ) ) return true;
-			if( getAssetIsInList( asset, document.geometry ) ) return true;
-			if( getAssetIsInList( asset, document.lights ) ) return true;
-			if( getAssetIsInList( asset, document.animations ) ) return true;
-//			if( getAssetIsInList( asset, document.skeletons ) ) return true;
-			return false;
+			return getAssetIsInList( asset, document.getAllAssets() );
 		}
-		private function getAssetIsInList( asset:AssetVO, list:ArrayCollection ):Boolean
+		private function getAssetIsInList( asset:AssetVO, list:Array ):Boolean
 		{
 			for each ( var item:AssetVO in list )
 			{
@@ -920,7 +912,7 @@ package awaybuilder.view.mediators
 				var container:ContainerVO = item as ContainerVO;
 				if( container && container.children && container.children.length )
 				{
-					if( getAssetIsInList( asset, container.children ) ) return true;
+					if( getAssetIsInList( asset, container.children.source ) ) return true;
 				}
 			}
 			return false;

@@ -3,13 +3,21 @@ package awaybuilder.model
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.GlobalOptionsVO;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
-	
-	import flash.display3D.textures.Texture;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.LightPickerVO;
+	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
+	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import mx.collections.ArrayCollection;
-	import mx.utils.UIDUtil;
 	
 	import org.robotlegs.mvcs.Actor;
 
@@ -119,15 +127,6 @@ package awaybuilder.model
 			_documentVO.scene = value;
 		}
 		
-//		public function get skeletons():ArrayCollection
-//		{
-//			return _documentVO.skeletons;
-//		}
-//		public function set skeletons(value:ArrayCollection):void
-//		{
-//			_documentVO.skeletons = value;
-//		}
-		
 		public function get textures():ArrayCollection
 		{
 			return _documentVO.textures;
@@ -155,6 +154,11 @@ package awaybuilder.model
 			_documentVO.methods = value;
 		}
 		
+		public function getAllAssets():Array
+		{
+			var assets:Array = scene.source.concat(materials.source.concat(textures.source.concat(animations.source.concat(methods.source.concat(geometry.source.concat(lights.source))))));
+			return assets;
+		}
 		
 		private var _copiedObjects:Vector.<AssetVO>;
 		public function get copiedObjects():Vector.<AssetVO>
@@ -192,6 +196,61 @@ package awaybuilder.model
 					i--;
 				}
 			}
+		}
+		public function getAssetHolders( asset:AssetVO ):Vector.<AssetVO>
+		{
+			var holders:Vector.<AssetVO> = new Vector.<AssetVO>();
+			var assets:Array = getAllAssets();
+			for each( var holder:AssetVO in assets )
+			{
+				holders = holders.concat( getAssetHoldersInHierarchy( holder, asset ) );	
+			}
+			return holders;
+		}
+		private function getAssetHoldersInHierarchy( holder:AssetVO, asset:AssetVO ):Vector.<AssetVO>
+		{
+			var holders:Vector.<AssetVO> = new Vector.<AssetVO>();
+			var source:ArrayCollection;
+			if( holder is ContainerVO )
+			{
+				source = ContainerVO( holder ).children;
+			}
+			for each( var vo:AssetVO in source )
+			{
+				if( vo.equals( asset ) )
+				{
+					holders.push( holder );
+				}
+				holders = holders.concat( getAssetHoldersInHierarchy( holder, asset ) );
+			}
+			return holders;
+		}
+		public function getLibraryByAsset( asset:AssetVO ):ArrayCollection
+		{
+			switch( true )
+			{
+				case( asset is ObjectVO ):
+					return scene;
+				case( asset is MaterialVO ):
+					return materials;
+				case( asset is TextureVO ):
+				case( asset is CubeTextureVO ):
+					return textures;
+				case( asset is GeometryVO ):
+					return geometry;
+				case( asset is EffectMethodVO ):
+					return methods;
+				case( asset is LightVO ):
+				case( asset is LightPickerVO ):
+					return lights;
+				case( asset is SkeletonVO ):
+				case( asset is AnimationSetVO ):
+				case( asset is AnimationNodeVO ):
+					return animations;
+				default:
+					return scene;
+			}
+			
 		}
 		
 	}

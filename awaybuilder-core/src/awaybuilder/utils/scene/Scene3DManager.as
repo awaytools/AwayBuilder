@@ -1,16 +1,5 @@
 package awaybuilder.utils.scene
 {
-	import flash.display.BitmapData;
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import flash.geom.Vector3D;
-	
-	import mx.collections.ArrayList;
-	import mx.core.UIComponent;
-	
 	import avmplus.getQualifiedClassName;
 	
 	import away3d.cameras.Camera3D;
@@ -48,6 +37,17 @@ package awaybuilder.utils.scene
 	import awaybuilder.view.scene.controls.TranslateGizmo3D;
 	import awaybuilder.view.scene.events.Gizmo3DEvent;
 	import awaybuilder.view.scene.events.Scene3DManagerEvent;
+	
+	import flash.display.BitmapData;
+	import flash.display.Stage;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.geom.Vector3D;
+	
+	import mx.collections.ArrayList;
+	import mx.core.UIComponent;
 	
 
 	public class Scene3DManager extends EventDispatcher
@@ -581,6 +581,11 @@ package awaybuilder.utils.scene
 			objects.addItem(o);
 		}
 		
+		public static function addCamera(o:Camera3D):void
+		{		
+			trace( "implement addCamera here");
+		}
+		
 		public static function addTextureProjector(tP:TextureProjector, projectorBitmap:BitmapData=null):void
 		{		
 			if( projectorBitmap )
@@ -613,6 +618,7 @@ package awaybuilder.utils.scene
 		
 		public static function removeMesh(mesh:ObjectContainer3D):void
 		{
+			Scene3DManager.currentGizmo.hide();
 			mesh.parent.removeChild(mesh);
 			
 			for (var i:int=0;i<objects.length;i++)
@@ -627,6 +633,7 @@ package awaybuilder.utils.scene
 
 		public static function removeContainer(container:ObjectContainer3D):void
 		{
+			Scene3DManager.currentGizmo.hide();
 			container.parent.removeChild(container);
 			
 			for (var i:int=0;i<objects.length;i++)
@@ -639,8 +646,16 @@ package awaybuilder.utils.scene
 			}
 		}
 
+		public static function removeCamera(camera:Camera3D):void
+		{
+			Scene3DManager.currentGizmo.hide();
+			//TODO: 
+			trace( "implement here");
+		}
+		
 		public static function removeSkyBox(skyBox:SkyBox):void
 		{
+			Scene3DManager.currentGizmo.hide();
 			skyBox.parent.removeChild(skyBox);
 			
 			for (var i:int=0;i<objects.length;i++)
@@ -655,6 +670,7 @@ package awaybuilder.utils.scene
 
 		public static function removeTextureProjector(tP:TextureProjector):void
 		{		
+			Scene3DManager.currentGizmo.hide();
 			tP.parent.removeChild(tP);
 			
 			for (var i:int=0;i<textureProjectors.length;i++)

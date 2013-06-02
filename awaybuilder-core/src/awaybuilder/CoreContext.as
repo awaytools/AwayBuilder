@@ -58,7 +58,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeSkyBoxCommand;
 	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.ChangeTextureProjectorCommand;
-	import awaybuilder.controller.scene.DeleteObjectCommand;
+	import awaybuilder.controller.scene.DeleteCommand;
 	import awaybuilder.controller.scene.ReparentAnimationCommand;
 	import awaybuilder.controller.scene.ReparentLightCommand;
 	import awaybuilder.controller.scene.ReparentObjectCommand;
@@ -129,7 +129,7 @@ package awaybuilder
             this.commandMap.mapEvent(SceneEvent.TRANSLATE_OBJECT, TranslateObjectCommand);
             this.commandMap.mapEvent(SceneEvent.SCALE_OBJECT, ScaleObjectCommand);
 			
-			this.commandMap.mapEvent(SceneEvent.DELETE_OBJECTS, DeleteObjectCommand);
+			this.commandMap.mapEvent(SceneEvent.DELETE, DeleteCommand);
 			this.commandMap.mapEvent(SceneEvent.SELECT, SelectCommand);
 			
 			this.commandMap.mapEvent(ImportTextureEvent.IMPORT_AND_ADD, ImportTextureForMaterialCommand);

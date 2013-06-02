@@ -1,6 +1,6 @@
 package awaybuilder.view.components.controls
 {
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.view.components.controls.events.DroppedEvent;
@@ -153,13 +153,13 @@ package awaybuilder.view.components.controls
 			for (i = 0; i < items.length; i++)
 			{
 				// Get the item, clone if needed
-				var item:ScenegraphItemVO = items[i] as ScenegraphItemVO;
+				var item:LibraryItemVO = items[i] as LibraryItemVO;
 				//				if (copyItems)
 				//					item = copyItemWithUID(item);
 				
 				// Copy the data
-				dataProvider.addItemAt(item.item, dropIndex + i);
-				dispatchEvent( new DroppedEvent( DroppedEvent.DROPPED, item.item, dropIndex + i ) );
+				dataProvider.addItemAt(item.asset, dropIndex + i);
+				dispatchEvent( new DroppedEvent( DroppedEvent.DROPPED, item.asset, dropIndex + i ) );
 				
 				// Update the selection
 				if (i != caretIndex)
@@ -198,8 +198,8 @@ package awaybuilder.view.components.controls
 				var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
 				for (var i:int = 0; i < items.length; i++) 
 				{
-					var item:ScenegraphItemVO = items[i] as ScenegraphItemVO;
-					var asset:EffectMethodVO = item.item as EffectMethodVO;
+					var item:LibraryItemVO = items[i] as LibraryItemVO;
+					var asset:EffectMethodVO = item.asset as EffectMethodVO;
 					if( !asset ) 
 						return null;
 					for each( var light:EffectMethodVO in dataProvider ) 

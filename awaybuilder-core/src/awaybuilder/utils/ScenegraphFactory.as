@@ -1,6 +1,6 @@
 package awaybuilder.utils
 {
-	import awaybuilder.model.vo.ScenegraphItemVO;
+	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AnimatorVO;
@@ -26,12 +26,12 @@ package awaybuilder.utils
 		
 		private var _lightsInPicker:Vector.<AssetVO> = new Vector.<AssetVO>();
 		
-		public static function CreateBranch( objects:ArrayCollection):ArrayCollection 
+		public static function CreateBranch( objects:ArrayCollection, parent:LibraryItemVO ):ArrayCollection 
 		{
 			var children:ArrayCollection = new ArrayCollection();
 			for each( var asset:AssetVO in objects )
 			{
-				children.addItem( CreateScenegraphChild( asset ) );
+				children.addItem( CreateScenegraphChild( asset, parent ) );
 			}
 			return children;
 		}
@@ -50,11 +50,11 @@ package awaybuilder.utils
 				else if( asset is LightPickerVO ) 
 				{
 					pickers.push(asset);
-					children.addItem( CreateScenegraphChild( asset ) );
+					children.addItem( CreateScenegraphChild( asset, null ) );
 				}
 				else
 				{
-					children.addItem( CreateScenegraphChild( asset ) );
+					children.addItem( CreateScenegraphChild( asset, null ) );
 				}
 			}
 			var lightIsPresent:Boolean;
@@ -67,7 +67,7 @@ package awaybuilder.utils
 //				}
 //				if( !lightIsPresent )
 //				{
-					children.addItem( CreateScenegraphChild( light ) );
+					children.addItem( CreateScenegraphChild( light, null ) );
 //				}
 				
 			}
@@ -84,83 +84,87 @@ package awaybuilder.utils
 			return false;
 		}
 		
-		public static function CreateScenegraphChild( asset:AssetVO ):ScenegraphItemVO
+		public static function CreateScenegraphChild( asset:AssetVO, parent:LibraryItemVO ):LibraryItemVO
 		{
-			var item:ScenegraphItemVO;
+			var item:LibraryItemVO;
 			switch( true )
 			{
 				case( asset is MeshVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MESH );
-					item.children = CreateBranch( MeshVO(asset).children );
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.MESH );
+					item.children = CreateBranch( MeshVO(asset).children, item );
 					return item;
 					
 				case( asset is SkyBoxVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SKY_BOX );
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.SKY_BOX );
 					return item;
 					
 				case( asset is ContainerVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.CONTAINER );
-					item.children = CreateBranch( ContainerVO(asset).children );
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.CONTAINER );
+					item.children = CreateBranch( ContainerVO(asset).children, item );
 					return item;
 					
 				case( asset is MaterialVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.MATERIAL );
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.MATERIAL );
 					item.children = new ArrayCollection();
-					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).ambientMethod.type, MaterialVO(asset).ambientMethod ) );
-					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).diffuseMethod.type, MaterialVO(asset).diffuseMethod ) );
-					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).specularMethod.type, MaterialVO(asset).specularMethod ) );
-					item.children.addItem( new ScenegraphItemVO( MaterialVO(asset).normalMethod.type, MaterialVO(asset).normalMethod ) );
+					item.children.addItem( new LibraryItemVO( MaterialVO(asset).ambientMethod.type, MaterialVO(asset).ambientMethod, item ) );
+					item.children.addItem( new LibraryItemVO( MaterialVO(asset).diffuseMethod.type, MaterialVO(asset).diffuseMethod, item ) );
+					item.children.addItem( new LibraryItemVO( MaterialVO(asset).specularMethod.type, MaterialVO(asset).specularMethod, item ) );
+					item.children.addItem( new LibraryItemVO( MaterialVO(asset).normalMethod.type, MaterialVO(asset).normalMethod, item ) );
 					return item;
 					
 				case( asset is TextureVO ):
-					return new ScenegraphItemVO( "Texture (" + asset.name.split("/").pop() +")", asset, ScenegraphItemVO.TEXTURE );
+					return new LibraryItemVO( "Texture (" + asset.name.split("/").pop() +")", asset, parent, LibraryItemVO.TEXTURE );
 					
 				case( asset is LightVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHT );
-					item.children = CreateBranch( LightVO(asset).shadowMethods );
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.LIGHT );
+					item.children = CreateBranch( LightVO(asset).shadowMethods, item );
 					return item;
 				
 				case( asset is AnimatorVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATOR );
+					return new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.ANIMATOR );
 					
 				case( asset is AnimationNodeVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_NODE );
+					return new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.ANIMATION_NODE );
 					
 				case( asset is AnimationSetVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.ANIMATION_SET );
-					item.children = CreateBranch( AnimationSetVO(asset).animations );
-					item.children.addAll(CreateBranch( AnimationSetVO(asset).animators ));
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.ANIMATION_SET );
+					item.children = CreateBranch( AnimationSetVO(asset).animations, item );
+					for each( var node:LibraryItemVO in item.children )
+					{
+						node.isLinkToSharedObject = true;
+					}
+					item.children.addAll(CreateBranch( AnimationSetVO(asset).animators, item ));
 					return item;
 					
 				case( asset is SkeletonVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SKELETON );
+					return new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.SKELETON );
 					
 				case( asset is GeometryVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.GEOMETRY );
+					return new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.GEOMETRY );
 					
 				case( asset is ShadowMethodVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.SHADOW );
+					return new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.SHADOW );
 					
 				case( asset is EffectMethodVO ):
-					return new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.EFFECT );
+					return new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.EFFECT );
 					
 				case( asset is CameraVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.CAMERA );
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.CAMERA );
 					item.children = new ArrayCollection();
-					item.children.addItem( new ScenegraphItemVO( CameraVO(asset).lens.type, CameraVO(asset).lens, ScenegraphItemVO.LENS ) );
+					item.children.addItem( new LibraryItemVO( CameraVO(asset).lens.type, CameraVO(asset).lens, item, LibraryItemVO.LENS ) );
 					return item;
 					
 				case( asset is LightPickerVO ):
-					item = new ScenegraphItemVO( asset.name, asset, ScenegraphItemVO.LIGHTPICKER );
-					item.children = CreateBranch( LightPickerVO(asset).lights );
-					for each( var light:ScenegraphItemVO in item.children )
+					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.LIGHTPICKER );
+					item.children = CreateBranch( LightPickerVO(asset).lights, item );
+					for each( var light:LibraryItemVO in item.children )
 					{
 						light.isLinkToSharedObject = true;
 					}
 					return item;
 					
 				default:
-					return new ScenegraphItemVO( asset.name, asset );
+					return new LibraryItemVO( asset.name, asset, parent );
 			}
 		}
 		

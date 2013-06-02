@@ -75,8 +75,9 @@ import flash.events.Event;
 		
 		public static const SELECT_ALL:String = "selectAll";
 		public static const SELECT_NONE:String = "selectNone";
-//		public static const SELECT_OBJECTS:String = "selectObjects";
-		public static const DELETE_OBJECTS:String = "deleteObjects";
+		
+		public static const VALIDATE_DELETION:String = "validateDeletion";
+		public static const DELETE:String = "delete";
 		
 		public static const ENABLE_ROTATE_MODE_ONLY:String = "enableRotateModeOnly";
 		public static const ENABLE_TRANSLATE_MODE_ONLY:String = "enableTranslateModeOnly";
