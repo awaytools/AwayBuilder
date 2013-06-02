@@ -15,7 +15,7 @@ package awaybuilder.controller.document
 		{
 			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
 			nextEvent.canUndo = false;
-			this.fileService.open( "open", nextEvent );
+			this.fileService.open( "open", true, nextEvent );
 		}
 	}
 }

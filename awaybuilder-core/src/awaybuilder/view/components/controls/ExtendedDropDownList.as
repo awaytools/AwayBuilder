@@ -49,6 +49,7 @@ package awaybuilder.view.components.controls
 		override public function set selectedItem(value:*):void
 		{
 			super.selectedItem = value;
+			trace( "value = " +value );
 			updateIconDisplay();
 		}
 		

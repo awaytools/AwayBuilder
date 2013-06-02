@@ -15,7 +15,7 @@ package awaybuilder.controller.document
 		override public function execute():void
 		{
 			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
-			this.fileService.open( "import", nextEvent );
+			this.fileService.open( "import", false, nextEvent );
 		}
 	}
 }

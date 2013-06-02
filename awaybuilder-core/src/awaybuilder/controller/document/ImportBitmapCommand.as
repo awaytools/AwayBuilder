@@ -15,8 +15,6 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-//			var nextEvent:ImportTextureEvent = new ImportTextureEvent(ImportTextureEvent.LOAD_AND_BITMAP_REPLACE, event.items);
-//			nextEvent.options = event.options;
 			this.fileService.openBitmap( event.items , event.options as String  );
 		}
 	}

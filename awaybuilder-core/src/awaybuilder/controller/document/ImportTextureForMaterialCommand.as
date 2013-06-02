@@ -20,7 +20,7 @@ package awaybuilder.controller.document
 		{
 			var nextEvent:SceneEvent = new SceneEvent(SceneEvent.ADD_NEW_TEXTURE, event.items );
 			nextEvent.options = event.options;
-			this.fileService.open( "images", nextEvent );
+			this.fileService.open( "images", false, nextEvent );
 		}
 	}
 }

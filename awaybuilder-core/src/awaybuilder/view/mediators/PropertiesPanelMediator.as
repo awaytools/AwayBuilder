@@ -737,6 +737,7 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
 		{
+			updateLists();
 			if( event.items && event.items.length )
 			{
 				view.SetData(event.items[0]);

@@ -650,7 +650,7 @@ package awaybuilder.view.mediators
 				case(obj is GradientDiffuseMethod):
 				{
 					var gradientDiffuseMethod:GradientDiffuseMethod = obj as GradientDiffuseMethod;
-					gradientDiffuseMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
+					gradientDiffuseMethod.gradient = assets.GetObject( asset.texture ) as Texture2DBase;
 					break;
 				}
 				case(obj is WrapDiffuseMethod):

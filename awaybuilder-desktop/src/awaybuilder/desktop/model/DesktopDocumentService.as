@@ -33,6 +33,8 @@ package awaybuilder.desktop.model
 		
 		private var _nextEvent:HistoryEvent;
 		
+		private var _createNew:Boolean;
+		
 		private var _name:String;
 		
 		private var _items:Array;
@@ -59,9 +61,10 @@ package awaybuilder.desktop.model
 			file.browseForOpen(title, filters);
 		}
 		
-		public function open( type:String, event:HistoryEvent ):void
+		public function open( type:String, createNew:Boolean, event:HistoryEvent ):void
 		{
 			_nextEvent = event;
+			_createNew = createNew;
 			var file:File = new File();
 			file.addEventListener(Event.SELECT, file_open_selectHandler);
 			file.addEventListener(Event.CANCEL, file_open_cancelHandler);
@@ -185,7 +188,11 @@ package awaybuilder.desktop.model
 		
 		private function file_open_selectHandler(event:Event):void
 		{
-			this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
+			if( _createNew )
+			{
+				this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
+			}
+			
 			
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);

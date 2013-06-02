@@ -6,7 +6,7 @@ package awaybuilder.model
 	{
 		function save(data:Object, path:String):void;
 		function saveAs(data:Object, defaultName:String):void;
-		function open( type:String, event:HistoryEvent ):void;
+		function open( type:String, createNew:Boolean, event:HistoryEvent ):void
 		
 		function openBitmap( items:Array, property:String ):void;
 		
