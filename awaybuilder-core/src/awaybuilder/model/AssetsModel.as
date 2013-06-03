@@ -192,11 +192,11 @@ package awaybuilder.model
 					break;
 				case "SkeletonAnimator":
 					animator = new SkeletonAnimator(GetObject(animationSet) as SkeletonAnimationSet,GetObject(skeleton) as Skeleton );
-//					animator.name =  "SkeletonAnimator" + AssetUtil.GetNextId("SkeletonAnimator");
+					animator.name =  "SkeletonAnimator" + AssetUtil.GetNextId("SkeletonAnimator");
 					break;
 				case "VertexAnimator":
 					animator = new VertexAnimator(GetObject(animationSet) as VertexAnimationSet);
-//					animator.name =  "VertexAnimator" + AssetUtil.GetNextId("VertexAnimator");
+					animator.name =  "VertexAnimator" + AssetUtil.GetNextId("VertexAnimator");
 					break;
 			}
 			animator.updatePosition = false;
