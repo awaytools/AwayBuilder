@@ -1,5 +1,6 @@
 package awaybuilder.utils.scene
 {
+	import away3d.tools.utils.Bounds;
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
@@ -57,8 +58,8 @@ package awaybuilder.utils.scene
 		// target mode variables
 		public static var wheelSpeed:Number = 10;
 		public static var mouseSpeed:Number = 1;		
-		public static var radius:Number = 0;
 		
+		private static var _radius:Number = 0;
 		private var _minRadius:Number = 10;								
 		private var stage:Stage;
 		
@@ -76,6 +77,14 @@ package awaybuilder.utils.scene
 		private var poi:ObjectContainer3D;
 		
 		private var quat:Quaternion;
+
+		public static function get radius() : Number { return _radius; }
+		public static function set radius(radius : Number) : void { 
+			if (_radius == radius) return;
+			
+			_radius = radius;
+			Scene3DManager.updateDefaultCameraFarPlane();
+		}
 		
 		public static function init(scope:UIComponent, view:View3D, mode:String=CameraMode.TARGET, speed:Number=10):void
 		{			
@@ -252,9 +261,9 @@ package awaybuilder.utils.scene
 			camera.position = getCameraPosition(_xDeg, -_yDeg);							
 			camera.eulers = quat.rotatePoint(new Vector3D(_yDeg, _xDeg, camera.rotationZ));
 			Scene3DManager.updateGizmo();
+
 			if (hasMoved) {
 				radius = Vector3D.distance(camera.position, instance.poi.scenePosition);
-				Scene3DManager.updateDefaultCameraFarPlane();
  			}
 		}			
 		
@@ -266,45 +275,23 @@ package awaybuilder.utils.scene
 			var tr:Number;
 			var bmin:Vector3D;
 			var bmax:Vector3D;
-			var sx:Number = 1;
-			var sy:Number = 1;
-			var sz:Number = 1;		
-			if (t is Mesh)
-			{
-				sx = Math.abs(Mesh(t).scaleX);
-				sy = Math.abs(Mesh(t).scaleY);
-				sz = Math.abs(Mesh(t).scaleZ);
-				
-				bmin = Mesh(t).bounds.min.clone();
-				bmax = Mesh(t).bounds.max.clone();
-			} else {
-				var vec:Vector.<Number> = Scene3DManager.sceneBounds;
-				
-				if (vec[0]==Infinity || vec[1]==Infinity || vec[2]==Infinity || vec[3]==-Infinity || vec[4]==-Infinity || vec[5]==-Infinity) { 
-					bmin = new Vector3D(-500, 0, 0);
-					bmax = new Vector3D(500, 0, 0);
-				} else {
-					bmin = new Vector3D(vec[0], vec[1], vec[2]);
-					bmax = new Vector3D(vec[3], vec[4], vec[5]);
-				}
-			}
 			
+			var bounds:Vector.<Number> = (t ? Scene3DManager.containerBounds(t) : Scene3DManager.sceneBounds);
 				
-			bmin.x *= sx;
-			bmin.y *= sy;
-			bmin.z *= sz;				
-
-			bmax.x *= sx;
-			bmax.y *= sy;
-			bmax.z *= sz;				
+			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity) { 
+				bmin = new Vector3D(-500, 0, 0);
+				bmax = new Vector3D(500, 0, 0);
+			} else {
+				bmin = new Vector3D(bounds[0], bounds[1], bounds[2]);
+				bmax = new Vector3D(bounds[3], bounds[4], bounds[5]);
+			}
 			
 			var center:Vector3D = bmax.subtract(bmin);
 			tr = center.length;	
 			center.x /= 2;
 			center.y /= 2;
 			center.z /= 2;
-			center = center.add(bmin);
-			
+			center = center.add(bmin);		
 			
 			if (t && t.parent) {
 				center = center.add(t.scenePosition);
@@ -369,6 +356,11 @@ package awaybuilder.utils.scene
 			v.y = (poi.scenePosition.y + offset.y) - Math.sin(MathUtils.convertToRadian(yDegree)) * radius;
 			v.z = (poi.scenePosition.z + offset.z) - Math.cos(MathUtils.convertToRadian(xDegree)) * cy;
 			
+//			if (camera.x != v.x || camera.y != v.y || camera.z != v.z) {
+//trace("Updating c:"+camera.position+" v:"+v);
+//				Scene3DManager.updateDefaultCameraFarPlane();
+//			}
+				
 			return v;
 		}				
 		
@@ -435,6 +427,7 @@ package awaybuilder.utils.scene
 					}
 					case CameraMode.FREE: {
 						camera.moveForward(speed * event.delta);
+						Scene3DManager.updateDefaultCameraFarPlane();
 						break;						
 					}
 				}
@@ -493,8 +486,7 @@ package awaybuilder.utils.scene
 
 		public static function distanceFunction(x:Number):Number
 		{
-			return 8 - Math.log(x)/Math.log(2);
+			return 8 - Math.log(x) / Math.log(2);
 		}
 	}
-
 }

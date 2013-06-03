@@ -21,7 +21,7 @@ package awaybuilder.view.scene.controls
 		public var active:Boolean = false;
 		public var hasMoved:Boolean = false;
 		
-		public var currentMesh:Entity;	
+		public var currentMesh:ObjectContainer3D;	
 		public var currentAxis:String = "";
 		
 		protected var content:ObjectContainer3D;
@@ -84,9 +84,9 @@ package awaybuilder.view.scene.controls
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
 		}			
 		
-		public function show(mesh:Entity):void
+		public function show(sceneObject:ObjectContainer3D):void
 		{
-			currentMesh = mesh;
+			currentMesh = sceneObject;
 			
 			isLightGizmo = currentMesh.parent as LightGizmo3D;
 			isContainerGizmo = currentMesh.parent as ContainerGizmo3D;
@@ -109,13 +109,13 @@ package awaybuilder.view.scene.controls
 			}
 			else
  			{
-				this.position = mesh.scenePosition;
+				this.position = sceneObject.scenePosition;
 				if (type == TRANSLATE_GIZMO) {
 					content.rotationX = content.rotationY = content.rotationZ = 0;		
 				} else {
-					content.rotationX = (isContainerGizmo) ? isContainerGizmo.parent.rotationX : mesh.rotationX;
-					content.rotationY = (isContainerGizmo) ? isContainerGizmo.parent.rotationY : mesh.rotationY;
-					content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : mesh.rotationZ;
+					content.rotationX = (isContainerGizmo) ? isContainerGizmo.parent.rotationX : sceneObject.rotationX;
+					content.rotationY = (isContainerGizmo) ? isContainerGizmo.parent.rotationY : sceneObject.rotationY;
+					content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : sceneObject.rotationZ;
 				}
 			}
 			

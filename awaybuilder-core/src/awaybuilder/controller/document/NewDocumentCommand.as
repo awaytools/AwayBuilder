@@ -30,7 +30,7 @@ package awaybuilder.controller.document
 			this.dispatch(new AnimationEvent(AnimationEvent.STOP, null, null));
 			assets.Clear();
 			undoRedo.clear();
-			Scene3DManager.clear();
+			if (Scene3DManager.scene) Scene3DManager.clear();
 			document.clear();
 			
 			document.name = "Untitled Library " + AssetUtil.GetNextId("document");

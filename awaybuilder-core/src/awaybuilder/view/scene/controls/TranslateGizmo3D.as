@@ -1,5 +1,8 @@
 package awaybuilder.view.scene.controls
 {
+	import flash.geom.Matrix3D;
+	import away3d.core.math.Matrix3DUtils;
+	import away3d.core.math.Vector3DUtils;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Mesh;
@@ -270,7 +273,14 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
 			
-			actualMesh.position = this.position.clone();
+			var pos:Vector3D = this.position.clone();
+			var rad:Number = 180/Math.PI;
+			var objectEulers:Vector3D =Vector3DUtils.matrix2euler(actualMesh.parent.transform);
+			objectEulers.x *= -rad;
+			objectEulers.y *= -rad;
+			objectEulers.z *= -rad;
+			pos = Vector3DUtils.rotatePoint(pos, objectEulers);
+			actualMesh.position = pos;
 			
 			Scene3DManager.updateDefaultCameraFarPlane();
 

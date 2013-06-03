@@ -219,7 +219,7 @@ package awaybuilder.view.mediators
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
-            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED_FROM_VIEW, scene_meshSelectedFromViewHandler);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.OBJECT_SELECTED_FROM_VIEW, scene_meshSelectedFromViewHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM, scene_transformHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.TRANSFORM_RELEASE, scene_transformReleaseHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, eventDispatcher_zoomDistanceDeltaHandler);
@@ -481,6 +481,24 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_reparentObjectsHandler(event:SceneEvent):void
 		{
+			for each ( var item:DroppedTreeItemVO in event.newValue ) {
+				var child:ObjectContainer3D = assets.GetObject(item.value.asset) as ObjectContainer3D;
+				if (item.oldParent != null) {
+					 var parent:ObjectContainer3D = assets.GetObject(item.oldParent.asset) as ObjectContainer3D;
+					 parent.removeChild(child);
+					 
+					 if (parent.numChildren == 0) {
+						Scene3DManager.addEmptyContainerRepresentation(parent);
+					 }
+				}
+				if (item.newParent != null) {
+					var newParent:ObjectContainer3D = assets.GetObject(item.newParent.asset) as ObjectContainer3D;
+					if (newParent.numChildren == 1) {
+						Scene3DManager.removeEmptyContainerRepresentation(newParent);
+					}
+					newParent.addChild(child);	
+				}
+			}
 		}
 		private function eventDispatcher_reparentAnimationHandler(event:SceneEvent):void
 		{
@@ -1466,7 +1484,7 @@ package awaybuilder.view.mediators
 					if( event.items[0] is MeshVO )
 					{
 						var mesh:MeshVO = event.items[0] as MeshVO;
-						selectObjectsScene( assets.GetObject( mesh ) as Object3D );
+						selectObjectsScene( assets.GetObject( mesh ) as ObjectContainer3D );
 					}
 					else if( event.items[0] is TextureProjectorVO )
 					{
@@ -1498,16 +1516,16 @@ package awaybuilder.view.mediators
 			}
 			
 		}
-		private function selectObjectsScene( o:Object3D ):void
+		private function selectObjectsScene( o:ObjectContainer3D ):void
 		{
-			for each( var object:Object3D in Scene3DManager.selectedObjects.source )
+			for each( var object:ObjectContainer3D in Scene3DManager.selectedObjects.source )
 			{
 				if( object == o )
 				{
 					return;
 				}
 			}
-			Scene3DManager.selectObject(o.id);
+			Scene3DManager.selectObject(o);
 			
 		}
 		private function selectContainersScene( c:ObjectContainer3D ):void
@@ -1520,7 +1538,9 @@ package awaybuilder.view.mediators
 					return;
 				}
 			}
+			Scene3DManager.selectObject(c);
 		}
+		
 		private function selectLightsScene( l:LightBase ):void
 		{
 			for each( var lightGizmo:LightGizmo3D in Scene3DManager.lightGizmos )

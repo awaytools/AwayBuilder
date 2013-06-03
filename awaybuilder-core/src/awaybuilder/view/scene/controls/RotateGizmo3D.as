@@ -368,7 +368,7 @@ package awaybuilder.view.scene.controls
 			dL.direction = new Vector3D(aX, aY, aZ);
 		}
 
-		override public function show(mesh:Entity):void
+		override public function show(mesh:ObjectContainer3D):void
 		{
 			super.show(mesh);
 			
