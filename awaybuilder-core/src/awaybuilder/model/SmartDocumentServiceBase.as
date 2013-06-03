@@ -1,18 +1,5 @@
 package awaybuilder.model
 {
-	import flash.display.Bitmap;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
-	import flash.events.Event;
-	import flash.net.URLRequest;
-	import flash.utils.ByteArray;
-	
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.managers.CursorManager;
-	
-	import spark.components.Application;
-	
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
@@ -31,9 +18,23 @@ package awaybuilder.model
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.utils.ByteArray;
+	
+	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
+	import mx.managers.CursorManager;
+	
 	import org.robotlegs.mvcs.Actor;
+	
+	import spark.components.Application;
 	
 	public class SmartDocumentServiceBase extends Actor
 	{
@@ -145,6 +146,10 @@ package awaybuilder.model
 					{
 						mesh.material = assets.GetObject(assets.defaultMaterial) as MaterialBase;
 					}
+					if( !isGeometryInList( assets.GetAsset(mesh.geometry) as GeometryVO ) )
+					{
+						_document.geometry.addItem( assets.GetAsset(mesh.geometry) as GeometryVO );
+					}
 					_objects.push( mesh  );
 					break;
 				case AssetType.CONTAINER:
@@ -177,7 +182,11 @@ package awaybuilder.model
 					_document.textures.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
-					_document.geometry.addItem( assets.GetAsset( event.asset ) );
+					var geometry:GeometryVO = assets.GetAsset( event.asset ) as GeometryVO;
+					if( !isGeometryInList( geometry ) )
+					{
+						_document.geometry.addItem( geometry );
+					}
 					break;
 				case AssetType.ANIMATION_SET:
 				case AssetType.ANIMATION_STATE:
@@ -188,6 +197,16 @@ package awaybuilder.model
 					_document.animations.addItem( assets.GetAsset( event.asset ) );
 					break;
 			}
+		}
+		
+		private function isGeometryInList( geometry:GeometryVO ):Boolean
+		{
+			for each ( var asset:AssetVO in _document.geometry )
+			{
+				if( asset.equals( geometry ) ) return true;
+				
+			}
+			return false;
 		}
 		
 		protected function documentReady( _document:DocumentVO ):void {
