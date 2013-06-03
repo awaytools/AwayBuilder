@@ -1,6 +1,7 @@
 package awaybuilder.view.mediators
 {
     import away3d.animators.AnimatorBase;
+    import away3d.tools.commands.Merge;
     
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
@@ -31,6 +32,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureProjectorVO;
     import awaybuilder.model.vo.scene.TextureVO;
+    import awaybuilder.utils.DataMerger;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.editors.events.PropertyEditorEvent;
     
@@ -90,8 +92,8 @@ package awaybuilder.view.mediators
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
 			addContextListener(SceneEvent.DELETE, context_deleteHandler);
 			
-			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
-			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler, null, false, -1000);
+			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler, null, false, -1000);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
@@ -920,7 +922,6 @@ package awaybuilder.view.mediators
 		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
-			this.view.callLater( updateLists );
 			updateLists();
 		}
 		private function updateLists():void

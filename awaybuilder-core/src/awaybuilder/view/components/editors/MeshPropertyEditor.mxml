@@ -33,6 +33,8 @@
 		{
 			if( !(asset is MeshVO) ) return;
 			if( asset is MeshVO ) _asset = MeshVO(asset).clone() as MeshVO;
+			
+			trace( "validate = " + _asset.animator );
 		}
 
         private function position_commitHandler(event:Event):void 
@@ -127,6 +129,7 @@
 		
 		protected function animatorDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
+			trace( "animatorDropDownList_changeHandler = " + animatorDropDownList_changeHandler );
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
 		}
 		
@@ -181,7 +184,7 @@
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="geometryDropDownListButton_clickHandler(event)" />
 		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="Animator" width="100%">
-			<s:DropDownList id="animatorDropDownList" labelFunction="animatorDropDownLabelFunction" prompt="Null"
+			<s:DropDownList id="animatorDropDownList" labelFunction="animatorDropDownLabelFunction" prompt="Null" requireSelection="true"
 							change="animatorDropDownList_changeHandler(event)" width="100%"
 							selectedItem="@{_asset.animator}" dataProvider="{animators}"/>
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animatorDropDownListButton_clickHandler(event)" enabled="{_asset.animator!=null}" />

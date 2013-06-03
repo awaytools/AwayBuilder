@@ -36,6 +36,7 @@ package awaybuilder.controller.scene
 			vo.pivotY = mesh.pivotY;
 			vo.pivotZ = mesh.pivotZ;
 			
+			trace( "mesh.animator = " + mesh.animator );
 			vo.animator = mesh.animator;
 			
 			vo.castsShadows = mesh.castsShadows;

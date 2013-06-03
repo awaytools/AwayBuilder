@@ -54,18 +54,18 @@ package awaybuilder.controller.scene
 						}
 					}
 					
-					if( item.oldParent )
-					{ 
-						picker = item.oldParent.asset as LightPickerVO;
-						if( picker && itemIsInList(picker.lights, vo.asset as AssetVO) ) 
-						{
-							removeItem( picker.lights, vo.asset as AssetVO );
-						}
-					}
+//					if( item.oldParent )
+//					{ 
+//						picker = item.oldParent.asset as LightPickerVO;
+//						if( picker && itemIsInList(picker.lights, vo.asset as AssetVO) ) 
+//						{
+//							removeItem( picker.lights, vo.asset as AssetVO );
+//						}
+//					}
 				}
 			}
 			
-			commitHistoryEvent( event );
+//			commitHistoryEvent( event );
 		}
 		private function itemIsInList( collection:ArrayCollection, asset:AssetVO ):Boolean
 		{

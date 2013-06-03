@@ -110,11 +110,9 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.ADD_ANIMATOR, view_addAnimatorHandler);
 			addViewListener(LibraryPanelEvent.ADD_CAMERA, view_addCameraHandler);
 			
-			
 			addViewListener(LibraryPanelEvent.LIGHT_DROPPED, view_lightDroppedHandler);
 			addViewListener(LibraryPanelEvent.SCENEOBJECT_DROPPED, view_sceneObjectDroppedHandler);
 			addViewListener(LibraryPanelEvent.ANIMATIONS_DROPPED, view_animationsDroppedHandler);
-			
 			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, eventDispatcher_documentCreatedHandler);
