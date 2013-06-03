@@ -920,7 +920,8 @@ package awaybuilder.view.mediators
 		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
-			this.view.callLater( updateLists );
+//			this.view.callLater( updateLists );
+			updateLists();
 		}
 		private function updateLists():void
 		{

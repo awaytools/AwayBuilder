@@ -73,6 +73,8 @@ package awaybuilder.controller.document
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
 			
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
+			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_FILLED));
+			
 		}
 		
 		private function undo():void

@@ -118,6 +118,7 @@ package awaybuilder.view.mediators
 			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, eventDispatcher_documentCreatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_FILLED, eventDispatcher_objectsFilledHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeHandler);
 			
 			addContextListener(SceneEvent.VALIDATE_DELETION, context_validateDeletionHandler);
@@ -389,10 +390,13 @@ package awaybuilder.view.mediators
 			updateScenegraph();
 		}
 		
+		private function eventDispatcher_objectsFilledHandler(event:DocumentModelEvent):void
+		{
+			view.sceneTree.expandAll();
+		}
 		private function eventDispatcher_documentCreatedHandler(event:DocumentModelEvent):void
 		{
 			updateScenegraph();
-			view.sceneTree.expandAll();
 		}
 		
 		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
