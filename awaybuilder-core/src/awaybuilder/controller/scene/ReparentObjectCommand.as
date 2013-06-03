@@ -53,7 +53,7 @@ package awaybuilder.controller.scene
 					
 					if( item.newParent )
 					{
-						container = item.newParent.item as ContainerVO;
+						container = item.newParent.asset as ContainerVO;
 						if( container && !itemIsInList(container.children, vo.asset as AssetVO) ) 
 						{
 							if( item.newPosition < container.children.length )
@@ -74,7 +74,7 @@ package awaybuilder.controller.scene
 					
 					if( item.oldParent )
 					{ 
-						container = item.oldParent.item as ContainerVO;
+						container = item.oldParent.asset as ContainerVO;
 						if( container && itemIsInList(container.children, vo.asset as AssetVO) ) 
 						{
 							removeItem( container.children, vo.asset );
