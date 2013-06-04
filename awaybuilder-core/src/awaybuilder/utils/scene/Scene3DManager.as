@@ -606,7 +606,7 @@ package awaybuilder.utils.scene
 			// Get all scene child container bounds		
 			while (ctr < oCCount) {
 				var oC:ObjectContainer3D = Scene3DManager.view.scene.getChildAt(ctr++);
-				if (!(oC is SkyBox || oC == Scene3DManager.grid)) {
+				if (!(oC is SkyBox || oC is LightBase || oC == Scene3DManager.grid)) {
 					Bounds.getObjectContainerBounds(oC);
 //trace(" - "+oC.name);
 					if (Bounds.minX < min.x) min.x = Bounds.minX;
