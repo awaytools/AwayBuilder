@@ -56,8 +56,6 @@ package awaybuilder.utils.scene
 		public static const instance : Scene3DManager = new Scene3DManager();
 		private var sceneDoubleClickDetected : Boolean;
 		private var doubleClick3DMonitor : Boolean;
-		private var _lastCameraPos : Vector3D;
-		private var _lastCameraRot : Vector3D;
 		public function Scene3DManager() { if ( instance ) throw new Error("Scene3DManager is a singleton"); }		
 		
 		public static var active:Boolean = true;
@@ -98,6 +96,9 @@ package awaybuilder.utils.scene
 		public static var containerGizmos:Vector.<ContainerGizmo3D> = new Vector.<ContainerGizmo3D>();
 		
 		public static var currentContainer:ObjectContainer3D;
+
+		private static var _lastCameraPos : Vector3D;
+		private static var _lastCameraRot : Vector3D;
 		
 		public static function init(scope:UIComponent):void
 		{
@@ -232,11 +233,7 @@ package awaybuilder.utils.scene
 			updateCameraGizmos();
 			updateContainerGizmos();
 
-			if (_lastCameraPos.x != camera.x || _lastCameraPos.y != camera.y || _lastCameraPos.z != camera.z || 
-			    _lastCameraRot.x != camera.rotationX || _lastCameraRot.y != camera.rotationY || _lastCameraPos.z != camera.rotationZ)
-				Scene3DManager.updateDefaultCameraFarPlane();	
-			_lastCameraPos = camera.position.clone();
-			_lastCameraRot = new Vector3D(camera.rotationX, camera.rotationY, camera.rotationZ);
+			Scene3DManager.checkCameraMovement();	
 			
 			view.render();			
 
@@ -627,11 +624,30 @@ package awaybuilder.utils.scene
 			return Vector.<Number>([min.x, min.y, min.z, max.x, max.y, max.z]);
 		}
 		
-		public static function containerBounds(oC:ObjectContainer3D) : Vector.<Number> {
-			Bounds.getObjectContainerBounds(oC);
+		public static function containerBounds(oC:ObjectContainer3D, sceneBased:Boolean = true) : Vector.<Number> {
+			Bounds.getObjectContainerBounds(oC, sceneBased);
 			return Vector.<Number>([Bounds.minX, Bounds.minY, Bounds.minZ, Bounds.maxX, Bounds.maxY, Bounds.maxZ]);
 		}
 		
+		public static function abs( value:Number ):Number {
+			return value < 0 ? -value : value;
+		}
+ 
+ 		public static function checkCameraMovement() : void {
+			var xd:Boolean = abs(_lastCameraPos.x-camera.x)<0.001;
+			var yd:Boolean = abs(_lastCameraPos.y-camera.y)<0.001;
+			var zd:Boolean = abs(_lastCameraPos.z-camera.z)<0.001;
+			var xr:Boolean = abs(_lastCameraRot.x-camera.rotationX)<0.001;
+			var yr:Boolean = abs(_lastCameraRot.y-camera.rotationY)<0.001;
+			var zr:Boolean = abs(_lastCameraRot.z-camera.rotationZ)<0.001;
+			if (xd && yd && zd && xr && yr && zr) return;
+
+			_lastCameraPos = camera.position.clone();
+			_lastCameraRot = new Vector3D(camera.rotationX, camera.rotationY, camera.rotationZ);
+			
+			updateDefaultCameraFarPlane();
+		}
+
 		public static function updateDefaultCameraFarPlane() : void {
 			var bounds:Vector.<Number> = sceneBounds;
 			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity)

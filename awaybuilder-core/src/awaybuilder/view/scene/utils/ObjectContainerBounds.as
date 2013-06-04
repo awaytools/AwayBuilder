@@ -1,6 +1,4 @@
 package awaybuilder.view.scene.utils {
-	import away3d.entities.Entity;
-	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import away3d.tools.utils.Bounds;
 	import away3d.primitives.WireframePrimitiveBase;
@@ -41,12 +39,6 @@ package awaybuilder.view.scene.utils {
 
 		public function updateContainerBounds() : void {
 			buildGeometry();
-
-			if (_container is Entity) {
-				var mat:Matrix3D = _container.sceneTransform.clone();
-				mat.invert();
-				this.transform = mat;
-			}
 		}
 		
 		override protected function buildGeometry() : void {
@@ -61,7 +53,6 @@ package awaybuilder.view.scene.utils {
 			var armZLen:Number = (Bounds.maxZ - Bounds.minZ) * 0.25;
 			
 			segmentIndex=0;
-			//cols = [0x555555, 0xff0000, 0x00ff00, 0x0000ff, 0x00ffff, 0xff00ff, 0xffff00, 0xffffff];
 			addCorner(new Vector3D(Bounds.maxX, Bounds.maxY, Bounds.maxZ), new Vector3D(-armXLen, -armYLen, -armZLen));
 			addCorner(new Vector3D(Bounds.maxX, Bounds.maxY, Bounds.minZ), new Vector3D(-armXLen, -armYLen,  armZLen));
 			addCorner(new Vector3D(Bounds.maxX, Bounds.minY, Bounds.maxZ), new Vector3D(-armXLen,  armYLen, -armZLen));
@@ -73,14 +64,12 @@ package awaybuilder.view.scene.utils {
 		}
 
 		private function addCorner(corner : Vector3D, directions : Vector3D) : void {
-			//color = cols[segmentIndex / 3];
 			updateOrAddSegment(segmentIndex++, corner.clone(), corner.clone().add(new Vector3D(directions.x, 0, 0)));
 			updateOrAddSegment(segmentIndex++, corner.clone(), corner.clone().add(new Vector3D(0, directions.y, 0)));
 			updateOrAddSegment(segmentIndex++, corner.clone(), corner.clone().add(new Vector3D(0, 0, directions.z)));
 		}
 		
-		override protected function updateBounds() : void
-		{
+		override protected function updateBounds() : void {
 			_bounds.fromExtremes(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY);
 		}		
 	}
