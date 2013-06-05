@@ -1,5 +1,18 @@
 package awaybuilder.desktop.model
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.JPEGEncoderOptions;
+	import flash.events.Event;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.net.FileFilter;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	
+	import mx.managers.CursorManager;
+	
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
@@ -13,17 +26,6 @@ package awaybuilder.desktop.model
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.encoders.AWDEncoder;
 	import awaybuilder.utils.encoders.ISceneGraphEncoder;
-	
-	import flash.display.Bitmap;
-	import flash.events.Event;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
-	import flash.net.FileFilter;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	
-	import mx.managers.CursorManager;
 	
 	public class DesktopDocumentService extends SmartDocumentServiceBase implements IDocumentService
 	{
@@ -105,6 +107,60 @@ package awaybuilder.desktop.model
 			this._fileToData[file] = data;
 		}
 		
+		public function saveDocument(data:Object, path:String):void
+		{	
+			
+			var document : DocumentModel = DocumentModel(data);
+			if (!document.globalOptions.embedTextures){
+				saveExternalTextures(data,path)
+			}
+			
+			this.save(data,path);
+		}
+		
+		public function saveExternalTextures(data:Object, path:String):void
+		{	
+			
+			var folder:File = File.userDirectory.resolvePath(path);
+			var textureDirectory:File = folder.parent.resolvePath("textures");
+			if(!textureDirectory.exists)
+				textureDirectory.createDirectory();
+			var document : DocumentModel = DocumentModel(data);
+			for each (var tex:AssetVO in document.textures){
+				if (tex is TextureVO){
+					saveBitmapDataToFile(TextureVO(tex).bitmapData,TextureVO(tex).name,textureDirectory)
+				}
+				else if (tex is CubeTextureVO){
+					saveBitmapDataToFile(CubeTextureVO(tex).positiveX,CubeTextureVO(tex).name+"_posX",textureDirectory)
+					saveBitmapDataToFile(CubeTextureVO(tex).negativeX,CubeTextureVO(tex).name+"_negX",textureDirectory)
+					saveBitmapDataToFile(CubeTextureVO(tex).positiveY,CubeTextureVO(tex).name+"_posY",textureDirectory)
+					saveBitmapDataToFile(CubeTextureVO(tex).negativeY,CubeTextureVO(tex).name+"_negY",textureDirectory)
+					saveBitmapDataToFile(CubeTextureVO(tex).positiveZ,CubeTextureVO(tex).name+"_posZ",textureDirectory)
+					saveBitmapDataToFile(CubeTextureVO(tex).negativeZ,CubeTextureVO(tex).name+"_negZ",textureDirectory)
+					
+				}
+			}
+		}
+		
+		public function saveBitmapDataToFile(_bitmapData:BitmapData, textureName:String, textureDirectory:File):void
+		{	
+			var tmpFile:File = File.userDirectory.resolvePath(textureName);
+			var extension:String="";
+			var encoder : ISceneGraphEncoder = new AWDEncoder();
+			var returnArray:Array=AWDEncoder(encoder)._encodeBitmap(_bitmapData);
+			var bytes:ByteArray=returnArray[0];
+			extension="jpg";
+			if (returnArray[1])
+				extension="png";
+			var textureFile:File = textureDirectory.resolvePath(tmpFile.name+"."+extension);
+			if (!textureFile.exists){						
+				var saveStream:FileStream = new FileStream();
+				saveStream.open(textureFile, FileMode.WRITE);
+				saveStream.writeBytes(bytes);
+				saveStream.close();						
+			}
+			
+		}
 		public function save(data:Object, path:String):void
 		{	
 			var bytes : ByteArray;
@@ -115,6 +171,7 @@ package awaybuilder.desktop.model
 			bytes = new ByteArray();
 			encoder = new AWDEncoder();
 			success = encoder.encode(document, bytes);
+			
 			
 			try
 			{
@@ -161,8 +218,9 @@ package awaybuilder.desktop.model
 			var data:Object = this._fileToData[file];
 			delete this._fileToData[file];
 			
-			this.save(data, file.nativePath);
+			this.saveDocument(data, file.nativePath);
 		}
+		
 		
 		private function file_save_cancelHandler(event:Event):void
 		{

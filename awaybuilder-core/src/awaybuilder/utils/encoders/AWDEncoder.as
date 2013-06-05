@@ -1127,13 +1127,16 @@ package awaybuilder.utils.encoders
 			
 			if (_embedtextures){				
 				_blockBody.writeByte(1);//embed
-				var ba : ByteArray = _encodeBitmap(tex.bitmapData);	
+				var ba : ByteArray = _encodeBitmap(tex.bitmapData)[0];	
 				_blockBody.writeUnsignedInt(ba.length);
 				_blockBody.writeBytes(ba);
 			}
 			else {
 				_blockBody.writeByte(0);//external
-				_blockBody.writeUTF(tex.name);				
+				var extension:String="jpg";
+				if(bitMapHasTransparency(tex.bitmapData,tex.bitmapData.rect.width,tex.bitmapData.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(tex.name)+"."+extension));				
 				}
 			
 			_beginElement(); // Properties (empty)
@@ -1148,7 +1151,13 @@ package awaybuilder.utils.encoders
 			return returnID;
 			
 		}
-		
+		private function getFileName(fullPath: String) : String
+		{
+			var fSlash: int = fullPath.lastIndexOf("/");
+			var bSlash: int = fullPath.lastIndexOf("\\"); // reason for the double slash is just to escape the slash so it doesn't escape the quote!!!
+			var slashIndex: int = fSlash > bSlash ? fSlash : bSlash;
+			return fullPath.substr(slashIndex + 1);
+		}
 		// encode TextureBlock (id=83)
 		private function _encodeCubeTextures(cubeTexture:CubeTextureVO) : uint
 		{
@@ -1158,12 +1167,12 @@ package awaybuilder.utils.encoders
 			if (_embedtextures){	
 				_blockBody.writeByte(1);// embed;
 				_blockBody.writeUTF(cubeTexture.name);
-				var id_posX : ByteArray = _encodeBitmap(cubeTexture.positiveX);	
-				var id_negX : ByteArray = _encodeBitmap(cubeTexture.negativeX);	
-				var id_posY : ByteArray = _encodeBitmap(cubeTexture.positiveY);	
-				var id_negY : ByteArray = _encodeBitmap(cubeTexture.negativeY);	
-				var id_posZ : ByteArray = _encodeBitmap(cubeTexture.positiveZ);	
-				var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ);				
+				var id_posX : ByteArray = _encodeBitmap(cubeTexture.positiveX)[0];	
+				var id_negX : ByteArray = _encodeBitmap(cubeTexture.negativeX)[0];	
+				var id_posY : ByteArray = _encodeBitmap(cubeTexture.positiveY)[0];	
+				var id_negY : ByteArray = _encodeBitmap(cubeTexture.negativeY)[0];	
+				var id_posZ : ByteArray = _encodeBitmap(cubeTexture.positiveZ)[0];	
+				var id_negZ : ByteArray = _encodeBitmap(cubeTexture.negativeZ)[0];				
 				// write all encodedBitMaps into the file
 				_blockBody.writeUnsignedInt(id_posX.length);
 				_blockBody.writeBytes(id_posX);
@@ -1181,13 +1190,32 @@ package awaybuilder.utils.encoders
 			else{
 				_blockBody.writeByte(0);//external
 				_blockBody.writeUTF(cubeTexture.name);
+				var extension:String="jpg";
+				extension="jpg";
+				if(bitMapHasTransparency(cubeTexture.positiveX,cubeTexture.positiveX.rect.width,cubeTexture.positiveX.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_posX."+extension));	
+				extension="jpg";
+				if(bitMapHasTransparency(cubeTexture.negativeX,cubeTexture.negativeX.rect.width,cubeTexture.negativeX.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_negX."+extension));	
+				extension="jpg";
+				if(bitMapHasTransparency(cubeTexture.positiveY,cubeTexture.positiveY.rect.width,cubeTexture.positiveY.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_posY."+extension));	
+				extension="jpg";
+				if(bitMapHasTransparency(cubeTexture.negativeY,cubeTexture.negativeY.rect.width,cubeTexture.negativeY.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_negY."+extension));	
+				extension="jpg";
+				if(bitMapHasTransparency(cubeTexture.positiveZ,cubeTexture.positiveZ.rect.width,cubeTexture.positiveZ.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_posZ."+extension));	
+				extension="jpg";
+				if(bitMapHasTransparency(cubeTexture.negativeZ,cubeTexture.negativeZ.rect.width,cubeTexture.negativeZ.rect.height))
+					extension="png";
+				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_negZ."+extension));	
 				
-				_blockBody.writeUTF(cubeTexture.name);
-				_blockBody.writeUTF(cubeTexture.name);
-				_blockBody.writeUTF(cubeTexture.name);
-				_blockBody.writeUTF(cubeTexture.name);
-				_blockBody.writeUTF(cubeTexture.name);
-				_blockBody.writeUTF(cubeTexture.name);
 				
 			}
 			
@@ -1840,11 +1868,12 @@ package awaybuilder.utils.encoders
 		}
 		
 		// encodes a Bitmap into a ByteArray - if the Bitmap contains transparent Pixel, its encodet to PNG, otherwise it is encodet to JPG
-		private function _encodeBitmap(bitMap:BitmapData):ByteArray
+		public function _encodeBitmap(bitMap:BitmapData):Array
 		{			
 			var usePNG : Boolean;	
 			var ba : ByteArray;	
 			usePNG=bitMapHasTransparency(bitMap,bitMap.rect.width,bitMap.rect.height);
+			var returnArray:Array=new Array();
 			ba = new ByteArray();
 			if (usePNG){
 				bitMap.encode(bitMap.rect, new PNGEncoderOptions(), ba);
@@ -1853,7 +1882,9 @@ package awaybuilder.utils.encoders
 			else {
 				bitMap.encode(bitMap.rect, new JPEGEncoderOptions(80), ba);
 			}	
-			return ba;
+			returnArray.push(ba);
+			returnArray.push(usePNG);
+			return returnArray;
 		}		
 		//check if a transparent pixel was found in a bitmap (use PNG vs JPG)
 		private function bitMapHasTransparency(bmd:BitmapData,w:Number,h:Number):Boolean {
