@@ -649,7 +649,7 @@
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
 			<s:FormItem label="Specular Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="specularLevelStepper" value="@{_asset.specularLevel}"
-												 stepSize="0.01" snapInterval="0.01" minimum="0" maximum="1"
+												 stepSize="0.01" snapInterval="0.01" minimum="0" maximum="10"
 												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Specular Gloss" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
