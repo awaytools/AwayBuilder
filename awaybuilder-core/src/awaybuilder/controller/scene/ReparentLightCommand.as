@@ -28,6 +28,11 @@ package awaybuilder.controller.scene
 		{
 			saveOldValue( event, event.newValue );
 			
+			if( event.isUndoAction )
+			{
+				undo();
+				return;
+			}
 			var picker:LightPickerVO;
 			
 			for each( var item:DroppedTreeItemVO in event.newValue ) 
@@ -38,7 +43,7 @@ package awaybuilder.controller.scene
 				{
 					if( item.newParent == item.oldParent ) return;
 					
-					if( item.newParent )
+					if( item.newParent && ! item.oldParent )
 					{
 						picker = item.newParent.asset as LightPickerVO;
 						if( picker && !itemIsInList(picker.lights, vo.asset as AssetVO) ) 
@@ -53,19 +58,32 @@ package awaybuilder.controller.scene
 							}
 						}
 					}
-					
-//					if( item.oldParent )
-//					{ 
-//						picker = item.oldParent.asset as LightPickerVO;
-//						if( picker && itemIsInList(picker.lights, vo.asset as AssetVO) ) 
-//						{
-//							removeItem( picker.lights, vo.asset as AssetVO );
-//						}
-//					}
 				}
 			}
 			
-//			commitHistoryEvent( event );
+			commitHistoryEvent( event );
+		}
+		private function undo():void
+		{
+			var picker:LightPickerVO;
+			
+			for each( var item:DroppedTreeItemVO in event.newValue ) 
+			{
+				var vo:LibraryItemVO = item.value as LibraryItemVO;
+				
+				if( vo.asset is LightVO )
+				{
+					
+					if( item.oldParent )
+					{ 
+						picker = item.oldParent.asset as LightPickerVO;
+						if( picker && itemIsInList(picker.lights, vo.asset as AssetVO) ) 
+						{
+							removeItem( picker.lights, vo.asset as AssetVO );
+						}
+					}
+				}
+			}
 		}
 		private function itemIsInList( collection:ArrayCollection, asset:AssetVO ):Boolean
 		{

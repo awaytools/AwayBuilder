@@ -80,6 +80,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_ANIMATOR, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_ANIMATION_SET, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.CHANGE_ANIMATION_NODE, context_simpleUpdateHandler);
+			addContextListener(SceneEvent.REPARENT_LIGHTS, context_reparentHandler);
+			addContextListener(SceneEvent.REPARENT_ANIMATIONS, context_reparentHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -688,6 +690,10 @@ package awaybuilder.view.mediators
 		private function context_simpleUpdateHandler(event:SceneEvent):void
 		{
 			view.SetData( event.items[0] );
+		}
+		private function context_reparentHandler(event:SceneEvent):void
+		{
+			view.SetData( view.data );
 		}
 		
         private function context_changeMeshHandler(event:SceneEvent):void
