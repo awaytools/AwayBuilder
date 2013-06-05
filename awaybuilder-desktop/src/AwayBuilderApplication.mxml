@@ -29,6 +29,7 @@
 		import awaybuilder.AwayBuilder;
 		import awaybuilder.desktop.DesktopAppContext;
 		import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+		import awaybuilder.utils.logging.AwayBuilderLogger;
 		
 		import flash.security.CertificateStatus;
 		
@@ -65,9 +66,15 @@
 			
 			version = [parseInt( majorStrings[1] ), parseInt( minorStrings[1] ), parseInt( revisionStrings[1] )];
 			
-			Alert.yesLabel = "Yes";
-			Alert.cancelLabel = "Next time";
-			Alert.show( "A new version of Away Builder is available! Do you wish to install?", "Update", Alert.YES | Alert.NO, null, versionAlert_closeHandler );
+			var currentVersionWeight:Number = AwayBuilder.MAJOR_VERSION*100000+AwayBuilder.MINOR_VERSION*10000+AwayBuilder.REVISION;
+			var versionWeight:Number = version[0]*100000+version[1]*10000+version[2];
+			if( versionWeight > currentVersionWeight ) 
+			{
+				Alert.yesLabel = "Install";
+				Alert.cancelLabel = "Later";
+				Alert.show( "A new version of Away Builder is available! Do you wish to install?", "Update", Alert.YES | Alert.CANCEL, null, versionAlert_closeHandler );
+			}
+			
 		}
 		private function versionAlert_closeHandler( event:CloseEvent ):void
 		{
@@ -101,7 +108,6 @@
 		
 		private function airLoader_progressHandler( event:ProgressEvent ):void
 		{
-			trace( event.bytesLoaded, event.bytesTotal );
 			progressBar.setProgress( event.bytesLoaded, event.bytesTotal );
 			progressBar.validateNow();
 		}
