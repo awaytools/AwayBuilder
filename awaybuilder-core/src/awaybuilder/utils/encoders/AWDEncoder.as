@@ -1075,7 +1075,7 @@ package awaybuilder.utils.encoders
 					break;
 				case "GradientDiffuseMethod":
 					texID=_getBlockIDorEncodeAsset(diffuseMethVO.texture);
-					materialMethods.push(new AWDmethod(52, [104], [texID], [0], [BADDR]));
+					materialMethods.push(new AWDmethod(52, [1], [texID], [0], [BADDR]));
 					break;
 			}			
 		}		
