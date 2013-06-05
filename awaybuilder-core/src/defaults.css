@@ -186,6 +186,13 @@ s|TitleWindow
 	fontSize: 12;
 	backgroundColor:#1d1d1c;
 }
+s|Panel 
+{
+	chromeColor: #1d1d1c;
+	color: #dbdbdb;
+	fontSize: 12;
+	backgroundColor:#1d1d1c;
+}
 
 /*** tool/status bars ***/
 

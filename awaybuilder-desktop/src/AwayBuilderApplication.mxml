@@ -20,24 +20,105 @@
 	
 	<components:CoreEditor id="coreEditor" width="100%" height="100%"/>
 	
+	<s:PopUpAnchor id="updateProgressPopup" x="{this.width/2-300}" y="{this.height/2-80}" >
+		<s:Panel width="600" height="160" title="Downloading latest version">
+			<mx:ProgressBar id="progressBar" width="90%" verticalCenter="0" horizontalCenter="0" mode="manual" />
+		</s:Panel>
+	</s:PopUpAnchor>    
 	<fx:Script><![CDATA[
 		import awaybuilder.AwayBuilder;
 		import awaybuilder.desktop.DesktopAppContext;
 		import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
 		
+		import flash.security.CertificateStatus;
+		
+		import mx.controls.Alert;
+		import mx.events.CloseEvent;
 		import mx.events.FlexEvent;
 		import mx.events.ResizeEvent;
+		import mx.managers.CursorManager;
 
         private var _context:DesktopAppContext;
 
 		public var splashScreen:SplashScreen;
 		
+		private var version:Array;
+		
         private function preinitializeHandler(event:FlexEvent):void
         {
 			splashScreen = new SplashScreen();
             this._context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
+			
+			var urlLoader:URLLoader = new URLLoader();
+			urlLoader.load( new URLRequest( "https://raw.github.com/awaytools/AwayBuilder/master/awaybuilder-core/src/awaybuilder/AwayBuilder.as" ) );
+			urlLoader.addEventListener(Event.COMPLETE, urlLoader_completeHandler );
         }
+		
+		private function urlLoader_completeHandler( event:Event ):void
+		{
+			var urlLoader:URLLoader = event.target as URLLoader;
+			var strings:Array = urlLoader.data.toString().split(";");
+			
+			var majorStrings:Array = strings[1].toString().split( " = " );
+			var minorStrings:Array = strings[2].toString().split( " = " );
+			var revisionStrings:Array = strings[3].toString().split( " = " );
+			
+			version = [parseInt( majorStrings[1] ), parseInt( minorStrings[1] ), parseInt( revisionStrings[1] )];
+			
+			Alert.yesLabel = "Yes";
+			Alert.cancelLabel = "Next time";
+			Alert.show( "A new version of Away Builder is available! Do you wish to install?", "Update", Alert.YES | Alert.NO, null, versionAlert_closeHandler );
+		}
+		private function versionAlert_closeHandler( event:CloseEvent ):void
+		{
+			if( event.detail == Alert.YES )
+			{
+				airLoader = new URLLoader();
+				airLoader.dataFormat = URLLoaderDataFormat.BINARY;
+				airLoader.load( new URLRequest( "https://github.com/awaytools/AwayBuilder/blob/master/awaybuilder-desktop/bin-release/AwayBuilderApplication.air?raw=true" ) );
+				airLoader.addEventListener(Event.COMPLETE, airLoader_completeHandler );
+				airLoader.addEventListener(ProgressEvent.PROGRESS, airLoader_progressHandler );
+				airLoader.addEventListener(IOErrorEvent.IO_ERROR, airLoader_errorHandler );
+				CursorManager.setBusyCursor();
+				this.mouseEnabled = false;
+				this.mouseChildren = false;
+				updateProgressPopup.displayPopUp = true;
+			}
+			Alert.yesLabel = null;
+			Alert.cancelLabel = null;
+		}
+		
+		[Bindable]
+		private var airLoader:URLLoader;
+		
+		private function airLoader_errorHandler( event:IOErrorEvent ):void
+		{
+			Alert.show( "Update interrupted, try next time" );
+			CursorManager.removeBusyCursor();
+			this.mouseEnabled = true;
+			this.mouseChildren = true;
+		}
+		
+		private function airLoader_progressHandler( event:ProgressEvent ):void
+		{
+			trace( event.bytesLoaded, event.bytesTotal );
+			progressBar.setProgress( event.bytesLoaded, event.bytesTotal );
+			progressBar.validateNow();
+		}
+		private function airLoader_completeHandler( event:Event ):void
+		{
+			var urlLoader:URLLoader = event.target as URLLoader;
+			
+			var file:File = File.applicationStorageDirectory.resolvePath("awayBuilderInstaller.air"); // for Air 3.7 better use File.cacheDirectory
+			var stream:FileStream = new FileStream();
+			stream.open(file, FileMode.WRITE);
+			stream.writeBytes( urlLoader.data );
+			stream.close();
+			file.openWithDefaultApplication();
+			this.nativeApplication.exit();
+		}
 
+		
         private function invokeHandler(event:InvokeEvent):void
         {
             if(event.arguments.length == 1)
