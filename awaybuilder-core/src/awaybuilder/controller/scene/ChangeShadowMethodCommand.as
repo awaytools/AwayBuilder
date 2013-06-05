@@ -13,7 +13,6 @@ package awaybuilder.controller.scene
 		override public function execute():void
 		{
 			var newAsset:ShadowMethodVO = event.newValue as ShadowMethodVO;
-			
 			var vo:ShadowMethodVO = event.items[0] as ShadowMethodVO;
 			
 			saveOldValue( event, vo.clone() );

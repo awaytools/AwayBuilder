@@ -132,7 +132,7 @@
 											 change="rangeStepper_changeHandler(event)" />
 		</s:FormItem>
 	</s:Form>
-	<controls:PropertiesItemContainer label="Base Method" paddingLeft="10" paddingTop="6" paddingRight="8" width="100%" includeIn="NearShadowMapMethod">
+	<controls:PropertiesItemContainer label="Base Method" paddingLeft="10" paddingTop="6" paddingRight="8" width="100%" includeIn="NearShadowMapMethod,CascadeShadowMapMethod">
 		<s:DropDownList id="baseMethodDropDownList" requireSelection="true"
 						change="baseMethodDropDownList_changeHandler(event)" width="100%"
 						selectedItem="{_selectedBaseMethod}" dataProvider="{baseList}"

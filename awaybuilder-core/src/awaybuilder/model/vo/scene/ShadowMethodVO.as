@@ -21,6 +21,8 @@ package awaybuilder.model.vo.scene
 		
 		public var baseMethod:ShadowMethodVO;
 		
+		public var isBaseOfShadowMethod:ShadowMethodVO = null;
+		
 		public var type:String;
 		
 		public function clone():ShadowMethodVO
@@ -34,6 +36,7 @@ package awaybuilder.model.vo.scene
 			vo.samples = this.samples;
 			vo.range = this.range;
 			vo.baseMethod = this.baseMethod;
+			vo.isBaseOfShadowMethod = this.isBaseOfShadowMethod;
 			return vo;
 		}
 

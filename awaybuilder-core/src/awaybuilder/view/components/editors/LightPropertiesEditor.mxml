@@ -62,7 +62,6 @@
 		[Bindable]
 		private var _pointMappersSelectedItem:Object;
 		
-		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is LightVO) ) return;
@@ -88,8 +87,6 @@
 					}
 				}
 			}
-			
-			
 		}
 		
 		private function name_changeHandler(event:Event):void 
@@ -178,9 +175,9 @@
 		}
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			if( _asset.shadowMapper.type == "CubeMapShadowMapper" )
+			if( _asset.shadowMapper.type == "CascadeShadowMapper" )
 			{
-				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_HardShadowMapMethod ) );
+				this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.LIGHT_ADD_CascadeShadowMapMethod ) );
 			}
 			else if( _asset.shadowMapper.type == "NearDirectionalShadowMapper" )
 			{
@@ -311,7 +308,7 @@
 		</s:Form>
 	</controls:CollapsiblePanel>
 	
-	<controls:CollapsiblePanel width="100%" title="Shadow" collapsed="true" 
+	<controls:CollapsiblePanel width="100%" title="Shadow" collapsed="false" 
 							   visible="{_asset.castsShadows}" includeInLayout="{_asset.castsShadows}">
 		<s:VGroup width="100%" paddingLeft="4" paddingRight="4">
 			

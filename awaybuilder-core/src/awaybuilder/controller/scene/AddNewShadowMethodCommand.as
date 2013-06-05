@@ -39,8 +39,6 @@ package awaybuilder.controller.scene
 					}
 					if( !alreadyAdded )	asset.shadowMethods.addItem( newValue );
 				}
-				
-				
 			}
 			
 			commitHistoryEvent( event );

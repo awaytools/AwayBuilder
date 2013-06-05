@@ -1,13 +1,5 @@
 package awaybuilder.model
 {
-	import flash.display.BitmapData;
-	import flash.geom.Matrix3D;
-	import flash.utils.Dictionary;
-	import flash.utils.getQualifiedClassName;
-	
-	import mx.collections.ArrayCollection;
-	
-	import away3d.arcane;
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
 	import away3d.animators.SkeletonAnimator;
@@ -19,6 +11,7 @@ package awaybuilder.model
 	import away3d.animators.nodes.SkeletonClipNode;
 	import away3d.animators.nodes.VertexClipNode;
 	import away3d.animators.states.AnimationStateBase;
+	import away3d.arcane;
 	import away3d.cameras.Camera3D;
 	import away3d.cameras.lenses.LensBase;
 	import away3d.cameras.lenses.OrthographicLens;
@@ -116,6 +109,13 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.AssetUtil;
+	
+	import flash.display.BitmapData;
+	import flash.geom.Matrix3D;
+	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
+	
+	import mx.collections.ArrayCollection;
 
 	use namespace arcane;
 
@@ -359,13 +359,6 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, item ) as ShadowMethodVO;
 			asset.castingLight = GetAsset( item.castingLight ) as LightVO;
-			var alreadyAdded:Boolean = false;
-			for each( var method:ShadowMethodVO in asset.castingLight.shadowMethods )
-			{
-				if( method.equals( asset ) ) alreadyAdded = true;	
-			}
-			if( !alreadyAdded )	asset.castingLight.shadowMethods.addItem( asset ); // Lights are containers for shadows
-			
 			asset.epsilon = item.epsilon;
 			asset.alpha = item.alpha;
 			asset.type = getQualifiedClassName( item ).split("::")[1];
@@ -786,10 +779,6 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( textureMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( textureMaterial.shadowMethod ) as ShadowMethodVO;
-				if( asset.shadowMethod )
-				{
-					asset.light = asset.shadowMethod.castingLight;
-				}
 			}
 			else if( item is ColorMaterial )
 			{
@@ -819,10 +808,6 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( colorMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( colorMaterial.shadowMethod ) as ShadowMethodVO;
-				if( asset.shadowMethod )
-				{
-					asset.light = asset.shadowMethod.castingLight;
-				}
 			}
 			else if( item is TextureMultiPassMaterial )
 			{
@@ -851,10 +836,6 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( textureMultiPassMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( textureMultiPassMaterial.shadowMethod ) as ShadowMethodVO;
-				if( asset.shadowMethod )
-				{
-					asset.light = asset.shadowMethod.castingLight;
-				}
 			}
 			else if( item is ColorMultiPassMaterial )
 			{
@@ -882,10 +863,6 @@ package awaybuilder.model
 				asset.normalMethod = GetAsset( colorMultiPassMaterial.normalMethod ) as ShadingMethodVO;
 				
 				asset.shadowMethod = GetAsset( colorMultiPassMaterial.shadowMethod ) as ShadowMethodVO;
-				if( asset.shadowMethod )
-				{
-					asset.light = asset.shadowMethod.castingLight;
-				}
 			}
 			
 			asset.effectMethods = new ArrayCollection();
@@ -898,6 +875,20 @@ package awaybuilder.model
 					asset.effectMethods.addItem( GetAsset(singlePassMaterialBase.getMethodAt( i )) );
 				}
 			}
+			
+			// shadowMethods loaded not from lights, so lights know nothing about them directly
+			if( asset.shadowMethod )
+			{
+				asset.light = asset.shadowMethod.castingLight;
+				
+				var alreadyAdded:Boolean = false;
+				for each( var method:ShadowMethodVO in asset.light.shadowMethods )
+				{
+					if( method.equals( asset.shadowMethod ) ) alreadyAdded = true;	
+				}
+				if( !alreadyAdded )	asset.light.shadowMethods.addItem( asset.shadowMethod );
+			}
+			
 			return asset;
 		}
 		private function fillMesh( asset:MeshVO, item:Mesh ):MeshVO
