@@ -481,24 +481,6 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_reparentObjectsHandler(event:SceneEvent):void
 		{
-			for each ( var item:DroppedTreeItemVO in event.newValue ) {
-				var child:ObjectContainer3D = assets.GetObject(item.value.asset) as ObjectContainer3D;
-				if (item.oldParent != null) {
-					 var parent:ObjectContainer3D = assets.GetObject(item.oldParent.asset) as ObjectContainer3D;
-					 parent.removeChild(child);
-					 
-					 if (parent.numChildren == 0) {
-						Scene3DManager.addEmptyContainerRepresentation(parent);
-					 }
-				}
-				if (item.newParent != null) {
-					var newParent:ObjectContainer3D = assets.GetObject(item.newParent.asset) as ObjectContainer3D;
-					if (newParent.numChildren == 1) {
-						Scene3DManager.removeEmptyContainerRepresentation(newParent);
-					}
-					newParent.addChild(child);	
-				}
-			}
 		}
 		private function eventDispatcher_reparentAnimationHandler(event:SceneEvent):void
 		{

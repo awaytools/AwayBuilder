@@ -4,7 +4,6 @@ package awaybuilder.utils.scene
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.core.math.Quaternion;
-	import away3d.entities.Mesh;
 	
 	import awaybuilder.utils.MathUtils;
 	import awaybuilder.utils.scene.modes.CameraMode;

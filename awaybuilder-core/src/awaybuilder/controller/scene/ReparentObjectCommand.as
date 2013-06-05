@@ -40,7 +40,6 @@ package awaybuilder.controller.scene
 			saveOldValue( event, event.newValue );
 			
 			var container:ContainerVO;
-			var newContainer:ContainerVO;
 			
 			for each( var item:DroppedTreeItemVO in event.newValue ) 
 			{
@@ -63,8 +62,8 @@ package awaybuilder.controller.scene
 							else
 							{
 								container.children.addItem( vo.asset );
-								addObjectToScene( vo.asset );
 							}
+							Scene3DManager.reparentObject(assets.GetObject(vo.asset) as ObjectContainer3D, assets.GetObject(vo.asset) as ObjectContainer3D);
 						}
 					}
 					else
@@ -83,60 +82,11 @@ package awaybuilder.controller.scene
 					else
 					{
 						removeItem( document.scene, vo.asset );
-						removeObjectFromScene( vo.asset );
 					}
 				}
 			}
 			
 			commitHistoryEvent( event );
-		}
-		
-		private function addObjectToScene( asset:AssetVO ):void
-		{
-			if( asset is MeshVO ) 
-			{
-				Scene3DManager.addObject( assets.GetObject(asset) as ObjectContainer3D );
-			}
-			else if( asset is TextureProjectorVO ) 
-			{
-				Scene3DManager.addTextureProjector( assets.GetObject(asset) as TextureProjector );
-			}
-			else if( asset is ContainerVO ) 
-			{
-				Scene3DManager.addObject( assets.GetObject(asset) as ObjectContainer3D );
-			}
-			else if( asset is LightVO ) 
-			{
-				Scene3DManager.addLight( assets.GetObject(asset) as LightBase );
-			}
-			else if( asset is SkyBoxVO ) 
-			{
-				Scene3DManager.addSkybox( assets.GetObject(asset) as SkyBox );
-			}
-		}
-		
-		private function removeObjectFromScene( asset:AssetVO ):void
-		{
-			if( asset is MeshVO ) 
-			{
-				Scene3DManager.removeMesh( assets.GetObject(asset) as Mesh );
-			}
-			else if( asset is TextureProjectorVO ) 
-			{
-				Scene3DManager.removeTextureProjector( assets.GetObject(asset) as TextureProjector );
-			}
-			else if( asset is ContainerVO ) 
-			{
-				Scene3DManager.removeContainer( assets.GetObject(asset) as ObjectContainer3D );
-			}
-			else if( asset is LightVO ) 
-			{
-				Scene3DManager.removeLight( assets.GetObject(asset) as LightBase );
-			}
-			else if( asset is SkyBoxVO ) 
-			{
-				Scene3DManager.removeSkyBox( assets.GetObject(asset) as SkyBox );
-			}
 		}
 		
 		private function itemIsInList( collection:ArrayCollection, asset:AssetVO ):Boolean

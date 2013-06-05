@@ -739,7 +739,7 @@ package awaybuilder.utils.scene
 			mesh.dispose();
 		}
 
-		public static function removeContainer(container:ObjectContainer3D):void
+		public static function removeContainer(container:ObjectContainer3D, removeContainer:Boolean = true):void
 		{
 			Scene3DManager.currentGizmo.hide();
 
@@ -755,8 +755,10 @@ package awaybuilder.utils.scene
 			}
 			
 			// Remove container
-			if (container.parent) container.parent.removeChild(container);
-			container.dispose();
+			if (removeContainer) {
+				if (container.parent) container.parent.removeChild(container);
+				container.dispose();
+			}
 		}
 
 		public static function removeSkyBox(skyBox:SkyBox):void
@@ -802,7 +804,23 @@ package awaybuilder.utils.scene
 			if (cam.parent) cam.parent.removeChild(cam);
 			cam.dispose();
 		}
-		
+
+		public static function reparentObject(item:ObjectContainer3D, newParent:ObjectContainer3D):void
+		{
+			var itemParent:ObjectContainer3D = item.parent;
+			if (itemParent) itemParent.removeChild(item);
+			
+			// Add container gizmo if parent becomes empty
+			if (itemParent.numChildren==0) {
+				attachGizmos(itemParent);
+			}
+			
+			// Remove container gizmo if it existed as a new child is added
+			if (newParent.numChildren == 1 && newParent.getChildAt(0) is ContainerGizmo3D) {
+				removeContainer(newParent, false);
+			}
+			newParent.addChild(item);
+		}		
 //		public static function getObjectByName(mName:String):Entity
 //		{
 //			var mesh:Mesh;
@@ -861,6 +879,7 @@ package awaybuilder.utils.scene
 					
 					var container:ObjectContainer3D = getContainer(selectedObject);
 					if (container) mouseSelection = container;
+					else mouseSelection = null;
 				}
 				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.OBJECT_SELECTED_FROM_VIEW));			
 			}
@@ -898,7 +917,7 @@ package awaybuilder.utils.scene
 				if ((currentContainer && currentContainer == o.parent) ||
 				    (!currentContainer && scene.contains(o))) return o;
 				else return getContainer(o.parent);
-			return o;
+			return null;
 		}
 		
 		private function getCurrentContainerChild(o : ObjectContainer3D) : ObjectContainer3D {
