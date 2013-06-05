@@ -1,6 +1,5 @@
 package awaybuilder.utils.scene
 {
-	import away3d.tools.utils.Bounds;
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
@@ -292,11 +291,7 @@ package awaybuilder.utils.scene
 			center.y /= 2;
 			center.z /= 2;
 			center = center.add(bmin);		
-			
-			if (t && t.parent) {
-				center = center.add(t.scenePosition);
-			}
-			
+
 			TweenMax.to(CameraManager, 0.5, {radius:tr, onComplete:instance.calculateWheelSpeed, onCompleteParams:[tr, center]});
 			TweenMax.to(instance.poi, 0.5, {x:center.x, y:center.y, z:center.z});
 		}
