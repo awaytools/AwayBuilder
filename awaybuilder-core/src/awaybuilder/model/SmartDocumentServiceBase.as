@@ -26,7 +26,10 @@ package awaybuilder.model
 	import away3d.loaders.parsers.AWDParser;
 	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.MaterialBase;
+	import away3d.materials.TextureMaterial;
+	import away3d.materials.methods.EffectMethodBase;
 	import away3d.primitives.SkyBox;
+	import away3d.textures.Texture2DBase;
 	
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.model.vo.DocumentVO;
@@ -143,10 +146,21 @@ package awaybuilder.model
 			{
 				case AssetType.MESH:
 					var mesh:Mesh = event.asset as Mesh;
+					
 					if( !mesh.material )
-					{
 						mesh.material = assets.GetObject(assets.defaultMaterial) as MaterialBase;
+					
+					else{
+						if (mesh.material is TextureMaterial)
+							if (assets.checkIfMaterialIsDefault(TextureMaterial(mesh.material)))
+								mesh.material = assets.GetObject(assets.defaultMaterial) as MaterialBase;							
 					}
+					var i:int;
+					for (i=0;i<mesh.subMeshes.length;i++)	
+						if (mesh.subMeshes[i].material is TextureMaterial)		
+							if (assets.checkIfMaterialIsDefault(TextureMaterial(mesh.subMeshes[i].material)))
+								mesh.subMeshes[i].material = assets.GetObject(assets.defaultMaterial) as MaterialBase;	
+					
 					if( !isGeometryInList( assets.GetAsset(mesh.geometry) as GeometryVO ) )
 					{
 						_document.geometry.addItem( assets.GetAsset(mesh.geometry) as GeometryVO );
@@ -163,13 +177,16 @@ package awaybuilder.model
 					break;
 				case AssetType.TEXTURE_PROJECTOR:
 					var tp:TextureProjector = event.asset as TextureProjector;
+					if(tp.texture.name=="defaultTexture")tp.texture=assets.GetObject(assets.defaultTexture) as Texture2DBase;
 					_objects.push( tp );
 					break;
 				case AssetType.SKYBOX:
+					//To Do: Check if textures are Default
 					var sb:SkyBox = event.asset as SkyBox;
 					_objects.push( sb );
 					break;
 				case AssetType.EFFECTS_METHOD:
+					assets.checkEffectMethodForDefaulttexture(event.asset as EffectMethodBase)
 					_document.methods.addItem( assets.GetAsset( event.asset ) );
 					break;	
 				case AssetType.LIGHT:
@@ -181,10 +198,15 @@ package awaybuilder.model
 					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.MATERIAL:
-					_document.materials.addItem( assets.GetAsset( event.asset ) );
+					if(!( event.asset is TextureMaterial))
+						_document.materials.addItem( assets.GetAsset( event.asset ) );
+					else
+						if (!assets.checkIfMaterialIsDefault(TextureMaterial(event.asset)))
+							_document.materials.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.TEXTURE:
-					_document.textures.addItem( assets.GetAsset( event.asset ) );
+					if(event.asset.name!="defaultTexture")
+						_document.textures.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.GEOMETRY:
 					var geometry:GeometryVO = assets.GetAsset( event.asset ) as GeometryVO;

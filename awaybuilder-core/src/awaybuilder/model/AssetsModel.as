@@ -1,5 +1,9 @@
 package awaybuilder.model
 {
+	import flash.geom.ColorTransform;
+	
+	import mx.utils.UIDUtil;
+	
 	import away3d.animators.AnimationSetBase;
 	import away3d.animators.AnimatorBase;
 	import away3d.animators.SkeletonAnimationSet;
@@ -25,8 +29,12 @@ package awaybuilder.model
 	import away3d.lights.shadowmaps.DirectionalShadowMapper;
 	import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
 	import away3d.lights.shadowmaps.ShadowMapperBase;
+	import away3d.materials.ColorMaterial;
+	import away3d.materials.ColorMultiPassMaterial;
+	import away3d.materials.MaterialBase;
 	import away3d.materials.SinglePassMaterialBase;
 	import away3d.materials.TextureMaterial;
+	import away3d.materials.TextureMultiPassMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.AlphaMaskMethod;
 	import away3d.materials.methods.AnisotropicSpecularMethod;
@@ -96,10 +104,6 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.AssetUtil;
-	
-	import flash.geom.ColorTransform;
-	
-	import mx.utils.UIDUtil;
 
 	public class AssetsModel extends SmartFactoryModelBase
 	{
@@ -513,6 +517,111 @@ package awaybuilder.model
 			
 			return GetAsset( mapper ) as ShadowMapperVO;
 		}
+		public function checkEffectMethodForDefaulttexture( method:EffectMethodBase ):void
+		{
+			if (method is EnvMapMethod ){
+				if(EnvMapMethod (method).envMap.name=="defaultTexture"){
+					EnvMapMethod (method).envMap=GetObject(defaultCubeTexture) as BitmapCubeTexture;
+				}
+				if(EnvMapMethod (method).mask.name=="defaultTexture"){
+					EnvMapMethod (method).mask=GetObject(defaultTexture) as Texture2DBase;
+				}
+			}
+			if (method is LightMapMethod){
+				if(LightMapMethod (method).texture.name=="defaultTexture"){
+					LightMapMethod (method).texture=GetObject(defaultTexture) as Texture2DBase;
+				}
+			}
+			if (method is AlphaMaskMethod){
+				if(AlphaMaskMethod (method).texture.name=="defaultTexture"){
+					AlphaMaskMethod (method).texture=GetObject(defaultTexture) as Texture2DBase;
+				}
+			}
+			if (method is RefractionEnvMapMethod){
+				if(RefractionEnvMapMethod (method).envMap.name=="defaultTexture"){
+					RefractionEnvMapMethod (method).envMap=GetObject(defaultCubeTexture) as BitmapCubeTexture;
+				}
+			}
+			if (method is FresnelEnvMapMethod){
+				if(FresnelEnvMapMethod(method).envMap.name=="defaultTexture"){
+					FresnelEnvMapMethod (method).envMap=GetObject(defaultCubeTexture) as BitmapCubeTexture;
+				}
+			}
+			
+		}
+			
+		public function checkIfMaterialIsDefault( mat:TextureMaterial ):Boolean
+		{
+			var defaultMat:TextureMaterial=GetObject(defaultMaterial) as TextureMaterial;
+			//first check the textures (before returning false);
+			if (mat.normalMap)
+				if (mat.normalMap.name=="defaultTexture") mat.normalMap=GetObject(defaultTexture) as Texture2DBase;
+			if (mat.specularMap)
+				if (mat.specularMap.name=="defaultTexture") mat.texture=GetObject(defaultTexture) as Texture2DBase;
+			if (mat.ambientTexture)
+				if (mat.ambientTexture.name=="defaultTexture") mat.texture=GetObject(defaultTexture) as Texture2DBase;		
+			if (mat.texture)	
+				if (mat.texture.name=="defaultTexture") mat.texture=GetObject(defaultTexture) as Texture2DBase;
+			
+			if (mat.normalMethod){
+				if (mat.normalMethod is SimpleWaterNormalMethod){
+					if(SimpleWaterNormalMethod(mat.normalMethod).secondaryNormalMap.name=="defaultTexture"){
+						SimpleWaterNormalMethod(mat.normalMethod).secondaryNormalMap=GetObject(defaultTexture) as Texture2DBase;
+					}
+				}
+			}
+			if (mat.ambientMethod){
+				if (mat.ambientMethod is EnvMapAmbientMethod){
+					if(EnvMapAmbientMethod(mat.ambientMethod).envMap.name =="defaultTexture"){
+						EnvMapAmbientMethod(mat.ambientMethod).envMap=GetObject(defaultCubeTexture) as BitmapCubeTexture;
+					}
+				}
+			}
+			if (mat.diffuseMethod){
+				if (mat.diffuseMethod is GradientDiffuseMethod ){
+					if(GradientDiffuseMethod (mat.diffuseMethod).gradient.name =="defaultTexture"){
+						GradientDiffuseMethod(mat.diffuseMethod).gradient=GetObject(defaultTexture) as Texture2DBase;
+					}
+				}
+				if (mat.diffuseMethod is LightMapDiffuseMethod  ){
+					if(LightMapDiffuseMethod (mat.diffuseMethod).lightMapTexture.name =="defaultTexture"){
+						LightMapDiffuseMethod(mat.diffuseMethod).lightMapTexture=GetObject(defaultTexture) as Texture2DBase;
+					}
+				}
+			}
+			var i:int;
+			for (i=0;i<mat.numMethods;i++){
+				checkEffectMethodForDefaulttexture(mat.getMethodAt(i));
+			}
+			if (mat.numMethods!=defaultMat.numMethods)return false;
+			if (mat.normalMethod!=defaultMat.normalMethod)return false;
+			if (mat.ambientMethod!=defaultMat.ambientMethod)return false;
+			if (mat.diffuseMethod!=defaultMat.diffuseMethod)return false;
+			if (mat.specularMethod!=defaultMat.specularMethod)return false;
+			
+			if (mat.alpha!=defaultMat.alpha)return false;
+			if (mat.alphaBlending!=defaultMat.alphaBlending)return false;
+			if (mat.alphaPremultiplied!=defaultMat.alphaPremultiplied)return false;
+			if (mat.alphaThreshold!=defaultMat.alphaThreshold)return false;
+			if (mat.ambient!=defaultMat.ambient)return false;
+			if (mat.ambientColor!=defaultMat.ambientColor)return false;
+			if (mat.blendMode!=defaultMat.blendMode)return false;
+			if (mat.bothSides!=defaultMat.bothSides)return false;
+			if (mat.gloss!=defaultMat.gloss)return false;
+			//if (mat.mipmap!=defaultMat.mipmap)return false;
+			//if (mat.smooth!=defaultMat.smooth)return false;
+			if (mat.specular!=defaultMat.specular)return false;
+			if (mat.specularColor!=defaultMat.specularColor)return false;
+			
+			if (mat.normalMap!=defaultMat.normalMap)return false;
+			if (mat.texture!=defaultMat.texture)return false;
+			if (mat.specularMap!=defaultMat.specularMap)return false;
+			if (mat.specularMap!=defaultMat.specularMap)return false;
+			
+			return true;
+			
+		}
+			
 		
 	}
 }
