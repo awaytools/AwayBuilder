@@ -63,7 +63,7 @@ package awaybuilder.controller.scene
 							{
 								container.children.addItem( vo.asset );
 							}
-							Scene3DManager.reparentObject(assets.GetObject(vo.asset) as ObjectContainer3D, assets.GetObject(vo.asset) as ObjectContainer3D);
+							Scene3DManager.reparentObject(assets.GetObject(vo.asset) as ObjectContainer3D, assets.GetObject(container) as ObjectContainer3D);
 						}
 					}
 					else
