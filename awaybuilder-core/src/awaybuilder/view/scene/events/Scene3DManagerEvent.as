@@ -19,6 +19,7 @@ package awaybuilder.view.scene.events
 		public static const SWITCH_TRANSFORM_ROTATE : String = "Scene3DManagerEventSwitchTransformRotate";
 		public static const SWITCH_TRANSFORM_TRANSLATE : String = "Scene3DManagerEventSwitchTransformTranslate";
 		public static const ENABLE_TRANSFORM_MODES : String = "Scene3DManagerEventEnableTransformModes";
+		public static const UPDATE_BREADCRUMBS : String = "Scene3DManagerEventUpdateBreadcrumbs";
 		
 		public var object:ObjectContainer3D;
 		public var gizmoMode:String;

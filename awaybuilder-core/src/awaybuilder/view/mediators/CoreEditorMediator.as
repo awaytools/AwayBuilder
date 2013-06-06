@@ -185,6 +185,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
+			//addContextListener(SceneEvent.UPDATE_MESH_MATERIAL, eventDispatcher_updateMeshMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
 			addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
@@ -215,6 +216,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewEffectMethodHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightHandler);
 			
+			addContextListener(SceneEvent.CONTAINER_CLICKED, eventDispatcher_containerClicked);
+			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
@@ -227,6 +230,7 @@ package awaybuilder.view.mediators
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_itemSwitchesToRotateMode);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_itemSwitchesToTranslateMode);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES, eventDispatcher_enableAllTransformModes);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.UPDATE_BREADCRUMBS, eventDispatcher_updateBreadcrumbs);
 			Scene3DManager.init( view.viewScope );
 			
             addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
@@ -813,6 +817,7 @@ package awaybuilder.view.mediators
 				obj.extra[extra.name] = extra.value;
 			}
 		}
+		
 		private function applyObject( asset:ObjectVO ):void
 		{
 			var o:Object3D = Object3D( assets.GetObject(asset) );
@@ -1057,6 +1062,17 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+//		private function eventDispatcher_updateMeshMaterialHandler(event:SceneEvent):void
+//		{
+//			for each (var item:ObjectContainer3D in event.items) {
+//				var mVO:MeshVO = assets.GetAsset(item) as MeshVO;
+//				for each( var sub:SubMeshVO in mVO.subMeshes )
+//				{
+//					applySubMesh( sub );
+//				}
+//			}
+//		}
+//		
 		private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
 		{
 			for each( var item:MeshVO in event.items )
@@ -1553,7 +1569,10 @@ package awaybuilder.view.mediators
 			}
             CameraManager.focusTarget( Scene3DManager.selectedObject );
         }
-		
+	
+		private function eventDispatcher_containerClicked(event:SceneEvent) : void {
+			Scene3DManager.resetCurrentContainer(event.options as ObjectContainer3D);
+		}
 		private function eventDispatcher_zoomDistanceDeltaHandler(event:Scene3DManagerEvent):void
         {
             this.dispatch( new Scene3DManagerEvent( Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, "", null, event.currentValue ) );
@@ -1683,6 +1702,13 @@ package awaybuilder.view.mediators
         private function eventDispatcher_enableAllTransformModes(event:Scene3DManagerEvent):void
         {
 			this.dispatch(new SceneEvent(SceneEvent.ENABLE_ALL_TRANSFORM_MODES));
+		}
+
+        private function eventDispatcher_updateBreadcrumbs(event:Scene3DManagerEvent):void
+        {
+			var sE:SceneEvent = new SceneEvent(SceneEvent.UPDATE_BREADCRUMBS);
+			sE.options = Scene3DManager.containerBreadCrumbs;
+			this.dispatch(sE);
 		}
 
         //----------------------------------------------------------------------

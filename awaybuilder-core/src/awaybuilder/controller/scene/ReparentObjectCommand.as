@@ -39,7 +39,8 @@ package awaybuilder.controller.scene
 		{
 			saveOldValue( event, event.newValue );
 			
-			var container:ContainerVO;
+			var oldContainer:ContainerVO;
+			var newContainer:ContainerVO;
 			
 			for each( var item:DroppedTreeItemVO in event.newValue ) 
 			{
@@ -52,18 +53,17 @@ package awaybuilder.controller.scene
 					
 					if( item.newParent )
 					{
-						container = item.newParent.asset as ContainerVO;
-						if( container && !itemIsInList(container.children, vo.asset as AssetVO) ) 
+						newContainer = item.newParent.asset as ContainerVO;
+						if( newContainer && !itemIsInList(newContainer.children, vo.asset as AssetVO) ) 
 						{
-							if( item.newPosition < container.children.length )
+							if( item.newPosition < newContainer.children.length )
 							{
-								container.children.addItemAt( vo.asset, item.newPosition );
+								newContainer.children.addItemAt( vo.asset, item.newPosition );
 							}
 							else
 							{
-								container.children.addItem( vo.asset );
+								newContainer.children.addItem( vo.asset );
 							}
-							Scene3DManager.reparentObject(assets.GetObject(vo.asset) as ObjectContainer3D, assets.GetObject(container) as ObjectContainer3D);
 						}
 					}
 					else
@@ -73,16 +73,18 @@ package awaybuilder.controller.scene
 					
 					if( item.oldParent )
 					{ 
-						container = item.oldParent.asset as ContainerVO;
-						if( container && itemIsInList(container.children, vo.asset as AssetVO) ) 
+						oldContainer = item.oldParent.asset as ContainerVO;
+						if( oldContainer && itemIsInList(oldContainer.children, vo.asset as AssetVO) ) 
 						{
-							removeItem( container.children, vo.asset );
+							removeItem( oldContainer.children, vo.asset );
 						}
 					}
 					else
 					{
 						removeItem( document.scene, vo.asset );
 					}
+					
+					Scene3DManager.reparentObject(assets.GetObject(vo.asset) as ObjectContainer3D, newContainer ? assets.GetObject(newContainer) as ObjectContainer3D : null);
 				}
 			}
 			

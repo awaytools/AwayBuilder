@@ -22,7 +22,6 @@ package awaybuilder.view.scene.utils {
 			
 			_showBounds = value;
 			
-			removeAllSegments();
 			if (_showBounds) 
 				updateContainerBounds();
 		}
@@ -31,9 +30,7 @@ package awaybuilder.view.scene.utils {
 			super(color, 0.5);
 			
 			_container = container;
-			
-			updateContainerBounds();
-			
+
 			_container.addChild(this);
 		}
 
@@ -43,8 +40,6 @@ package awaybuilder.view.scene.utils {
 		
 		override protected function buildGeometry() : void {
 			if (!showBounds) return;
-
-			removeAllSegments();
 
 			Bounds.getObjectContainerBounds(_container, false);
 			

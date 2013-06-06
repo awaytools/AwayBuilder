@@ -96,7 +96,8 @@ package awaybuilder.utils.scene
 		public static var containerGizmos:Vector.<ContainerGizmo3D> = new Vector.<ContainerGizmo3D>();
 		
 		public static var currentContainer:ObjectContainer3D;
-
+		public static var containerBreadCrumbs : Array;
+		
 		private static var _lastCameraPos : Vector3D;
 		private static var _lastCameraRot : Vector3D;
 		
@@ -182,7 +183,6 @@ package awaybuilder.utils.scene
 			//assing default gizmo
 			currentGizmo = translateGizmo;
 						
-			
 			//Create Grid
 			grid = new WireframePlane(10000, 10000, 100, 100, 0x000000, 0.5, "xz");
 			grid.mouseEnabled = false;
@@ -195,14 +195,15 @@ package awaybuilder.utils.scene
 			
 			//Camera Settings
 			CameraManager.init(scope, view);	
-			
-			
+				
 			//handle stage events
 			scope.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
 			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
 			scope.addEventListener(MouseEvent.DOUBLE_CLICK, instance.onSceneDoubleClick);			
 			//scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);
 			//scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
+			
+			containerBreadCrumbs = new Array();
 			
 			scope.addEventListener(Event.RESIZE, instance.handleScreenSize);
 			instance.resize();
@@ -245,13 +246,16 @@ package awaybuilder.utils.scene
 			if (sceneDoubleClickDetected && doubleClick3DMonitor && currentContainer) {
 				if (scene.contains(currentContainer)) currentContainer = null;
 				else currentContainer = currentContainer.parent;
+				if (containerBreadCrumbs.length>0) containerBreadCrumbs.pop();
 				sceneDoubleClickDetected = doubleClick3DMonitor = false;
+				
+				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.UPDATE_BREADCRUMBS));
 			}
 
 			if (sceneDoubleClickDetected)
 				doubleClick3DMonitor = true;	
 		}
-		
+
 		private function updateBackgroundGrid() : void {
 			backgroundView.camera.lens.near = CameraManager.camera.lens.far;
 			backgroundView.camera.lens.far = CameraManager.camera.lens.far + 10000;
@@ -809,17 +813,22 @@ package awaybuilder.utils.scene
 		{
 			var itemParent:ObjectContainer3D = item.parent;
 			if (itemParent) itemParent.removeChild(item);
-			
-			// Add container gizmo if parent becomes empty
-			if (itemParent.numChildren==0) {
+						
+			var containerBounds:ObjectContainerBounds;
+			if (itemParent.numChildren==0 || (itemParent.numChildren==1 && (containerBounds = (itemParent.getChildAt(0) as ObjectContainerBounds))!=null)) {
+				if (itemParent.numChildren == 1) {
+					itemParent.removeChildAt(0);
+					containerBounds.dispose();
+				}
 				attachGizmos(itemParent);
 			}
 			
 			// Remove container gizmo if it existed as a new child is added
-			if (newParent.numChildren == 1 && newParent.getChildAt(0) is ContainerGizmo3D) {
-				removeContainer(newParent, false);
-			}
-			newParent.addChild(item);
+			if (newParent) {
+				if (newParent.numChildren == 1 && newParent.getChildAt(0) is ContainerGizmo3D)
+					removeContainer(newParent, false);
+				newParent.addChild(item);
+			} else scene.addChild(item);
 		}		
 //		public static function getObjectByName(mName:String):Entity
 //		{
@@ -905,12 +914,69 @@ package awaybuilder.utils.scene
 					var isMesh:Mesh = selectedObject as Mesh;
 					if (isMesh) {
 						var container:ObjectContainer3D = getCurrentContainerChild(selectedObject);
-						if (container)
-							currentContainer = container;					
+						if (container) {
+							containerBreadCrumbs.push([container.name, container]);
+
+							currentContainer = container;
+							
+							instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.UPDATE_BREADCRUMBS));
+						}				
 					}
 				}
 			}
 		}
+
+//		private function pushBreadCrumb(container : ObjectContainer3D) : void {
+//			containerBreadCrumbs.push([container.name, container]);
+//			var other : ObjectContainer3D;
+//			for (var c : int = 0; c < container.parent.numChildren; c++) {
+//				other = container.parent.getChildAt(c);
+//				if (other != container) {
+//					hideItems(other);
+//				}
+//			}
+//		}
+//
+//		private function popBreadCrumb() : void {
+//			var breadCrumb:Array = containerBreadCrumbs.pop();
+//			var container:ObjectContainer3D = breadCrumb[1] as ObjectContainer3D;
+//			
+//			var other : ObjectContainer3D;
+//			for (var c : int = 0; c < container.parent.numChildren; c++) {
+//				other = container.parent.getChildAt(c);
+//				if (other != container) {
+//					showItems(other);
+//				}
+//			}
+//		}
+
+//		private static const GHOST:ColorMaterial = new ColorMaterial(0xffffff, 0.2);
+//		private function hideItems(oC:ObjectContainer3D) : void {
+//			var m:Mesh = oC as Mesh;
+//			if (m) m.material = GHOST;
+//			
+//			var other:ObjectContainer3D;
+//			for (var c:int = 0; c<oC.numChildren; c++) {
+//				other = oC.getChildAt(c);
+//				if (other != oC) {
+//					hideItems(other);
+//				}
+//			}
+//		}
+//
+//		private function showItems(oC:ObjectContainer3D) : void {
+//			var m:Mesh = oC as Mesh;
+//			instance.dispatchEvent(new SceneEvent(SceneEvent.UPDATE_MESH_MATERIAL, "", [ m ]));
+//			if (m) m.material = GHOST;
+//			
+//			var other:ObjectContainer3D;
+//			for (var c:int = 0; c<oC.numChildren; c++) {
+//				other = oC.getChildAt(c);
+//				if (other != oC) {
+//					hideItems(other);
+//				}
+//			}
+//		}
 
 		private function getContainer(o : ObjectContainer3D) : ObjectContainer3D {
 			if (o)
@@ -940,6 +1006,25 @@ package awaybuilder.utils.scene
 			}
 			
 			return m;
+		}
+
+		public static function resetCurrentContainer(oC:ObjectContainer3D) : void {
+			if (!oC) { 
+				currentContainer = null;
+				containerBreadCrumbs = new Array();
+			} else {
+				var lastContainer:int = containerBreadCrumbs.length-1;
+				while (lastContainer>0 && containerBreadCrumbs[lastContainer][1] != oC) {
+					containerBreadCrumbs.pop();
+					lastContainer--;
+				}
+				if (containerBreadCrumbs.length == 0) currentContainer = null;
+				else currentContainer = containerBreadCrumbs[lastContainer][1];
+			}
+			
+			unselectAll();
+					
+			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.UPDATE_BREADCRUMBS));
 		}
 		
 		public static function unselectAll():Boolean

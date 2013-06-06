@@ -82,6 +82,9 @@ import flash.events.Event;
 		public static const ENABLE_ROTATE_MODE_ONLY:String = "enableRotateModeOnly";
 		public static const ENABLE_TRANSLATE_MODE_ONLY:String = "enableTranslateModeOnly";
 		
+		public static const UPDATE_BREADCRUMBS:String = "updateBreadcrumbs";
+		public static const CONTAINER_CLICKED : String = "containerClicked";
+//		public static const UPDATE_MESH_MATERIAL : String = "updateMeshMaterial";
 		
 		public function SceneEvent( type:String, items:Array=null, newValue:Object=null, canBeCombined:Boolean=false, oldValue:Object=null )
 		{
