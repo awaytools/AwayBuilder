@@ -22,11 +22,13 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.model.vo.scene.ExtraItemVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.LensVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
@@ -49,7 +51,7 @@ package awaybuilder.utils.encoders
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
 		// set debug to true to get some traces in the console
-		private var _debug:Boolean=false;
+		private var _debug:Boolean=true;
 		private var _body : ByteArray;
 		private var _blockBody : ByteArray;
 		private var _blockCache : Dictionary;
@@ -103,6 +105,7 @@ package awaybuilder.utils.encoders
 		private var _translateAnimatiorToMesh:Dictionary=new Dictionary();
 		private var _translateAnimationSetToMesh:Dictionary=new Dictionary();
 		private var _translateAnimationNodesToMesh:Dictionary=new Dictionary();
+		private var _exportedObjects:Dictionary=new Dictionary();
 		
 		private var _nameSpaceString:String; 
 		private var _nameSpaceID:uint; 
@@ -113,6 +116,7 @@ package awaybuilder.utils.encoders
 			_blockCache = new Dictionary();
 			_elemSizeOffsets = new Vector.<uint>();
 			_shadowMethodsToLightsDic=new Dictionary();
+			_exportedObjects=new Dictionary();
 			// to do: check if this blendModeDic works for all blendMode-strings in the Scene
 			blendModeDic=new Dictionary();
 			blendModeDic[BlendMode.NORMAL]=0;
@@ -410,6 +414,28 @@ package awaybuilder.utils.encoders
 			var thisBlock:AWDBlock=new AWDBlock();
 			var newParentID:uint=0;
 			switch (true){
+				
+				case (vo is LightVO):			
+					if (!_exportedObjects[vo.id]){
+						if(_debug)trace("LightVO = "+LightVO(vo).name+" parentID = "+parentID);
+						_blockCache[vo]=thisBlock;
+						newParentID=_encodeLight(LightVO(vo),parentID,true);
+						thisBlock.id=newParentID;
+						}
+					else{
+						if(_debug)trace("Create CommandBlock 'PutIntoSceneGraph' for LightVO = "+LightVO(vo).name+" | light ID = "+_exportedObjects[vo.id]+" parentID = "+parentID);
+						_blockCache[vo]=thisBlock;
+						newParentID=_encodeCommand(ObjectVO(vo),_exportedObjects[vo.id],parentID);
+						thisBlock.id=newParentID;
+						
+					}
+					break;
+				case (vo is CameraVO):					
+					if(_debug)trace("CameraVO = "+CameraVO(vo).name+" parentID = "+parentID);
+					_blockCache[vo]=thisBlock;
+					newParentID=_encodeCamera(CameraVO(vo),parentID);
+					thisBlock.id=newParentID;
+					break;
 				case (vo is SkyBoxVO):					
 					if(_debug)trace("SkyBoxVO = "+SkyBoxVO(vo).name+" parentID = "+parentID);
 					_blockCache[vo]=thisBlock;
@@ -452,9 +478,9 @@ package awaybuilder.utils.encoders
 			}
 			// if this is a Container, we recursivly encode the childs too:
 			if (vo is ContainerVO){
-				var child : ContainerVO;
+				var child : AssetVO;
 				for each (child in ContainerVO(vo).children) {
-					_encodeChild(child as ContainerVO,newParentID);
+					_encodeChild(child as AssetVO,newParentID);
 				}
 			}
 			
@@ -537,6 +563,7 @@ package awaybuilder.utils.encoders
 			}
 			
 			_beginElement(); // User attr
+			//_endoceExtraProperties(geom.extras);// no extra properties defined for geom right now
 			_endElement(); // User attr
 			
 			_finalizeBlock();
@@ -635,6 +662,7 @@ package awaybuilder.utils.encoders
 			}				
 			
 			_beginElement(); // Attr list
+			//_endoceExtraProperties(geom.extras);// no extra properties defined for geom right now
 			_endElement(); // Attr list
 			
 			_finalizeBlock();
@@ -740,15 +768,13 @@ package awaybuilder.utils.encoders
 		}		
 		
 		// encode LightBlock (id=41)
-		private function _encodeLight(light:LightVO) : uint
+		private function _encodeLight(light:LightVO,parentId:uint=0,asSceneObject:Boolean=false) : uint
 		{
 			var returnID:int;
 			var k:int;
-			var parentId:int = 0;
 			var lightType:uint=1;
 			var radius:Number;
 			var fallOff:Number;
-			
 			var lightMatrix:Matrix3D=getTransformMatrix(light);
 			// if the lights will be part of the sceneGraph, we will need to get its parentID 		
 			var dirVec:Vector3D=new Vector3D();
@@ -760,7 +786,10 @@ package awaybuilder.utils.encoders
 			}
 			
 			returnID=_encodeBlockHeader(41);
-			
+			if (!asSceneObject){
+				// to Do: store the global-transformation-matrix instead of the local, so the light appears at correct position, altough its not put at the correct scenegraph position
+			}
+			_exportedObjects[light.id]=returnID;
 			_blockBody.writeUnsignedInt(parentId);//parent		
 			_encodeMatrix3D(lightMatrix);//matrix
 			_blockBody.writeUTF(light.name);//name
@@ -791,6 +820,9 @@ package awaybuilder.utils.encoders
 				_encodeProperty(22,dirVec.y, _matrixNrType);//azimuthAngle
 				_encodeProperty(23,dirVec.z, _matrixNrType);//azimuthAngle
 			}		
+			if(light.pivotX!=0)_encodeProperty(24,light.pivotX,  _matrixNrType);
+			if(light.pivotY!=0)_encodeProperty(25,light.pivotY,  _matrixNrType);
+			if(light.pivotZ!=0)_encodeProperty(26,light.pivotZ,  _matrixNrType);
 			// just add the shadowmapper as max 3 light-properties (shadowMapper-Type + shadowmapper-properties)	
 			if((light.castsShadows)&&(light.shadowMapper)){		
 				var mapperVO:ShadowMapperVO=light.shadowMapper;
@@ -816,8 +848,9 @@ package awaybuilder.utils.encoders
 				}
 			}			
 			_endElement(); // prop list			
-			
+						
 			_beginElement(); // Attr list
+			//_endoceExtraProperties(light.extras);
 			_endElement(); // Attr list
 			
 			_finalizeBlock();
@@ -827,11 +860,55 @@ package awaybuilder.utils.encoders
 		}
 		
 		// encode Camera (blockID = 42)
-		private function _encodeCameraBlock(_cam:Object) : void
+		private function _encodeCamera(_cam:CameraVO,parentId:uint) : uint
 		{
-			// we nee CamerasVO, to use this function
-			_encodeBlockHeader(42);
-			//needs to be done
+			var returnID:uint;
+			
+			returnID=_encodeBlockHeader(42);
+			var lens:LensVO=_cam.lens;
+			
+			_blockBody.writeUnsignedInt(parentId);
+			_encodeMatrix3D(getTransformMatrix(_cam));
+			_blockBody.writeUTF(_cam.name);
+			_blockBody.writeByte(0);	
+			_blockBody.writeShort(1);				
+			
+			switch(lens.type){
+				case "PerspectiveLens":
+					_blockBody.writeShort(5001);
+					_beginElement(); // Lens list
+					if(lens.value!=60)_encodeProperty(101,lens.value,  _propNrType);		
+					break;
+				case "OrthographicLens":
+					_blockBody.writeShort(5002);
+					_beginElement(); // Lens list
+					if(lens.value!=500)_encodeProperty(101,lens.value,  _propNrType);	
+					break;
+				case "OrthographicOffCenterLens":
+					_blockBody.writeShort(5003);
+					_beginElement(); // Lens list
+					if(lens.minX!=0)_encodeProperty(101,lens.minX,  _propNrType);
+					if(lens.maxX!=0)_encodeProperty(102,lens.maxX,  _propNrType);
+					if(lens.minY!=0)_encodeProperty(103,lens.minY,  _propNrType);
+					if(lens.maxY!=0)_encodeProperty(104,lens.maxY,  _propNrType);
+					break;
+			}
+			_endElement(); // Prop list
+			
+			_beginElement(); // Prop list
+			if(_cam.pivotX!=0)_encodeProperty(1,_cam.pivotX,  _matrixNrType);
+			if(_cam.pivotY!=0)_encodeProperty(2,_cam.pivotY,  _matrixNrType);
+			if(_cam.pivotZ!=0)_encodeProperty(3,_cam.pivotZ,  _matrixNrType);
+			_endElement(); // Prop list
+			
+			_beginElement(); // Attr list
+			_endoceExtraProperties(_cam.extras);
+			_endElement(); // Attr list
+			
+			_finalizeBlock();
+			
+			
+			return returnID;
 		}
 		
 		// encode Textureprojector (id=43)
@@ -846,7 +923,6 @@ package awaybuilder.utils.encoders
 			_blockBody.writeUnsignedInt(parentId);
 			_encodeMatrix3D(getTransformMatrix(texProject));
 			_blockBody.writeUTF(texProject.name);
-			// to do: add encoding of pivot.x/.y/.z + visibility + userData
 			
 			_blockBody.writeUnsignedInt(texID);
 			_blockBody.writeFloat(texProject.aspectRatio);
@@ -1652,6 +1728,40 @@ package awaybuilder.utils.encoders
 			return returnID;
 		}
 		
+		
+		// encode CommandBlock (id=253)
+		private function _encodeCommand(targetObj:ObjectVO,targetID:uint,parentId:uint=0) : uint
+		{
+			var returnID:int;
+			
+			returnID=_encodeBlockHeader(253);
+			_blockBody.writeByte(1);//has sceneHeader
+			_blockBody.writeUnsignedInt(parentId);//parent		
+			_encodeMatrix3D(getTransformMatrix(targetObj));//matrix
+			_blockBody.writeUTF(targetObj.name);//name
+			_blockBody.writeShort(1);//has sceneHeader
+			
+			_blockBody.writeShort(1);//"PutIntoSceneGraph"-type =1
+			
+			_beginElement(); // start list	
+			_encodeProperty(1,targetID,  BADDR);
+			_endElement(); // end list			
+			
+			_beginElement(); // start list		
+			if(targetObj.pivotX!=0)_encodeProperty(1,targetObj.pivotX,  _matrixNrType);
+			if(targetObj.pivotY!=0)_encodeProperty(2,targetObj.pivotY,  _matrixNrType);
+			if(targetObj.pivotZ!=0)_encodeProperty(3,targetObj.pivotZ,  _matrixNrType);
+			_endElement(); // end list			
+			
+			_beginElement(); // Attr list
+			_endoceExtraProperties(targetObj.extras);
+			_endElement(); // Attr list
+			
+			_finalizeBlock();
+			
+			if(_debug)trace("CommandBlock = "+targetObj.name + " has been encoded successfully.");	
+			return returnID;
+		}
 		
 		
 		// encode NameSpace (id=254)

@@ -1,5 +1,19 @@
 package awaybuilder.model
 {
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.utils.ByteArray;
+	
+	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
+	import mx.managers.CursorManager;
+	
+	import spark.components.Application;
+	
+	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
@@ -21,20 +35,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	
-	import flash.display.Bitmap;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
-	import flash.events.Event;
-	import flash.net.URLRequest;
-	import flash.utils.ByteArray;
-	
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.managers.CursorManager;
-	
 	import org.robotlegs.mvcs.Actor;
-	
-	import spark.components.Application;
 	
 	public class SmartDocumentServiceBase extends Actor
 	{
@@ -155,6 +156,10 @@ package awaybuilder.model
 				case AssetType.CONTAINER:
 					var c:ObjectContainer3D = event.asset as ObjectContainer3D;
 					_objects.push( c );
+					break;
+				case AssetType.CAMERA:
+					var cam:Camera3D = event.asset as Camera3D;
+					_objects.push( cam );
 					break;
 				case AssetType.TEXTURE_PROJECTOR:
 					var tp:TextureProjector = event.asset as TextureProjector;
