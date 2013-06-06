@@ -71,11 +71,11 @@
 			
 			var currentVersionWeight:Number = AwayBuilder.MAJOR_VERSION*100000+AwayBuilder.MINOR_VERSION*10000+AwayBuilder.REVISION;
 			var versionWeight:Number = version[0]*100000+version[1]*10000+version[2];
-//			if( versionWeight > currentVersionWeight ) 
-//			{
+			if( versionWeight > currentVersionWeight ) 
+			{
 				_updatePopup = UpdatePopup.show();
 				_updatePopup.addEventListener( CloseEvent.CLOSE, versionAlert_closeHandler );
-//			}
+			}
 			
 		}
 		private function versionAlert_closeHandler( event:CloseEvent ):void
