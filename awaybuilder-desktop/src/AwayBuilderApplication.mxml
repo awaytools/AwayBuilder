@@ -20,15 +20,11 @@
 	
 	<components:CoreEditor id="coreEditor" width="100%" height="100%"/>
 	
-	<s:PopUpAnchor id="updateProgressPopup" x="{this.width/2-300}" y="{this.height/2-80}" >
-		<s:Panel width="600" height="160" title="Downloading latest version">
-			<mx:ProgressBar id="progressBar" width="90%" verticalCenter="0" horizontalCenter="0" mode="manual" />
-		</s:Panel>
-	</s:PopUpAnchor>    
 	<fx:Script><![CDATA[
 		import awaybuilder.AwayBuilder;
 		import awaybuilder.desktop.DesktopAppContext;
 		import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
+		import awaybuilder.desktop.view.components.UpdatePopup;
 		import awaybuilder.utils.logging.AwayBuilderLogger;
 		
 		import flash.security.CertificateStatus;
@@ -38,12 +34,18 @@
 		import mx.events.FlexEvent;
 		import mx.events.ResizeEvent;
 		import mx.managers.CursorManager;
+		import mx.managers.PopUpManager;
 
         private var _context:DesktopAppContext;
 
 		public var splashScreen:SplashScreen;
 		
 		private var version:Array;
+		private var _updatePopup:UpdatePopup;
+		
+		private var airLoader:URLLoader;
+		
+		private var _updateCancelled:Boolean = false;
 		
         private function preinitializeHandler(event:FlexEvent):void
         {
@@ -53,6 +55,7 @@
 			var urlLoader:URLLoader = new URLLoader();
 			urlLoader.load( new URLRequest( "https://raw.github.com/awaytools/AwayBuilder/master/awaybuilder-core/src/awaybuilder/AwayBuilder.as" ) );
 			urlLoader.addEventListener(Event.COMPLETE, urlLoader_completeHandler );
+			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void{ trace( event )} );
         }
 		
 		private function urlLoader_completeHandler( event:Event ):void
@@ -68,17 +71,16 @@
 			
 			var currentVersionWeight:Number = AwayBuilder.MAJOR_VERSION*100000+AwayBuilder.MINOR_VERSION*10000+AwayBuilder.REVISION;
 			var versionWeight:Number = version[0]*100000+version[1]*10000+version[2];
-			if( versionWeight > currentVersionWeight ) 
-			{
-				Alert.yesLabel = "Install";
-				Alert.cancelLabel = "Later";
-				Alert.show( "A new version of Away Builder is available! Do you wish to install?", "Update", Alert.YES | Alert.CANCEL, null, versionAlert_closeHandler );
-			}
+//			if( versionWeight > currentVersionWeight ) 
+//			{
+				_updatePopup = UpdatePopup.show();
+				_updatePopup.addEventListener( CloseEvent.CLOSE, versionAlert_closeHandler );
+//			}
 			
 		}
 		private function versionAlert_closeHandler( event:CloseEvent ):void
 		{
-			if( event.detail == Alert.YES )
+			if( event.detail == Alert.OK )
 			{
 				airLoader = new URLLoader();
 				airLoader.dataFormat = URLLoaderDataFormat.BINARY;
@@ -86,36 +88,32 @@
 				airLoader.addEventListener(Event.COMPLETE, airLoader_completeHandler );
 				airLoader.addEventListener(ProgressEvent.PROGRESS, airLoader_progressHandler );
 				airLoader.addEventListener(IOErrorEvent.IO_ERROR, airLoader_errorHandler );
-				CursorManager.setBusyCursor();
-				this.mouseEnabled = false;
-				this.mouseChildren = false;
-				updateProgressPopup.displayPopUp = true;
 			}
-			Alert.yesLabel = null;
-			Alert.cancelLabel = null;
+			else if( event.detail == Alert.CANCEL )
+			{
+				_updateCancelled = true;
+				_updatePopup = null;
+			}
 		}
-		
-		[Bindable]
-		private var airLoader:URLLoader;
 		
 		private function airLoader_errorHandler( event:IOErrorEvent ):void
 		{
 			Alert.show( "Update interrupted, try next time" );
-			CursorManager.removeBusyCursor();
-			this.mouseEnabled = true;
-			this.mouseChildren = true;
 		}
 		
 		private function airLoader_progressHandler( event:ProgressEvent ):void
 		{
-			progressBar.setProgress( event.bytesLoaded, event.bytesTotal );
-			progressBar.validateNow();
+			if( _updatePopup )
+			{
+				_updatePopup.setProgress( event.bytesLoaded, event.bytesTotal );
+			}
 		}
 		private function airLoader_completeHandler( event:Event ):void
 		{
+			if( _updateCancelled ) return;
 			var urlLoader:URLLoader = event.target as URLLoader;
 			
-			var file:File = File.applicationStorageDirectory.resolvePath("awayBuilderInstaller.air"); // for Air 3.7 better use File.cacheDirectory
+			var file:File = File.applicationStorageDirectory.resolvePath("awayBuilderInstaller.air");
 			var stream:FileStream = new FileStream();
 			stream.open(file, FileMode.WRITE);
 			stream.writeBytes( urlLoader.data );

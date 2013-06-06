@@ -150,8 +150,6 @@ package awaybuilder.utils
 					
 				case( asset is CameraVO ):
 					item = new LibraryItemVO( asset.name, asset, parent, LibraryItemVO.CAMERA );
-					item.children = new ArrayCollection();
-					item.children.addItem( new LibraryItemVO( CameraVO(asset).lens.type, CameraVO(asset).lens, item, LibraryItemVO.LENS ) );
 					return item;
 					
 				case( asset is LightPickerVO ):
