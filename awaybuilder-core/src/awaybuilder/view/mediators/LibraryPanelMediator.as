@@ -348,6 +348,15 @@ package awaybuilder.view.mediators
 					}
 					
 				}
+				if( state.asset is LightPickerVO )
+				{
+					assetsList = document.getAssetsByType( MaterialVO, materialsWithLightPickerFilterFunciton, state.asset );
+					for each( asset in assetsList )
+					{
+						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+					}
+					
+				}
 			}
 			
 			
@@ -362,6 +371,10 @@ package awaybuilder.view.mediators
 		private function materialsWithLightFilterFunciton( asset:MaterialVO, filter:AssetVO ):Boolean
 		{
 			return (asset.light == filter);
+		}
+		private function materialsWithLightPickerFilterFunciton( asset:MaterialVO, filter:AssetVO ):Boolean
+		{
+			return (asset.lightPicker == filter);
 		}
 		private function lightPickersWithLightFilterFunciton( asset:LightPickerVO, filter:AssetVO ):Boolean
 		{

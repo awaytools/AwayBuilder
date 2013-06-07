@@ -95,6 +95,7 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
+    import awaybuilder.model.vo.DeleteStateVO;
     import awaybuilder.model.vo.DroppedAssetVO;
     import awaybuilder.model.vo.DroppedTreeItemVO;
     import awaybuilder.model.vo.LibraryItemVO;
@@ -185,7 +186,6 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
-			//addContextListener(SceneEvent.UPDATE_MESH_MATERIAL, eventDispatcher_updateMeshMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
 			addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
@@ -234,6 +234,7 @@ package awaybuilder.view.mediators
 			Scene3DManager.init( view.viewScope );
 			
             addContextListener(SceneEvent.SELECT, eventDispatcher_itemsSelectHandler);
+			addContextListener(SceneEvent.DELETE, eventDispatcher_itemsDeleteHandler);
             addContextListener(SceneEvent.FOCUS_SELECTION, eventDispatcher_itemsFocusHandler);
 
 			view.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -1471,6 +1472,33 @@ package awaybuilder.view.mediators
 			if( namedAssetBase )
 			{
 				namedAssetBase.name = asset.name;
+			}
+		}
+		
+		private function eventDispatcher_itemsDeleteHandler(event:SceneEvent):void
+		{
+			for each( var state:DeleteStateVO in event.newValue as Vector.<DeleteStateVO> ) {
+				trace( "state.owner = " + state.owner );
+				var container:ContainerVO = state.owner as ContainerVO;
+				if( container )
+				{
+					applyContainer( container );
+				}
+				var lightVO:LightVO = state.owner as LightVO;
+				if( lightVO )
+				{
+					applyLight( lightVO );
+				}
+				var lightPickerVO:LightPickerVO = state.owner as LightPickerVO;
+				if( lightPickerVO )
+				{
+					applyLightPicker( lightPickerVO );
+				}
+				var materialVO:MaterialVO = state.owner as MaterialVO;
+				if( materialVO )
+				{
+					applyMaterial( materialVO );
+				}
 			}
 		}
 		private function eventDispatcher_itemsSelectHandler(event:SceneEvent):void

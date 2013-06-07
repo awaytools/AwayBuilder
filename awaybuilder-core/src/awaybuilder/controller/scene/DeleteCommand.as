@@ -154,6 +154,10 @@ package awaybuilder.controller.scene
 				{
 					materialVO.shadowMethod = null;
 				}
+				else if( asset is LightPickerVO )
+				{
+					materialVO.lightPicker = null;
+				}
 			}
 		}
 		
