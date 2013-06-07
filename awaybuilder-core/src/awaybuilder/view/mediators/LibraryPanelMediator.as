@@ -345,6 +345,11 @@ package awaybuilder.view.mediators
 					for each( asset in assetsList )
 					{
 						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+						if( MaterialVO(asset).shadowMethod )
+						{
+							additionalStates.push( new DeleteStateVO( MaterialVO(asset).shadowMethod, asset ) );
+						}
+						
 					}
 					
 				}
@@ -354,8 +359,15 @@ package awaybuilder.view.mediators
 					for each( asset in assetsList )
 					{
 						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+						if( MaterialVO(asset).light )
+						{
+							additionalStates.push( new DeleteStateVO( MaterialVO(asset).light, asset ) );
+						}
+						if( MaterialVO(asset).shadowMethod )
+						{
+							additionalStates.push( new DeleteStateVO( MaterialVO(asset).shadowMethod, asset ) );
+						}
 					}
-					
 				}
 			}
 			

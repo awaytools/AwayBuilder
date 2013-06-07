@@ -306,7 +306,7 @@
 			
 			protected function lightsTree_itemDroppedHandler(event:TreeEvent):void
 			{
-				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.LIGHT_DROPPED, event.item ) );
+				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.LIGHT_DROPPED, getAssetsFromDroppedItem(event.item as Dictionary) ) );
 			}
 			
 			protected function animationsPanel_addNewItemHandler(event:MouseEvent):void

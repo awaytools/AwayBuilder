@@ -6,11 +6,10 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.vo.LibraryItemVO;
+	import awaybuilder.model.vo.DroppedAssetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	import flash.utils.Dictionary;
 	
@@ -35,26 +34,24 @@ package awaybuilder.controller.scene
 			}
 			var picker:LightPickerVO;
 			
-			for each( var item:DroppedTreeItemVO in event.newValue ) 
+			for each( var item:DroppedAssetVO in event.newValue ) 
 			{
-				var vo:LibraryItemVO = item.value as LibraryItemVO;
-				
-				if( vo.asset is LightVO )
+				if( item.value is LightVO )
 				{
 					if( item.newParent == item.oldParent ) return;
 					
-					if( item.newParent && ! item.oldParent )
+					if( item.newParent && !item.oldParent )
 					{
-						picker = item.newParent.asset as LightPickerVO;
-						if( picker && !itemIsInList(picker.lights, vo.asset as AssetVO) ) 
+						picker = item.newParent as LightPickerVO;
+						if( picker && !itemIsInList(picker.lights, item.value as AssetVO) ) 
 						{
 							if( item.newPosition < picker.lights.length )
 							{
-								picker.lights.addItemAt( vo.asset, item.newPosition );
+								picker.lights.addItemAt( item.value, item.newPosition );
 							}
 							else
 							{
-								picker.lights.addItem( vo.asset );
+								picker.lights.addItem( item.value );
 							}
 						}
 					}
@@ -67,19 +64,17 @@ package awaybuilder.controller.scene
 		{
 			var picker:LightPickerVO;
 			
-			for each( var item:DroppedTreeItemVO in event.newValue ) 
+			for each( var item:DroppedAssetVO in event.newValue ) 
 			{
-				var vo:LibraryItemVO = item.value as LibraryItemVO;
-				
-				if( vo.asset is LightVO )
+				if( item.value is LightVO )
 				{
 					
 					if( item.oldParent )
 					{ 
-						picker = item.oldParent.asset as LightPickerVO;
-						if( picker && itemIsInList(picker.lights, vo.asset as AssetVO) ) 
+						picker = item.oldParent as LightPickerVO;
+						if( picker && itemIsInList(picker.lights, item.value as AssetVO) ) 
 						{
-							removeItem( picker.lights, vo.asset as AssetVO );
+							removeItem( picker.lights, item.value as AssetVO );
 						}
 					}
 				}
@@ -112,9 +107,10 @@ package awaybuilder.controller.scene
 			if( !event.oldValue ) 
 			{
 				var oldValue:Dictionary = new Dictionary();
-				for each( var item:DroppedTreeItemVO in event.newValue ) 
+				for each( var item:DroppedAssetVO in event.newValue ) 
 				{
-					var newItem:DroppedTreeItemVO = new DroppedTreeItemVO( item.value );
+					var newItem:DroppedAssetVO = new DroppedAssetVO();
+					newItem.value = item.value;
 					newItem.newParent = item.oldParent;
 					newItem.newPosition = item.newPosition;
 					newItem.oldParent = item.newParent;

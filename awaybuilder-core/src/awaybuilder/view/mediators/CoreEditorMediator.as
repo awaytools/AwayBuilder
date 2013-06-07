@@ -482,6 +482,12 @@ package awaybuilder.view.mediators
 		}
 		private function eventDispatcher_reparentLightsHandler(event:SceneEvent):void
 		{
+			for each( var item:DroppedAssetVO in event.newValue ) 
+			{
+				if( (item.value is LightVO) && item.newParent && (item.newParent is LightPickerVO) ) {
+					applyLightPicker( item.newParent as LightPickerVO );
+				}
+			}
 		}
 		
 		private function eventDispatcher_reparentObjectsHandler(event:SceneEvent):void
@@ -1478,7 +1484,6 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_itemsDeleteHandler(event:SceneEvent):void
 		{
 			for each( var state:DeleteStateVO in event.newValue as Vector.<DeleteStateVO> ) {
-				trace( "state.owner = " + state.owner );
 				var container:ContainerVO = state.owner as ContainerVO;
 				if( container )
 				{
