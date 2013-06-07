@@ -17,6 +17,7 @@ package awaybuilder.utils.encoders
 	import away3d.core.base.Geometry;
 	import away3d.core.math.MathConsts;
 	
+	import awaybuilder.AwayBuilder;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
@@ -1740,16 +1741,15 @@ package awaybuilder.utils.encoders
 		private function _encodeMetaDataBlock() : uint
 		{	
 			_encodeBlockHeader(255);
-			
 			_beginElement(); // Prop list
 			var date:Date = new Date();			
 			var uintVal:uint = date.time;
+			var versionNumber:String=AwayBuilder.MAJOR_VERSION+"."+AwayBuilder.MINOR_VERSION+"."+AwayBuilder.REVISION;
 			_encodeProperty(1,uintVal, UINT32);
-			//to do: get the correct version of the encoder
-			_encodeProperty(2,"AWDEncoder", AWDSTRING);
-			_encodeProperty(3,"0.9", AWDSTRING);
+			_encodeProperty(2,"AwayBuilder", AWDSTRING);
+			_encodeProperty(3,versionNumber, AWDSTRING);
 			_encodeProperty(4,"AwayBuilder", AWDSTRING);
-			_encodeProperty(5,"0.9", AWDSTRING);
+			_encodeProperty(5,versionNumber, AWDSTRING);
 			_endElement(); // Prop list
 			
 			_finalizeBlock();

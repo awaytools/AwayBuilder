@@ -1,6 +1,7 @@
 package awaybuilder.model
 {
 	import flash.geom.ColorTransform;
+	import flash.utils.getQualifiedClassName;
 	
 	import mx.utils.UIDUtil;
 	
@@ -563,42 +564,16 @@ package awaybuilder.model
 			if (mat.texture)	
 				if (mat.texture.name=="defaultTexture") mat.texture=GetObject(defaultTexture) as Texture2DBase;
 			
-			if (mat.normalMethod){
-				if (mat.normalMethod is SimpleWaterNormalMethod){
-					if(SimpleWaterNormalMethod(mat.normalMethod).secondaryNormalMap.name=="defaultTexture"){
-						SimpleWaterNormalMethod(mat.normalMethod).secondaryNormalMap=GetObject(defaultTexture) as Texture2DBase;
-					}
-				}
-			}
-			if (mat.ambientMethod){
-				if (mat.ambientMethod is EnvMapAmbientMethod){
-					if(EnvMapAmbientMethod(mat.ambientMethod).envMap.name =="defaultTexture"){
-						EnvMapAmbientMethod(mat.ambientMethod).envMap=GetObject(defaultCubeTexture) as BitmapCubeTexture;
-					}
-				}
-			}
-			if (mat.diffuseMethod){
-				if (mat.diffuseMethod is GradientDiffuseMethod ){
-					if(GradientDiffuseMethod (mat.diffuseMethod).gradient.name =="defaultTexture"){
-						GradientDiffuseMethod(mat.diffuseMethod).gradient=GetObject(defaultTexture) as Texture2DBase;
-					}
-				}
-				if (mat.diffuseMethod is LightMapDiffuseMethod  ){
-					if(LightMapDiffuseMethod (mat.diffuseMethod).lightMapTexture.name =="defaultTexture"){
-						LightMapDiffuseMethod(mat.diffuseMethod).lightMapTexture=GetObject(defaultTexture) as Texture2DBase;
-					}
-				}
-			}
 			var i:int;
 			for (i=0;i<mat.numMethods;i++){
 				checkEffectMethodForDefaulttexture(mat.getMethodAt(i));
 			}
-			if (mat.numMethods!=defaultMat.numMethods)return false;
-			if (mat.normalMethod!=defaultMat.normalMethod)return false;
-			if (mat.ambientMethod!=defaultMat.ambientMethod)return false;
-			if (mat.diffuseMethod!=defaultMat.diffuseMethod)return false;
-			if (mat.specularMethod!=defaultMat.specularMethod)return false;
 			
+			if (getQualifiedClassName( mat.ambientMethod ).split("::")[1]!="BasicAmbientMethod")return false;
+			if (getQualifiedClassName( mat.diffuseMethod ).split("::")[1]!="BasicDiffuseMethod")return false;
+			if (getQualifiedClassName( mat.specularMethod ).split("::")[1]!="BasicSpecularMethod")return false;
+			if (getQualifiedClassName( mat.normalMethod ).split("::")[1]!="BasicNormalMethod")return false;
+			if (mat.numMethods!=defaultMat.numMethods)return false;
 			if (mat.alpha!=defaultMat.alpha)return false;
 			if (mat.alphaBlending!=defaultMat.alphaBlending)return false;
 			if (mat.alphaPremultiplied!=defaultMat.alphaPremultiplied)return false;
