@@ -1,5 +1,6 @@
 package awaybuilder.utils.scene
 {
+	import away3d.primitives.WireframePrimitiveBase;
 	import awaybuilder.view.scene.controls.CameraGizmo3D;
 	import awaybuilder.view.scene.representations.ISceneRepresentation;
 	import awaybuilder.view.scene.utils.ObjectContainerBounds;
@@ -607,9 +608,9 @@ package awaybuilder.utils.scene
 			// Get all scene child container bounds		
 			while (ctr < oCCount) {
 				var oC:ObjectContainer3D = Scene3DManager.view.scene.getChildAt(ctr++);
-				if (!(oC is SkyBox || oC is LightBase || oC == Scene3DManager.grid)) {
+				if (!(oC == Scene3DManager.grid)) {
 					Bounds.getObjectContainerBounds(oC);
-//trace(" - "+oC.name);
+//trace(" - "+oC.name+" b:"+Bounds.minX+"/"+Bounds.minY+"/"+Bounds.minZ+" - "+Bounds.maxX+"/"+Bounds.maxY+"/"+Bounds.maxZ);
 					if (Bounds.minX < min.x) min.x = Bounds.minX;
 					if (Bounds.minY < min.y) min.y = Bounds.minY;
 					if (Bounds.minZ < min.z) min.z = Bounds.minZ;
@@ -654,7 +655,7 @@ package awaybuilder.utils.scene
 
 		public static function updateDefaultCameraFarPlane() : void {
 			var bounds:Vector.<Number> = sceneBounds;
-			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity)
+			if (abs(bounds[0])==Infinity || abs(bounds[1])==Infinity || abs(bounds[2])==Infinity || abs(bounds[3])==Infinity || abs(bounds[4])==Infinity || abs(bounds[5])==Infinity)
 				camera.lens.far = 100000;
 			else {
 				var vec:Vector3D = new Vector3D(bounds[3] - bounds[0], bounds[4] - bounds[1], bounds[5] - bounds[2]);
@@ -1036,7 +1037,7 @@ package awaybuilder.utils.scene
 			{
 				var oC:ObjectContainer3D = selectedObjects.getItemAt(i) as ObjectContainer3D;
 				var m:Entity = oC as Entity;
-				if (m) m.showBounds = false;
+				if (m && m.numChildren<2 && m.getChildAt(0) is WireframePrimitiveBase) m.showBounds = false;
 				else {
 					var bounds:ObjectContainerBounds;
 					for (var c:int = 0; c<oC.numChildren; c++)
@@ -1111,13 +1112,13 @@ package awaybuilder.utils.scene
 			if (child) {
 				// If mesh selected from view, select it
 				var m:Mesh = child as Mesh;
-				if (m) {
+				if (m && m.numChildren == 0) {
 					if (!m.showBounds) {
 						addToSelection(m, Scene3DManagerEvent.ENABLE_TRANSFORM_MODES);
 						return;
 					}	
 				} else {			
-					// Select the container as item is not a mesh
+					// Select the container as item is not a mesh or is a mesh with children
 					var bounds:ObjectContainerBounds;
 					for (var c:int = 0; c<child.numChildren; c++)
 						bounds ||= (child.getChildAt(c) as ObjectContainerBounds);
