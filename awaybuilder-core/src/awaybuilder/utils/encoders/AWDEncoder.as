@@ -44,10 +44,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
-	
-	// to do: check if any imports can be removed
-	
-	
+		
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
 		// set debug to true to get some traces in the console
@@ -72,8 +69,8 @@ package awaybuilder.utils.encoders
 		private static const BADDR : uint = 23;		
 		
 		public static const AWDSTRING : uint = 31;
-		//public static const AWD_FIELD_BYTEARRAY : uint = 32;
-		
+		// this constants are not used atm, but might be used at a later released 
+		//public static const AWD_FIELD_BYTEARRAY : uint = 32;		
 		//public static const AWD_FIELD_VECTOR2x1 : uint = 41;
 		//public static const AWD_FIELD_VECTOR3x1 : uint = 42;
 		//public static const AWD_FIELD_VECTOR4x1 : uint = 43;
@@ -117,7 +114,7 @@ package awaybuilder.utils.encoders
 			_elemSizeOffsets = new Vector.<uint>();
 			_shadowMethodsToLightsDic=new Dictionary();
 			_exportedObjects=new Dictionary();
-			// to do: check if this blendModeDic works for all blendMode-strings in the Scene
+			
 			blendModeDic=new Dictionary();
 			blendModeDic[BlendMode.NORMAL]=0;
 			blendModeDic[BlendMode.ADD]=1;
@@ -152,7 +149,7 @@ package awaybuilder.utils.encoders
 			
 			_nameSpaceID=1;
 			_nameSpaceString=document.globalOptions.namespace;
-			_embedtextures=document.globalOptions.embedTextures
+			_embedtextures=document.globalOptions.embedTextures;
 				
 			// get the type of compression to use
 			_compression=0;
@@ -163,7 +160,7 @@ package awaybuilder.utils.encoders
 			if(document.globalOptions.compression=="LZMA")
 				_compression=2;			
 			// if the streaming option is enabled, the compression is set per block
-			if (document.globalOptions.streaming==true)
+			if (document.globalOptions.streaming)
 			{
 				_blockCompress=_compression;
 				_compression=0;
@@ -203,8 +200,7 @@ package awaybuilder.utils.encoders
 			_createAwdBlocks(document.geometry);
 			_createAwdBlocks(document.animations);
 			
-			_encodeMetaDataBlock();
-			
+			_encodeMetaDataBlock();			
 			_encodeNameSpaceBlock();
 			
 			// recursive encode all Scene-graph objects (ObjectContainer3d / Mesh) and their dependencies
@@ -223,7 +219,7 @@ package awaybuilder.utils.encoders
 			_encodeAddionalBlocks(document.materials);
 			_encodeAddionalBlocks(document.geometry);
 			_encodeAddionalBlocks(document.animations);
-			
+						
 			// Header
 			output.endian = Endian.LITTLE_ENDIAN;
 			output.writeUTFBytes("AWD");//MagicString
@@ -346,7 +342,7 @@ package awaybuilder.utils.encoders
 				thisBlock=new AWDBlock();
 				_blockCache[asset]=thisBlock;
 			}
-			if (thisBlock.id>=0)return thisBlock.id;
+			if (thisBlock.id>=0) return thisBlock.id;
 			var returnID:uint=0;
 			switch(true){
 				case (asset is TextureVO):
@@ -426,8 +422,7 @@ package awaybuilder.utils.encoders
 						if(_debug)trace("Create CommandBlock 'PutIntoSceneGraph' for LightVO = "+LightVO(vo).name+" | light ID = "+_exportedObjects[vo.id]+" parentID = "+parentID);
 						_blockCache[vo]=thisBlock;
 						newParentID=_encodeCommand(ObjectVO(vo),_exportedObjects[vo.id],parentID);
-						thisBlock.id=newParentID;
-						
+						thisBlock.id=newParentID;						
 					}
 					break;
 				case (vo is CameraVO):					
@@ -446,17 +441,14 @@ package awaybuilder.utils.encoders
 					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID);
 					
 					if (MeshVO(vo).animator){
-						
 						if(!_translateAnimatiorToMesh[MeshVO(vo).animator.id])
 							_translateAnimatiorToMesh[MeshVO(vo).animator.id]=new Vector.<MeshVO>;
-						_translateAnimatiorToMesh[MeshVO(vo).animator.id].push(MeshVO(vo));
-						
-						_translateAnimationSetToMesh[MeshVO(vo).animator.animationSet.id] = MeshVO(vo);
-						
+						_translateAnimatiorToMesh[MeshVO(vo).animator.id].push(MeshVO(vo));						
+						_translateAnimationSetToMesh[MeshVO(vo).animator.animationSet.id] = MeshVO(vo);						
 						for each (var anim:AnimationNodeVO in MeshVO(vo).animator.animationSet.animations){
 							_translateAnimationNodesToMesh[anim.id] = MeshVO(vo);
 						}
-					}
+					}					
 					_blockCache[vo]=thisBlock;
 					newParentID=_encodeMesh(MeshVO(vo),parentID);
 					thisBlock.id=newParentID;
@@ -569,8 +561,7 @@ package awaybuilder.utils.encoders
 			_finalizeBlock();
 			
 			return returnID;
-		}
-		
+		}		
 		
 		// encode Primitve (id = 11)
 		private function _encodePrimitiveBlock(geom:GeometryVO) : uint
@@ -710,10 +701,8 @@ package awaybuilder.utils.encoders
 			geomId = _getBlockIDorEncodeAsset(mesh.geometry);
 			materialIds=new Vector.<uint>;
 			var subMeshVo:SubMeshVO;
-			for each (subMeshVo in mesh.subMeshes) {
+			for each (subMeshVo in mesh.subMeshes)
 				materialIds.push( _getBlockIDorEncodeAsset(subMeshVo.material));
-			}			
-			
 			
 			returnID=_encodeBlockHeader(23);
 			
@@ -723,17 +712,15 @@ package awaybuilder.utils.encoders
 			_blockBody.writeUnsignedInt(geomId);
 			
 			_blockBody.writeShort(materialIds.length);
-			for (i=0; i<materialIds.length; i++) {
+			for (i=0; i<materialIds.length; i++)
 				_blockBody.writeUnsignedInt(materialIds[i]);
-			}
 			
 			_beginElement(); // Prop list
 			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  _matrixNrType);
 			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  _matrixNrType);
 			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  _matrixNrType);
 			if(mesh.castsShadows==false)_encodeProperty(5,mesh.castsShadows,  BOOL);
-			_endElement(); // Prop list
-			
+			_endElement(); // Prop list			
 			
 			_beginElement(); // Attr list
 			_endoceExtraProperties(mesh.extras);
@@ -776,7 +763,7 @@ package awaybuilder.utils.encoders
 			var radius:Number;
 			var fallOff:Number;
 			var lightMatrix:Matrix3D=getTransformMatrix(light);
-			// if the lights will be part of the sceneGraph, we will need to get its parentID 		
+			
 			var dirVec:Vector3D=new Vector3D();
 			if (light.type==LightVO.DIRECTIONAL){				
 				
@@ -804,7 +791,7 @@ package awaybuilder.utils.encoders
 				lightType=2;
 			}					
 			
-			_blockBody.writeByte(lightType);	//lightType	
+			_blockBody.writeByte(lightType); // lightType	
 			
 			_beginElement(); // start lights-prop list
 			
@@ -850,7 +837,7 @@ package awaybuilder.utils.encoders
 			_endElement(); // prop list			
 						
 			_beginElement(); // Attr list
-			//_endoceExtraProperties(light.extras);
+			_endoceExtraProperties(light.extras);
 			_endElement(); // Attr list
 			
 			_finalizeBlock();
@@ -905,8 +892,7 @@ package awaybuilder.utils.encoders
 			_endoceExtraProperties(_cam.extras);
 			_endElement(); // Attr list
 			
-			_finalizeBlock();
-			
+			_finalizeBlock();			
 			
 			return returnID;
 		}
@@ -943,7 +929,7 @@ package awaybuilder.utils.encoders
 			return returnID;
 		}
 		// encode LightPicker (id=51)
-		private function _encodeLightPicker(_lp :LightPickerVO) : uint
+		private function _encodeLightPicker(_lp:LightPickerVO) : uint
 		{
 			var returnID:uint;
 			var lightIDs:Vector.<int>=new Vector.<int>;
@@ -956,9 +942,8 @@ package awaybuilder.utils.encoders
 			
 			_blockBody.writeUTF(_lp.name);
 			_blockBody.writeShort(_lp.lights.length);	//num of lights
-			for (k=0;k<_lp.lights.length;k++){	
+			for (k=0;k<_lp.lights.length;k++)
 				_blockBody.writeUnsignedInt(lightIDs[k]);	//light-ids
-			}
 			
 			_beginElement(); // Attr list
 			_endElement(); // Attr list
@@ -967,6 +952,7 @@ package awaybuilder.utils.encoders
 			
 			return returnID;
 		}
+		
 		// encodes a materialBlock (id=81)
 		private function _encodeMaterial(mtl :MaterialVO) : uint
 		{
@@ -1001,16 +987,6 @@ package awaybuilder.utils.encoders
 			if (mtl.diffuseTexture) texture=_getBlockIDorEncodeAsset(mtl.diffuseTexture);
 			if (mtl.ambientTexture) ambientTexture=_getBlockIDorEncodeAsset(mtl.ambientTexture);	
 			if ((texture)||(ambientTexture)) matType=2;				
-			if (AssetVO(mtl.diffuseTexture)){
-				if (AssetVO(mtl.diffuseTexture).isDefault==true){
-					matType=2;
-				}				
-			}			
-			if (AssetVO(mtl.ambientTexture)){
-				if (AssetVO(mtl.ambientTexture).isDefault==true){
-					matType=2;
-				}				
-			}
 			if (matType==1) color=mtl.diffuseColor;			
 			if (mtl.type==MaterialVO.SINGLEPASS){
 				if (mtl.alpha!=1.0)	alpha=mtl.alpha;
@@ -1126,8 +1102,7 @@ package awaybuilder.utils.encoders
 		{
 			if(_debug)trace("diffuseMethVO = "+diffuseMethVO.type);
 			var texID:uint;
-			switch(diffuseMethVO.type){ 
-				
+			switch(diffuseMethVO.type){ 				
 				case "LightMapDiffuseMethod":
 					_encodeDiffuseMethod(diffuseMethVO.baseMethod,materialMethods);
 					var lightMapBlendMode1:uint=blendModeDic[diffuseMethVO.blendMode];
@@ -1307,9 +1282,7 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("cubeTexture = "+cubeTexture.name + " has been encoded successfully!");
 			return returnID;
 		}
-// end of textures
-		
-		
+// end of textures		
 		
 		// Creates a EffectMethod-AWDBlock	(id=91) 			
 		private function _encodeSharedMethodBlock(name:String, id:int, idsVec : Array, valuesAr : Array, defaultValuesAr : Array, typesVec : Array) : uint
@@ -1403,6 +1376,7 @@ package awaybuilder.utils.encoders
 				case "FogMethod"://EffectMethodVO.FOG:
 					returnID=_encodeSharedMethodBlock(methVO.name, 411, [101,102,601], [methVO.minDistance, methVO.maxDistance, methVO.color], [0, 1000, 0x808080], [_propNrType, _propNrType, COLOR]);
 					break;
+				// this methods are available in away3d, but not saved in awd atm:
 				//EffectMethodVO.FRESNEL_PLANAR_REFLECTION
 				//EffectMethodVO.PLANAR_REFLECTION
 			}	
@@ -1464,8 +1438,8 @@ package awaybuilder.utils.encoders
 			}	
 			return returnID;
 		}
-		
-		
+
+		//////ANIMATION_BLOCKS
 		
 		// encode Skeleton (id=101)
 		private function _encodeSkeleton(skeleton:SkeletonVO) : uint
@@ -1474,15 +1448,13 @@ package awaybuilder.utils.encoders
 			returnID=_encodeBlockHeader(101);
 			
 			_blockBody.writeUTF(skeleton.name);
-			_blockBody.writeShort(skeleton.joints.length);
-			
+			_blockBody.writeShort(skeleton.joints.length);			
 			
 			_beginElement(); // Prop list
 			_endElement(); // Prop list
 			var jointID:int=0;
 			var inversMtx:Matrix3D;
-			for each (var joint:SkeletonJoint in skeleton.joints){
-				
+			for each (var joint:SkeletonJoint in skeleton.joints){				
 				
 				_blockBody.writeShort(jointID);//ignored by parser
 				_blockBody.writeShort(int(joint.parentIndex +1));//ignored by parser
@@ -1495,8 +1467,7 @@ package awaybuilder.utils.encoders
 				_beginElement(); // User attr
 				_endElement(); // User attr
 				jointID+=1;
-			}
-			
+			}			
 			
 			_beginElement(); // User attr
 			_endElement(); // User attr			
@@ -1520,8 +1491,7 @@ package awaybuilder.utils.encoders
 			var frameCnt:uint=0;
 			for each (var skeletonPoseID:Matrix3D in skeletPose.jointTransforms){
 				_blockBody.writeByte(1);
-				_encodeMatrix3D(skeletonPoseID);
-				
+				_encodeMatrix3D(skeletonPoseID);				
 			}
 			
 			_beginElement(); // User attr
@@ -1531,6 +1501,7 @@ package awaybuilder.utils.encoders
 			
 			return returnID;
 		}
+		
 		// encode AnimationClip (id=112/103)
 		private function _encodeAnimation(animClip:AnimationNodeVO) : uint
 		{	
@@ -1543,15 +1514,13 @@ package awaybuilder.utils.encoders
 				case "VertexClipNode":
 					returnID=_encodeVertexAnimation(animClip)
 					break;
-			}
-						
+			}						
 			return returnID;
 		}
 		
 		// encode AnimationClip (id=103)
 		private function _encodeSkeletonAnimation(animClip:AnimationNodeVO) : uint
-		{	
-			
+		{				
 			var skeletonPoseIDs:Vector.<uint>=new Vector.<uint>;
 			for each (var skeletonPose:SkeletonPoseVO in animClip.animationPoses)
 				skeletonPoseIDs.push(_getBlockIDorEncodeAsset(skeletonPose));
@@ -1566,9 +1535,7 @@ package awaybuilder.utils.encoders
 				_blockBody.writeUnsignedInt(skeletonPoseID);
 				_blockBody.writeShort(animClip.frameDurations[frameCnt]);				
 				frameCnt++;
-			}
-			
-						
+			}						
 			
 			_beginElement(); // User attr
 			_endElement(); // User attr
@@ -1576,8 +1543,7 @@ package awaybuilder.utils.encoders
 			_finalizeBlock();
 			
 			return returnID;
-		}
-		
+		}		
 		
 		// encode AnimationClip (id=112) 
 		private function _encodeVertexAnimation(animClip:AnimationNodeVO) : uint
@@ -1603,7 +1569,7 @@ package awaybuilder.utils.encoders
 			var k:int=0;
 			for each (var animGeo:Geometry in animClip.animationPoses){
 				_blockBody.writeShort(animClip.frameDurations[frameCnt]);	
-				//optional parsingStyle
+				//to do: add optional parsingStyle
 				for (i=0;i<animGeo.subGeometries.length;i++){
 					
 					_beginElement(); // Prop list
@@ -1611,8 +1577,7 @@ package awaybuilder.utils.encoders
 					_endElement(); // Prop list
 				}
 				frameCnt+=1;
-			}
-			
+			}			
 			_beginElement(); // User attr
 			_endElement(); // User attr
 			
@@ -1644,18 +1609,15 @@ package awaybuilder.utils.encoders
 						var jpv:uint=MeshVO(_translateAnimationSetToMesh[animSet.id]).jointsPerVertex;
 						_encodeProperty(1,jpv, UINT16);
 					}
-					//
 					break;
 				case "VertexAnimationSet":
 					break;
 			}			
 			_endElement(); // Prop list
 			
-			for each (var animID:uint in animationIDs){
+			for each (var animID:uint in animationIDs)
 				_blockBody.writeUnsignedInt(animID);
 				
-			}
-			
 			_beginElement(); // User attr
 			_endElement(); // User attr
 			
@@ -1727,9 +1689,8 @@ package awaybuilder.utils.encoders
 			
 			return returnID;
 		}
-		
-		
-		// encode CommandBlock (id=253)
+				
+		// encode CommandBlock (id=253) - this is only used for Command: PutIntoSceneGraph
 		private function _encodeCommand(targetObj:ObjectVO,targetID:uint,parentId:uint=0) : uint
 		{
 			var returnID:int;
@@ -1763,7 +1724,6 @@ package awaybuilder.utils.encoders
 			return returnID;
 		}
 		
-		
 		// encode NameSpace (id=254)
 		private function _encodeNameSpaceBlock() : uint
 		{	
@@ -1785,6 +1745,7 @@ package awaybuilder.utils.encoders
 			var date:Date = new Date();			
 			var uintVal:uint = date.time;
 			_encodeProperty(1,uintVal, UINT32);
+			//to do: get the correct version of the encoder
 			_encodeProperty(2,"AWDEncoder", AWDSTRING);
 			_encodeProperty(3,"0.9", AWDSTRING);
 			_encodeProperty(4,"AwayBuilder", AWDSTRING);
@@ -1794,20 +1755,17 @@ package awaybuilder.utils.encoders
 			_finalizeBlock();
 			return 0
 		}
-		
-		
+				
 		
 // helper - functions 
 		
 		
 		private function _finalizeBlock() : void
 		{	
-			if(_blockCompress==1){
+			if(_blockCompress==1)
 				_blockBody.compress();
-			}
-			if(_blockCompress==2){
+			if(_blockCompress==2)
 				_blockBody.compress(CompressionAlgorithm.LZMA);
-			}
 			_body.writeUnsignedInt(_blockBody.length);
 			_body.writeBytes(_blockBody);
 			_blockBody=null;
@@ -2128,18 +2086,18 @@ package awaybuilder.utils.encoders
 				value=Number(copy);
 			}
 			if (type==AWDSTRING){
-				if(copy=="false"){
+				if((copy=="false")||(copy=="False")||(copy=="FALSE")){
 					type=BOOL;
 					value=false;
 				}
-				if(copy=="true"){
+				if((copy=="true")||(copy=="True")||(copy=="TRUE")){
 					type=BOOL;
 					value=true;
 				}
 			}			
 			_blockBody.writeByte(_nameSpaceID);//NameSpace			
 			_blockBody.writeUTF(name);//Attribute name
-			_blockBody.writeByte(type);//NameSpace		
+			_blockBody.writeByte(type);//Attribute type
 			
 			switch (type) {
 				case INT8:
