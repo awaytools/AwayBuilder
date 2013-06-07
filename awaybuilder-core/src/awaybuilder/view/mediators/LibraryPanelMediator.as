@@ -1,29 +1,14 @@
 package awaybuilder.view.mediators
 {
-	import away3d.animators.SkeletonAnimationSet;
-	import away3d.animators.SkeletonAnimator;
-	import away3d.animators.VertexAnimationSet;
-	import away3d.animators.VertexAnimator;
-	import away3d.containers.ObjectContainer3D;
-	import away3d.core.base.Object3D;
-	import away3d.lights.DirectionalLight;
-	import away3d.materials.lightpickers.LightPickerBase;
-	import away3d.materials.lightpickers.StaticLightPicker;
-	import away3d.primitives.SkyBox;
-	
 	import awaybuilder.controller.document.events.ImportTextureEvent;
-	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
-	import awaybuilder.controller.events.DocumentRequestEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DeleteStateVO;
 	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.DroppedTreeItemVO;
 	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
-	import awaybuilder.model.vo.scene.AnimatorVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
@@ -34,32 +19,18 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
-	import awaybuilder.model.vo.scene.ObjectVO;
-	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
-	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
-	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.DataMerger;
 	import awaybuilder.utils.ScenegraphFactory;
-	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
-	import awaybuilder.view.components.controls.tree.TreeDataProvider;
-	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
-	
-	import flash.utils.getTimer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
-	import mx.events.CollectionEvent;
-	import mx.events.CollectionEventKind;
-	import mx.utils.ObjectUtil;
 	
 	import org.robotlegs.mvcs.Mediator;
-	
-	import spark.collections.Sort;
 
 	public class LibraryPanelMediator extends Mediator
 	{

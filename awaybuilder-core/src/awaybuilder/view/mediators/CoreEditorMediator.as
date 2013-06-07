@@ -7,9 +7,7 @@ package awaybuilder.view.mediators
     import away3d.animators.VertexAnimationSet;
     import away3d.animators.VertexAnimator;
     import away3d.animators.data.Skeleton;
-    import away3d.animators.nodes.AnimationClipNodeBase;
     import away3d.animators.nodes.AnimationNodeBase;
-    import away3d.animators.states.SkeletonClipState;
     import away3d.cameras.Camera3D;
     import away3d.cameras.lenses.LensBase;
     import away3d.cameras.lenses.OrthographicLens;
@@ -28,7 +26,6 @@ package awaybuilder.view.mediators
     import away3d.lights.PointLight;
     import away3d.lights.shadowmaps.CascadeShadowMapper;
     import away3d.lights.shadowmaps.CubeMapShadowMapper;
-    import away3d.lights.shadowmaps.DirectionalShadowMapper;
     import away3d.lights.shadowmaps.NearDirectionalShadowMapper;
     import away3d.lights.shadowmaps.ShadowMapperBase;
     import away3d.materials.ColorMaterial;
@@ -97,8 +94,6 @@ package awaybuilder.view.mediators
     import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.DeleteStateVO;
     import awaybuilder.model.vo.DroppedAssetVO;
-    import awaybuilder.model.vo.DroppedTreeItemVO;
-    import awaybuilder.model.vo.LibraryItemVO;
     import awaybuilder.model.vo.scene.AnimationNodeVO;
     import awaybuilder.model.vo.scene.AnimationSetVO;
     import awaybuilder.model.vo.scene.AnimatorVO;
@@ -127,15 +122,12 @@ package awaybuilder.view.mediators
     import awaybuilder.utils.scene.modes.CameraMode;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
-    import awaybuilder.view.components.events.CoreEditorEvent;
     import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
     
     import flash.display.BitmapData;
-    import flash.display3D.textures.Texture;
-    import flash.display3D.textures.TextureBase;
     import flash.events.ErrorEvent;
     import flash.events.Event;
     import flash.events.KeyboardEvent;
@@ -147,9 +139,7 @@ package awaybuilder.view.mediators
     
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
-    import mx.controls.Text;
     import mx.core.FlexGlobals;
-    import mx.utils.ObjectUtil;
     
     import org.robotlegs.mvcs.Mediator;
     

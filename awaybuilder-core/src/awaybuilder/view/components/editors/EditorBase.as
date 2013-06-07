@@ -4,9 +4,11 @@ package awaybuilder.view.components.editors
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 	
+	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.Group;
 	import spark.layouts.VerticalLayout;
@@ -21,6 +23,8 @@ package awaybuilder.view.components.editors
 			layout = l;
 			width = 225;
 		}
+		
+		private var _propertiesChanged:Boolean = false;
 		
 		private var _prevSelected:ArrayCollection = new ArrayCollection; 
 		[Bindable]
@@ -41,10 +45,31 @@ package awaybuilder.view.components.editors
 		}
 		public function set data(value:Object):void
 		{
-			if( value ) {
+			if( _data ) IEventDispatcher(_data).removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler );
+			
+			if( value ) 
+			{
 				_data = value;
+				validate( _data );
+				IEventDispatcher(_data).addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler )
 			}
-			validate( _data );
+			
+		}
+		
+		private function data_propertyChangeHandler( event:PropertyChangeEvent ):void
+		{
+			_propertiesChanged = true;
+			invalidateProperties();
+		}
+		 
+		override protected function commitProperties():void
+		{
+			super.commitProperties();
+			if(_propertiesChanged)
+			{
+				_propertiesChanged = false;
+				validate( _data );
+			}
 		}
 		
 		private var _cubeTextures:ArrayCollection;
@@ -116,17 +141,12 @@ package awaybuilder.view.components.editors
 		
 		protected function validate( asset:Object ):void 
 		{
-			
-		}
-		
-		public function Update():void 
-		{
-			validate( _data );
+			throw new Error( "Abstract method" );
 		}
 		
 		protected function editParentObjectButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_PARENT_PROPERTIES,  prevSelected.removeItemAt(prevSelected.length-1), true));
 		}
 	}
 }

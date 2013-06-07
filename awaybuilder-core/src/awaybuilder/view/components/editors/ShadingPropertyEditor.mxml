@@ -79,7 +79,6 @@
 					}
 				}
 			}
-			trace( "gradientDropDownList " + gradientDropDownList.selectedItem );
 		}
 		
 		private function stepper_changeHandler(event:Event):void 

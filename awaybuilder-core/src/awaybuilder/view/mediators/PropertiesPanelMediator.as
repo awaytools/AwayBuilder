@@ -1,8 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import away3d.animators.AnimatorBase;
-    import away3d.tools.commands.Merge;
-    
     import awaybuilder.controller.document.events.ImportTextureEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
     import awaybuilder.controller.history.UndoRedoEvent;
@@ -32,7 +29,6 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureProjectorVO;
     import awaybuilder.model.vo.scene.TextureVO;
-    import awaybuilder.utils.DataMerger;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.editors.events.PropertyEditorEvent;
     
@@ -192,14 +188,13 @@ package awaybuilder.view.mediators
 			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
-			addViewListener( PropertyEditorEvent.SHOW_PARENT_MESH_PROPERTIES, view_showParentMeshHandler );
-			addViewListener( PropertyEditorEvent.SHOW_PARENT_MATERIAL_PROPERTIES, view_showParentMaterialHandler );
+			addViewListener( PropertyEditorEvent.SHOW_PARENT_PROPERTIES, view_showParentHandler );
 			
 			addViewListener( PropertyEditorEvent.GLOBAL_OPTIONS_CHANGE, view_globalOptionsChangeHandler );
 			addViewListener( PropertyEditorEvent.GLOBAL_OPTIONS_STEPPER_CHANGE, view_globalOptionsStepperChangeHandler );
 			
 			view.currentState = "global";
-			view.SetData(document.globalOptions);
+			view.data = document.globalOptions;
 			
         }
 
@@ -461,11 +456,7 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],true));
 		}
 		
-		private function view_showParentMeshHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],false,false,true));
-		}
-		private function view_showParentMaterialHandler(event:PropertyEditorEvent):void
+		private function view_showParentHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[event.data],false,false,true));
 		}
@@ -689,11 +680,11 @@ package awaybuilder.view.mediators
 		
 		private function context_simpleUpdateHandler(event:SceneEvent):void
 		{
-			view.SetData( event.items[0] );
+			//view.SetData( event.items[0] );
 		}
 		private function context_reparentHandler(event:SceneEvent):void
 		{
-			view.SetData( view.data );
+//			view.SetData( view.data );
 		}
 		
         private function context_changeMeshHandler(event:SceneEvent):void
@@ -703,21 +694,21 @@ package awaybuilder.view.mediators
             {
                 subMesh.linkedMaterials = view.materials;
             }
-            view.SetData( mesh );
+           // view.SetData( mesh );
         }
 		
 		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length )
 			{
-				view.SetData(event.items[0]);
+//				view.SetData(event.items[0]);
 			}
 		}
 		private function eventDispatcher_addNewLightToLightpickerHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length )
 			{
-				view.SetData(event.items[0]);
+//				view.SetData(event.items[0]);
 			}
 		}
 		
@@ -725,7 +716,7 @@ package awaybuilder.view.mediators
 		{
 			if( event.items && event.items.length )
 			{
-				view.SetData(event.items[0]);
+//				view.SetData(event.items[0]);
 			}
 		}
 		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
@@ -739,7 +730,7 @@ package awaybuilder.view.mediators
 					subMesh.linkedMaterials = view.materials;
 				}
 				
-				view.SetData(mesh);
+//				view.SetData(mesh);
 			}
 		}
 		
@@ -748,15 +739,14 @@ package awaybuilder.view.mediators
 			updateLists();
 			if( event.items && event.items.length )
 			{
-				view.SetData(event.items[0]);
+//				view.SetData(event.items[0]);
 			}
 		}
         private function context_itemsSelectHandler(event:SceneEvent):void
         {
             if( !event.items || event.items.length == 0)
             {
-				view.showEditor( "global", event.newValue, event.oldValue );
-				view.SetData(document.globalOptions);
+				view.showEditor( "global", event.newValue, event.oldValue, document.globalOptions );
                 return;
             }
             if( event.items.length )
@@ -770,120 +760,98 @@ package awaybuilder.view.mediators
                         {
                             subMesh.linkedMaterials = view.materials; // TODO
                         }
-						view.SetData(mesh);
-						view.showEditor( "mesh", event.newValue, event.oldValue );
+						view.showEditor( "mesh", event.newValue, event.oldValue, mesh );
                     }
 					else if( event.items[0] is SkyBoxVO )
 					{
-						view.showEditor( "skyBox", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "skyBox", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is TextureProjectorVO )
 					{
-						view.showEditor( "textureProjector", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "textureProjector", event.newValue, event.oldValue, event.items[0] );
 					}
                     else if( event.items[0] is ContainerVO )
                     {
-						view.showEditor( "container", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "container", event.newValue, event.oldValue, event.items[0] );
                     }
                     else if( event.items[0] is MaterialVO )
                     {
-						view.SetData(event.items[0]);
-						view.showEditor( "material", event.newValue, event.oldValue );
+						view.showEditor( "material", event.newValue, event.oldValue, event.items[0] );
                     }
                     else if( event.items[0] is TextureVO )
                     {
-						view.showEditor( "texture", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "texture", event.newValue, event.oldValue, event.items[0] );
                     }
 					else if( event.items[0] is LightVO )
 					{
-						view.showEditor( "light", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "light", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is LightPickerVO )
 					{
-						view.showEditor( "lightPicker", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "lightPicker", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is ShadowMethodVO )
 					{
-						view.showEditor( "shadowMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "shadowMethod", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is EffectMethodVO )
 					{
-						view.showEditor( "effectMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "effectMethod", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is CubeTextureVO )
 					{
-						view.showEditor( "cubeTexture", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "cubeTexture", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is ShadowMapperVO )
 					{
-						view.showEditor( "shadowMapper", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "shadowMapper", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is ShadingMethodVO )
 					{
-						view.showEditor( "shadingMethod", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "shadingMethod", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is GeometryVO )
 					{
-						view.showEditor( "geometry", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "geometry", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is AnimationSetVO )
 					{
-						view.showEditor( "animationSet", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "animationSet", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is AnimationNodeVO )
 					{
-						view.showEditor( "animationNode", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "animationNode", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is AnimatorVO )
 					{
-						view.showEditor( "animator", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "animator", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is SkeletonVO )
 					{
-						view.showEditor( "skeleton", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "skeleton", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is CameraVO )
 					{
-						view.showEditor( "camera", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "camera", event.newValue, event.oldValue, event.items[0] );
 					}
 					else if( event.items[0] is LensVO )
 					{
-						view.showEditor( "lens", event.newValue, event.oldValue );
-						view.SetData(event.items[0]);
+						view.showEditor( "lens", event.newValue, event.oldValue, event.items[0] );
 					}
                     else
                     {
-						view.showEditor( "global", event.newValue, event.oldValue );
-						view.SetData(document.globalOptions);
+						view.showEditor( "global", event.newValue, event.oldValue, document.globalOptions );
                     }
                 }
                 else
                 {
-					view.showEditor( "group", event.newValue, event.oldValue );
+					view.showEditor( "group", event.newValue, event.oldValue, null );
                 }
 				view.validateNow();
             }
             else
             {
-				view.showEditor( "global", event.newValue, event.oldValue );
-				view.SetData(document.globalOptions);
+				view.showEditor( "global", event.newValue, event.oldValue, document.globalOptions );
             }
 			//if event.oldValue is true it means that we just back from child
 			//if event.newValue is true it means that we select child
@@ -891,7 +859,6 @@ package awaybuilder.view.mediators
 				view.prevSelected = new ArrayCollection();
 			}
         }
-
 		
 		private function context_deleteHandler(event:SceneEvent):void
 		{
@@ -902,12 +869,22 @@ package awaybuilder.view.mediators
 		}
 		private function context_undoHandler(event:UndoRedoEvent):void
 		{
+			view.callLater( undoHandler ); // must be executed after SceneObject is changed
+		}
+		private function undoHandler():void
+		{
 			if( (view.data is AssetVO) && !getCurrentIsPresent( view.data as AssetVO ) ) 
 			{
-				dispatch( new SceneEvent( SceneEvent.SELECT, [] ) );
+				if( view.prevSelected && view.prevSelected.length>0 ) 
+				{
+					this.dispatch(new SceneEvent(SceneEvent.SELECT,[view.prevSelected.removeItemAt(view.prevSelected.length-1)],false,false,true));
+				}
+				else
+				{
+					this.dispatch(new SceneEvent(SceneEvent.SELECT,[]));
+				}
 			}
 		}
-		
 		private function getCurrentIsPresent( asset:AssetVO ):Boolean
 		{
 			return getAssetIsInList( asset, document.getAllAssets() );
@@ -922,6 +899,27 @@ package awaybuilder.view.mediators
 				if( container && container.children && container.children.length )
 				{
 					if( getAssetIsInList( asset, container.children.source ) ) return true;
+				}
+				
+				var materialVO:MaterialVO = item as MaterialVO;
+				if( materialVO )
+				{
+					if( materialVO.ambientMethod.equals( asset ) ) return true;
+					if( materialVO.specularMethod.equals( asset ) ) return true;
+					if( materialVO.diffuseMethod.equals( asset ) ) return true;
+					if( materialVO.normalMethod.equals( asset ) ) return true;
+				}
+				
+				var lightVO:LightVO = item as LightVO;
+				if( lightVO && lightVO.shadowMethods && lightVO.shadowMethods.length )
+				{
+					if( getAssetIsInList( asset, container.children.source ) ) return true;
+					if( lightVO.shadowMapper.equals( asset ) ) return true;
+				}
+				var cameraVO:CameraVO = item as CameraVO;
+				if( cameraVO)
+				{
+					if( cameraVO.lens.equals( asset ) ) return true;
 				}
 			}
 			return false;

@@ -6,12 +6,9 @@ package awaybuilder.view.components.controls
 	import awaybuilder.view.components.controls.tree.ITreeItemRenderer;
 	import awaybuilder.view.components.controls.tree.Tree;
 	
-	import mx.core.DragSource;
 	import mx.core.UIComponent;
 	import mx.events.DragEvent;
 	import mx.managers.DragManager;
-	
-	import spark.layouts.supportClasses.DropLocation;
 	
 	public class LightsTree extends Tree
 	{

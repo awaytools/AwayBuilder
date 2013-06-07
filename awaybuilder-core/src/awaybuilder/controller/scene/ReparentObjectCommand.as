@@ -1,27 +1,17 @@
 package awaybuilder.controller.scene
 {
 	import away3d.containers.ObjectContainer3D;
-	import away3d.entities.Mesh;
-	import away3d.entities.TextureProjector;
-	import away3d.lights.LightBase;
-	import away3d.primitives.SkyBox;
 	
-	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
-	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.DroppedTreeItemVO;
 	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
-	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
-	import awaybuilder.model.vo.scene.SkyBoxVO;
-	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.scene.Scene3DManager;
-	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	import flash.utils.Dictionary;
 	

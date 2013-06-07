@@ -1,11 +1,9 @@
 package awaybuilder.controller.scene
 {
-	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
-	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DroppedAssetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;

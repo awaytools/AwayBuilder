@@ -58,17 +58,8 @@
 		}
 		
 		[Bindable]
-		private var _data:Object;
+		public var data:Object;
 		
-		public function get data():Object
-		{
-			return _data as Object;
-		}
-		public function SetData( value:Object ):void
-		{
-			_data = null; //need refactor here
-			_data = value;
-		}
 		[Bindable]
 		public var nullableTextures:ArrayCollection;
 		
@@ -99,7 +90,7 @@
 		[Bindable]
 		public var lightPickers:ArrayCollection;
 		
-		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean ):void
+		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean, data:Object ):void
 		{
 			panelImage.drawPanel( panelsContainer );
 			
@@ -119,6 +110,8 @@
 				panelImage.visible = false;
 			}
 			collapsed = false;
+			
+			this.data = data;
 		}
 		
 	]]></fx:Script>
@@ -128,31 +121,31 @@
 	<controls:CrutchScroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
 		<s:Group width="225">
 			
-			<editors:GlobalOptionPropertiesEditor data="{_data}" includeIn="global" />
+			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global" />
 			
-			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" prevSelected="{prevSelected}" data="{_data}" includeIn="mesh,initAll" />
+			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			
-			<editors:MaterialPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{_data}" includeIn="material,initAll"/>
-			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="texture,initAll" />
-			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="cubeTexture,initAll" />
-			<editors:LightPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="light,initAll" />
-			<editors:LightPickerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lightPicker,initAll" />
-			<editors:ContainerPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="container,initAll" />
-			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMethod,initAll" />
-			<editors:EffectMethodPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{_data}" includeIn="effectMethod,initAll" />
-			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{_data}" includeIn="shadowMapper,initAll" />
-			<editors:ShadingPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{_data}" includeIn="shadingMethod,initAll" />
-			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="geometry,initAll" />
-			<editors:SkyBoxPropertiesEditor prevSelected="{prevSelected}" cubeTextures="{cubeTextures}" data="{_data}" includeIn="skyBox,initAll" />
-			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{_data}" includeIn="textureProjector,initAll"/>
-			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationSet,initAll"/>
-			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="animationNode,initAll"/>
-			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" vertexAnimationSets="{vertexAnimationSets}" skeletonsAnimationSets="{skeletonsAnimationSets}" data="{_data}" includeIn="animator,initAll"/>
-			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="skeleton,initAll"/>
-			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="camera,initAll"/>
-			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{_data}" includeIn="lens,initAll"/>
+			<editors:MaterialPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{data}" includeIn="material,initAll"/>
+			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="texture,initAll" />
+			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="cubeTexture,initAll" />
+			<editors:LightPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="light,initAll" />
+			<editors:LightPickerPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="lightPicker,initAll" />
+			<editors:ContainerPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="container,initAll" />
+			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{data}" includeIn="shadowMethod,initAll" />
+			<editors:EffectMethodPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{data}" includeIn="effectMethod,initAll" />
+			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{data}" includeIn="shadowMapper,initAll" />
+			<editors:ShadingPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{data}" includeIn="shadingMethod,initAll" />
+			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="geometry,initAll" />
+			<editors:SkyBoxPropertiesEditor prevSelected="{prevSelected}" cubeTextures="{cubeTextures}" data="{data}" includeIn="skyBox,initAll" />
+			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{data}" includeIn="textureProjector,initAll"/>
+			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="animationSet,initAll"/>
+			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="animationNode,initAll"/>
+			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" vertexAnimationSets="{vertexAnimationSets}" skeletonsAnimationSets="{skeletonsAnimationSets}" data="{data}" includeIn="animator,initAll"/>
+			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="skeleton,initAll"/>
+			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="camera,initAll"/>
+			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="lens,initAll"/>
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

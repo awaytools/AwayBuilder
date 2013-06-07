@@ -65,21 +65,13 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import away3d.containers.ObjectContainer3D;
-			
 			import awaybuilder.model.vo.DocumentVO;
 			import awaybuilder.model.vo.DroppedAssetVO;
-			import awaybuilder.model.vo.LibraryItemVO;
-			import awaybuilder.model.vo.scene.AssetVO;
 			import awaybuilder.model.vo.DroppedTreeItemVO;
+			import awaybuilder.model.vo.LibraryItemVO;
 			import awaybuilder.view.components.controls.tree.TreeEvent;
-			import awaybuilder.view.components.events.CoreEditorEvent;
 			import awaybuilder.view.components.events.LibraryPanelEvent;
 			
-			import flash.utils.clearTimeout;
-			import flash.utils.setTimeout;
-			
-			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.events.SandboxMouseEvent;
