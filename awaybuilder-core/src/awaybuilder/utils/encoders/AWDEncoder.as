@@ -1281,7 +1281,8 @@ package awaybuilder.utils.encoders
 					extension="png";	
 				texturePath="textures/"+getFileName(cubeTexture.name)+"_negZ."+extension;
 				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);				
+				_blockBody.writeUTFBytes(texturePath);	
+				
 				
 			}
 			
