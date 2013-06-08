@@ -36,7 +36,11 @@
 		}
 		private function lights_collectionChangeEvent(event:CollectionEvent):void 
 		{
-			_asset.fillLightPicker( data as LightPickerVO );
+			if( data is LightPickerVO )
+			{
+				_asset.fillLightPicker( data as LightPickerVO );
+			}
+			
 		}
 		
 		private function name_changeHandler(event:Event):void 

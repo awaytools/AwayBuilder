@@ -65,7 +65,11 @@
 		
 		private function childs_collectionChangeEvent(event:CollectionEvent):void 
 		{
-			_asset.fillFromLight( data as LightVO );
+			if( data is LightVO )
+			{
+				_asset.fillFromLight( data as LightVO );
+			}
+			
 		}
 		
 		override protected function validate(asset:Object):void

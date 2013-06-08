@@ -23,7 +23,10 @@
 		
 		private function childs_collectionChangeEvent(event:CollectionEvent):void 
 		{
-			_asset.fillFromAnimationSet( data as AnimationSetVO );
+			if( data is AnimationSetVO )
+			{
+				_asset.fillFromAnimationSet( data as AnimationSetVO );
+			}
 		}
 		
 		private function name_changeHandler( event:Event ):void
