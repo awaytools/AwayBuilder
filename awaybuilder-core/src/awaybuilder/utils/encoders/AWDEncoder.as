@@ -1188,7 +1188,9 @@ package awaybuilder.utils.encoders
 				var extension:String="jpg";
 				if(bitMapHasTransparency(tex.bitmapData,tex.bitmapData.rect.width,tex.bitmapData.rect.height))
 					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(tex.name)+"."+extension));				
+				var texturePath:String="textures/"+getFileName(tex.name)+"."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);				
 				}
 			
 			_beginElement(); // Properties (empty)
@@ -1240,34 +1242,46 @@ package awaybuilder.utils.encoders
 				_blockBody.writeBytes(id_negZ);	
 			}
 			else{
+				var texturePath:String;
 				_blockBody.writeByte(0);//external
 				_blockBody.writeUTF(cubeTexture.name);
 				var extension:String="jpg";
 				extension="jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveX,cubeTexture.positiveX.rect.width,cubeTexture.positiveX.rect.height))
 					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_posX."+extension));	
+				texturePath="textures/"+getFileName(cubeTexture.name)+"_posX."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);			
 				extension="jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeX,cubeTexture.negativeX.rect.width,cubeTexture.negativeX.rect.height))
 					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_negX."+extension));	
+				texturePath="textures/"+getFileName(cubeTexture.name)+"_negX."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);		
 				extension="jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveY,cubeTexture.positiveY.rect.width,cubeTexture.positiveY.rect.height))
 					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_posY."+extension));	
+				texturePath="textures/"+getFileName(cubeTexture.name)+"_posY."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);		
 				extension="jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeY,cubeTexture.negativeY.rect.width,cubeTexture.negativeY.rect.height))
 					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_negY."+extension));	
+				texturePath="textures/"+getFileName(cubeTexture.name)+"_negY."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);	
 				extension="jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveZ,cubeTexture.positiveZ.rect.width,cubeTexture.positiveZ.rect.height))
 					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_posZ."+extension));	
+				texturePath="textures/"+getFileName(cubeTexture.name)+"_posZ."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);		
 				extension="jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeZ,cubeTexture.negativeZ.rect.width,cubeTexture.negativeZ.rect.height))
-					extension="png";
-				_blockBody.writeUTF(String("textures/"+getFileName(cubeTexture.name)+"_negZ."+extension));	
-				
+					extension="png";	
+				texturePath="textures/"+getFileName(cubeTexture.name)+"_negZ."+extension;
+				_blockBody.writeUnsignedInt(texturePath.length);
+				_blockBody.writeUTFBytes(texturePath);				
 				
 			}
 			
