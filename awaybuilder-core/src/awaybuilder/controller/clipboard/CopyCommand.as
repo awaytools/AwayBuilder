@@ -38,11 +38,10 @@ package awaybuilder.controller.clipboard
 			var copiedObjects:Vector.<AssetVO> = new Vector.<AssetVO>();
 			for each( var vo:AssetVO in document.selectedAssets )
 			{
-				var asset:MeshVO = vo as MeshVO;
-				if( asset )
+				var objectVO:ObjectVO = vo as ObjectVO;
+				if( objectVO )
 				{
-					var newObject:Object3D = assets.GetObject( asset ) as Object3D;
-					copiedObjects.push( asset.clone() );
+					copiedObjects.push( objectVO );
 				}
 				
 			}

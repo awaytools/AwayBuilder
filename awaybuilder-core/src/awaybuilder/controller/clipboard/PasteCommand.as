@@ -7,13 +7,18 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.controller.clipboard.events.PasteEvent;
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
+	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.ExtraItemVO;
+	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.Scene3DManager;
@@ -22,101 +27,109 @@ package awaybuilder.controller.clipboard
 	
 	import org.robotlegs.mvcs.Command;
 
-	public class PasteCommand extends HistoryCommandBase
+	public class PasteCommand extends Command
 	{
 		[Inject]
 		public var event:PasteEvent;
+		
+		[Inject]
+		public var document:DocumentModel;
 		
 		[Inject]
 		public var assets:AssetsModel;
 		
 		override public function execute():void
 		{
-			if( event.isUndoAction )
+			for each( var copy:AssetVO in document.copiedObjects ) 
 			{
-				undo(); 
-				return;
-			}
-			var asset:AssetVO;
-			var newObjects:Vector.<AssetVO>;
-			if( !event.newValue )
-			{
-				newObjects = new Vector.<AssetVO>();
-				for each( var copy:AssetVO in document.copiedObjects ) 
+				var newAsset:AssetVO;
+				var newId:String;
+				switch( true )
 				{
-					asset = getAssetById( copy.id, document.scene );
-					if( asset is ObjectVO ) 
+					case( copy is SkyBoxVO ):
+						break;
+					case( copy is CameraVO ):
+						break;
+					case( copy is SkyBoxVO ):
+						break;
+					case( copy is LightVO ):
+						break;
+					case( copy is MeshVO ):
+						newAsset = createMesh( copy as MeshVO );
+						dispatch( new SceneEvent( SceneEvent.ADD_NEW_MESH, [], newAsset ) );
+						break;
+					case( copy is ContainerVO ):
+						newAsset = createContainer( copy as ContainerVO );
+						dispatch( new SceneEvent( SceneEvent.ADD_NEW_CONTAINER, [], newAsset ) );
+						break;
+				}
+			}
+		}
+		private function createMesh( copy:MeshVO, parent:ContainerVO=null ):MeshVO
+		{
+			var newAsset:MeshVO = assets.CreateMesh( MeshVO(copy).geometry );
+			var newObject:Object3D = assets.GetObject( newAsset ) as Object3D;
+			if( parent )
+			{
+				var newParentObject:ObjectContainer3D = assets.GetObject( parent ) as ObjectContainer3D;
+				newParentObject.addChild( newObject as ObjectContainer3D );
+			}
+			newAsset.fillFromMesh( MeshVO(copy) );
+			newAsset.children = createChildren( copy, newAsset );
+			newAsset.name += " copy";
+			return newAsset;
+		}
+		private function createContainer( copy:ContainerVO, parent:ContainerVO=null ):ContainerVO
+		{
+			var newAsset:ContainerVO = assets.CreateContainer();
+			var newObject:Object3D = assets.GetObject( newAsset ) as Object3D;
+			if( parent )
+			{
+				var newParentObject:ObjectContainer3D = assets.GetObject( parent ) as ObjectContainer3D;
+				trace( "newParentObject = " + newParentObject.name + " " + newParentObject.numChildren );
+				newParentObject.addChild( newObject as ObjectContainer3D );
+			}
+			newAsset.fillFromContainer( ContainerVO(copy) );
+			newAsset.children = createChildren( copy, newAsset );
+			newAsset.name += " copy";
+			return newAsset;
+		}
+		private function createChildren( copy:ObjectVO, newParent:ContainerVO ):ArrayCollection
+		{
+			if( copy is ContainerVO )
+			{
+				var children:Array = [];
+				var newAsset:AssetVO;
+				for each( var asset:ObjectVO in ContainerVO(copy).children )
+				{
+					switch( true )
 					{
-						var oldObject:Object3D = assets.GetObject( asset ) as Object3D;
-						var newObject:Object3D = oldObject.clone();
-						newObject.name = oldObject.name + " copy";
-						var newAsset:ObjectVO = assets.GetAsset( newObject ) as ObjectVO;
-						newObjects.push( newAsset );
+						case( asset is SkyBoxVO ):
+							break;
+						case( asset is CameraVO ):
+							break;
+						case( asset is SkyBoxVO ):
+							break;
+						case( asset is LightVO ):
+							break;
+						case( asset is MeshVO ):
+							newAsset = createMesh( asset as MeshVO, newParent );
+							break;
+						case( asset is ContainerVO ):
+							newAsset = createContainer( asset as ContainerVO, newParent );
+							break;
+					}
+					if( newAsset )
+					{
+						children.push( newAsset );
 					}
 				}
-				event.newValue = newObjects;
-				
-			}
-			newObjects = event.newValue as Vector.<AssetVO>;
-			for each( asset in newObjects ) 
-			{
-				if( asset is MeshVO ) 
-				{
-					var obj:Object3D =  assets.GetObject( asset ) as Object3D; 
-					document.scene.addItemAt( asset, 0 );
-					Scene3DManager.addObject( obj as ObjectContainer3D );
-				}
+				return new ArrayCollection( children );
 			}
 			
-			commitHistoryEvent( event );
-		}
-		
-		private function undo():void
-		{
-			var objects:Vector.<AssetVO> = event.oldValue as Vector.<AssetVO>;
-			for each( var vo:AssetVO in objects ) {
-				if( vo is MeshVO ) {
-					Scene3DManager.removeMesh( AssetUtil(vo) as Mesh );
-				}
-			}
-			removeItems( document.scene, objects );
-			
-			this.dispatch(new DocumentModelEvent(DocumentModelEvent.OBJECTS_UPDATED));
-		}
-		
-		private function removeItems( source:ArrayCollection, items:Vector.<AssetVO> ):void
-		{
-			for (var i:int = 0; i < source.length; i++) 
-			{
-				var item:AssetVO = source[i] as AssetVO;
-				for each( var oddItem:AssetVO in items ) 
-				{
-					if( item.equals( oddItem ) )
-					{
-						source.removeItemAt( i );
-						i--;
-					}
-				}
-			}
-		}
-		
-		private function getAssetById( id:String, children:ArrayCollection ):AssetVO
-		{
-			for each( var asset:AssetVO in children )
-			{
-				if( asset.id == id )
-				{
-					return asset;
-				}
-				var container:ContainerVO = asset as ContainerVO;
-				if( container && container.children && container.children.length )
-				{
-					var rez:AssetVO = getAssetById( id, container.children );
-					if( rez ) return rez;
-				}
-			}
 			return null;
 		}
+		
 		
 	}
 }

@@ -200,6 +200,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewCubeTextureHandler);
+			addContextListener(SceneEvent.ADD_NEW_MESH, eventDispatcher_addNewMeshHandler);
+			addContextListener(SceneEvent.ADD_NEW_CONTAINER, eventDispatcher_addNewContinerHandler);
 			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
 			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
 			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewShadowMethodHandler);
@@ -804,7 +806,7 @@ package awaybuilder.view.mediators
 		private function applyContainer( asset:ContainerVO ):void
 		{
 			var obj:ObjectContainer3D = assets.GetObject( asset ) as ObjectContainer3D;
-			applyName( obj, asset );
+			applyObject( asset );
 			obj.pivotPoint = new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ );
 			
 			obj.extra = new Object();
@@ -864,6 +866,57 @@ package awaybuilder.view.mediators
 				pointLight.fallOff = asset.fallOff;
 			}
 			
+		}
+		private function applyMesh( asset:MeshVO ):void
+		{
+			var obj:Mesh = assets.GetObject( asset ) as Mesh;
+			applyContainer( asset );
+			obj.castsShadows = asset.castsShadows;
+			obj.geometry = assets.GetObject( asset.geometry ) as Geometry;
+			var animator:AnimatorBase = assets.GetObject( asset.animator ) as AnimatorBase;
+			
+			if( animator is SkeletonAnimator )
+			{
+				var skeletonAnimator:SkeletonAnimator = animator as SkeletonAnimator;
+				var skeletonAnimationSet:SkeletonAnimationSet = skeletonAnimator.animationSet as SkeletonAnimationSet;
+				
+				if( skeletonAnimationSet && skeletonAnimationSet.jointsPerVertex != asset.jointsPerVertex )
+				{
+					var newSkeletonAnimationSet:SkeletonAnimationSet = new SkeletonAnimationSet( asset.jointsPerVertex );
+					
+					for each( var node:AnimationNodeBase in skeletonAnimationSet.animations )
+					{
+						newSkeletonAnimationSet.addAnimation( node );
+					}
+					
+					assets.ReplaceObject( skeletonAnimationSet, newSkeletonAnimationSet ); 
+					
+					var newAnimator:SkeletonAnimator = new SkeletonAnimator( newSkeletonAnimationSet, SkeletonAnimator(animator).skeleton );
+					assets.ReplaceObject( animator, newAnimator ); 
+					
+					skeletonAnimator = newAnimator;
+				}
+				
+				obj.animator = skeletonAnimator;
+			}
+			else if( animator is VertexAnimator )
+			{
+				var vertexAnimator:VertexAnimator = animator as VertexAnimator;
+				obj.animator = vertexAnimator;
+			}
+			else
+			{
+				obj.animator = null;
+			}
+			
+			for( var i:int = 0; i < obj.subMeshes.length; i++ )
+			{
+				assets.ReplaceObject( assets.GetObject( asset.subMeshes.getItemAt(i) as AssetVO ), obj.subMeshes[i] );
+			}
+			for each( var sub:SubMeshVO in asset.subMeshes )
+			{
+				applySubMesh( sub );
+			}
 		}
 		private function applyLightPicker( asset:LightPickerVO ):void
 		{
@@ -1059,73 +1112,39 @@ package awaybuilder.view.mediators
 			}
 		}
 		
-//		private function eventDispatcher_updateMeshMaterialHandler(event:SceneEvent):void
-//		{
-//			for each (var item:ObjectContainer3D in event.items) {
-//				var mVO:MeshVO = assets.GetAsset(item) as MeshVO;
-//				for each( var sub:SubMeshVO in mVO.subMeshes )
-//				{
-//					applySubMesh( sub );
-//				}
-//			}
-//		}
-//		
 		private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
 		{
-			for each( var item:MeshVO in event.items )
+			for each( var asset:MeshVO in event.items )
 			{
-				var obj:Mesh = assets.GetObject( item ) as Mesh;
-				applyContainer( item );
-				obj.castsShadows = item.castsShadows;
-				obj.geometry = assets.GetObject( item.geometry ) as Geometry;
-				var animator:AnimatorBase = assets.GetObject( item.animator ) as AnimatorBase;
-				
-				if( animator is SkeletonAnimator )
-				{
-					var skeletonAnimator:SkeletonAnimator = animator as SkeletonAnimator;
-					var skeletonAnimationSet:SkeletonAnimationSet = skeletonAnimator.animationSet as SkeletonAnimationSet;
-					
-					if( skeletonAnimationSet && skeletonAnimationSet.jointsPerVertex != item.jointsPerVertex )
-					{
-						var newSkeletonAnimationSet:SkeletonAnimationSet = new SkeletonAnimationSet( item.jointsPerVertex );
-						
-						for each( var node:AnimationNodeBase in skeletonAnimationSet.animations )
-						{
-							newSkeletonAnimationSet.addAnimation( node );
-						}
-						
-						assets.ReplaceObject( skeletonAnimationSet, newSkeletonAnimationSet ); 
-						
-						var newAnimator:SkeletonAnimator = new SkeletonAnimator( newSkeletonAnimationSet, SkeletonAnimator(animator).skeleton );
-						assets.ReplaceObject( animator, newAnimator ); 
-						
-						skeletonAnimator = newAnimator;
-					}
-					
-					obj.animator = skeletonAnimator;
-				}
-				else if( animator is VertexAnimator )
-				{
-					var vertexAnimator:VertexAnimator = animator as VertexAnimator;
-					obj.animator = vertexAnimator;
-				}
-				else
-				{
-					obj.animator = null;
-				}
-				
-				
-				for( var i:int = 0; i < obj.subMeshes.length; i++ )
-				{
-					assets.ReplaceObject( assets.GetObject( item.subMeshes.getItemAt(i) as AssetVO ), obj.subMeshes[i] );
-				}
-				for each( var sub:SubMeshVO in item.subMeshes )
-				{
-					applySubMesh( sub );
-				}
+				applyMesh( asset );
 			}
 		}
-		
+		private function updateChildren( children:ArrayCollection ):void
+		{
+			for each( var asset:ObjectVO in children )
+			{
+				switch(true)
+				{
+					case (asset is MeshVO):
+						applyMesh( asset as MeshVO );
+						break;
+					case (asset is LightVO):
+						applyLight( asset as LightVO );
+						break;
+					case (asset is CameraVO):
+						applyCamera( asset as CameraVO );
+						break;
+					case (asset is ContainerVO):
+						applyContainer( asset as ContainerVO );
+						break;
+				}
+				if( asset is ContainerVO )
+				{
+					updateChildren( ContainerVO(asset).children );
+				}
+				
+			}
+		}
 		private function eventDispatcher_addNewLightHandler(event:SceneEvent):void
 		{
 			for each( var asset:LightPickerVO in event.items )
@@ -1190,6 +1209,25 @@ package awaybuilder.view.mediators
 				}
 			}
 		}
+		
+		private function eventDispatcher_addNewContinerHandler(event:SceneEvent):void
+		{
+			var asset:ContainerVO = event.newValue as ContainerVO;
+			if( asset ) 
+			{
+				applyContainer( asset );
+				updateChildren( asset.children );
+			}
+		}
+		private function eventDispatcher_addNewMeshHandler(event:SceneEvent):void
+		{
+			var asset:MeshVO = event.newValue as MeshVO;
+			if( asset ) 
+			{
+				applyMesh( asset );
+				updateChildren( asset.children );
+			}
+		}
 		private function eventDispatcher_addNewCubeTextureHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length ) {
@@ -1222,6 +1260,7 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applyContainer( asset );
+				updateChildren( asset.children );
 			}
 		}
 		

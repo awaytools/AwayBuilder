@@ -29,10 +29,10 @@
 		
 		private function value_changeHandler(event:Event):void 
 		{
-			_asset.matrixStorage = matrixGroup.selectedValue.toString();
-			_asset.geometryStorage = geometryGroup.selectedValue.toString();
-			_asset.propertyStorage = propertiesGroup.selectedValue.toString();
-			_asset.attributesStorage = attributesGroup.selectedValue.toString();
+			_asset.matrixStorage = matrixGroup.selectedValue as String;
+			_asset.geometryStorage = geometryGroup.selectedValue as String;
+			_asset.propertyStorage = propertiesGroup.selectedValue as String;
+			_asset.attributesStorage = attributesGroup.selectedValue as String;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.GLOBAL_OPTIONS_CHANGE, _asset, true));
 		}
 		private function stepper_changeHandler(event:Event):void 
@@ -61,20 +61,20 @@
 	<s:Spacer height="6"/>
 	<s:VGroup width="100%" paddingLeft="10" paddingRight="8" gap="8">
 		<controls:PropertiesItemContainer label="Matrix Storage" width="100%">
-			<s:RadioButton label="Size" group="{matrixGroup}"/>
-			<s:RadioButton label="Precision" group="{matrixGroup}"/>
+			<s:RadioButton label="Size" group="{matrixGroup}" value="Size"/>
+			<s:RadioButton label="Precision" group="{matrixGroup}" value="Precision"/>
 		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="Geometry Storage" width="100%">
-			<s:RadioButton label="Size" group="{geometryGroup}"/>
-			<s:RadioButton label="Precision" group="{geometryGroup}"/>
+			<s:RadioButton label="Size" group="{geometryGroup}" value="Size"/>
+			<s:RadioButton label="Precision" group="{geometryGroup}" value="Precision"/>
 		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="Properties Storage" width="100%">
-			<s:RadioButton label="Size" group="{propertiesGroup}"/>
-			<s:RadioButton label="Precision" group="{propertiesGroup}"/>
+			<s:RadioButton label="Size" group="{propertiesGroup}" value="Size"/>
+			<s:RadioButton label="Precision" group="{propertiesGroup}" value="Precision"/>
 		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="User Attributes Storage" width="100%">
-			<s:RadioButton label="Size" group="{attributesGroup}"/>
-			<s:RadioButton label="Precision" group="{attributesGroup}"/>
+			<s:RadioButton label="Size" group="{attributesGroup}" value="Size"/>
+			<s:RadioButton label="Precision" group="{attributesGroup}" value="Precision"/>
 		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="Compression" width="100%">
 			<s:DropDownList id="compressionDropDownList" requireSelection="true" selectedItem="@{_asset.compression}"

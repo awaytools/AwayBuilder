@@ -1,5 +1,6 @@
 package awaybuilder.controller.document
 {
+	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
 	import away3d.lights.LightBase;
@@ -12,6 +13,7 @@ package awaybuilder.controller.document
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
@@ -52,7 +54,6 @@ package awaybuilder.controller.document
 			document.geometry = new ArrayCollection(document.geometry.source.concat( data.geometry.source ));
 			document.materials = new ArrayCollection(document.materials.source.concat( data.materials.source ));
 			document.scene = new ArrayCollection(document.scene.source.concat( data.scene.source ));
-//			document.skeletons = new ArrayCollection(document.skeletons.source.concat( data.skeletons.source ));
 			document.textures = new ArrayCollection(document.textures.source.concat( data.textures.source ));
 			document.lights = new ArrayCollection(document.lights.source.concat( data.lights.source ));
 			
@@ -154,6 +155,11 @@ package awaybuilder.controller.document
 			if( skyBox ) 
 			{
 				Scene3DManager.addSkybox( assets.GetObject(skyBox) as SkyBox );
+			}
+			var cameraVO:CameraVO = value as CameraVO;
+			if( cameraVO ) 
+			{
+				Scene3DManager.addCamera( assets.GetObject(cameraVO) as Camera3D );
 			}
 		}
 		private function addLight( value:Object ):void

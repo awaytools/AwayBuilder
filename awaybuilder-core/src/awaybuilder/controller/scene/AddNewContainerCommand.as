@@ -7,8 +7,12 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.scene.Scene3DManager;
+	
+	import mx.collections.ArrayCollection;
 
 	public class AddNewContainerCommand extends HistoryCommandBase
 	{

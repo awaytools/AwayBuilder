@@ -8,8 +8,12 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.utils.scene.Scene3DManager;
+	
+	import mx.collections.ArrayCollection;
 
 	public class AddNewMeshCommand extends HistoryCommandBase
 	{
@@ -29,7 +33,7 @@ package awaybuilder.controller.scene
 				document.removeAsset( document.scene, oldValue );
 				Scene3DManager.removeMesh( assets.GetObject(oldValue) as Mesh );
 			}
-			else 
+			else
 			{
 				document.scene.addItemAt( newValue, 0 );
 				Scene3DManager.addObject( assets.GetObject(newValue) as ObjectContainer3D );
