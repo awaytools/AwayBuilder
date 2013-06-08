@@ -5,37 +5,45 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
-
 		import awaybuilder.model.vo.scene.AnimationSetVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
+		import mx.events.CollectionEvent;
+		
 		[Bindable]
-		private var _asset:AnimationSetVO;
+		private var _asset:AnimationSetVO = new AnimationSetVO();
 		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is AnimationSetVO) ) return;
-			_asset = AnimationSetVO(asset).clone();
+			_asset.fillFromAnimationSet(asset as AnimationSetVO);
+			AnimationSetVO(data).animations.addEventListener(CollectionEvent.COLLECTION_CHANGE, childs_collectionChangeEvent, false, 0, true );
+			AnimationSetVO(data).animators.addEventListener(CollectionEvent.COLLECTION_CHANGE, childs_collectionChangeEvent, false, 0, true );
+		}
+		
+		private function childs_collectionChangeEvent(event:CollectionEvent):void 
+		{
+			_asset.fillFromAnimationSet( data as AnimationSetVO );
 		}
 		
 		private function name_changeHandler( event:Event ):void
 		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATRION_SET_STEPPER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ANIMATION_SET_STEPPER_CHANGE, _asset, true));
 		}
 		
 		protected function addButton_clickHandler(event:MouseEvent):void
 		{
-			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATRION_SET_ADD_ANIMATOR ) );
+			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATION_SET_ADD_ANIMATOR ) );
 		}
 		
 		protected function animationsDeleteButton_clickHandler(event:MouseEvent):void
 		{
-			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATRION_SET_REMOVE_ANIMATION, animationsList.selectedItem ) );
+			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATION_SET_REMOVE_ANIMATION, animationsList.selectedItem ) );
 		}
 		
 		protected function deleteButton_clickHandler(event:MouseEvent):void
 		{
-			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATRION_SET_REMOVE_ANIMATOR, animatorsList.selectedItem ) );
+			this.dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.ANIMATION_SET_REMOVE_ANIMATOR, animatorsList.selectedItem ) );
 		}
 		
 	]]></fx:Script>
@@ -55,7 +63,7 @@
 	
 	<s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
 	</s:Form>
 	

@@ -53,7 +53,6 @@ package awaybuilder.view.components.editors
 				validate( _data );
 				IEventDispatcher(_data).addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler )
 			}
-			
 		}
 		
 		private function data_propertyChangeHandler( event:PropertyChangeEvent ):void

@@ -128,7 +128,7 @@
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
-	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
+	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="false">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001"
@@ -177,7 +177,7 @@
 			</s:FormItem>
 		</s:Form>
 	</controls:CollapsiblePanel>
-	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
+	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="false">
 		<s:DataGrid width="100%" id="extrasGrid" dataProvider="{_asset.extras}" focusEnabled="false"
 					editable="true" requestedMinRowCount="4" requestedMaxRowCount="6"
 					selectionColor="0x111111" rollOverColor="0x222222" 

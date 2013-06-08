@@ -40,7 +40,7 @@
 	
 	<s:Form width="100%" height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)" enabled="{!_asset.isDefault}"/>
 		</s:FormItem>
 	</s:Form>
 	

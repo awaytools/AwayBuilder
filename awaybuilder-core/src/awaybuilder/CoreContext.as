@@ -41,6 +41,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.AddNewSkyBoxCommand;
 	import awaybuilder.controller.scene.AddNewTextureCommand;
 	import awaybuilder.controller.scene.AddNewTextureProjectorCommand;
+	import awaybuilder.controller.scene.ChangeAnimationNodeCommand;
 	import awaybuilder.controller.scene.ChangeAnimationSetCommand;
 	import awaybuilder.controller.scene.ChangeAnimatorCommand;
 	import awaybuilder.controller.scene.ChangeCameraCommand;
@@ -55,6 +56,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeShadingMethodCommand;
 	import awaybuilder.controller.scene.ChangeShadowMapperCommand;
 	import awaybuilder.controller.scene.ChangeShadowMethodCommand;
+	import awaybuilder.controller.scene.ChangeSkeletonCommand;
 	import awaybuilder.controller.scene.ChangeSkyBoxCommand;
 	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.ChangeTextureProjectorCommand;
@@ -156,7 +158,10 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_CUBE_TEXTURE, ChangeCubeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE, ChangeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR, ChangeTextureProjectorCommand);
+			
+			commandMap.mapEvent(SceneEvent.CHANGE_SKELETON, ChangeSkeletonCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATOR, ChangeAnimatorCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATION_NODE, ChangeAnimationNodeCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATION_SET, ChangeAnimationSetCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CAMERA, ChangeCameraCommand);
 			

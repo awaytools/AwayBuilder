@@ -181,10 +181,16 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.ANIMATOR_SEEK, view_animatorSeekHandler );
 			addViewListener( PropertyEditorEvent.ANIMATOR_PAUSE, view_animatorPauseHandler );
 			
-			addViewListener( PropertyEditorEvent.ANIMATRION_SET_CHANGE, view_animationSetChangeHandler );
-			addViewListener( PropertyEditorEvent.ANIMATRION_SET_STEPPER_CHANGE, view_animationSetStepperChangeHandler );
-			addViewListener( PropertyEditorEvent.ANIMATRION_SET_ADD_ANIMATOR, view_animationAddAnimatorHandler );
-			addViewListener( PropertyEditorEvent.ANIMATRION_SET_REMOVE_ANIMATOR, view_animationRemoveAnimatorHandler );
+			
+			addViewListener( PropertyEditorEvent.SKELETON_STEPPER_CHANGE, view_skeletonChangeHandler );
+			
+			addViewListener( PropertyEditorEvent.ANIMATION_NODE_CHANGE, view_animationNodeChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATION_NODE_STEPPER_CHANGE, view_animationNodeStepperChangeHandler );
+			
+			addViewListener( PropertyEditorEvent.ANIMATION_SET_CHANGE, view_animationSetChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATION_SET_STEPPER_CHANGE, view_animationSetStepperChangeHandler );
+			addViewListener( PropertyEditorEvent.ANIMATION_SET_ADD_ANIMATOR, view_animationAddAnimatorHandler );
+			addViewListener( PropertyEditorEvent.ANIMATION_SET_REMOVE_ANIMATOR, view_animationRemoveAnimatorHandler );
 			
 			addViewListener( PropertyEditorEvent.SHOW_CHILD_PROPERTIES, view_showChildObjectPropertiesHandler );
 			
@@ -597,6 +603,21 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_LIGHT,[view.data],asset));
 		}
 		
+		private function view_skeletonChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SKELETON,[view.data], event.data, true));
+		}
+		
+		
+		private function view_animationNodeChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_NODE,[view.data], event.data));
+		}
+		private function view_animationNodeStepperChangeHandler(event:PropertyEditorEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_NODE, [view.data], event.data, true));
+		}
+		
 		private function view_animationSetChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET,[view.data], event.data));
@@ -680,11 +701,9 @@ package awaybuilder.view.mediators
 		
 		private function context_simpleUpdateHandler(event:SceneEvent):void
 		{
-			//view.SetData( event.items[0] );
 		}
 		private function context_reparentHandler(event:SceneEvent):void
 		{
-//			view.SetData( view.data );
 		}
 		
         private function context_changeMeshHandler(event:SceneEvent):void
@@ -694,7 +713,6 @@ package awaybuilder.view.mediators
             {
                 subMesh.linkedMaterials = view.materials;
             }
-           // view.SetData( mesh );
         }
 		
 		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void

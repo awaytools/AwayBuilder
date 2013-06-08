@@ -23,11 +23,11 @@ package awaybuilder.model.vo.scene
 		public function clone():AnimationNodeVO
 		{
 			var vo:AnimationNodeVO = new AnimationNodeVO();
-			vo.fillAnimationNode( this );
+			vo.fillFromAnimationNode( this );
 			return vo;
 		}
 		
-		public function fillAnimationNode( asset:AnimationNodeVO ):void
+		public function fillFromAnimationNode( asset:AnimationNodeVO ):void
 		{
 			this.name = asset.name;
 			this.totalDuration = asset.totalDuration;

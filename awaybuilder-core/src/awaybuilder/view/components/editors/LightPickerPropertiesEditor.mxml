@@ -20,16 +20,23 @@
 		import awaybuilder.view.components.controls.events.DroppedEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
+		import mx.events.CollectionEvent;
+		
 		import spark.components.supportClasses.ButtonBase;
 		import spark.events.PopUpEvent;
 		
 		[Bindable]
-		private var _asset:LightPickerVO;
+		private var _asset:LightPickerVO = new LightPickerVO();
 		
-		override protected function validate(asset:Object):void
+		override protected function validate( asset:Object ):void
 		{
-			if( !(asset is LightPickerVO) ) return;
-			_asset = LightPickerVO(asset).clone();
+			if( !(data is LightPickerVO) ) return;
+			LightPickerVO(data).lights.addEventListener(CollectionEvent.COLLECTION_CHANGE, lights_collectionChangeEvent, false, 0, true );
+			_asset.fillLightPicker( data as LightPickerVO );
+		}
+		private function lights_collectionChangeEvent(event:CollectionEvent):void 
+		{
+			_asset.fillLightPicker( data as LightPickerVO );
 		}
 		
 		private function name_changeHandler(event:Event):void 

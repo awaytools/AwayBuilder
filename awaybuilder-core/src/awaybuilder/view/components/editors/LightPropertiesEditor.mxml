@@ -47,6 +47,7 @@
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.collections.ArrayCollection;
+		import mx.events.CollectionEvent;
 		import mx.events.ColorPickerEvent;
 		
 		import spark.components.supportClasses.ButtonBase;
@@ -62,9 +63,17 @@
 		[Bindable]
 		private var _pointMappersSelectedItem:Object;
 		
+		private function childs_collectionChangeEvent(event:CollectionEvent):void 
+		{
+			_asset.fillFromLight( data as LightVO );
+		}
+		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is LightVO) ) return;
+			
+			LightVO(data).shadowMethods.addEventListener(CollectionEvent.COLLECTION_CHANGE, childs_collectionChangeEvent, false, 0, true );
+			
 			_asset = LightVO(asset).clone() as LightVO;
 			
 			var o:Object;
@@ -330,7 +339,7 @@
 				<controls:HorizontalFormSeparator/>
 			</s:HGroup>
 			<s:List id="shadowMethodsList" dataProvider="{_asset.shadowMethods}"
-										  dropEnabled="true" width="100%" 
+										  dropEnabled="true" width="100%"
 										  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" itemRenderer="awaybuilder.view.components.editors.renderers.AssetChildItemRenderer"
 										 />
 			

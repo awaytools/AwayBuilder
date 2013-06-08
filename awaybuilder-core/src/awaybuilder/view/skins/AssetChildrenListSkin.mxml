@@ -141,7 +141,7 @@
                 <!--- The default layout is vertical and measures at least for 5 rows.
              When switching to a different layout, HorizontalLayout for example,
              make sure to adjust the minWidth, minHeight sizes of the skin -->
-                <s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedMinRowCount="3" requestedMaxRowCount="6" />
+                <s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedMinRowCount="4" requestedMaxRowCount="10" />
             </s:layout>
         </s:DataGroup>
     </controls:CrutchScroller>

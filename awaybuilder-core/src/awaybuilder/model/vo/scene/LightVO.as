@@ -66,8 +66,6 @@ package awaybuilder.model.vo.scene
 			
 			this.radius = asset.radius;
 			this.fallOff = asset.fallOff;
-			
-			this.id = asset.id;
 		}
 		
 		public static const DIRECTIONAL:String = "directionalType";

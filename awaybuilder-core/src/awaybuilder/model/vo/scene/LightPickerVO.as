@@ -29,10 +29,13 @@ package awaybuilder.model.vo.scene
 		public function clone():LightPickerVO
 		{
 			var vo:LightPickerVO = new LightPickerVO();
-			vo.name = this.name;
-			vo.lights = new ArrayCollection( this.lights.source.concat() );
-			vo.id = this.id;
+			vo.fillLightPicker( this );
 			return vo;
+		}
+		public function fillLightPicker( asset:LightPickerVO ):void
+		{
+			this.name = asset.name;
+			this.lights = new ArrayCollection( asset.lights.source.concat() );
 		}
 		
 	}

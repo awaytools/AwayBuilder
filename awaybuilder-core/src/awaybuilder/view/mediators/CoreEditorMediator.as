@@ -113,6 +113,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
+    import awaybuilder.model.vo.scene.SkeletonVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureProjectorVO;
@@ -192,6 +193,9 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, eventDispatcher_changeTextureProjectorHandler);
 			addContextListener(SceneEvent.CHANGE_CAMERA, eventDispatcher_changeCameraHandler);
 			addContextListener(SceneEvent.CHANGE_LENS, eventDispatcher_changeLensHandler);
+			addContextListener(SceneEvent.CHANGE_SKELETON, eventDispatcher_changeSkeletonHandler);
+			addContextListener(SceneEvent.CHANGE_ANIMATION_SET, eventDispatcher_changeAnimationSetHandler);
+			addContextListener(SceneEvent.CHANGE_ANIMATION_NODE, eventDispatcher_changeAnimationNodeHandler);
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
 			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
@@ -1278,6 +1282,33 @@ package awaybuilder.view.mediators
 			if( asset ) 
 			{
 				applyCamera( asset );
+			}
+		}
+		private function eventDispatcher_changeAnimationSetHandler(event:SceneEvent):void
+		{
+			var asset:AnimationSetVO = event.items[0] as AnimationSetVO;
+			if( asset ) 
+			{
+				var obj:AnimationSetBase = assets.GetObject( asset ) as AnimationSetBase;
+				applyName( obj, asset );
+			}
+		}
+		private function eventDispatcher_changeAnimationNodeHandler(event:SceneEvent):void
+		{
+			var asset:AnimationNodeVO = event.items[0] as AnimationNodeVO;
+			if( asset ) 
+			{
+				var obj:AnimationNodeBase = assets.GetObject( asset ) as AnimationNodeBase;
+				applyName( obj, asset );
+			}
+		}
+		private function eventDispatcher_changeSkeletonHandler(event:SceneEvent):void
+		{
+			var asset:SkeletonVO = event.items[0] as SkeletonVO;
+			if( asset ) 
+			{
+				var obj:Skeleton = assets.GetObject( asset ) as Skeleton;
+				applyName( obj, asset );
 			}
 		}
 		private function eventDispatcher_changeLensHandler(event:SceneEvent):void
