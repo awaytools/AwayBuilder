@@ -13,6 +13,8 @@
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
+		import mx.collections.ArrayCollection;
+		
 		import spark.events.IndexChangeEvent;
 
         [Bindable]
@@ -20,27 +22,46 @@
 
         [Bindable]
         private var _selectedMaterial:MaterialVO;
+		
+		private var _materials:ArrayCollection;
+
+		[Bindable]
+		public function get materials():ArrayCollection
+		{
+			return _materials;
+		}
+
+		public function set materials(value:ArrayCollection):void
+		{
+			_materials = value;
+			validate();
+		}
 
         override public function set data(value:Object):void 
 		{
             super.data = value;
-			if( !value ) return;
-            _subMesh = value as SubMeshVO;
+            validate();
+        }
+		
+		private function validate():void
+		{
+			if( !data ) return;
+			_subMesh = data as SubMeshVO;
 			_selectedMaterial = null;
 			var materialPresent:Boolean = false;
-            for each(var material:MaterialVO in _subMesh.linkedMaterials) 
+			for each(var material:MaterialVO in materials) 
 			{
-                if( material.equals( _subMesh.material ) ) 
+				if( material.equals( _subMesh.material ) ) 
 				{
-                    _selectedMaterial = material;
+					_selectedMaterial = material;
 					materialPresent = true;
-                }
-            }
+				}
+			}
 			if( !materialPresent )
 			{
 				_selectedMaterial = null;
 			}
-        }
+		}
 
         private function dropDownList1_changeHandler(event:IndexChangeEvent):void 
 		{
@@ -73,7 +94,7 @@
 	
 	<s:HGroup width="100%" paddingBottom="0" paddingTop="2">
 		<controls:ExtendedDropDownList id="dropDownList" width="100%" height="40" skinClass="awaybuilder.view.skins.ExtendedDropDownListSkin"
-									   dataProvider="{_subMesh.linkedMaterials}" selectedItem="{_selectedMaterial}" requireSelection="true"
+									   dataProvider="{materials}" selectedItem="{_selectedMaterial}" requireSelection="true"
 									   change="dropDownList1_changeHandler(event)"
 									   iconFunction="{dropDownIconFunction}" labelField="name" newItemLabel="New Material"
 									   addNewItem="dropDownList_addNewItemHandler(event)"/>

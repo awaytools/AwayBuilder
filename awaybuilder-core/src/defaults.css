@@ -477,11 +477,23 @@ s|DropDownList
     contentBackgroundColor: #333333;
     borderColor: #222222;
 	selectionColor: #090909;
+	rollOverColor:  #222222;
 }
 
 s|DataGrid
 {
 	contentBackgroundColor: #333333;
+	selectionColor: #111111;
+	rollOverColor: #222222;
+}
+s|RadioButton
+{
+	symbolColor: #90BFFF;
+/*	skinClass: ClassReference("awaybuilder.view.skins.ToolBarRadioButtonSkin");*/
+}
+s|CheckBox
+{
+	symbolColor: #90BFFF;
 }
 
 .toolsPanel

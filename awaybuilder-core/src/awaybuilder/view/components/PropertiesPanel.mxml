@@ -123,7 +123,7 @@
 			
 			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global" />
 			
-			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
+			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" materials="{materials}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
 			
 			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
 			

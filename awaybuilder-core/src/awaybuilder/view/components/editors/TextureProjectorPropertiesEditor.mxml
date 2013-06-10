@@ -239,7 +239,6 @@
 	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
 		<s:DataGrid width="100%" id="extrasGrid" dataProvider="{_asset.extras}" focusEnabled="false"
 					editable="true" requestedMinRowCount="4" requestedMaxRowCount="6"
-					selectionColor="0x111111" rollOverColor="0x222222" 
 					gridItemEditorSessionSave="extrasGrid_gridItemEditorSessionSaveHandler(event)">
 			<s:columns> 
 				<s:ArrayList>

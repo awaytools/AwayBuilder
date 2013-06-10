@@ -1725,11 +1725,11 @@ package awaybuilder.view.mediators
 
         private function scene_transformHandler(event:Scene3DManagerEvent):void
         {
-			var dL:DirectionalLight = event.object as DirectionalLight;
-
+			var directionalLight:DirectionalLight = event.object as DirectionalLight;
+			// update model without apply and save. 
 			var originalVO:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
-			var vo:ObjectVO = originalVO.clone() as ObjectVO;
-			var lvo:LightVO = originalVO.clone() as LightVO;
+			var vo:ObjectVO = originalVO as ObjectVO;
+			var lightVO:LightVO = originalVO as LightVO;
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:
@@ -1738,11 +1738,14 @@ package awaybuilder.view.mediators
 					vo.z = event.endValue.z;
                     break;
                 case GizmoMode.ROTATE:
-					if (lvo && dL) {
-						lvo.elevationAngle = Math.round(-Math.asin( dL.direction.y )*180/Math.PI);
-						var a:Number = Math.atan2(dL.direction.x, dL.direction.z )*180/Math.PI;
-						lvo.azimuthAngle = Math.round(a<0?a+360:a);
-					} else {
+					if (lightVO && directionalLight) 
+					{
+						lightVO.elevationAngle = Math.round(-Math.asin( directionalLight.direction.y )*180/Math.PI);
+						var a:Number = Math.atan2(directionalLight.direction.x, directionalLight.direction.z )*180/Math.PI;
+						lightVO.azimuthAngle = Math.round(a<0?a+360:a);
+					} 
+					else 
+					{
 						vo.rotationX = event.endValue.x;
 						vo.rotationY = event.endValue.y;
 						vo.rotationZ = event.endValue.z;
@@ -1755,25 +1758,22 @@ package awaybuilder.view.mediators
                     break;
             }
 
-            if (lvo && dL) this.dispatch(new SceneEvent(SceneEvent.CHANGING,[lvo]));
-			else this.dispatch(new SceneEvent(SceneEvent.CHANGING,[vo]));
         }
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
-			var vo:ObjectVO;
-            vo = assets.GetAsset( event.object ) as ObjectVO;
+			var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
 
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:
-                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], event.endValue));
+                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], event.endValue, false, event.startValue));
                     break;
                 case GizmoMode.ROTATE:
-                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo],event.endValue));
+                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo],event.endValue, false, event.startValue));
                     break;
                 default:
-                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],event.endValue));
+                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],event.endValue, false, event.startValue));
                     break;
             }
         }

@@ -20,7 +20,5 @@ package awaybuilder.model.vo.scene
 		
 		public var parentMesh:MeshVO;
 		
-	    public var linkedMaterials:ArrayCollection;
-	
 	}
 }

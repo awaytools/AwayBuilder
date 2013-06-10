@@ -9,7 +9,6 @@ import flash.events.Event;
 		public static const FOCUS_SELECTION:String = "focusOnSelection";
 		
 		public static const SELECT:String = "sceneItemSelect";
-        public static const CHANGING:String = "sceneItemChanging";
         public static const TRANSLATE_OBJECT:String = "translateObject";
         public static const ROTATE_OBJECT:String = "rotateObject";
         public static const SCALE_OBJECT:String = "scaleObject";

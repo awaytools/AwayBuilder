@@ -27,12 +27,12 @@
 		import spark.events.IndexChangeEvent;
 
 		[Bindable]
-		private var _asset:MeshVO;
+		private var _asset:MeshVO = new MeshVO();
 		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is MeshVO) ) return;
-			if( asset is MeshVO ) _asset = MeshVO(asset).clone() as MeshVO;
+			_asset.fillFromMesh( asset as MeshVO );
 		}
 
         private function position_commitHandler(event:Event):void 
@@ -127,7 +127,6 @@
 		
 		protected function animatorDropDownList_changeHandler(event:IndexChangeEvent):void
 		{
-			trace( "animatorDropDownList_changeHandler = " + animatorDropDownList_changeHandler );
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
 		}
 		
@@ -141,7 +140,8 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.animator));
 		}
 		
-		public function animatorDropDownLabelFunction(item:AnimatorVO):String {
+		public function animatorDropDownLabelFunction(item:AnimatorVO):String 
+		{
 			if( item ) return item.name;
 			return "Null"; 
 		}
@@ -171,11 +171,14 @@
 	
     <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
 		<s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+			<s:layout>
+				<s:FormLayout paddingLeft="-10"/>
+			</s:layout>
 			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
 			</s:FormItem>
 		</s:Form>
-		<controls:PropertiesItemContainer label="Geometry" width="100%">
+		<controls:PropertiesItemContainer label="Geometry" width="100%" paddingTop="6">
 			<s:DropDownList id="geometryDropDownList" requireSelection="true" labelField="name"
 							change="geometryDropDownList_changeHandler(event)" width="100%"
 							selectedItem="@{_asset.geometry}" dataProvider="{geometry}"/>
@@ -214,12 +217,11 @@
         </s:Form>
     </controls:CollapsiblePanel>
     <controls:CollapsiblePanel width="100%" title="Materials" collapsed="false">
-        <s:List dataProvider="{_asset.subMeshes}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
+        <controls:SubMeshesList dataProvider="{_asset.subMeshes}" materials="{materials}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
     </controls:CollapsiblePanel>
 	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
 		<s:DataGrid width="100%" id="extrasGrid" dataProvider="{_asset.extras}" focusEnabled="false"
 					editable="true" requestedMinRowCount="4" requestedMaxRowCount="6"
-					selectionColor="0x111111" rollOverColor="0x222222" 
 					gridItemEditorSessionSave="extrasGrid_gridItemEditorSessionSaveHandler(event)">
 			<s:columns> 
 				<s:ArrayList>

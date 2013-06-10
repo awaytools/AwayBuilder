@@ -104,6 +104,18 @@ package awaybuilder.view.components.editors
 			_geometry = value;
 		}
 		
+		private var _materials:ArrayCollection;
+		[Bindable]
+		public function get materials():ArrayCollection
+		{
+			return _materials;
+		}
+		public function set materials(value:ArrayCollection):void
+		{
+			_materials = value;
+		}
+		
+		
 		private var _animators:ArrayCollection;
 		[Bindable]
 		public function get animators():ArrayCollection

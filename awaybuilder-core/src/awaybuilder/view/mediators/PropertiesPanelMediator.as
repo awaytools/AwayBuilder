@@ -52,30 +52,6 @@ package awaybuilder.view.mediators
         override public function onRegister():void
         {
             addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
-            addContextListener(SceneEvent.CHANGING, context_simpleUpdateHandler);
-            addContextListener(SceneEvent.TRANSLATE_OBJECT, context_simpleUpdateHandler);
-            addContextListener(SceneEvent.SCALE_OBJECT, context_simpleUpdateHandler);
-            addContextListener(SceneEvent.ROTATE_OBJECT, context_simpleUpdateHandler);
-            addContextListener(SceneEvent.CHANGE_MESH, context_changeMeshHandler);
-			addContextListener(SceneEvent.CHANGE_CONTAINER, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_GEOMETRY, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_LIGHT, context_simpleUpdateHandler);
-            addContextListener(SceneEvent.CHANGE_MATERIAL, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_SHADING_METHOD, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_SHADOW_METHOD, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_SHADOW_MAPPER, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_CUBE_TEXTURE, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_TEXTURE, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_GLOBAL_OPTIONS, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_EFFECT_METHOD, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_SKYBOX, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_TEXTURE_PROJECTOR, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_CAMERA, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_LENS, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_ANIMATOR, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_ANIMATION_SET, context_simpleUpdateHandler);
-			addContextListener(SceneEvent.CHANGE_ANIMATION_NODE, context_simpleUpdateHandler);
 			addContextListener(SceneEvent.REPARENT_LIGHTS, context_reparentHandler);
 			addContextListener(SceneEvent.REPARENT_ANIMATIONS, context_reparentHandler);
 			
@@ -90,8 +66,8 @@ package awaybuilder.view.mediators
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
 			addContextListener(SceneEvent.DELETE, context_deleteHandler);
 			
-			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler, null, false, -1000);
-			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler, null, false, -1000);
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
@@ -699,21 +675,9 @@ package awaybuilder.view.mediators
         //----------------------------------------------------------------------
 
 		
-		private function context_simpleUpdateHandler(event:SceneEvent):void
-		{
-		}
 		private function context_reparentHandler(event:SceneEvent):void
 		{
 		}
-		
-        private function context_changeMeshHandler(event:SceneEvent):void
-        {
-            var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
-            for each( var subMesh:SubMeshVO in  mesh.subMeshes )
-            {
-                subMesh.linkedMaterials = view.materials;
-            }
-        }
 		
 		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
 		{
@@ -741,12 +705,12 @@ package awaybuilder.view.mediators
 		{
 			if( event.items && event.items.length )
 			{
-				var subMesh:SubMeshVO = SubMeshVO( event.items[0] );
-				var mesh:MeshVO = subMesh.parentMesh as MeshVO;
-				for each( var o:SubMeshVO in mesh.subMeshes )
-				{
-					subMesh.linkedMaterials = view.materials;
-				}
+//				var subMesh:SubMeshVO = SubMeshVO( event.items[0] );
+//				var mesh:MeshVO = subMesh.parentMesh as MeshVO;
+//				for each( var o:SubMeshVO in mesh.subMeshes )
+//				{
+//					subMesh.linkedMaterials = view.materials;
+//				}
 				
 //				view.SetData(mesh);
 			}
@@ -773,12 +737,7 @@ package awaybuilder.view.mediators
                 {
                     if( event.items[0] is MeshVO )
                     {
-                        var mesh:MeshVO = MeshVO( event.items[0] ) as MeshVO;
-                        for each( var subMesh:SubMeshVO in  mesh.subMeshes )
-                        {
-                            subMesh.linkedMaterials = view.materials; // TODO
-                        }
-						view.showEditor( "mesh", event.newValue, event.oldValue, mesh );
+						view.showEditor( "mesh", event.newValue, event.oldValue, event.items[0] );
                     }
 					else if( event.items[0] is SkyBoxVO )
 					{
@@ -1004,7 +963,6 @@ package awaybuilder.view.mediators
 			var skeletons:Array = [];
 			for each( asset in document.animations )
 			{
-				
 				if( asset is AnimationSetVO ) 
 				{
 					if( AnimationSetVO( asset ).type == "SkeletonAnimationSet" )
@@ -1033,7 +991,8 @@ package awaybuilder.view.mediators
 			view.skeletonsAnimationSets = new ArrayCollection(skeletonsAnimationSets);
 			view.skeletons = new ArrayCollection(skeletons);
 			
-			var materials:ArrayCollection = new ArrayCollection( document.materials.source.concat() );
+			var materials:ArrayCollection = new ArrayCollection();
+			materials.addAll( document.materials );
 			materials.addItemAt( assets.defaultMaterial, 0 );
 			view.materials = materials;
 		}
