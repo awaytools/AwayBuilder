@@ -35,27 +35,19 @@
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
-			<s:Move target="{panelImage}" duration="400" xBy="-225" xTo="-225" />
-			<s:Move target="{panelsContainer}" duration="400" xBy="-225" xTo="0" />
+			<s:Move target="{panelImage}" duration="400" xBy="-235" xTo="-235" />
+			<s:Move target="{panelsContainer}" duration="400" xBy="-235" xTo="0" />
 		</s:Parallel>
 		<s:Parallel id="prevTransitionEffect" >
-			<s:Move target="{panelImage}" duration="400" xBy="225" xTo="225" />
-			<s:Move target="{panelsContainer}" duration="400" xBy="225" xTo="0" />
+			<s:Move target="{panelImage}" duration="400" xBy="235" xTo="235" />
+			<s:Move target="{panelsContainer}" duration="400" xBy="235" xTo="0" />
 		</s:Parallel>
 	</fx:Declarations>
     <fx:Script><![CDATA[
 		import mx.collections.ArrayCollection;
 
-		private var _prevSelected:ArrayCollection = new ArrayCollection(); 
 		[Bindable]
-		public function set prevSelected( value:ArrayCollection ): void
-		{
-			this._prevSelected = value;
-		}
-		public function get prevSelected(): ArrayCollection
-		{
-			return this._prevSelected;
-		}
+		public var prevSelected:ArrayCollection = new ArrayCollection(); 
 		
 		[Bindable]
 		public var data:Object;
@@ -74,12 +66,6 @@
 		
 		[Bindable]
 		public var animators:ArrayCollection;
-		
-		[Bindable]
-		public var vertexAnimationSets:ArrayCollection;
-		
-		[Bindable]
-		public var skeletonsAnimationSets:ArrayCollection;
 		
 		[Bindable]
 		public var skeletons:ArrayCollection;
@@ -118,15 +104,9 @@
 	
 	<controls:PanelImage id="panelImage" includeInLayout="false" width="0"/>
 	
-	<controls:CrutchScroller id="panelsContainer" width="225" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
-		<s:Group width="225">
-			
-			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global" />
-			
+	<controls:CrutchScroller id="panelsContainer" width="100%" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
+		<s:Group width="100%">
 			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" materials="{materials}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
-			
-			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
-			
 			<editors:MaterialPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{data}" includeIn="material,initAll"/>
 			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="texture,initAll" />
 			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="cubeTexture,initAll" />
@@ -142,10 +122,14 @@
 			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{data}" includeIn="textureProjector,initAll"/>
 			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="animationSet,initAll"/>
 			<editors:AnimationNodePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="animationNode,initAll"/>
-			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" vertexAnimationSets="{vertexAnimationSets}" skeletonsAnimationSets="{skeletonsAnimationSets}" data="{data}" includeIn="animator,initAll"/>
+			<editors:AnimatorPropertiesEditor prevSelected="{prevSelected}" skeletons="{skeletons}" data="{data}" includeIn="animator,initAll"/>
 			<editors:SkeletonPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="skeleton,initAll"/>
 			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="camera,initAll"/>
 			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="lens,initAll"/>
+			
+			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
+			
+			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

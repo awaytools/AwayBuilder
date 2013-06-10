@@ -52,17 +52,6 @@ package awaybuilder.view.mediators
         override public function onRegister():void
         {
             addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
-			addContextListener(SceneEvent.REPARENT_LIGHTS, context_reparentHandler);
-			addContextListener(SceneEvent.REPARENT_ANIMATIONS, context_reparentHandler);
-			
-			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
-			addContextListener(SceneEvent.ADD_NEW_CUBE_TEXTURE, eventDispatcher_addNewTextureHandler);
-			addContextListener(SceneEvent.ADD_NEW_MATERIAL, eventDispatcher_addNewMaterialToSubmeshHandler);
-			addContextListener(SceneEvent.ADD_NEW_LIGHTPICKER, eventDispatcher_addNewLightpickerToMaterialHandler);
-			addContextListener(SceneEvent.ADD_NEW_LIGHT, eventDispatcher_addNewLightToLightpickerHandler);
-			addContextListener(SceneEvent.ADD_NEW_SHADOW_METHOD, eventDispatcher_addNewMethodHandler);
-			addContextListener(SceneEvent.ADD_NEW_EFFECT_METHOD, eventDispatcher_addNewMethodHandler);
-			
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
 			addContextListener(SceneEvent.DELETE, context_deleteHandler);
 			
@@ -156,7 +145,6 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.ANIMATOR_STOP, view_animatorStopHandler );
 			addViewListener( PropertyEditorEvent.ANIMATOR_SEEK, view_animatorSeekHandler );
 			addViewListener( PropertyEditorEvent.ANIMATOR_PAUSE, view_animatorPauseHandler );
-			
 			
 			addViewListener( PropertyEditorEvent.SKELETON_STEPPER_CHANGE, view_skeletonChangeHandler );
 			
@@ -675,55 +663,6 @@ package awaybuilder.view.mediators
         //----------------------------------------------------------------------
 
 		
-		private function context_reparentHandler(event:SceneEvent):void
-		{
-		}
-		
-		private function eventDispatcher_addNewLightpickerToMaterialHandler(event:SceneEvent):void
-		{
-			if( event.items && event.items.length )
-			{
-//				view.SetData(event.items[0]);
-			}
-		}
-		private function eventDispatcher_addNewLightToLightpickerHandler(event:SceneEvent):void
-		{
-			if( event.items && event.items.length )
-			{
-//				view.SetData(event.items[0]);
-			}
-		}
-		
-		private function eventDispatcher_addNewMethodHandler(event:SceneEvent):void
-		{
-			if( event.items && event.items.length )
-			{
-//				view.SetData(event.items[0]);
-			}
-		}
-		private function eventDispatcher_addNewMaterialToSubmeshHandler(event:SceneEvent):void
-		{
-			if( event.items && event.items.length )
-			{
-//				var subMesh:SubMeshVO = SubMeshVO( event.items[0] );
-//				var mesh:MeshVO = subMesh.parentMesh as MeshVO;
-//				for each( var o:SubMeshVO in mesh.subMeshes )
-//				{
-//					subMesh.linkedMaterials = view.materials;
-//				}
-				
-//				view.SetData(mesh);
-			}
-		}
-		
-		private function eventDispatcher_addNewTextureHandler(event:SceneEvent):void
-		{
-			updateLists();
-			if( event.items && event.items.length )
-			{
-//				view.SetData(event.items[0]);
-			}
-		}
         private function context_itemsSelectHandler(event:SceneEvent):void
         {
             if( !event.items || event.items.length == 0)
@@ -926,7 +865,6 @@ package awaybuilder.view.mediators
 				}
 			}
 			view.lightPickers = new ArrayCollection(pickers);
-//			view.lights = new ArrayCollection(lights);
 			
 			var nullableTextures:Array = [nullTextureItem, assets.defaultTexture];
 			var defaultableTextures:Array = [assets.defaultTexture];
@@ -958,21 +896,11 @@ package awaybuilder.view.mediators
 			view.geometry = new ArrayCollection(geometry);
 			
 			var animators:Array = [null];
-			var vertexAnimationSets:Array = [];
-			var skeletonsAnimationSets:Array = [];
 			var skeletons:Array = [];
 			for each( asset in document.animations )
 			{
 				if( asset is AnimationSetVO ) 
 				{
-					if( AnimationSetVO( asset ).type == "SkeletonAnimationSet" )
-					{
-						skeletonsAnimationSets.push( asset );
-					}
-					if( AnimationSetVO( asset ).type == "VertexAnimationSet" )
-					{
-						vertexAnimationSets.push( asset );
-					}
 					
 					for each( var animator:AnimatorVO in AnimationSetVO(asset).animators )
 					{
@@ -987,8 +915,6 @@ package awaybuilder.view.mediators
 			}
 			view.animators = new ArrayCollection(animators);
 			
-			view.vertexAnimationSets = new ArrayCollection(vertexAnimationSets);
-			view.skeletonsAnimationSets = new ArrayCollection(skeletonsAnimationSets);
 			view.skeletons = new ArrayCollection(skeletons);
 			
 			var materials:ArrayCollection = new ArrayCollection();

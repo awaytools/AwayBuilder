@@ -40,7 +40,8 @@
             var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
         }
-		private function pivot_commitHandler(event:Event):void {
+		private function pivot_commitHandler(event:Event):void 
+		{
 			_asset.pivotX = pivotXStepper.value;
 			_asset.pivotY = pivotYStepper.value;
 			_asset.pivotZ = pivotZStepper.value;
@@ -172,7 +173,7 @@
     <controls:CollapsiblePanel width="100%" title="General" collapsed="false">
 		<s:Form height="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:layout>
-				<s:FormLayout paddingLeft="-10"/>
+				<s:FormLayout paddingLeft="-10" paddingTop="-2"/>
 			</s:layout>
 			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>

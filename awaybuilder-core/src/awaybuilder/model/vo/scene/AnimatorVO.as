@@ -14,7 +14,7 @@ package awaybuilder.model.vo.scene
 		public var skeleton:SkeletonVO;
 		
 		[Transient]
-		public var activeAnimationNodeName:String;
+		public var activeAnimationNode:AnimationNodeVO;
 		
 		public function clone():AnimatorVO
 		{

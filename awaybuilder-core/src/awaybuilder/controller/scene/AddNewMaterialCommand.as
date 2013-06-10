@@ -38,7 +38,6 @@ package awaybuilder.controller.scene
 			else 
 			{
 				document.materials.addItemAt( newMaterial, 0 );
-				trace( "execute document.materials = " + document.materials );
 			}
 			
 			commitHistoryEvent( event );

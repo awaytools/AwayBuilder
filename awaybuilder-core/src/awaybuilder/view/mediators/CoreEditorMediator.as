@@ -372,7 +372,7 @@ package awaybuilder.view.mediators
 			animator.updatePosition = false;
 			event.animation.isPlaying = true;
 			
-			if( event.animation.name == event.animator.activeAnimationNodeName )
+			if( event.animation == event.animator.activeAnimationNode )
 			{
 				animator.start();
 			}
@@ -386,7 +386,7 @@ package awaybuilder.view.mediators
 						VertexAnimator(animator).play(event.animation.name, null, event.animation.currentPosition);
 						break;
 				}
-				event.animator.activeAnimationNodeName = event.animation.name;
+				event.animator.activeAnimationNode = event.animation;
 			}
 			
 			_currentAnimation = event.animation;
@@ -442,7 +442,7 @@ package awaybuilder.view.mediators
 					break;
 			}
 			event.animation.isPlaying = false;
-			if( event.animation.name != event.animator.activeAnimationNodeName )
+			if( event.animation != event.animator.activeAnimationNode )
 			{
 				switch (event.animator.type){
 					case "SkeletonAnimator":
@@ -453,7 +453,7 @@ package awaybuilder.view.mediators
 						break;
 				}
 				animator.stop();
-				event.animator.activeAnimationNodeName = event.animation.name;
+				event.animator.activeAnimationNode = event.animation;
 			}
 			
 			_currentAnimation = event.animation;

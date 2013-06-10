@@ -18,18 +18,12 @@
 		import spark.events.IndexChangeEvent;
 		
 		[Bindable]
-		public var vertexAnimationSets:ArrayCollection;
-		
-		[Bindable]
-		public var skeletonsAnimationSets:ArrayCollection;
-		
-		[Bindable]
-		private var _asset:AnimatorVO;
+		private var _asset:AnimatorVO = new AnimatorVO();
 		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is AnimatorVO) ) return;
-			_asset = AnimatorVO(asset).clone();
+			_asset.fillFromAnimator( asset as AnimatorVO );
 		}
 		
 		private function stepper_changeHandler( event:Event ):void
@@ -90,7 +84,7 @@
 		<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="skeletons_clickHandler(event)" />
 	</controls:PropertiesItemContainer>
 	<controls:PropertiesItemContainer label="Animations" width="100%" paddingTop="8" paddingLeft="10" paddingRight="8">
-		<s:List id="animationsList" dataProvider="{_asset.animationSet.animations}"
+		<s:List id="animationsList" dataProvider="{_asset.animationSet.animations}" selectedItem="{_asset.activeAnimationNode}"
 				change="animationsList_changeHandler(event)"
 				width="100%" 
 				skinClass="awaybuilder.view.skins.AnimationsListSkin"

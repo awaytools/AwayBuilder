@@ -21,7 +21,8 @@ package awaybuilder.view.components.editors
 			l.gap = 0;
 			l.horizontalAlign = "center";
 			layout = l;
-			width = 225;
+			percentWidth = 100;
+			minWidth = 225;
 		}
 		
 		private var _propertiesChanged:Boolean = false;

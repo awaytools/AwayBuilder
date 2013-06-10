@@ -362,7 +362,7 @@
 			
 		]]>
 	</fx:Script>
-	<s:VGroup width="225" height="100%" gap="0">
+	<s:VGroup width="235" height="100%" gap="0">
 		<controls:LibraryCollapsiblePanel id="scenePanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Scene Objects" width="100%" collapsed="false" height="100%" addEnabled="true"
 								   addNewItem="scenePanel_addNewItemHandler(event)"

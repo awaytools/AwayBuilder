@@ -108,7 +108,7 @@
 			more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
 			-->
 			<!--- @copy spark.components.SkinnableContainer#contentGroup -->
-			<s:Group id="contentGroup" width="225" height="100%" minWidth="0" minHeight="0" clipAndEnableScrolling="true"
+			<s:Group id="contentGroup" width="235" height="100%" minWidth="0" minHeight="0" clipAndEnableScrolling="true"
 					 includeInLayout.collapsed="false" x.collapsed="10">
 			</s:Group>
 			
