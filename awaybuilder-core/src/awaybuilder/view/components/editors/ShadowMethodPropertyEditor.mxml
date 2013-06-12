@@ -31,22 +31,23 @@
 		import spark.events.IndexChangeEvent;
 		
 		[Bindable]
-		private var _asset:ShadowMethodVO;
+		private var _asset:ShadowMethodVO = new ShadowMethodVO();
 		
 		[Bindable] private var _selectedBaseMethod:Object;
 		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is ShadowMethodVO) ) return;
-			_asset = ShadowMethodVO(asset).clone();
+			_asset.fillFromShadowMethod( asset as ShadowMethodVO );
 			
-			var item:Object;
-			
-			for each(item in baseList) 
+			if( _asset.baseMethod )
 			{
-				if( item.value == _asset.baseMethod.type ) 
+				for each(var item:Object in baseList) 
 				{
-					_selectedBaseMethod = item;
+					if( item.value == _asset.baseMethod.type ) 
+					{
+						_selectedBaseMethod = item;
+					}
 				}
 			}
 		}

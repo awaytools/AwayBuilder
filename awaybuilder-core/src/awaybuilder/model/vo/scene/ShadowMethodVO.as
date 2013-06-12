@@ -28,16 +28,20 @@ package awaybuilder.model.vo.scene
 		public function clone():ShadowMethodVO
 		{
 			var vo:ShadowMethodVO = new ShadowMethodVO();
-			vo.name = this.name;
-			vo.id = this.id;
-			vo.type = this.type;
-			vo.epsilon = this.epsilon;
-			vo.alpha = this.alpha;
-			vo.samples = this.samples;
-			vo.range = this.range;
-			vo.baseMethod = this.baseMethod;
-			vo.isBaseOfShadowMethod = this.isBaseOfShadowMethod;
+			vo.fillFromShadowMethod( this );
 			return vo;
+		}
+		
+		public function fillFromShadowMethod( asset:ShadowMethodVO ):void
+		{
+			this.name = asset.name;
+			this.type = asset.type;
+			this.epsilon = asset.epsilon;
+			this.alpha = asset.alpha;
+			this.samples = asset.samples;
+			this.range = asset.range;
+			this.baseMethod = asset.baseMethod;
+			this.isBaseOfShadowMethod = asset.isBaseOfShadowMethod;
 		}
 
 		public static const FILTERED_SHADOW_MAP_METHOD:String = "FilteredShadowMapMethod";

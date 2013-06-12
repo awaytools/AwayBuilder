@@ -531,7 +531,13 @@ controls|PropertiesItemContainer
 controls|SparkColorPicker
 {
 	skinClass: ClassReference("awaybuilder.view.skins.ColorPickerListSkin");
+	color: #000000;
 }
+mx|ColorPicker
+{
+	color: #000000;
+}
+	
 controls|ExtendedDropDownList
 {
 	skinClass: ClassReference("awaybuilder.view.skins.ExtendedDropDownListSkin");
