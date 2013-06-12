@@ -1,5 +1,7 @@
 package awaybuilder.view.mediators
 {
+    import awaybuilder.view.scene.representations.ISceneRepresentation;
+    import awaybuilder.view.scene.controls.CameraGizmo3D;
     import away3d.animators.AnimationSetBase;
     import away3d.animators.AnimatorBase;
     import away3d.animators.SkeletonAnimationSet;
@@ -225,6 +227,7 @@ package awaybuilder.view.mediators
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ZOOM_TO_DISTANCE, eventDispatcher_zoomToDistanceHandler);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_itemSwitchesToRotateMode);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_itemSwitchesToTranslateMode);
+            Scene3DManager.instance.addEventListener(Scene3DManagerEvent.SWITCH_CAMERA_TRANSFORMS, eventDispatcher_itemSwitchesToCameraTransformMode);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES, eventDispatcher_enableAllTransformModes);
             Scene3DManager.instance.addEventListener(Scene3DManagerEvent.UPDATE_BREADCRUMBS, eventDispatcher_updateBreadcrumbs);
 			Scene3DManager.init( view.viewScope );
@@ -1116,6 +1119,17 @@ package awaybuilder.view.mediators
 			}
 		}
 		
+//		private function eventDispatcher_updateMeshMaterialHandler(event:SceneEvent):void
+//		{
+//			for each (var item:ObjectContainer3D in event.items) {
+//				var mVO:MeshVO = assets.GetAsset(item) as MeshVO;
+//				for each( var sub:SubMeshVO in mVO.subMeshes )
+//				{
+//					applySubMesh( sub );
+//				}
+//			}
+//		}
+//		
 		private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
 		{
 			for each( var asset:MeshVO in event.items )
@@ -1592,6 +1606,11 @@ package awaybuilder.view.mediators
 						var light:LightVO = event.items[0] as LightVO;
 						selectLightsScene( assets.GetObject( light ) as LightBase );
 					}
+					else if( event.items[0] is CameraVO )
+					{
+						var camera:CameraVO = event.items[0] as CameraVO;
+						selectCamerasScene( assets.GetObject( camera ) as Camera3D );
+					}
 					else {
                         Scene3DManager.unselectAll();
 					}
@@ -1654,6 +1673,17 @@ package awaybuilder.view.mediators
 				}
 			}
 		}
+		private function selectCamerasScene( cM:Camera3D ):void
+		{
+			for each( var cameraGizmo:CameraGizmo3D in Scene3DManager.cameraGizmos )
+			{
+				if( cameraGizmo.sceneObject == cM )
+				{
+					selectObjectsScene(cameraGizmo.representation);
+					return;
+				}
+			}
+		}
         private function eventDispatcher_itemsFocusHandler(event:SceneEvent):void
         {
 			if( CameraManager.mode == CameraMode.FREE )
@@ -1693,23 +1723,16 @@ package awaybuilder.view.mediators
 			var selected:Array = [];
 			var mesh:Mesh;
 			var asset:AssetVO;
-			var isLight:LightGizmo3D;
-			var isContainer:ContainerGizmo3D;
-			var isTextureProjector:TextureProjectorGizmo3D;
+			var isSceneRepresentation:ISceneRepresentation;
 				
 			for each( var item:Object in Scene3DManager.selectedObjects.source )
 			{
 				mesh = item as Mesh;
 				if( mesh ) 
 				{
-					if ((isContainer = (mesh.parent as ContainerGizmo3D))!=null)
-						asset = assets.GetAsset(isContainer.sceneObject);
-					else if ((isLight = (mesh.parent as LightGizmo3D))!=null)
-						asset = assets.GetAsset(isLight.sceneObject);
-					else if ((isTextureProjector = (mesh.parent as TextureProjectorGizmo3D))!=null)
-						asset = assets.GetAsset(isTextureProjector.sceneObject);
-					else
-						asset = assets.GetAsset(mesh);
+					if ((isSceneRepresentation = (mesh.parent as ISceneRepresentation))!=null)
+						asset = assets.GetAsset(isSceneRepresentation.sceneObject);
+					else asset = assets.GetAsset(mesh);
 					selected.push(asset);
 				}
 			} 
@@ -1757,7 +1780,6 @@ package awaybuilder.view.mediators
 					vo.scaleZ = event.endValue.z;
                     break;
             }
-
         }
 
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
@@ -1780,21 +1802,34 @@ package awaybuilder.view.mediators
 
         private function eventDispatcher_itemSwitchesToRotateMode(event:Scene3DManagerEvent):void
         {
-			var sE:SceneEvent = new SceneEvent(SceneEvent.SWITCH_TRANSFORM_ROTATE);
+			Scene3DManager.setTransformMode(GizmoMode.ROTATE);
+
+			var sE:SceneEvent = new SceneEvent(SceneEvent.ENABLE_TRANSFORM_MODES);
 			sE.options = SceneEvent.ENABLE_ROTATE_MODE_ONLY;
 			this.dispatch(sE);
 		}
 
         private function eventDispatcher_itemSwitchesToTranslateMode(event:Scene3DManagerEvent):void
         {
-			var sE:SceneEvent = new SceneEvent(SceneEvent.SWITCH_TRANSFORM_TRANSLATE);
+			Scene3DManager.setTransformMode(GizmoMode.TRANSLATE);
+
+			var sE:SceneEvent = new SceneEvent(SceneEvent.ENABLE_TRANSFORM_MODES);
 			sE.options = SceneEvent.ENABLE_TRANSLATE_MODE_ONLY;
+			this.dispatch(sE);
+		}
+		
+		private function eventDispatcher_itemSwitchesToCameraTransformMode(event:Scene3DManagerEvent):void
+        {
+			if (Scene3DManager.currentGizmo == Scene3DManager.scaleGizmo) Scene3DManager.setTransformMode(GizmoMode.TRANSLATE);
+			
+			var sE:SceneEvent = new SceneEvent(SceneEvent.ENABLE_TRANSFORM_MODES);
+			sE.options = SceneEvent.DISABLE_SCALE_MODE;
 			this.dispatch(sE);
 		}
 
         private function eventDispatcher_enableAllTransformModes(event:Scene3DManagerEvent):void
         {
-			this.dispatch(new SceneEvent(SceneEvent.ENABLE_ALL_TRANSFORM_MODES));
+			this.dispatch(new SceneEvent(SceneEvent.ENABLE_TRANSFORM_MODES));
 		}
 
         private function eventDispatcher_updateBreadcrumbs(event:Scene3DManagerEvent):void

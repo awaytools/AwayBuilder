@@ -1,11 +1,11 @@
 package awaybuilder.view.scene.controls
 {
+	import awaybuilder.view.scene.representations.ISceneRepresentation;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
 	import away3d.materials.ColorMaterial;
-	import away3d.primitives.ConeGeometry;
 	import away3d.primitives.CubeGeometry;
 	import away3d.primitives.CylinderGeometry;
 	
@@ -36,9 +36,6 @@ package awaybuilder.view.scene.controls
 		private var actualMesh:ObjectContainer3D;
 		
 		private var startValue:Vector3D;
-		private var endValue:Vector3D;	
-		
-		private var initPosition:Vector3D;
 		
 		public function ScaleGizmo3D()
 		{
@@ -210,8 +207,7 @@ package awaybuilder.view.scene.controls
 		{
 			currentAxis = e.target.name;
 			
-			if (currentMesh.parent is ContainerGizmo3D) actualMesh = (currentMesh.parent as ContainerGizmo3D).sceneObject;
-			else if (currentMesh.parent is TextureProjectorGizmo3D) actualMesh = (currentMesh.parent as TextureProjectorGizmo3D).sceneObject;
+			if (currentMesh.parent is ISceneRepresentation) actualMesh = (currentMesh.parent as ISceneRepresentation).sceneObject;
 			else actualMesh = currentMesh;
 			
 			var maxScale:Number = Math.max( actualMesh.scaleX,  actualMesh.scaleY,  actualMesh.scaleZ );

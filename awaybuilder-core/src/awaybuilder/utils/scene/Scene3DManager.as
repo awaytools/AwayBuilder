@@ -331,10 +331,12 @@ package awaybuilder.utils.scene
 			scope.addEventListener(Event.ENTER_FRAME, validateSizeOnNextFrame );
 			updateLights();
 		}	
+
 		private function validateSizeOnNextFrame( e:Event ):void 
 		{
 			resize();
 		}	
+
 		private function resize():void 
 		{
 			scope.removeEventListener(Event.ENTER_FRAME, validateSizeOnNextFrame );
@@ -590,7 +592,7 @@ package awaybuilder.utils.scene
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
 		}
 		
-		public static function get sceneBounds() : Vector.<Number> {
+		public static function getSceneBounds(excludeGizmos : Boolean = true) : Vector.<Number> {
 			
 			var min:Vector3D = new Vector3D(Infinity, Infinity, Infinity);
 			var max:Vector3D = new Vector3D(-Infinity, -Infinity, -Infinity);
@@ -600,11 +602,13 @@ package awaybuilder.utils.scene
 			var rep:ISceneRepresentation;
 			
 			// Hide representations to get clear bounds
-			for each (rep in textureProjectorGizmos) rep.visible = false;
-			for each (rep in textureProjectorGizmos) rep.visible = false;
-			for each (rep in cameraGizmos) rep.visible = false;
-			for each (rep in containerGizmos) rep.visible = false;
-				
+			if (excludeGizmos) {
+				for each (rep in textureProjectorGizmos) rep.visible = false;
+				for each (rep in textureProjectorGizmos) rep.visible = false;
+				for each (rep in cameraGizmos) rep.visible = false;
+				for each (rep in containerGizmos) rep.visible = false;
+			}
+
 			// Get all scene child container bounds		
 			while (ctr < oCCount) {
 				var oC:ObjectContainer3D = Scene3DManager.view.scene.getChildAt(ctr++);
@@ -621,10 +625,12 @@ package awaybuilder.utils.scene
 			}
 
 			// Re-show representations
-			for each (rep in textureProjectorGizmos) rep.visible = true;
-			for each (rep in textureProjectorGizmos) rep.visible = true;
-			for each (rep in cameraGizmos) rep.visible = true;
-			for each (rep in containerGizmos) rep.visible = true;
+			if (excludeGizmos) {
+				for each (rep in textureProjectorGizmos) rep.visible = true;
+				for each (rep in textureProjectorGizmos) rep.visible = true;
+				for each (rep in cameraGizmos) rep.visible = true;
+				for each (rep in containerGizmos) rep.visible = true;
+			}
 
 			return Vector.<Number>([min.x, min.y, min.z, max.x, max.y, max.z]);
 		}
@@ -654,7 +660,7 @@ package awaybuilder.utils.scene
 		}
 
 		public static function updateDefaultCameraFarPlane() : void {
-			var bounds:Vector.<Number> = sceneBounds;
+			var bounds:Vector.<Number> = getSceneBounds(false);
 			if (abs(bounds[0])==Infinity || abs(bounds[1])==Infinity || abs(bounds[2])==Infinity || abs(bounds[3])==Infinity || abs(bounds[4])==Infinity || abs(bounds[5])==Infinity)
 				camera.lens.far = 100000;
 			else {
@@ -663,7 +669,7 @@ package awaybuilder.utils.scene
 				vec.x = (vec.x * 0.5) + bounds[0];
 				vec.y = (vec.y * 0.5) + bounds[1];
 				vec.z = (vec.z * 0.5) + bounds[2];
-				
+
 				// Far plane is distance from camera position to scene bounds center + the radius of the scene bounds
 				camera.lens.far = Vector3D.distance(camera.position, vec) + objRadius;
 			}
@@ -676,6 +682,8 @@ package awaybuilder.utils.scene
 			scene.addChild(o);
 
 			attachGizmos(o);
+			
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function addSkybox(o:ObjectContainer3D):void
@@ -697,6 +705,8 @@ package awaybuilder.utils.scene
 			
 			scene.addChild(gizmo);
 			if (tP.parent == null) scene.addChild(tP);
+
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function addCamera(cam:Camera3D):void
@@ -707,6 +717,8 @@ package awaybuilder.utils.scene
 			
 			scene.addChild(gizmo);
 			if (cam.parent == null) scene.addChild(cam);
+
+			updateDefaultCameraFarPlane();
 		}
 		
 		private static function attachGizmos(container:ObjectContainer3D) : void {			
@@ -718,6 +730,8 @@ package awaybuilder.utils.scene
 			if (getQualifiedClassName(container)=="away3d.containers::ObjectContainer3D" && container.numChildren == 0) {
 				addEmptyContainerRepresentation(container);
 			}
+
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function addEmptyContainerRepresentation(container : ObjectContainer3D) : void {
@@ -742,6 +756,8 @@ package awaybuilder.utils.scene
 			Scene3DManager.currentGizmo.hide();
 			mesh.parent.removeChild(mesh);
 			mesh.dispose();
+
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function removeContainer(container:ObjectContainer3D, removeContainer:Boolean = true):void
@@ -764,6 +780,8 @@ package awaybuilder.utils.scene
 				if (container.parent) container.parent.removeChild(container);
 				container.dispose();
 			}
+
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function removeSkyBox(skyBox:SkyBox):void
@@ -790,6 +808,8 @@ package awaybuilder.utils.scene
 			
 			if (tP.parent) tP.parent.removeChild(tP);
 			tP.dispose();
+
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function removeCamera(cam:Camera3D):void
@@ -808,6 +828,8 @@ package awaybuilder.utils.scene
 			
 			if (cam.parent) cam.parent.removeChild(cam);
 			cam.dispose();
+
+			updateDefaultCameraFarPlane();
 		}
 
 		public static function reparentObject(item:ObjectContainer3D, newParent:ObjectContainer3D):void
@@ -830,7 +852,10 @@ package awaybuilder.utils.scene
 					removeContainer(newParent, false);
 				newParent.addChild(item);
 			} else scene.addChild(item);
+
+			updateDefaultCameraFarPlane();
 		}		
+
 //		public static function getObjectByName(mName:String):Entity
 //		{
 //			var mesh:Mesh;
@@ -857,7 +882,7 @@ package awaybuilder.utils.scene
 				o.addEventListener(MouseEvent3D.CLICK, instance.handleClickMouseEvent3D);
 				o.addEventListener(MouseEvent3D.DOUBLE_CLICK, instance.handleDblClickMouseEvent3D);
 			}
-			
+
 			var container:ObjectContainer3D;
 			for (var c:int = 0; c<o.numChildren; c++) {
 				container = o.getChildAt(c) as ObjectContainer3D;
@@ -870,6 +895,7 @@ package awaybuilder.utils.scene
 			if (!CameraManager.hasMoved && !currentGizmo.hasMoved && active)
 			{
 				var selectedObject:ObjectContainer3D = e.target as ObjectContainer3D;
+				var container : ObjectContainer3D = getContainer(selectedObject);
 
 				if (selectedObject.parent is ContainerGizmo3D) {
 					selectedObject = (selectedObject.parent as ContainerGizmo3D).sceneObject;
@@ -886,10 +912,7 @@ package awaybuilder.utils.scene
 				} else {
 					var m:Mesh = toggleMeshBounds(selectedObject);
 					if (!m) return;
-					
-					var container:ObjectContainer3D = getContainer(selectedObject);
-					if (container) mouseSelection = container;
-					else mouseSelection = null;
+					mouseSelection = container;
 				}
 				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.OBJECT_SELECTED_FROM_VIEW));			
 			}
@@ -1037,7 +1060,10 @@ package awaybuilder.utils.scene
 			{
 				var oC:ObjectContainer3D = selectedObjects.getItemAt(i) as ObjectContainer3D;
 				var m:Entity = oC as Entity;
-				if (m && m.numChildren<2 && m.getChildAt(0) is WireframePrimitiveBase) m.showBounds = false;
+				var g:ISceneRepresentation = oC as ISceneRepresentation;
+				if (m && !g) g = m.parent as ISceneRepresentation;
+				if (g) (g.representation as Mesh).showBounds = false;
+				else if (m && m.numChildren < 2 && m.getChildAt(0) is WireframePrimitiveBase) m.showBounds = false;
 				else {
 					var bounds:ObjectContainerBounds;
 					for (var c:int = 0; c<oC.numChildren; c++)
@@ -1091,49 +1117,24 @@ package awaybuilder.utils.scene
 		{			
 			if (!multiSelection) unselectAll();
 			
-			var child:ObjectContainer3D = oC;
 			var lG:LightGizmo3D;
 			var tPG:TextureProjectorGizmo3D;
+			var cG:CameraGizmo3D;
 			var oCG:ContainerGizmo3D;
-			
-//			var ctr:int = 0;
-//			var count:int = Scene3DManager.scene.numChildren;
-//			while (ctr < count) {
-//				oC = Scene3DManager.scene.getChildAt(ctr++);
-//				child = getChildByName(oC, meshName);
-//				if (child) break;
-//			}
-			
+
 			// If its a scene representation object, use the representations name
-			if (child && child.parent is ISceneRepresentation) { 
-				child = null;
-			}
-			
-			if (child) {
-				// If mesh selected from view, select it
-				var m:Mesh = child as Mesh;
-				if (m && m.numChildren == 0) {
-					if (!m.showBounds) {
-						addToSelection(m, Scene3DManagerEvent.ENABLE_TRANSFORM_MODES);
-						return;
-					}	
-				} else {			
-					// Select the container as item is not a mesh or is a mesh with children
-					var bounds:ObjectContainerBounds;
-					for (var c:int = 0; c<child.numChildren; c++)
-						bounds ||= (child.getChildAt(c) as ObjectContainerBounds);
-					
-					if (!bounds) bounds = new ObjectContainerBounds(child);
-					else bounds.updateContainerBounds();
-					bounds.showBounds = true;
-									
-					selectedObjects.addItem(child);
-					selectedObject = child;					
-	
-					currentGizmo.show(selectedObject);
-					instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));		
-				}
-			} else {	
+			if (oC is ISceneRepresentation) {
+				lG = oC as LightGizmo3D;
+				tPG = oC as TextureProjectorGizmo3D;
+				cG = oC as CameraGizmo3D;
+
+				var ev : String;
+				if (lG) ev = (lG.type == LightGizmo3D.DIRECTIONAL_LIGHT ? Scene3DManagerEvent.SWITCH_TRANSFORM_ROTATE : Scene3DManagerEvent.SWITCH_TRANSFORM_TRANSLATE);
+				else if (tPG || cG) ev = Scene3DManagerEvent.SWITCH_CAMERA_TRANSFORMS;
+				else ev = Scene3DManagerEvent.ENABLE_TRANSFORM_MODES;
+
+				addToSelection((oC as ISceneRepresentation).representation, ev);
+			} else if (oC && oC.parent is ISceneRepresentation) {
 				// If light selected from view, select it
 				for each (lG in lightGizmos) {
 					if (lG.representation == oC) {
@@ -1141,14 +1142,22 @@ package awaybuilder.utils.scene
 						return;
 					}
 				}
-				
+
 				// If textureProjector selected from view, select it
 				for each (tPG in textureProjectorGizmos) {
 					if (tPG.representation == oC) {
-						addToSelection(tPG.representation, Scene3DManagerEvent.ENABLE_TRANSFORM_MODES);
+						addToSelection(tPG.representation, Scene3DManagerEvent.SWITCH_CAMERA_TRANSFORMS);
 						return;
 					}
-				}				
+				}
+
+				// If camera selected from view, select it
+				for each (cG in cameraGizmos) {
+					if (cG.representation == oC) {
+						addToSelection(cG.representation, Scene3DManagerEvent.SWITCH_CAMERA_TRANSFORMS);
+						return;
+					}
+				}
 
 				// If empty objectcontainer3D selected from view, select it
 				for each (oCG in containerGizmos) {
@@ -1156,7 +1165,31 @@ package awaybuilder.utils.scene
 						addToSelection(oCG.representation, Scene3DManagerEvent.ENABLE_TRANSFORM_MODES);
 						return;
 					}
-				}				
+				}
+			} else {
+				// If mesh selected from view, select it
+				var m : Mesh = oC as Mesh;
+				if (m && m.numChildren == 0) {
+					if (!m.showBounds) {
+						addToSelection(m, Scene3DManagerEvent.ENABLE_TRANSFORM_MODES);
+						return;
+					}
+				} else {
+					// Select the container as item is not a mesh or is a mesh with oCren
+					var bounds : ObjectContainerBounds;
+					for (var c : int = 0; c < oC.numChildren; c++)
+						bounds ||= (oC.getChildAt(c) as ObjectContainerBounds);
+
+					if (!bounds) bounds = new ObjectContainerBounds(oC);
+					else bounds.updateContainerBounds();
+					bounds.showBounds = true;
+
+					selectedObjects.addItem(oC);
+					selectedObject = oC;
+
+					currentGizmo.show(selectedObject);
+					instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
+				}
 			}
 		}
 		

@@ -9,6 +9,7 @@ import flash.events.Event;
 		public static const FOCUS_SELECTION:String = "focusOnSelection";
 		
 		public static const SELECT:String = "sceneItemSelect";
+        public static const CHANGING:String = "sceneItemChanging";
         public static const TRANSLATE_OBJECT:String = "translateObject";
         public static const ROTATE_OBJECT:String = "rotateObject";
         public static const SCALE_OBJECT:String = "scaleObject";
@@ -70,7 +71,7 @@ import flash.events.Event;
 		public static const SWITCH_TRANSFORM_TRANSLATE:String = "switchTransformToTranslate";
 		public static const SWITCH_TRANSFORM_ROTATE:String = "switchTransformToRotate";
 		public static const SWITCH_TRANSFORM_SCALE:String = "switchTransformToScale";
-		public static const ENABLE_ALL_TRANSFORM_MODES:String = "enableAllTransformModes";
+		public static const ENABLE_TRANSFORM_MODES:String = "enableAllTransformModes";
 		
 		public static const SELECT_ALL:String = "selectAll";
 		public static const SELECT_NONE:String = "selectNone";
@@ -80,6 +81,7 @@ import flash.events.Event;
 		
 		public static const ENABLE_ROTATE_MODE_ONLY:String = "enableRotateModeOnly";
 		public static const ENABLE_TRANSLATE_MODE_ONLY:String = "enableTranslateModeOnly";
+		public static const DISABLE_SCALE_MODE:String = "disableScaleMode";
 		
 		public static const UPDATE_BREADCRUMBS:String = "updateBreadcrumbs";
 		public static const CONTAINER_CLICKED : String = "containerClicked";

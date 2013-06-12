@@ -244,6 +244,7 @@ package awaybuilder.model
 		{
 			var camera:Camera3D = new Camera3D();
 			camera.name = "Camera" + AssetUtil.GetNextId("Camera");
+			camera.x = camera.y = camera.z = 0;
 			return GetAsset(camera) as CameraVO;
 		}
 		

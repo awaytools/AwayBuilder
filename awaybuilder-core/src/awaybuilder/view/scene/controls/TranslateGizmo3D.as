@@ -1,7 +1,6 @@
 package awaybuilder.view.scene.controls
 {
-	import flash.geom.Matrix3D;
-	import away3d.core.math.Matrix3DUtils;
+	import awaybuilder.view.scene.representations.ISceneRepresentation;
 	import away3d.core.math.Vector3DUtils;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.pick.PickingColliderType;
@@ -29,10 +28,7 @@ package awaybuilder.view.scene.controls
 		private var yCone:Mesh;
 		private var zCone:Mesh;
 		
-		private var initPosition:Vector3D;
-		
 		private var startValue:Vector3D;
-		private var endValue:Vector3D;
 		
 		private var actualMesh:ObjectContainer3D;
 		
@@ -181,9 +177,7 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
 				
-			if (currentMesh.parent is LightGizmo3D) actualMesh = (currentMesh.parent as LightGizmo3D).sceneObject;
-			else if (currentMesh.parent is ContainerGizmo3D) actualMesh = (currentMesh.parent as ContainerGizmo3D).sceneObject;
-			else if (currentMesh.parent is TextureProjectorGizmo3D) actualMesh = (currentMesh.parent as TextureProjectorGizmo3D).sceneObject;
+			if (currentMesh.parent is ISceneRepresentation) actualMesh = (currentMesh.parent as ISceneRepresentation).sceneObject;
 			else actualMesh = currentMesh;
 			
 			startValue = actualMesh.position;
@@ -275,7 +269,7 @@ package awaybuilder.view.scene.controls
 			
 			var pos:Vector3D = this.position.clone();
 			var rad:Number = 180/Math.PI;
-			var objectEulers:Vector3D =Vector3DUtils.matrix2euler(actualMesh.parent.transform);
+			var objectEulers:Vector3D = Vector3DUtils.matrix2euler(actualMesh.parent.transform);
 			objectEulers.x *= -rad;
 			objectEulers.y *= -rad;
 			objectEulers.z *= -rad;

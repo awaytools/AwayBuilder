@@ -65,7 +65,7 @@ package awaybuilder.view.scene.utils {
 		}
 		
 		override protected function updateBounds() : void {
-			_bounds.fromExtremes(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY);
+			_bounds.fromExtremes(0, 0, 0, 0, 0, 0);
 		}		
 	}
 }

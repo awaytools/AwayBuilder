@@ -18,6 +18,7 @@ package awaybuilder.view.scene.events
 		public static const ZOOM_TO_DISTANCE : String = "Scene3DManagerEventZoomToDistance";
 		public static const SWITCH_TRANSFORM_ROTATE : String = "Scene3DManagerEventSwitchTransformRotate";
 		public static const SWITCH_TRANSFORM_TRANSLATE : String = "Scene3DManagerEventSwitchTransformTranslate";
+		public static const SWITCH_CAMERA_TRANSFORMS : String = "Scene3DManagerEventSwitchCameraTransforms";
 		public static const ENABLE_TRANSFORM_MODES : String = "Scene3DManagerEventEnableTransformModes";
 		public static const UPDATE_BREADCRUMBS : String = "Scene3DManagerEventUpdateBreadcrumbs";
 		

@@ -274,7 +274,7 @@ package awaybuilder.utils.scene
 			var bmin:Vector3D;
 			var bmax:Vector3D;
 			
-			var bounds:Vector.<Number> = (t ? Scene3DManager.containerBounds(t) : Scene3DManager.sceneBounds);
+			var bounds:Vector.<Number> = (t ? Scene3DManager.containerBounds(t) : Scene3DManager.getSceneBounds());
 				
 			if (bounds[0]==Infinity || bounds[1]==Infinity || bounds[2]==Infinity || bounds[3]==-Infinity || bounds[4]==-Infinity || bounds[5]==-Infinity) { 
 				bmin = new Vector3D(-500, 0, 0);

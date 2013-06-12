@@ -40,7 +40,7 @@ package awaybuilder.view.mediators
             addContextListener( SceneEvent.SWITCH_TRANSFORM_ROTATE, eventDispatcher_switchToRotateHandler);
             addContextListener( SceneEvent.SWITCH_TRANSFORM_TRANSLATE, eventDispatcher_switchToTranslateHandler);
             addContextListener( SceneEvent.SWITCH_TRANSFORM_SCALE, eventDispatcher_switchToScaleHandler);
-            addContextListener( SceneEvent.ENABLE_ALL_TRANSFORM_MODES, eventDispatcher_enableAllTransformModesHandler);
+            addContextListener( SceneEvent.ENABLE_TRANSFORM_MODES, eventDispatcher_enableTransformModesHandler);
 
             addContextListener( SceneEvent.SELECT, context_itemSelectHandler);
             addContextListener( UndoRedoEvent.UNDO_LIST_CHANGE, context_undoListChangeHandler);
@@ -93,28 +93,34 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_switchToRotateHandler(event:SceneEvent):void
 		{
 			this.toolBar.rotateButton.selected = true;
-			var options:String = event.options as String;
-			if (options == SceneEvent.ENABLE_ROTATE_MODE_ONLY) {
-				this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = false;
-			} else {
-				this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
-			}
 		}
 		
 		private function eventDispatcher_switchToTranslateHandler(event:SceneEvent):void
 		{
 			this.toolBar.translateButton.selected = true;
-			var options:String = event.options as String;
-			if (options == SceneEvent.ENABLE_TRANSLATE_MODE_ONLY) {
-				this.toolBar.rotateButton.enabled = this.toolBar.scaleButton.enabled = false;
-			} else {
-				this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
-			}
 		}
 		
-		private function eventDispatcher_enableAllTransformModesHandler(event:SceneEvent):void
+		private function eventDispatcher_enableTransformModesHandler(event:SceneEvent):void
 		{
-			this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
+			var options:String = event.options as String;
+			switch (options) {
+				case SceneEvent.ENABLE_TRANSLATE_MODE_ONLY :
+					this.toolBar.translateButton.enabled = this.toolBar.translateButton.selected = true;
+					this.toolBar.rotateButton.enabled = this.toolBar.scaleButton.enabled = false;
+					break; 
+				case SceneEvent.ENABLE_ROTATE_MODE_ONLY :
+					this.toolBar.rotateButton.enabled = this.toolBar.rotateButton.selected = true;
+					this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = false;
+					break; 
+				case SceneEvent.DISABLE_SCALE_MODE :
+					this.toolBar.translateButton.enabled = this.toolBar.rotateButton.enabled = true;
+					this.toolBar.scaleButton.enabled = false;
+					if (this.toolBar.scaleButton.selected) this.toolBar.translateButton.selected = true;
+					break; 
+				default : 
+					this.toolBar.rotateButton.enabled = this.toolBar.translateButton.enabled = this.toolBar.scaleButton.enabled = true;
+					break;
+			}
 		}
 
 		private function eventDispatcher_switchToFreeHandler(event:SceneEvent):void

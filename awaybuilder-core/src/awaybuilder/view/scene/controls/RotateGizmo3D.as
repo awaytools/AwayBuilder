@@ -1,8 +1,8 @@
 package awaybuilder.view.scene.controls
 {
+	import awaybuilder.view.scene.representations.ISceneRepresentation;
 	import away3d.primitives.CylinderGeometry;
 	import away3d.lights.DirectionalLight;
-	import away3d.entities.Entity;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.math.Quaternion;
 	import away3d.core.pick.PickingColliderType;
@@ -38,15 +38,10 @@ package awaybuilder.view.scene.controls
 		private var xLine:LineSegment;
 		private var yLine:LineSegment;
 		private var zLine:LineSegment;
-		
-		private var quat:Quaternion = new Quaternion();
-		private var t1 : Quaternion = new Quaternion();
-		private var t2 : Quaternion = new Quaternion();
-		
+				
 		private var actualMesh:ObjectContainer3D;
 		
 		private var startValue:Vector3D;
-		private var endValue : Vector3D;
 		private var behindGizmoPlane : Boolean;
 		
 		public function RotateGizmo3D()
@@ -208,9 +203,7 @@ package awaybuilder.view.scene.controls
 			click2.x = Scene3DManager.stage.mouseX;
 			click2.y = Scene3DManager.stage.mouseY;			
 			
-			if (currentMesh.parent is LightGizmo3D) actualMesh = (currentMesh.parent as LightGizmo3D).sceneObject;
-			else if (currentMesh.parent is ContainerGizmo3D) actualMesh = (currentMesh.parent as ContainerGizmo3D).sceneObject;
-			else if (currentMesh.parent is TextureProjectorGizmo3D) actualMesh = (currentMesh.parent as TextureProjectorGizmo3D).sceneObject;
+			if (currentMesh.parent is ISceneRepresentation) actualMesh = (currentMesh.parent as ISceneRepresentation).sceneObject;
 			else actualMesh = currentMesh;
 			
 			switch(currentAxis)
