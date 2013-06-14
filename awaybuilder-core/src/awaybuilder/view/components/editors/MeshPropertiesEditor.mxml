@@ -61,6 +61,7 @@
 
         private function name_changeHandler(event:Event):void 
 		{
+			trace( _asset.name );
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
         }
 

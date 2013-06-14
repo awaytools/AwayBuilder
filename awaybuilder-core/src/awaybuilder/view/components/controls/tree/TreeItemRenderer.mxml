@@ -19,6 +19,10 @@
 	</tree:layout>
 	<fx:Script>
 		<![CDATA[
+			import awaybuilder.model.vo.scene.AssetVO;
+			import awaybuilder.model.vo.scene.ShadingMethodVO;
+			import awaybuilder.model.vo.scene.TextureVO;
+			
 			import mx.events.DragEvent;
 			
 			protected function disclosureButton_clickHandler(event:MouseEvent):void
@@ -57,7 +61,7 @@
 		
 		<s:BitmapImage source="{getStyle('icon')}"/>
 		
-		<s:Label id="labelDisplay" text="{label}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
+		<s:Label id="labelDisplay" text="{data.asset.name}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
 		
 	</s:HGroup>
 	

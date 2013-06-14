@@ -47,15 +47,6 @@ package awaybuilder.controller.scene
 							}
 						}
 					}
-					
-//					if( item.oldParent )
-//					{ 
-//						animationSet = item.oldParent as AnimationSetVO;
-//						if( animationSet && itemIsInList(animationSet.animations, item.value) ) 
-//						{
-//							removeItem( animationSet.animations, item.value );
-//						}
-//					}
 				}
 			}
 			

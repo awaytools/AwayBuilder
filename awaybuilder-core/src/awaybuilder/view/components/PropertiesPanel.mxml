@@ -106,7 +106,7 @@
 	
 	<controls:CrutchScroller id="panelsContainer" width="100%" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
 		<s:Group width="100%">
-			<editors:MeshPropertyEditor geometry="{geometry}" animators="{animators}" materials="{materials}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
+			<editors:MeshPropertiesEditor geometry="{geometry}" animators="{animators}" materials="{materials}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
 			<editors:MaterialPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{data}" includeIn="material,initAll"/>
 			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="texture,initAll" />
 			<editors:CubeTexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="cubeTexture,initAll" />

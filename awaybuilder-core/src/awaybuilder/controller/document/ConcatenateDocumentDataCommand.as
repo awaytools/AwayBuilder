@@ -90,7 +90,6 @@ package awaybuilder.controller.document
 			removeItems( document.geometry, data.geometry );
 			removeItems( document.materials, data.materials );
 			removeItems( document.scene, data.scene );
-//			removeItems( document.skeletons, data.skeletons );
 			removeItems( document.textures, data.textures );
 			removeItems( document.lights, data.lights );
 			

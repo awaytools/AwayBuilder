@@ -1,8 +1,6 @@
 package awaybuilder.view.components.controls.tree
 {
-	import awaybuilder.model.vo.LibraryItemVO;
-	import awaybuilder.model.vo.scene.LightPickerVO;
-	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -14,21 +12,17 @@ package awaybuilder.view.components.controls.tree
 	import mx.collections.IList;
 	import mx.controls.treeClasses.DefaultDataDescriptor;
 	import mx.controls.treeClasses.ITreeDataDescriptor;
-	import mx.controls.treeClasses.ITreeDataDescriptor2;
-	import mx.core.ClassFactory;
 	import mx.core.DragSource;
 	import mx.core.EventPriority;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	import mx.events.DragEvent;
-	import mx.events.FlexEvent;
 	import mx.managers.DragManager;
 	
 	import spark.components.List;
 	import spark.events.RendererExistenceEvent;
 	import spark.layouts.supportClasses.DropLocation;
-	import awaybuilder.model.vo.DroppedTreeItemVO;
 	
 	use namespace mx_internal;
 	

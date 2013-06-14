@@ -9,9 +9,11 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	
+	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.PropertyChangeEvent;
 
 	public class ReparentLightCommand extends HistoryCommandBase
 	{
@@ -52,6 +54,7 @@ package awaybuilder.controller.scene
 								picker.lights.addItem( item.value );
 							}
 						}
+						IEventDispatcher( picker ).dispatchEvent(PropertyChangeEvent.createUpdateEvent( this, "lights", null, null ));
 					}
 				}
 			}

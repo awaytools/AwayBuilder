@@ -55,7 +55,8 @@ package awaybuilder.view.mediators
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
 			addContextListener(SceneEvent.DELETE, context_deleteHandler);
 			
-			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_COLLECTION_UPDATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_FILLED, context_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
@@ -842,10 +843,6 @@ package awaybuilder.view.mediators
 		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
-			updateLists();
-		}
-		private function updateLists():void
-		{
 			var nullItem:AssetVO = new AssetVO();
 			nullItem.name = "Null";
 			nullItem.isNull = true;
@@ -914,7 +911,6 @@ package awaybuilder.view.mediators
 				}
 			}
 			view.animators = new ArrayCollection(animators);
-			
 			view.skeletons = new ArrayCollection(skeletons);
 			
 			var materials:ArrayCollection = new ArrayCollection();

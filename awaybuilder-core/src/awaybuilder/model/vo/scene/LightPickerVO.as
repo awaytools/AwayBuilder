@@ -6,26 +6,17 @@ package awaybuilder.model.vo.scene
 	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.DataMerger;
 	
+	import flash.events.IEventDispatcher;
+	
 	import mx.collections.ArrayCollection;
+	import mx.events.PropertyChangeEvent;
 
 	[Bindable]
 	public class LightPickerVO extends AssetVO
 	{
 		
-		public var lights:ArrayCollection = new ArrayCollection();
+		public var lights:ArrayCollection;
 		
-//		override public function apply():void
-//		{
-//			super.apply();
-//			var picker:StaticLightPicker = linkedObject as StaticLightPicker;
-//			var pickerLights:Array = [];
-//			for each( var light:LightVO in lights )
-//			{
-//				pickerLights.push( light.linkedObject );
-//			}
-//			picker.lights = pickerLights;
-//		}
-//		
 		public function clone():LightPickerVO
 		{
 			var vo:LightPickerVO = new LightPickerVO();
@@ -34,8 +25,8 @@ package awaybuilder.model.vo.scene
 		}
 		public function fillLightPicker( asset:LightPickerVO ):void
 		{
+			if (asset.lights) this.lights = new ArrayCollection( asset.lights.source.concat() );
 			this.name = asset.name;
-			this.lights = new ArrayCollection( asset.lights.source.concat() );
 		}
 		
 	}

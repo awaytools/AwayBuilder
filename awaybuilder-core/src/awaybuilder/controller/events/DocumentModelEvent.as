@@ -8,6 +8,7 @@ package awaybuilder.controller.events
 		public static const DOCUMENT_EDITED:String = "documentEdited";
 		public static const DOCUMENT_CREATED:String = "documentCreated";
 		public static const OBJECTS_UPDATED:String = "objectsUpdated";
+		public static const OBJECTS_COLLECTION_UPDATED:String = "objectsColelctionUpdated";
 		public static const OBJECTS_FILLED:String = "objectsFilled";
 		public static const CLIPBOARD_UPDATED:String = "clipboardUpdated";
 		

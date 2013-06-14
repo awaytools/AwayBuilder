@@ -22,13 +22,16 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
+	import awaybuilder.utils.CollectionUtil;
 	import awaybuilder.utils.DataMerger;
-	import awaybuilder.utils.ScenegraphFactory;
+	import awaybuilder.utils.LibraryFactory;
 	import awaybuilder.view.components.LibraryPanel;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.events.CollectionEvent;
+	import mx.events.CollectionEventKind;
 	
 	import org.robotlegs.mvcs.Mediator;
 
@@ -85,15 +88,16 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.SCENEOBJECT_DROPPED, view_sceneObjectDroppedHandler);
 			addViewListener(LibraryPanelEvent.ANIMATIONS_DROPPED, view_animationsDroppedHandler);
 			
-			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, eventDispatcher_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_COLLECTION_UPDATED, eventDispatcher_objectsCollectionHandler);
+			
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, eventDispatcher_documentCreatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_FILLED, eventDispatcher_objectsFilledHandler);
-			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeHandler);
 			
 			addContextListener(SceneEvent.VALIDATE_DELETION, context_validateDeletionHandler);
 			
 			addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			
+			updateScenegraph();
 		}
 		
 		//----------------------------------------------------------------------
@@ -379,13 +383,10 @@ package awaybuilder.view.mediators
 				}
 			}
 		}
-		private function eventDispatcher_changeHandler(event:SceneEvent):void
-		{
-			updateScenegraph();
-		}
 		
 		private function eventDispatcher_objectsFilledHandler(event:DocumentModelEvent):void
 		{
+			updateScenegraph();
 			view.sceneTree.expandAll();
 		}
 		private function eventDispatcher_documentCreatedHandler(event:DocumentModelEvent):void
@@ -393,9 +394,9 @@ package awaybuilder.view.mediators
 			updateScenegraph();
 		}
 		
-		private function eventDispatcher_documentUpdatedHandler(event:DocumentModelEvent):void
+		private function eventDispatcher_objectsCollectionHandler(event:DocumentModelEvent):void
 		{
-			updateScenegraph();
+//			updateScenegraph();
 		}
 		
 		private function context_itemsSelectHandler(event:SceneEvent):void
@@ -502,13 +503,26 @@ package awaybuilder.view.mediators
 		}
 		private function updateScenegraph():void
 		{
-			view.model.scene = DataMerger.syncArrayCollections( view.model.scene, ScenegraphFactory.CreateBranch( document.scene, null ), "asset" );
-			view.model.materials = DataMerger.syncArrayCollections( view.model.materials, ScenegraphFactory.CreateBranch( document.materials, null ), "asset" );
-			view.model.animations = DataMerger.syncArrayCollections( view.model.animations, ScenegraphFactory.CreateBranch( document.animations, null ), "asset" );
-			view.model.methods = DataMerger.syncArrayCollections( view.model.methods,  ScenegraphFactory.CreateBranch( document.methods, null ), "asset" );
-			view.model.textures = DataMerger.syncArrayCollections( view.model.textures,  ScenegraphFactory.CreateBranch( document.textures, null ), "asset" );
-			view.model.geometry = DataMerger.syncArrayCollections( view.model.geometry, ScenegraphFactory.CreateBranch( document.geometry, null ), "asset" );
-			view.model.lights = DataMerger.syncArrayCollections( view.model.lights, ScenegraphFactory.CreateLightsBranch( document.lights ), "asset" );
+			view.model.scene = LibraryFactory.CreateBranch( document.scene );
+			view.model.materials = LibraryFactory.CreateBranch( document.materials );
+			view.model.animations = LibraryFactory.CreateBranch( document.animations );
+			view.model.methods = LibraryFactory.CreateBranch( document.methods );
+			view.model.textures = LibraryFactory.CreateBranch( document.textures );
+			view.model.geometry = LibraryFactory.CreateBranch( document.geometry );
+			view.model.lights = LibraryFactory.CreateBranch( document.lights );
+			
+			CollectionUtil.sync( view.model.scene, document.scene, addItemFunction );
+			CollectionUtil.sync( view.model.materials, document.materials, addItemFunction );
+			CollectionUtil.sync( view.model.animations, document.animations, addItemFunction );
+			CollectionUtil.sync( view.model.methods, document.methods, addItemFunction );
+			CollectionUtil.sync( view.model.textures, document.textures, addItemFunction );
+			CollectionUtil.sync( view.model.geometry, document.geometry, addItemFunction );
+			CollectionUtil.sync( view.model.lights, document.lights, addItemFunction );
+			
+		}
+		private function addItemFunction( asset:AssetVO ):Object
+		{
+			return LibraryFactory.CreateScenegraphChild( asset, null );
 		}
 		
 	}

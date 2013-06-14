@@ -626,6 +626,7 @@ package awaybuilder.model
 		private function fillShadingMethod( asset:ShadingMethodVO, obj:ShadingMethodBase ):ShadingMethodVO
 		{
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			asset.name = asset.type;
 			switch( true ) 
 			{	
 				case(obj is EnvMapAmbientMethod):

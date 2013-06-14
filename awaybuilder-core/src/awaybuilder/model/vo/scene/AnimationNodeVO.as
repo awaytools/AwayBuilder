@@ -1,8 +1,6 @@
 package awaybuilder.model.vo.scene
 {
 	import mx.collections.ArrayCollection;
-	
-	import away3d.animators.nodes.AnimationNodeBase;
 
 	[Bindable]
 	public class AnimationNodeVO extends AssetVO

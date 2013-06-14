@@ -18,6 +18,8 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.TextureVO;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.CollectionEvent;
+	import mx.events.CollectionEventKind;
 	
 	import org.robotlegs.mvcs.Actor;
 
@@ -97,7 +99,9 @@ package awaybuilder.model
 		}
 		public function set animations(value:ArrayCollection):void
 		{
+			if( _documentVO.animations ) _documentVO.animations.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.animations = value;
+			if( _documentVO.animations ) _documentVO.animations.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get geometry():ArrayCollection
@@ -106,7 +110,9 @@ package awaybuilder.model
 		}
 		public function set geometry(value:ArrayCollection):void
 		{
+			if( _documentVO.geometry ) _documentVO.geometry.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.geometry = value;
+			if( _documentVO.geometry ) _documentVO.geometry.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get materials():ArrayCollection
@@ -115,7 +121,9 @@ package awaybuilder.model
 		}
 		public function set materials(value:ArrayCollection):void
 		{
+			if( _documentVO.materials ) _documentVO.materials.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.materials = value;
+			if( _documentVO.materials ) _documentVO.materials.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get scene():ArrayCollection
@@ -124,7 +132,9 @@ package awaybuilder.model
 		}
 		public function set scene(value:ArrayCollection):void
 		{
+			if( _documentVO.scene ) _documentVO.scene.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.scene = value;
+			if( _documentVO.scene ) _documentVO.scene.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get textures():ArrayCollection
@@ -133,7 +143,9 @@ package awaybuilder.model
 		}
 		public function set textures(value:ArrayCollection):void
 		{
+			if( _documentVO.textures ) _documentVO.textures.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.textures = value;
+			if( _documentVO.textures ) _documentVO.textures.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get lights():ArrayCollection
@@ -142,7 +154,9 @@ package awaybuilder.model
 		}
 		public function set lights(value:ArrayCollection):void
 		{
+			if( _documentVO.lights ) _documentVO.lights.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.lights = value;
+			if( _documentVO.lights ) _documentVO.lights.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get methods():ArrayCollection
@@ -151,7 +165,9 @@ package awaybuilder.model
 		}
 		public function set methods(value:ArrayCollection):void
 		{
+			if( _documentVO.methods ) _documentVO.methods.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.methods = value;
+			if( _documentVO.methods ) _documentVO.methods.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function getAllAssets():Array
@@ -253,7 +269,6 @@ package awaybuilder.model
 			
 		}
 		
-		// Idea: use compare function instead of property name 
 		public function getAssetsByType( type:Class, assetsFilterFunction:Function = null, filterItem:AssetVO = null ):Vector.<AssetVO> 
 		{
 			var allAssets:Array = getAllAssets();
@@ -276,6 +291,20 @@ package awaybuilder.model
 				}
 			}
 			return objects;
+		}
+		
+		private function assets_collectionChangeHandler( event:CollectionEvent ):void
+		{
+			switch(event.kind)
+			{
+				case CollectionEventKind.ADD:
+				case CollectionEventKind.REMOVE:
+				case CollectionEventKind.MOVE:
+				case CollectionEventKind.RESET:
+				case CollectionEventKind.REPLACE:
+					dispatch( new DocumentModelEvent( DocumentModelEvent.OBJECTS_COLLECTION_UPDATED ) );					
+					break;
+			}
 		}
 		
 	}

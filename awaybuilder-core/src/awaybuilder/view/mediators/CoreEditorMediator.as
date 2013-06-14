@@ -1,7 +1,5 @@
 package awaybuilder.view.mediators
 {
-    import awaybuilder.view.scene.representations.ISceneRepresentation;
-    import awaybuilder.view.scene.controls.CameraGizmo3D;
     import away3d.animators.AnimationSetBase;
     import away3d.animators.AnimatorBase;
     import away3d.animators.SkeletonAnimationSet;
@@ -125,10 +123,12 @@ package awaybuilder.view.mediators
     import awaybuilder.utils.scene.modes.CameraMode;
     import awaybuilder.utils.scene.modes.GizmoMode;
     import awaybuilder.view.components.CoreEditor;
+    import awaybuilder.view.scene.controls.CameraGizmo3D;
     import awaybuilder.view.scene.controls.ContainerGizmo3D;
     import awaybuilder.view.scene.controls.LightGizmo3D;
     import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
     import awaybuilder.view.scene.events.Scene3DManagerEvent;
+    import awaybuilder.view.scene.representations.ISceneRepresentation;
     
     import flash.display.BitmapData;
     import flash.events.ErrorEvent;
@@ -216,7 +216,7 @@ package awaybuilder.view.mediators
 			
 			addContextListener(SceneEvent.CONTAINER_CLICKED, eventDispatcher_containerClicked);
 			
-			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_objectsUpdatedHandler);
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
@@ -475,9 +475,12 @@ package awaybuilder.view.mediators
 			animator.time = time;
 		}
 		
-		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
+		private function context_objectsUpdatedHandler(event:DocumentModelEvent):void
 		{
-			contect_stopHandler( null );
+			if( _currentAnimator )
+			{
+				contect_stopHandler( null );
+			}
 		}
 		private function eventDispatcher_reparentLightsHandler(event:SceneEvent):void
 		{
@@ -515,9 +518,12 @@ package awaybuilder.view.mediators
 		{
 			var object:ObjectVO = event.items[0] as ObjectVO;
 			var lightObject:LightVO = event.items[0] as LightVO;
-			if( lightObject ) {
+			if( lightObject ) 
+			{
 				applyLight( lightObject );
-			} else if (object) {
+			} 
+			else if (object) 
+			{
 				applyObject( object );
 			}
 			

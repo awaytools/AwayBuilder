@@ -15,8 +15,6 @@ package awaybuilder.model.vo
 		
 		public var scene:ArrayCollection = new ArrayCollection();
 		
-//		public var skeletons:ArrayCollection = new ArrayCollection();
-		
 		public var textures:ArrayCollection = new ArrayCollection();
 		
 		public var lights:ArrayCollection = new ArrayCollection();

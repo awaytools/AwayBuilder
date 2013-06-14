@@ -181,11 +181,13 @@ package awaybuilder.view.components.controls
 		{
 			super.setValue(newValue);
 			if( isNaN( newValue) ) return;
-			if( snapInterval<0 ) {
+			if( stepSize<1 ) 
+			{
 				const parts:Array = (new String(1 + snapInterval)).split("."); 
 				valueDisplay.text = newValue.toFixed(parts[1].length);
 			}
-			else {
+			else 
+			{
 				valueDisplay.text = newValue.toString();
 			}
 		}

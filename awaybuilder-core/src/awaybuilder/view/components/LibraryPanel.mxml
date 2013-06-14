@@ -368,7 +368,7 @@
 								   addNewItem="scenePanel_addNewItemHandler(event)"
 								   collapsedChange="panel_collapsedChangeHandler(event)">
 			<controls:SceneTree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedSceneItems}" indentation="10"
-					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
+					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true"
 					   focusSkin="mx.core.UIComponent"
 					   change="tree_changeHandler(event)"
 					   itemDropped="sceneTree_itemDroppedHandler(event)"
@@ -380,6 +380,7 @@
 									collapsedChange="panel_collapsedChangeHandler(event)"
 									addNewItem="materialsPanel_addNewItemHandler(event)">
 			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedMaterialsItems}" indentation="10"
+					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -388,6 +389,7 @@
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
 			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedTexturesItems}" indentation="10"
+					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -395,6 +397,7 @@
 								   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
 			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedGeometryItems}" indentation="10"
+					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -403,23 +406,19 @@
 										  collapsedChange="panel_collapsedChangeHandler(event)"
 										  addNewItem="methodsPanel_addNewItemHandler(event)">
 			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedMethodsItems}" indentation="10"
+					   allowMultipleSelection="true"
 					   dragMoveEnabled="false" dragEnabled="true" 
 					   dragStart="tree_dragStartHandler(event)" dragComplete="methodsTree_dragCompleteHandler(event)"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
-		<!--<controls:CollapsiblePanel id="skeletonsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
-								   title="Skeletons" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)">
-			<tree:Tree id="skeletonsTree" dataProvider="{model.skeletons}" selectedItems="{selectedLightsItems}" indentation="10"
-					   change="tree_changeHandler(event)"
-					   width="100%" height="100%"/>
-		</controls:CollapsiblePanel>-->
 		<controls:LibraryCollapsiblePanel id="animationsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Animations"  addEnabled="true"
 								   height="24" width="100%" collapsed="true" 
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="animationsPanel_addNewItemHandler(event)">
 			<controls:AnimationTree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedAnimationsItems}" indentation="10"
+									allowMultipleSelection="true"
 									focusSkin="mx.core.UIComponent"
 									dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
 							  		change="tree_changeHandler(event)"
@@ -433,6 +432,7 @@
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="lightsPanel_addNewItemHandler(event)">
 			<controls:LightsTree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedLightsItems}" indentation="10"
+								 allowMultipleSelection="true"
 							  	 dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
 								 focusSkin="mx.core.UIComponent"
 							 	 dragStart="tree_dragStartHandler(event)"
