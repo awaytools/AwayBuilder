@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
+					xmlns:editors="awaybuilder.view.components.editors.*" xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Script><![CDATA[
+		import away3d.core.base.Object3D;
+		
+		import awaybuilder.model.vo.scene.AssetVO;
+		import awaybuilder.model.vo.scene.ContainerVO;
+		import awaybuilder.model.vo.scene.ExtraItemVO;
+		import awaybuilder.model.vo.scene.ObjectVO;
+		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+		
+		import mx.controls.Alert;
+		
+		import spark.events.GridItemEditorEvent;
+		
+		[Bindable]
+		private var _asset:ContainerVO = new ContainerVO();
+		
+		[Bindable]
+		private var _assets:Array;
+		
+		override protected function validate(items:Object):void
+		{
+			if( !(items is Array) ) return;
+			_assets = items as Array;
+			validateGroup();
+			this.owner.addEventListener( "updateGroupCollection", updateGroupCollectionHandler );
+		}
+		
+		private function validateGroup():void
+		{
+			_asset.fillFromObject( _assets[0] as ObjectVO );
+			
+			for each( var asset:ObjectVO in _assets )
+			{
+				if( _asset.x != asset.x ) _asset.x = Number.NaN;
+				if( _asset.y != asset.y ) _asset.y = Number.NaN;
+				if( _asset.z != asset.z ) _asset.z = Number.NaN;
+				if( _asset.scaleX != asset.scaleX ) _asset.scaleX = Number.NaN;
+				if( _asset.scaleY != asset.scaleY ) _asset.scaleY = Number.NaN;
+				if( _asset.scaleZ != asset.scaleZ ) _asset.scaleZ = Number.NaN;
+				if( _asset.rotationX != asset.rotationX ) _asset.rotationX = Number.NaN;
+				if( _asset.rotationY != asset.rotationY ) _asset.rotationY = Number.NaN;
+				if( _asset.rotationZ != asset.rotationZ ) _asset.rotationZ = Number.NaN;
+			}
+		}
+		private function updateGroupCollectionHandler(event:Event):void 
+		{
+			validateGroup();
+		}
+		
+		private function positionX_commitHandler(event:Event):void 
+		{
+			if( isNaN(xStepper.value) ) xStepper.value = 0;
+			dispatchEvent( new PropertyEditorEvent( PropertyEditorEvent.TRANSLATE, new Vector3D(xStepper.value, yStepper.value, zStepper.value) ) );
+		}
+		private function positionY_commitHandler(event:Event):void 
+		{
+			if( isNaN(yStepper.value) )	yStepper.value = 0;
+			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
+		}
+		private function positionZ_commitHandler(event:Event):void 
+		{
+			if( isNaN(zStepper.value) ) zStepper.value = 0;
+			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
+		}
+		
+		private function rotationX_commitHandler(event:Event):void 
+		{
+			if( isNaN(rotationXStepper.value) ) rotationXStepper.value = 0;
+			var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
+		}
+		private function rotationY_commitHandler(event:Event):void 
+		{
+			if( isNaN(rotationYStepper.value) ) rotationYStepper.value = 0;
+			var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
+		}
+		private function rotationZ_commitHandler(event:Event):void 
+		{
+			if( isNaN(rotationZStepper.value) ) rotationZStepper.value = 0;
+			var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
+		}
+		
+		private function scaleX_commitHandler(event:Event):void 
+		{
+			if( isNaN(scaleXStepper.value) ) scaleXStepper.value = 1;
+			var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
+		}
+		private function scaleY_commitHandler(event:Event):void 
+		{
+			if( isNaN(scaleYStepper.value) ) scaleYStepper.value = 1;
+			var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
+		}
+		private function scaleZ_commitHandler(event:Event):void 
+		{
+			if( isNaN(scaleZStepper.value) ) scaleZStepper.value = 1;
+			var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
+		}
+		
+	]]></fx:Script>
+	
+	
+	<s:Group width="100%" top="0">
+		<s:Rect left="0" right="0" top="3" bottom="3">
+			<s:fill>
+				<s:SolidColor color="0x111111" alpha="0.3"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
+			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
+					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
+			<s:Label width="100%" text="Object3D[]" fontWeight="bold" fontSize="14"/>
+		</s:HGroup>
+	</s:Group>
+	
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.x}"
+											 change="positionX_commitHandler(event)" />
+			<controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.y}"
+											 change="positionY_commitHandler(event)"/>
+			<controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.z}"
+											 change="positionZ_commitHandler(event)"/>
+		</s:FormItem>
+		<!--<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="pivotXStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotX}"
+											 change="pivot_commitHandler(event)" />
+			<controls:DragableNumericStepper id="pivotYStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotY}"
+											 change="pivot_commitHandler(event)"/>
+			<controls:DragableNumericStepper id="pivotZStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotZ}" 
+											 change="pivot_commitHandler(event)"/>
+		</s:FormItem>-->
+		<s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
+											 change="rotationX_commitHandler(event)"/>
+			<controls:DragableNumericStepper id="rotationYStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
+											 change="rotationY_commitHandler(event)"/>
+			<controls:DragableNumericStepper id="rotationZStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}" 
+											 change="rotationZ_commitHandler(event)"/>
+		</s:FormItem>
+		<controls:HorizontalFormSeparator/>
+		<s:FormItem label="Scale" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper id="scaleXStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleX}"
+											 change="scaleX_commitHandler(event)" />
+			<controls:DragableNumericStepper id="scaleYStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleY}"
+											 change="scaleY_commitHandler(event)"/>
+			<controls:DragableNumericStepper id="scaleZStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleZ}"
+											 change="scaleZ_commitHandler(event)"/>
+		</s:FormItem>
+	</s:Form>
+</editors:EditorBase>
