@@ -1,55 +1,33 @@
 package awaybuilder.utils.scene
 {
-	import away3d.primitives.WireframePrimitiveBase;
-	import awaybuilder.view.scene.controls.CameraGizmo3D;
-	import awaybuilder.view.scene.representations.ISceneRepresentation;
-	import awaybuilder.view.scene.utils.ObjectContainerBounds;
-	import awaybuilder.view.scene.controls.TextureProjectorGizmo3D;
-	import flash.display.BitmapData;
-	import away3d.entities.TextureProjector;
-	import away3d.tools.utils.Bounds;
-	import avmplus.getQualifiedClassName;
+	import away3d.cameras.*;
+	import away3d.containers.*;
+	import away3d.core.managers.*;
+	import away3d.core.pick.*;
+	import away3d.entities.*;
+	import away3d.events.*;
+	import away3d.library.*;
+	import away3d.lights.*;
+	import away3d.primitives.*;
+	import away3d.textures.*;
+	import away3d.tools.utils.*;
 	
-	import away3d.cameras.Camera3D;
-	import away3d.containers.ObjectContainer3D;
-	import away3d.containers.Scene3D;
-	import away3d.containers.View3D;
-	import away3d.core.managers.Stage3DManager;
-	import away3d.core.managers.Stage3DProxy;
-	import away3d.core.pick.PickingColliderType;
-	import away3d.core.pick.PickingType;
-	import away3d.entities.Entity;
-	import away3d.entities.Mesh;
-	import away3d.events.MouseEvent3D;
-	import away3d.events.Stage3DEvent;
-	import away3d.library.AssetLibrary;
-	import away3d.lights.DirectionalLight;
-	import away3d.lights.LightBase;
-	import away3d.primitives.SkyBox;
-	import away3d.primitives.WireframePlane;
-	import away3d.textures.BitmapTexture;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
 	
-	import awaybuilder.utils.MathUtils;
-	import awaybuilder.utils.scene.modes.GizmoMode;
-	import awaybuilder.view.scene.OrientationTool;
-	import awaybuilder.view.scene.controls.ContainerGizmo3D;
-	import awaybuilder.view.scene.controls.Gizmo3DBase;
-	import awaybuilder.view.scene.controls.LightGizmo3D;
-	import awaybuilder.view.scene.controls.RotateGizmo3D;
-	import awaybuilder.view.scene.controls.ScaleGizmo3D;
-	import awaybuilder.view.scene.controls.TranslateGizmo3D;
-	import awaybuilder.view.scene.events.Gizmo3DEvent;
-	import awaybuilder.view.scene.events.Scene3DManagerEvent;
+	import mx.collections.*;
+	import mx.core.*;
 	
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import flash.geom.Vector3D;
+	import avmplus.*;
 	
-	import mx.collections.ArrayList;
-	import mx.core.UIComponent;
+	import awaybuilder.utils.*;
+	import awaybuilder.utils.scene.modes.*;
+	import awaybuilder.view.scene.*;
+	import awaybuilder.view.scene.controls.*;
+	import awaybuilder.view.scene.events.*;
+	import awaybuilder.view.scene.representations.*;
+	import awaybuilder.view.scene.utils.*;
 	
 	public class Scene3DManager extends EventDispatcher
 	{
@@ -612,7 +590,7 @@ package awaybuilder.utils.scene
 			// Get all scene child container bounds		
 			while (ctr < oCCount) {
 				var oC:ObjectContainer3D = Scene3DManager.view.scene.getChildAt(ctr++);
-				if (!(oC == Scene3DManager.grid)) {
+				if (!(oC is SkyBox || oC is PointLight || oC == Scene3DManager.grid)) {
 					Bounds.getObjectContainerBounds(oC);
 //trace(" - "+oC.name+" b:"+Bounds.minX+"/"+Bounds.minY+"/"+Bounds.minZ+" - "+Bounds.maxX+"/"+Bounds.maxY+"/"+Bounds.maxZ);
 					if (Bounds.minX < min.x) min.x = Bounds.minX;
