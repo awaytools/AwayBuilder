@@ -86,7 +86,6 @@ package awaybuilder.controller.clipboard
 			if( parent )
 			{
 				var newParentObject:ObjectContainer3D = assets.GetObject( parent ) as ObjectContainer3D;
-				trace( "newParentObject = " + newParentObject.name + " " + newParentObject.numChildren );
 				newParentObject.addChild( newObject as ObjectContainer3D );
 			}
 			newAsset.fillFromContainer( ContainerVO(copy) );

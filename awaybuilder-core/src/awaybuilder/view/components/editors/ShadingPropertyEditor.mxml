@@ -105,13 +105,11 @@
 		}
 		private function dropDownIconFunction(item:TextureVO):Object 
 		{
-			trace( "dropDownIconFunction " + item );
 			return item.bitmapData;
 		}
 		
 		private function dropDownLabelFunction(item:AssetVO):Object 
 		{
-			trace( "item.name.split('/').pop() " + item.name.split("/").pop() );
 			return item.name.split("/").pop();
 		}
 		private function dropDownCubeTextureIconFunction(item:CubeTextureVO):Object 
