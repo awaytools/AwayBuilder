@@ -8,6 +8,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.SharedLightVO;
 	
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
@@ -47,14 +48,13 @@ package awaybuilder.controller.scene
 						{
 							if( item.newPosition < picker.lights.length )
 							{
-								picker.lights.addItemAt( item.value, item.newPosition );
+								picker.lights.addItemAt( new SharedLightVO(item.value as LightVO), item.newPosition );
 							}
 							else
 							{
-								picker.lights.addItem( item.value );
+								picker.lights.addItem( new SharedLightVO(item.value as LightVO) );
 							}
 						}
-						IEventDispatcher( picker ).dispatchEvent(PropertyChangeEvent.createUpdateEvent( this, "lights", null, null ));
 					}
 				}
 			}

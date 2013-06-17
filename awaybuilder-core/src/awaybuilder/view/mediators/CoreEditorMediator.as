@@ -113,6 +113,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
+    import awaybuilder.model.vo.scene.SharedLightVO;
     import awaybuilder.model.vo.scene.SkeletonVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
@@ -200,7 +201,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_ANIMATION_NODE, eventDispatcher_changeAnimationNodeHandler);
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
-			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
+//			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
 			addContextListener(SceneEvent.REPARENT_ANIMATIONS, eventDispatcher_reparentAnimationHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -276,13 +277,13 @@ package awaybuilder.view.mediators
 					CameraManager.running = true;
 					e.stopImmediatePropagation();
 					break;
-				case Keyboard.F: 
-					if (Scene3DManager.selectedObject != null) 
-					{
-						CameraManager.focusTarget(Scene3DManager.selectedObject);
-					}
-					e.stopImmediatePropagation();
-					break;
+//				case Keyboard.F: 
+//					if (Scene3DManager.selectedObject != null) 
+//					{
+//						CameraManager.focusTarget(Scene3DManager.selectedObject);
+//					}
+//					e.stopImmediatePropagation();
+//					break;
 				case Keyboard.CONTROL:
 					Scene3DManager.multiSelection = true;
 					e.stopImmediatePropagation();
@@ -492,9 +493,6 @@ package awaybuilder.view.mediators
 			}
 		}
 		
-		private function eventDispatcher_reparentObjectsHandler(event:SceneEvent):void
-		{
-		}
 		private function eventDispatcher_reparentAnimationHandler(event:SceneEvent):void
 		{
 			for each( var item:DroppedAssetVO in event.newValue ) 
@@ -516,15 +514,17 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_translateHandler(event:SceneEvent):void
 		{
-			var object:ObjectVO = event.items[0] as ObjectVO;
-			var lightObject:LightVO = event.items[0] as LightVO;
-			if( lightObject ) 
+			for each( var obj:ObjectVO in event.items )
 			{
-				applyLight( lightObject );
-			} 
-			else if (object) 
-			{
-				applyObject( object );
+				var lightObject:LightVO = obj as LightVO;
+				if( lightObject ) 
+				{
+					applyLight( lightObject );
+				} 
+				else 
+				{
+					applyObject( obj );
+				}
 			}
 			
 			Scene3DManager.updateDefaultCameraFarPlane();
@@ -935,9 +935,9 @@ package awaybuilder.view.mediators
 		{
 			var picker:StaticLightPicker = assets.GetObject( asset ) as StaticLightPicker;
 			var lights:Array = [];
-			for each( var light:LightVO in asset.lights )
+			for each( var light:SharedLightVO in asset.lights )
 			{
-				lights.push( assets.GetObject(light) );
+				lights.push( assets.GetObject(light.linkedAsset) );
 			}
 			picker.lights = lights;
 		}
@@ -1791,17 +1791,20 @@ package awaybuilder.view.mediators
         private function scene_transformReleaseHandler(event:Scene3DManagerEvent):void
         {
 			var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
-
+			var newValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			newValues.push( event.endValue );
+			var oldValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			oldValues.push( event.startValue );
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:
-                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], event.endValue, false, event.startValue));
+                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], newValues, false, oldValues));
                     break;
                 case GizmoMode.ROTATE:
-                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo],event.endValue, false, event.startValue));
+                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo],newValues, false, oldValues));
                     break;
                 default:
-                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],event.endValue, false, event.startValue));
+                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],newValues, false, oldValues));
                     break;
             }
         }

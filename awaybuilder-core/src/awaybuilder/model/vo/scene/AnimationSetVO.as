@@ -8,7 +8,7 @@ package awaybuilder.model.vo.scene
 		
 		public var type:String;
 		
-		public var animations:ArrayCollection = new ArrayCollection();
+		public var animations:ArrayCollection = new ArrayCollection(); //SharedAnimationNodeVO
 		
 		public var animators:ArrayCollection = new ArrayCollection();
 		
@@ -25,7 +25,6 @@ package awaybuilder.model.vo.scene
 			this.type = asset.type;
 			this.animations = new ArrayCollection( asset.animations.source.concat() );
 			this.animators = new ArrayCollection( asset.animators.source.concat() );
-			this.id = asset.id;
 		}
 	}
 }

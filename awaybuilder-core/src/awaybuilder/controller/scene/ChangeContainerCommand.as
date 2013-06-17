@@ -20,12 +20,7 @@ package awaybuilder.controller.scene
 			
 			saveOldValue( event, vo.clone() );
 			
-			vo.name = asset.name;
-			vo.pivotX = asset.pivotX;
-			vo.pivotY = asset.pivotY;
-			vo.pivotZ = asset.pivotZ;
-			
-			vo.children = new ArrayCollection( asset.children.source.concat() );
+			vo.fillFromContainer( asset );
 			
 			var e:Array = new Array();
 			for each( var extra:ExtraItemVO in asset.extras )

@@ -32,6 +32,10 @@
 		<s:State name="skeleton"/>
 		<s:State name="camera"/>
 		<s:State name="lens"/>
+		
+		
+		<s:State name="meshGroup"/>
+		<s:State name="containerGroup"/>
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -127,9 +131,9 @@
 			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="camera,initAll"/>
 			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="lens,initAll"/>
 			
-			<s:Group includeIn="group,initAll"><s:Label text="Group Options"/></s:Group>
+			<editors:ContainerGroupPropertiesEditor data="{data}" includeIn="containerGroup,meshGroup,initAll"/>
 			
-			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global" />
+			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

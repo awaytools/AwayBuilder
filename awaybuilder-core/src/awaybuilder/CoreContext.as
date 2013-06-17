@@ -178,6 +178,8 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.ADD_NEW_CONTAINER, AddNewContainerCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, AddNewTextureProjectorCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_ANIMATION_SET, AddNewAnimationSetCommand);
+			commandMap.mapEvent(SceneEvent.ADD_NEW_ANIMATOR, AddNewAnimatorCommand);
+			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_CAMERA, AddNewCameraCommand);
 			
 			this.commandMap.mapEvent(ClipboardEvent.CLIPBOARD_CUT, CopyCommand);

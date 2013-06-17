@@ -101,6 +101,8 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.ShadingMethodVO;
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SharedAnimationNodeVO;
+	import awaybuilder.model.vo.scene.SharedLightVO;
 	import awaybuilder.model.vo.scene.SkeletonPoseVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
@@ -242,7 +244,7 @@ package awaybuilder.model
 			asset.lights = new ArrayCollection();
 			for each( var light:LightBase in item.lights )
 			{
-				asset.lights.addItem( GetAsset( light ) );
+				asset.lights.addItem( new SharedLightVO(GetAsset( light ) as LightVO ) );
 			}
 			return asset;
 		}
@@ -591,7 +593,7 @@ package awaybuilder.model
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			for each( var animationNodeBase:AnimationNodeBase in obj.animations )
 			{
-				asset.animations.addItem( GetAsset( animationNodeBase ) );
+				asset.animations.addItem( new SharedAnimationNodeVO(GetAsset( animationNodeBase ) as AnimationNodeVO) );
 			}
 			return asset;
 		}

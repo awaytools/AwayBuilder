@@ -17,17 +17,19 @@ package awaybuilder.controller.scene
 
         override public function execute():void
         {
-            var vector:Vector3D = event.newValue as Vector3D;
-            var vo:ObjectVO = event.items[0] as ObjectVO;
-
-			if( !event.oldValue ) {
-				event.oldValue = new Vector3D( vo.x, vo.y, vo.z );
+			var newValues:Vector.<Vector3D> = event.newValue as Vector.<Vector3D>;
+			var oldValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			
+			for( var i:int = 0; i < event.items.length; i++ )
+			{
+				var asset:ObjectVO = event.items[i] as ObjectVO;
+				oldValues.push( new Vector3D( asset.x, asset.y, asset.z ) );
+				asset.x = isNaN(newValues[i].x)?asset.x:newValues[i].x;
+				asset.y = isNaN(newValues[i].y)?asset.y:newValues[i].y;
+				asset.z = isNaN(newValues[i].z)?asset.z:newValues[i].z;
 			}
 			
-            vo.x = vector.x;
-            vo.y = vector.y;
-            vo.z = vector.z;
-
+			saveOldValue( event, oldValues );
 			commitHistoryEvent( event );
         }
     }

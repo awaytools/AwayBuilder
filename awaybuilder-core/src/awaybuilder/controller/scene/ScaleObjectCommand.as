@@ -14,17 +14,19 @@
 
         override public function execute():void
         {
-            var vector:Vector3D = event.newValue as Vector3D;
-            var vo:ObjectVO = event.items[0] as ObjectVO;
-
-			if( !event.oldValue ) {
-				event.oldValue = new Vector3D( vo.scaleX, vo.scaleY, vo.scaleZ );
+			var newValues:Vector.<Vector3D> = event.newValue as Vector.<Vector3D>;
+			var oldValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			
+			for( var i:int = 0; i < event.items.length; i++ )
+			{
+				var asset:ObjectVO = event.items[i] as ObjectVO;
+				oldValues.push( new Vector3D( asset.scaleX, asset.scaleY, asset.scaleZ ) );
+				asset.scaleX = isNaN(newValues[i].x)?asset.scaleX:newValues[i].x;
+				asset.scaleY = isNaN(newValues[i].y)?asset.scaleY:newValues[i].y;
+				asset.scaleZ = isNaN(newValues[i].z)?asset.scaleZ:newValues[i].z;
 			}
 			
-            vo.scaleX = vector.x;
-            vo.scaleY = vector.y;
-            vo.scaleZ = vector.z;
-
+			saveOldValue( event, oldValues );
 			commitHistoryEvent( event );
         }
     }

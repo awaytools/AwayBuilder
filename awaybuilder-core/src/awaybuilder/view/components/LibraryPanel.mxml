@@ -68,7 +68,7 @@
 			import awaybuilder.model.vo.DocumentVO;
 			import awaybuilder.model.vo.DroppedAssetVO;
 			import awaybuilder.model.vo.DroppedTreeItemVO;
-			import awaybuilder.model.vo.LibraryItemVO;
+			import awaybuilder.model.vo.scene.AssetVO;
 			import awaybuilder.view.components.controls.tree.TreeEvent;
 			import awaybuilder.view.components.events.LibraryPanelEvent;
 			
@@ -344,16 +344,16 @@
 				for each( var item:DroppedTreeItemVO in items ) 
 				{
 					var droppedAsset:DroppedAssetVO = new DroppedAssetVO();
-					droppedAsset.value = LibraryItemVO(item.value).asset;
+					droppedAsset.value = item.value as AssetVO;
 					droppedAsset.oldPosition = item.oldPosition;
 					droppedAsset.newPosition = item.newPosition;
 					if( item.oldParent )
 					{
-						droppedAsset.oldParent = LibraryItemVO(item.oldParent).asset;
+						droppedAsset.oldParent = item.oldParent as AssetVO;
 					}
 					if( item.newParent )
 					{
-						droppedAsset.newParent = LibraryItemVO(item.newParent).asset;
+						droppedAsset.newParent = item.newParent as AssetVO;
 					}
 					droppedAsses.push( droppedAsset );
 				}
@@ -367,7 +367,7 @@
 								   title="Scene Objects" width="100%" collapsed="false" height="100%" addEnabled="true"
 								   addNewItem="scenePanel_addNewItemHandler(event)"
 								   collapsedChange="panel_collapsedChangeHandler(event)">
-			<controls:SceneTree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedSceneItems}" indentation="10"
+			<controls:SceneTree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedSceneItems}" indentation="16"
 					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true"
 					   focusSkin="mx.core.UIComponent"
 					   change="tree_changeHandler(event)"
@@ -379,7 +379,7 @@
 									title="Materials" height="24" width="100%" collapsed="true" addEnabled="true"
 									collapsedChange="panel_collapsedChangeHandler(event)"
 									addNewItem="materialsPanel_addNewItemHandler(event)">
-			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedMaterialsItems}" indentation="10"
+			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedSceneItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
@@ -388,7 +388,7 @@
 								   title="Textures" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
-			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedTexturesItems}" indentation="10"
+			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedSceneItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
@@ -396,7 +396,7 @@
 		<controls:LibraryCollapsiblePanel id="geometryPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
-			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedGeometryItems}" indentation="10"
+			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedSceneItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
@@ -405,7 +405,7 @@
 										  title="Effects" height="24" width="100%" collapsed="true" addEnabled="true"
 										  collapsedChange="panel_collapsedChangeHandler(event)"
 										  addNewItem="methodsPanel_addNewItemHandler(event)">
-			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedMethodsItems}" indentation="10"
+			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedSceneItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   dragMoveEnabled="false" dragEnabled="true" 
 					   dragStart="tree_dragStartHandler(event)" dragComplete="methodsTree_dragCompleteHandler(event)"
@@ -417,7 +417,7 @@
 								   height="24" width="100%" collapsed="true" 
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="animationsPanel_addNewItemHandler(event)">
-			<controls:AnimationTree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedAnimationsItems}" indentation="10"
+			<controls:AnimationTree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedSceneItems}" indentation="16"
 									allowMultipleSelection="true"
 									focusSkin="mx.core.UIComponent"
 									dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
@@ -431,7 +431,7 @@
 								   title="Lights" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="lightsPanel_addNewItemHandler(event)">
-			<controls:LightsTree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedLightsItems}" indentation="10"
+			<controls:LightsTree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedSceneItems}" indentation="16"
 								 allowMultipleSelection="true"
 							  	 dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
 								 focusSkin="mx.core.UIComponent"

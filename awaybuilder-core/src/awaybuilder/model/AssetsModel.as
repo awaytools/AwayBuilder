@@ -154,12 +154,16 @@ package awaybuilder.model
 			
 			var asset:AssetVO = createAsset( obj );
 			if ((obj is IAsset) && (obj.id))
+			{
 				asset.id = obj.id;
-			else{
+			}
+			else
+			{
 				asset.id = UIDUtil.createUID();
 				if (obj is IAsset)
+				{
 					obj.id = asset.id;
-				
+				}
 			}
 			
 			_assets[obj] = asset;

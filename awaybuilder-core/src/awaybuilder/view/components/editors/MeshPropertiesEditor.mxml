@@ -2,26 +2,15 @@
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
 		 xmlns:editors="awaybuilder.view.components.editors.*">
-	<fx:Declarations>
-	</fx:Declarations>
-    <fx:Script><![CDATA[
-		import away3d.entities.Mesh;
-		
+
+	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AnimatorVO;
-		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.ExtraItemVO;
 		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.model.vo.scene.ObjectVO;
-		import awaybuilder.model.vo.scene.SubMeshVO;
-		import awaybuilder.utils.AssetUtil;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
-		import flashx.textLayout.debug.assert;
-		
-		import mx.collections.ArrayCollection;
 		import mx.controls.Alert;
-		import mx.events.FlexEvent;
-		import mx.utils.NameUtil;
 		
 		import spark.events.GridItemEditorEvent;
 		import spark.events.IndexChangeEvent;
@@ -61,7 +50,6 @@
 
         private function name_changeHandler(event:Event):void 
 		{
-			trace( _asset.name );
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
         }
 
@@ -122,12 +110,7 @@
 			return true;
 		}
 		
-		protected function geometryDropDownList_changeHandler(event:IndexChangeEvent):void
-		{
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
-		}
-		
-		protected function animatorDropDownList_changeHandler(event:IndexChangeEvent):void
+		protected function dropDownList_changeHandler(event:IndexChangeEvent):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
 		}
@@ -182,13 +165,13 @@
 		</s:Form>
 		<controls:PropertiesItemContainer label="Geometry" width="100%" paddingTop="6">
 			<s:DropDownList id="geometryDropDownList" requireSelection="true" labelField="name"
-							change="geometryDropDownList_changeHandler(event)" width="100%"
+							change="dropDownList_changeHandler(event)" width="100%"
 							selectedItem="@{_asset.geometry}" dataProvider="{geometry}"/>
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="geometryDropDownListButton_clickHandler(event)" />
 		</controls:PropertiesItemContainer>
 		<controls:PropertiesItemContainer label="Animator" width="100%">
 			<s:DropDownList id="animatorDropDownList" labelFunction="animatorDropDownLabelFunction" prompt="Null" requireSelection="true"
-							change="animatorDropDownList_changeHandler(event)" width="100%"
+							change="dropDownList_changeHandler(event)" width="100%"
 							selectedItem="@{_asset.animator}" dataProvider="{animators}"/>
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animatorDropDownListButton_clickHandler(event)" enabled="{_asset.animator!=null}" />
 		</controls:PropertiesItemContainer>

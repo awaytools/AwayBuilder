@@ -1,6 +1,5 @@
 package awaybuilder.view.components.controls
 {
-	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.view.components.controls.tree.ITreeItemRenderer;
@@ -24,9 +23,9 @@ package awaybuilder.view.components.controls
 			if( !items ) return;
 			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
 			if( renderer.data == items[0] ) return;
-			if( LibraryItemVO(renderer.data).asset is LightPickerVO )
+			if( renderer.data is LightPickerVO )
 			{
-				if( LibraryItemVO(items[0]).asset is LightVO )
+				if( items[0] is LightVO )
 				{
 					renderer.showDropIndicator = true;
 					DragManager.acceptDragDrop(dropArea);
@@ -45,9 +44,9 @@ package awaybuilder.view.components.controls
 			if( !items ) return;
 			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
 			if( renderer.data == items[0] ) return;
-			if( LibraryItemVO(renderer.data).asset is LightPickerVO )
+			if( renderer.data is LightPickerVO )
 			{
-				if( LibraryItemVO(items[0]).asset is LightVO )
+				if( items[0] is LightVO )
 				{
 					renderer.showDropIndicator = true;
 					DragManager.acceptDragDrop(dropArea);

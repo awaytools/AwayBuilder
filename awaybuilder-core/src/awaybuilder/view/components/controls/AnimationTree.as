@@ -1,6 +1,5 @@
 package awaybuilder.view.components.controls
 {
-	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.view.components.controls.tree.ITreeItemRenderer;
@@ -24,9 +23,9 @@ package awaybuilder.view.components.controls
 			if( !items ) return;
 			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
 			if( renderer.data == items[0] ) return;
-			if( LibraryItemVO(renderer.data).asset is AnimationSetVO )
+			if( renderer.data is AnimationSetVO )
 			{
-				if( LibraryItemVO(items[0]).asset is AnimationNodeVO )
+				if( items[0] is AnimationNodeVO )
 				{
 					renderer.showDropIndicator = true;
 					DragManager.acceptDragDrop(dropArea);
@@ -45,9 +44,9 @@ package awaybuilder.view.components.controls
 			if( !items ) return;
 			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
 			if( renderer.data == items[0] ) return;
-			if( LibraryItemVO(renderer.data).asset is AnimationSetVO )
+			if( renderer.data is AnimationSetVO )
 			{
-				if( LibraryItemVO(items[0]).asset is AnimationNodeVO )
+				if( items[0] is AnimationNodeVO )
 				{
 					renderer.showDropIndicator = true;
 					DragManager.acceptDragDrop(dropArea);

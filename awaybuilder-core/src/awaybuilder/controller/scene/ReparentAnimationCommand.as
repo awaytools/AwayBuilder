@@ -8,8 +8,12 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.SharedAnimationNodeVO;
+	
+	import flash.events.IEventDispatcher;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.PropertyChangeEvent;
 
 	public class ReparentAnimationCommand extends HistoryCommandBase
 	{
@@ -39,16 +43,18 @@ package awaybuilder.controller.scene
 						{
 							if( item.newPosition < animationSet.animations.length )
 							{
-								animationSet.animations.addItemAt( item.value, item.newPosition );
+								animationSet.animations.addItemAt( new SharedAnimationNodeVO(item.value as AnimationNodeVO), item.newPosition );
 							}
 							else
 							{
-								animationSet.animations.addItem( item.value );
+								animationSet.animations.addItem( new SharedAnimationNodeVO(item.value as AnimationNodeVO) );
 							}
 						}
 					}
 				}
 			}
+			
+			animationSet.fillFromAnimationSet( animationSet );
 			
 			commitHistoryEvent( event );
 		}

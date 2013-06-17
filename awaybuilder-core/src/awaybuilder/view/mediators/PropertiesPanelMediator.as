@@ -21,6 +21,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.LightVO;
     import awaybuilder.model.vo.scene.MaterialVO;
     import awaybuilder.model.vo.scene.MeshVO;
+    import awaybuilder.model.vo.scene.ObjectVO;
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
@@ -31,6 +32,9 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.TextureVO;
     import awaybuilder.view.components.PropertiesPanel;
     import awaybuilder.view.components.editors.events.PropertyEditorEvent;
+    
+    import flash.events.Event;
+    import flash.geom.Vector3D;
     
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
@@ -57,6 +61,7 @@ package awaybuilder.view.mediators
 			
 			addContextListener(DocumentModelEvent.OBJECTS_COLLECTION_UPDATED, context_documentUpdatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_FILLED, context_documentUpdatedHandler);
+			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_objectsUpdatedHandler);
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
@@ -178,15 +183,33 @@ package awaybuilder.view.mediators
 
         private function view_translateHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
+			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
+			var newValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			for each( var asset:ObjectVO in items )
+			{
+				newValues.push( event.data );
+			}
+            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT, items, newValues, true));
         }
         private function view_rotateHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[view.data], event.data, true));
+			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
+			var newValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			for each( var asset:ObjectVO in items )
+			{
+				newValues.push( event.data );
+			}
+            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,items, newValues, true));
         }
         private function view_scaleHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[view.data], event.data, true));
+			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
+			var newValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			for each( var asset:ObjectVO in items )
+			{
+				newValues.push( event.data );
+			}
+            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,items, newValues, true));
         }
 		private function view_containerChangeHandler(event:PropertyEditorEvent):void
 		{
@@ -593,9 +616,8 @@ package awaybuilder.view.mediators
 		}
 		private function view_animationAddAnimatorHandler(event:PropertyEditorEvent):void
 		{
-			var newAnimationSet:AnimationSetVO = AnimationSetVO(view.data).clone();
 			var animator:AnimatorVO;
-			switch( newAnimationSet.type )
+			switch( AnimationSetVO(view.data).type )
 			{
 				case "VertexAnimationSet":
 					animator = assets.CreateAnimator( "VertexAnimator", view.data as AnimationSetVO );
@@ -617,8 +639,7 @@ package awaybuilder.view.mediators
 					animator = assets.CreateAnimator( "SkeletonAnimator", view.data as AnimationSetVO, skeletons[0] );
 					break;
 			}
-			newAnimationSet.animators.addItem( animator );
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET,[view.data], newAnimationSet));
+			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_ANIMATOR,[view.data], animator));
 		}
 		private function view_animationRemoveAnimatorHandler(event:PropertyEditorEvent):void
 		{
@@ -671,105 +692,17 @@ package awaybuilder.view.mediators
 				view.showEditor( "global", event.newValue, event.oldValue, document.globalOptions );
                 return;
             }
-            if( event.items.length )
+			
+            if( event.items.length == 1 )
             {
-                if( event.items.length == 1 )
-                {
-                    if( event.items[0] is MeshVO )
-                    {
-						view.showEditor( "mesh", event.newValue, event.oldValue, event.items[0] );
-                    }
-					else if( event.items[0] is SkyBoxVO )
-					{
-						view.showEditor( "skyBox", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is TextureProjectorVO )
-					{
-						view.showEditor( "textureProjector", event.newValue, event.oldValue, event.items[0] );
-					}
-                    else if( event.items[0] is ContainerVO )
-                    {
-						view.showEditor( "container", event.newValue, event.oldValue, event.items[0] );
-                    }
-                    else if( event.items[0] is MaterialVO )
-                    {
-						view.showEditor( "material", event.newValue, event.oldValue, event.items[0] );
-                    }
-                    else if( event.items[0] is TextureVO )
-                    {
-						view.showEditor( "texture", event.newValue, event.oldValue, event.items[0] );
-                    }
-					else if( event.items[0] is LightVO )
-					{
-						view.showEditor( "light", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is LightPickerVO )
-					{
-						view.showEditor( "lightPicker", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is ShadowMethodVO )
-					{
-						view.showEditor( "shadowMethod", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is EffectMethodVO )
-					{
-						view.showEditor( "effectMethod", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is CubeTextureVO )
-					{
-						view.showEditor( "cubeTexture", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is ShadowMapperVO )
-					{
-						view.showEditor( "shadowMapper", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is ShadingMethodVO )
-					{
-						view.showEditor( "shadingMethod", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is GeometryVO )
-					{
-						view.showEditor( "geometry", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is AnimationSetVO )
-					{
-						view.showEditor( "animationSet", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is AnimationNodeVO )
-					{
-						view.showEditor( "animationNode", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is AnimatorVO )
-					{
-						view.showEditor( "animator", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is SkeletonVO )
-					{
-						view.showEditor( "skeleton", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is CameraVO )
-					{
-						view.showEditor( "camera", event.newValue, event.oldValue, event.items[0] );
-					}
-					else if( event.items[0] is LensVO )
-					{
-						view.showEditor( "lens", event.newValue, event.oldValue, event.items[0] );
-					}
-                    else
-                    {
-						view.showEditor( "global", event.newValue, event.oldValue, document.globalOptions );
-                    }
-                }
-                else
-                {
-					view.showEditor( "group", event.newValue, event.oldValue, null );
-                }
-				view.validateNow();
+				view.showEditor( getStateByType(event.items[0]), event.newValue, event.oldValue, event.items[0] );
             }
             else
             {
-				view.showEditor( "global", event.newValue, event.oldValue, document.globalOptions );
+				view.showEditor( getStateByGroup(event.items), event.newValue, event.oldValue, event.items  );
             }
+			view.validateNow();
+			
 			//if event.oldValue is true it means that we just back from child
 			//if event.newValue is true it means that we select child
 			if( !(event.oldValue||event.newValue) && view.prevSelected.length ) {
@@ -840,6 +773,10 @@ package awaybuilder.view.mediators
 				}
 			}
 			return false;
+		}
+		private function context_objectsUpdatedHandler(event:DocumentModelEvent):void
+		{
+			view.dispatchEvent( new Event("updateGroupCollection") );
 		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{
@@ -918,5 +855,73 @@ package awaybuilder.view.mediators
 			materials.addItemAt( assets.defaultMaterial, 0 );
 			view.materials = materials;
 		}
-    }
+		private static function getStateByGroup( assets:Array ):String
+		{
+			var initType:String = getStateByType( assets[0] );
+			for each( var asset:AssetVO in assets )
+			{
+				if( initType != getStateByType( asset ) )
+				{
+					if( initType == "mesh" )
+					{
+						initType = "container";
+						if( initType != getStateByType( asset ) )
+						{
+							return "global";
+						}
+					}
+					
+				}
+			}
+			return initType+"Group";
+		}		
+		private static function getStateByType( asset:Object ):String
+		{
+			switch(true)
+			{
+				case(asset is MeshVO):
+					return "mesh";
+				case(asset is SkyBoxVO):
+					return "skyBox";
+				case(asset is TextureProjectorVO):
+					return "textureProjector";
+				case(asset is ContainerVO):
+					return "container";
+				case(asset is MaterialVO):
+					return "material";
+				case(asset is TextureVO):
+					return "texture";
+				case(asset is LightVO):
+					return "light";
+				case(asset is LightPickerVO):
+					return "lightPicker";
+				case(asset is ShadowMethodVO):
+					return "shadowMethod";
+				case(asset is EffectMethodVO):
+					return "effectMethod";
+				case(asset is CubeTextureVO):
+					return "cubeTexture";
+				case(asset is ShadowMapperVO):
+					return "shadowMapper";
+				case(asset is ShadingMethodVO):
+					return "shadingMethod";
+				case(asset is GeometryVO):
+					return "geometry";
+				case(asset is AnimationSetVO):
+					return "animationSet";
+				case(asset is AnimationNodeVO):
+					return "animationNode";
+				case(asset is AnimatorVO):
+					return "animator";
+				case(asset is SkeletonVO):
+					return "skeleton";
+				case(asset is CameraVO):
+					return "camera";
+				case(asset is LensVO):
+					return "lens";
+					
+			}
+			return "global";
+		}
+	}
 }

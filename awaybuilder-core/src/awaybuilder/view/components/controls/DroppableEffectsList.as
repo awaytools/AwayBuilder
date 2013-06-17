@@ -1,6 +1,5 @@
 package awaybuilder.view.components.controls
 {
-	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.EffectMethodVO;
 	import awaybuilder.view.components.controls.events.DroppedEvent;
@@ -153,13 +152,13 @@ package awaybuilder.view.components.controls
 			for (i = 0; i < items.length; i++)
 			{
 				// Get the item, clone if needed
-				var item:LibraryItemVO = items[i] as LibraryItemVO;
+				var asset:AssetVO = items[i] as AssetVO;
 				//				if (copyItems)
 				//					item = copyItemWithUID(item);
 				
 				// Copy the data
-				dataProvider.addItemAt(item.asset, dropIndex + i);
-				dispatchEvent( new DroppedEvent( DroppedEvent.DROPPED, item.asset, dropIndex + i ) );
+				dataProvider.addItemAt(asset, dropIndex + i);
+				dispatchEvent( new DroppedEvent( DroppedEvent.DROPPED, asset, dropIndex + i ) );
 				
 				// Update the selection
 				if (i != caretIndex)
@@ -198,8 +197,7 @@ package awaybuilder.view.components.controls
 				var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
 				for (var i:int = 0; i < items.length; i++) 
 				{
-					var item:LibraryItemVO = items[i] as LibraryItemVO;
-					var asset:EffectMethodVO = item.asset as EffectMethodVO;
+					var asset:EffectMethodVO = items[i] as EffectMethodVO;
 					if( !asset ) 
 						return null;
 					for each( var light:EffectMethodVO in dataProvider ) 

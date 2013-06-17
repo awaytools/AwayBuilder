@@ -58,7 +58,7 @@ package awaybuilder.model.vo.scene
 
 			this.shadowMapper = asset.shadowMapper;
 			
-			this.shadowMethods = new ArrayCollection(asset.shadowMethods.source.concat());
+			this.shadowMethods = updateCollection( this.shadowMethods, asset.shadowMethods )
 			
 			this.azimuthAngle = asset.azimuthAngle;
 			this.elevationAngle = asset.elevationAngle;

@@ -5,15 +5,9 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	<fx:Script><![CDATA[
-		import away3d.entities.Mesh;
-		
-		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.ContainerVO;
 		import awaybuilder.model.vo.scene.ExtraItemVO;
-		import awaybuilder.model.vo.scene.MeshVO;
 		import awaybuilder.model.vo.scene.ObjectVO;
-		import awaybuilder.model.vo.scene.SubMeshVO;
-		import awaybuilder.utils.AssetUtil;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.controls.Alert;
@@ -21,37 +15,41 @@
 		import spark.events.GridItemEditorEvent;
 		
 		[Bindable]
-		private var _asset:ContainerVO;
+		private var _asset:ContainerVO = new ContainerVO();
 		
 		override protected function validate(asset:Object):void
 		{
 			if( !(asset is ContainerVO) ) return;
-			_asset = ContainerVO(asset).clone() as ContainerVO;
+			_asset.fillFromContainer( asset as ContainerVO );
 		}
 		
-		private function position_commitHandler(event:Event):void {
+		private function position_commitHandler(event:Event):void 
+		{
 			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
 		}
-		private function pivot_commitHandler(event:Event):void {
+		private function pivot_commitHandler(event:Event):void 
+		{
 			_asset.pivotX = pivotXStepper.value;
 			_asset.pivotY = pivotYStepper.value;
 			_asset.pivotZ = pivotZStepper.value;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CONTAINER_STEPPER_CHANGE, _asset));
 		}
 		
-		private function rotation_commitHandler(event:Event):void {
+		private function rotation_commitHandler(event:Event):void 
+		{
 			var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue, true));
 		}
 		
-		private function scale_commitHandler(event:Event):void {
+		private function scale_commitHandler(event:Event):void 
+		{
 			var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue, true));
 		}
 		
-		private function name_changeHandler(event:Event):void {
-			_asset.name = nameInput.text;
+		private function name_changeHandler(event:Event):void 
+		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.CONTAINER_STEPPER_CHANGE, _asset));
 		}
 		
@@ -124,55 +122,43 @@
 	
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
 	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="false">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 			<s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.x}"
+				<controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.x}"
 												 change="position_commitHandler(event)" />
-				<controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.y}"
+				<controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.y}"
 												 change="position_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.z}"
+				<controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.z}"
 												 change="position_commitHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="pivotXStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.pivotX}"
+				<controls:DragableNumericStepper id="pivotXStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotX}"
 												 change="pivot_commitHandler(event)" />
-				<controls:DragableNumericStepper id="pivotYStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.pivotY}"
+				<controls:DragableNumericStepper id="pivotYStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotY}"
 												 change="pivot_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="pivotZStepper" stepSize="1" snapInterval="0.001"
-												 width="100%" value="{_asset.pivotZ}" 
+				<controls:DragableNumericStepper id="pivotZStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotZ}" 
 												 change="pivot_commitHandler(event)"/>
 			</s:FormItem>
 			<s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
-												 minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
+				<controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" 
 												 change="rotation_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="rotationYStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
-												 minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
+				<controls:DragableNumericStepper id="rotationYStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}"
 												 change="rotation_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="rotationZStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true"
-												 minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}" 
+				<controls:DragableNumericStepper id="rotationZStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}" 
 												 change="rotation_commitHandler(event)"/>
 			</s:FormItem>
 			<controls:HorizontalFormSeparator/>
 			<s:FormItem label="Scale" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="scaleXStepper" stepSize="0.01" snapInterval="0.01"
-												 width="100%" value="{_asset.scaleX}"
+				<controls:DragableNumericStepper id="scaleXStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleX}"
 												 change="scale_commitHandler(event)" />
-				<controls:DragableNumericStepper id="scaleYStepper" stepSize="0.01" snapInterval="0.01"
-												 width="100%" value="{_asset.scaleY}"
+				<controls:DragableNumericStepper id="scaleYStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleY}"
 												 change="scale_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="scaleZStepper" stepSize="0.01" snapInterval="0.01"
-												 width="100%" value="{_asset.scaleZ}"
+				<controls:DragableNumericStepper id="scaleZStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleZ}"
 												 change="scale_commitHandler(event)"/>
 			</s:FormItem>
 		</s:Form>

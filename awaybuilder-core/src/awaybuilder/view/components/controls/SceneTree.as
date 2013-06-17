@@ -1,6 +1,5 @@
 package awaybuilder.view.components.controls
 {
-	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -45,13 +44,13 @@ package awaybuilder.view.components.controls
 			if( !items ) return;
 			var renderer:ITreeItemRenderer = dropArea.parent as ITreeItemRenderer;
 			if( renderer.data == items[0] ) return;
-			if( LibraryItemVO(renderer.data).asset is TextureProjectorVO ) return;
-			if( LibraryItemVO(renderer.data).asset is SkyBoxVO ) return;
-			if( LibraryItemVO(renderer.data).asset is LightVO ) return;
-			if( LibraryItemVO(renderer.data).asset is CameraVO ) return;
-			if( LibraryItemVO(renderer.data).asset is ContainerVO )
+			if( renderer.data is TextureProjectorVO ) return;
+			if( renderer.data is SkyBoxVO ) return;
+			if( renderer.data is LightVO ) return;
+			if( renderer.data is CameraVO ) return;
+			if( renderer.data is ContainerVO )
 			{
-				if( LibraryItemVO(items[0]).asset is ObjectVO )
+				if( items[0] is ObjectVO )
 				{
 					renderer.showDropIndicator = true;
 					DragManager.acceptDragDrop(dropArea);

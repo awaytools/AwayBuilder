@@ -35,7 +35,7 @@ package awaybuilder.view.components.controls.tree
 		//
 		//--------------------------------------------------------------------------
 		
-		private var tree:Tree;
+		protected var tree:Tree;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -54,6 +54,7 @@ package awaybuilder.view.components.controls.tree
 				eventDispatcher.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler);
 			
 			super.data = value;
+			
 			updateChildren();
 			
 			eventDispatcher = value as IEventDispatcher;
@@ -264,6 +265,7 @@ package awaybuilder.view.components.controls.tree
 	
 		protected var _children:ICollectionView;
 		
+		[Bindable]
 		public function get children():ICollectionView
 		{
 			return _children;
@@ -323,7 +325,7 @@ package awaybuilder.view.components.controls.tree
 			tree.expandItem(data, !_isOpen);
 		}
 		
-		private function updateChildren():void
+		protected function updateChildren():void
 		{
 			children = data && tree && tree.dataDescriptor ? 
 				tree.dataDescriptor.getChildren(data) : null;
@@ -354,7 +356,11 @@ package awaybuilder.view.components.controls.tree
 	
 		private function data_propertyChangeHandler(event:PropertyChangeEvent):void
 		{
-			updateChildren();
+			if( event.property == "children" || event.property == "animations" || event.property == "animators" )
+			{
+				updateChildren();
+			}
+			
 		}
 		
 	}

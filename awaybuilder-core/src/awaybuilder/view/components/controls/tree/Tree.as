@@ -10,7 +10,6 @@ package awaybuilder.view.components.controls.tree
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
-	import mx.controls.treeClasses.DefaultDataDescriptor;
 	import mx.controls.treeClasses.ITreeDataDescriptor;
 	import mx.core.DragSource;
 	import mx.core.EventPriority;
@@ -99,7 +98,7 @@ package awaybuilder.view.components.controls.tree
 		//  dataDescriptor
 		//----------------------------------
 		
-		private var _dataDescriptor:ITreeDataDescriptor = new DefaultDataDescriptor();
+		private var _dataDescriptor:ITreeDataDescriptor = new SceneDataDescriptor();
 		
 		[Bindable("dataDescriptorChange")]
 		public function get dataDescriptor():ITreeDataDescriptor
@@ -404,6 +403,19 @@ package awaybuilder.view.components.controls.tree
 				{
 					var children:IList = IList(dataDescriptor.getChildren(item));
 					_dataProvider.closeBranch(children, item, true);
+				}
+			}
+		}
+		
+		public function expandBranch(item:Object, cancelable:Boolean = true):void
+		{
+			if (dataDescriptor.hasChildren(item))
+			{
+				var children:IList = IList(dataDescriptor.getChildren(item));
+				_dataProvider.openBranch(children, item, cancelable);
+				for each( var child:Object in children )
+				{
+					expandBranch( child, cancelable );
 				}
 			}
 		}
@@ -805,6 +817,11 @@ package awaybuilder.view.components.controls.tree
 				for (var i:int = 0; i < n; i++)
 				{
 					var renderer:ITreeItemRenderer = dataGroup.getElementAt(i) as ITreeItemRenderer;
+					if( renderer )
+					{
+						updateRenderer(renderer, renderer.itemIndex, renderer.data)
+					}
+					
 					if (renderer && renderer.data == event.item)
 						clonedEvent.itemRenderer = renderer;
 				}

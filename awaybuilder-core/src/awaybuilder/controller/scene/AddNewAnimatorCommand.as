@@ -3,10 +3,9 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AnimatorVO;
 
-	[Deprecated]
 	public class AddNewAnimatorCommand extends HistoryCommandBase
 	{
 		[Inject]
@@ -14,19 +13,37 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
+			var asset:AnimationSetVO;
+			if( event.items && event.items.length )
+			{
+				asset = event.items[0] as AnimationSetVO;
+			}
+			
 			var oldValue:AnimatorVO = event.oldValue as AnimatorVO;
 			var newValue:AnimatorVO = event.newValue as AnimatorVO;
 			
-			if( event.isUndoAction )
+			if( asset )
 			{
-				document.removeAsset( document.animations, oldValue );
-			}
-			else 
-			{
-				document.animations.addItemAt( newValue, 0 );
+				if( event.isUndoAction )
+				{
+					document.removeAsset( asset.animators, oldValue );
+					asset.fillFromAnimationSet( asset );
+				}
+				else 
+				{
+					var alreadyAdded:Boolean = false;
+					for each( var animator:AnimatorVO in asset.animators )
+					{
+						if( animator.equals( newValue ) ) alreadyAdded = true;	
+					}
+					if( !alreadyAdded )	asset.animators.addItem(newValue);
+					asset.fillFromAnimationSet( asset );
+				}
 			}
 			
 			commitHistoryEvent( event );
+			
+			dispatch( new DocumentModelEvent( DocumentModelEvent.OBJECTS_COLLECTION_UPDATED ) );
 		}
 		
 	}

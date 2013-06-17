@@ -7,7 +7,6 @@ package awaybuilder.controller.scene
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.vo.DroppedTreeItemVO;
-	import awaybuilder.model.vo.LibraryItemVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
@@ -34,47 +33,46 @@ package awaybuilder.controller.scene
 			
 			for each( var item:DroppedTreeItemVO in event.newValue ) 
 			{
-				var vo:LibraryItemVO = item.value as LibraryItemVO;
 				
-				if( vo.asset is ObjectVO )
+				if( item.value is ObjectVO )
 				{
 					
 					if( item.newParent == item.oldParent ) return;
 					
+					if( item.oldParent )
+					{ 
+						oldContainer = item.oldParent as ContainerVO;
+						if( oldContainer && itemIsInList(oldContainer.children, item.value as AssetVO) ) 
+						{
+							removeItem( oldContainer.children, item.value as AssetVO );
+						}
+					}
+					else
+					{
+						removeItem( document.scene, item.value as AssetVO );
+					}
+					
 					if( item.newParent )
 					{
-						newContainer = item.newParent.asset as ContainerVO;
-						if( newContainer && !itemIsInList(newContainer.children, vo.asset as AssetVO) ) 
+						newContainer = item.newParent as ContainerVO;
+						if( newContainer && !itemIsInList(newContainer.children, item.value as AssetVO) ) 
 						{
 							if( item.newPosition < newContainer.children.length )
 							{
-								newContainer.children.addItemAt( vo.asset, item.newPosition );
+								newContainer.children.addItemAt( item.value, item.newPosition );
 							}
 							else
 							{
-								newContainer.children.addItem( vo.asset );
+								newContainer.children.addItem( item.value );
 							}
 						}
 					}
 					else
 					{
-						document.scene.addItemAt( vo.asset, item.newPosition );
+						document.scene.addItemAt( item.value, item.newPosition );
 					}
 					
-					if( item.oldParent )
-					{ 
-						oldContainer = item.oldParent.asset as ContainerVO;
-						if( oldContainer && itemIsInList(oldContainer.children, vo.asset as AssetVO) ) 
-						{
-							removeItem( oldContainer.children, vo.asset );
-						}
-					}
-					else
-					{
-						removeItem( document.scene, vo.asset );
-					}
-					
-					Scene3DManager.reparentObject(assets.GetObject(vo.asset) as ObjectContainer3D, newContainer ? assets.GetObject(newContainer) as ObjectContainer3D : null);
+					Scene3DManager.reparentObject(assets.GetObject(item.value as AssetVO) as ObjectContainer3D, newContainer ? assets.GetObject(newContainer) as ObjectContainer3D : null);
 				}
 			}
 			

@@ -96,6 +96,7 @@ package awaybuilder.view.components.controls
 		}
 		private function valueDisplay_clickHandler( event:MouseEvent ):void
 		{
+			stage.focus = textDisplay;
 			valueDisplay.removeEventListener( MouseEvent.CLICK, valueDisplay_clickHandler );
 			editingMode = true;
 			systemManager.getSandboxRoot().removeEventListener( MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler );
@@ -180,7 +181,11 @@ package awaybuilder.view.components.controls
 		override protected function setValue(newValue:Number):void
 		{
 			super.setValue(newValue);
-			if( isNaN( newValue) ) return;
+			if( isNaN( newValue) ) 
+			{
+				valueDisplay.text = " - ";
+				return;
+			}
 			if( stepSize<1 ) 
 			{
 				const parts:Array = (new String(1 + snapInterval)).split("."); 

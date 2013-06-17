@@ -140,7 +140,6 @@ package awaybuilder.desktop.view.mediators
 			this.mediatorMap.createMediator(this._propertiesWindow);
 			
 			this.populateMenus();
-			this.updateMenus();
 			this.updateMenuEnabled();
 			
 			this.updatePageTitle();
@@ -197,14 +196,6 @@ package awaybuilder.desktop.view.mediators
 			}
 			this._propertiesWindow.nativeWindow.y = this.app.nativeWindow.y + (this.app.nativeWindow.height - this._propertiesWindow.nativeWindow.height) / 2;
 			
-//			if(this.updateModel.isReadyToCheckForUpdate)
-//			{
-//				this.updateModel.updateLastCheckTime();
-//				this.dispatch(new MessageBoxEvent(MessageBoxEvent.SHOW_MESSAGE_BOX,
-//					"Update", "Would you like to check for an update?",
-//					"Check for Update", updateMessageBox_onCheckForUpdate, "Don't Check"));
-//			}
-			this.updateMenus();
 			this.updateMenuEnabled();
 		}
 
@@ -681,7 +672,7 @@ package awaybuilder.desktop.view.mediators
 			editMenu.addItem(new NativeMenuItem("", true));
 			if( isWin )
 			{
-				_deleteItem = createMenuItem("Delete",MENU_DELETE, editMenu, -1, "del", []);
+				_deleteItem = createMenuItem("Delete",MENU_DELETE, editMenu, -1);
 			}
 			else
 			{
@@ -701,7 +692,7 @@ package awaybuilder.desktop.view.mediators
 			this.createMenuItem("Zoom In", MENU_ZOOM_IN, viewMenu, -1, "+");
 			this.createMenuItem("Zoom Out", MENU_ZOOM_OUT, viewMenu, -1, "-");
 			viewMenu.addItem(new NativeMenuItem("", true));
-			_focusItem = createMenuItem("Focus Selected", FOCUS_SELECTED, viewMenu);
+			_focusItem = createMenuItem("Focus Selected", FOCUS_SELECTED, viewMenu, -1, "f",  [Keyboard.CONTROL]);
             _focusItem.enabled = false;
 //			this._snapToGridItem = this.createMenuItem("Snap To Grid", MENU_SNAP_TO_GRID, viewMenu);
 //			this._snapToGridItem.checked = this.settingsModel.snapToGrid;
@@ -783,13 +774,5 @@ package awaybuilder.desktop.view.mediators
 //				!this.app.nativeApplication.activeWindow);
 		}
 		
-		private function updateMenus():void
-		{
-//			this._cutItem.enabled = this.editorModel.selectedObjects.length > 0;
-//			this._copyItem.enabled = this.editorModel.selectedObjects.length > 0;
-//			this._rotateClockwiseItem.enabled = this.editorModel.selectedObjects.length > 0;
-//			this._rotateCounterClockwiseItem.enabled = this.editorModel.selectedObjects.length > 0;
-//			this._deleteItem.enabled = this.editorModel.selectedObjects.length > 0;
-		}
 	}
 }

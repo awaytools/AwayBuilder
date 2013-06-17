@@ -10,6 +10,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.SharedLightVO;
 	import awaybuilder.utils.AssetUtil;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.components.LibraryPanel;
@@ -54,7 +55,7 @@ package awaybuilder.controller.scene
 				}
 				else 
 				{
-					picker.lights.addItem(newValue);
+					picker.lights.addItem(new SharedLightVO(newValue));
 				}
 			}
 			

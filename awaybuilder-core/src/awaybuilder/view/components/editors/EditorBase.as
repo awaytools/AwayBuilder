@@ -46,13 +46,13 @@ package awaybuilder.view.components.editors
 		}
 		public function set data(value:Object):void
 		{
-			if( _data ) IEventDispatcher(_data).removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler );
+			if( _data && _data is IEventDispatcher ) IEventDispatcher(_data).removeEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler );
 			
 			if( value ) 
 			{
 				_data = value;
 				validate( _data );
-				IEventDispatcher(_data).addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler )
+				if( _data is IEventDispatcher ) IEventDispatcher(_data).addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler )
 			}
 		}
 		

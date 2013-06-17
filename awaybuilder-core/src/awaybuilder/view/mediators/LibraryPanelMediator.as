@@ -7,7 +7,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.DeleteStateVO;
 	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.LibraryItemVO;
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AnimationSetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CameraVO;
@@ -19,19 +19,19 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
+	import awaybuilder.model.vo.scene.ObjectVO;
+	import awaybuilder.model.vo.scene.ShadingMethodVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
-	import awaybuilder.utils.CollectionUtil;
-	import awaybuilder.utils.DataMerger;
-	import awaybuilder.utils.LibraryFactory;
+	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.view.components.LibraryPanel;
+	import awaybuilder.view.components.controls.tree.TreeDataProvider;
 	import awaybuilder.view.components.events.LibraryPanelEvent;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
-	import mx.events.CollectionEvent;
-	import mx.events.CollectionEventKind;
 	
 	import org.robotlegs.mvcs.Mediator;
 
@@ -249,7 +249,7 @@ package awaybuilder.view.mediators
 			
 			for (var i:int=0;i<selectedItems.length;i++)
 			{
-				items.push(LibraryItemVO(selectedItems[i]).asset);
+				items.push(selectedItems[i]);
 			}
 			_doNotUpdate = true;
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
@@ -265,39 +265,38 @@ package awaybuilder.view.mediators
 		private function context_validateDeletionHandler(event:SceneEvent):void
 		{
 			var states:Vector.<DeleteStateVO> = new Vector.<DeleteStateVO>();
-			var item:LibraryItemVO;
-			for each( item in view.sceneTree.selectedItems )
+			var asset:AssetVO;
+			for each( asset in view.sceneTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.sceneTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
-			for each( item in view.materialTree.selectedItems )
+			for each( asset in view.materialTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.materialTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
-			for each( item in view.texturesTree.selectedItems )
+			for each( asset in view.texturesTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.texturesTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
-			for each( item in view.geometryTree.selectedItems )
+			for each( asset in view.geometryTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.sceneTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
-			for each( item in view.methodsTree.selectedItems )
+			for each( asset in view.methodsTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.methodsTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
-			for each( item in view.animationsTree.selectedItems )
+			for each( asset in view.animationsTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.animationsTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
-			for each( item in view.lightsTree.selectedItems )
+			for each( asset in view.lightsTree.selectedItems )
 			{
-				states.push( new DeleteStateVO( item.asset, item.parent?item.parent.asset:null ) );
+				states.push( new DeleteStateVO( asset, TreeDataProvider(view.lightsTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
 			
 			var additionalStates:Vector.<DeleteStateVO> = new Vector.<DeleteStateVO>();
 			var assetsList:Vector.<AssetVO>;
-			var asset:AssetVO;
 			for each( var state:DeleteStateVO in states )
 			{
 				if( state.asset is ShadowMethodVO )
@@ -326,8 +325,8 @@ package awaybuilder.view.mediators
 						}
 						
 					}
-					
 				}
+				
 				if( state.asset is LightPickerVO )
 				{
 					assetsList = document.getAssetsByType( MaterialVO, materialsWithLightPickerFilterFunciton, state.asset );
@@ -345,7 +344,6 @@ package awaybuilder.view.mediators
 					}
 				}
 			}
-			
 			
 			this.dispatch(new SceneEvent(SceneEvent.DELETE, null, states.concat( additionalStates )));
 			
@@ -406,28 +404,13 @@ package awaybuilder.view.mediators
 				_doNotUpdate = false;
 				return;
 			}
-			
+
 			_selectedSceneItems = new Vector.<Object>();
-			_selectedMaterialsItems = new Vector.<Object>();
-			_selectedTexturesItems = new Vector.<Object>();
-			_selectedGeometryItems = new Vector.<Object>();
-			_selectedMethodsItems = new Vector.<Object>();
-			_selectedAnimationsItems = new Vector.<Object>();
-			_selectedLightsItems = new Vector.<Object>();
-			updateAllSelectedItems( view.model.scene, event.items.concat(), _selectedSceneItems  );
-			updateAllSelectedItems( view.model.materials, event.items.concat(), _selectedMaterialsItems );
-			updateAllSelectedItems( view.model.textures, event.items.concat(), _selectedTexturesItems );
-			updateAllSelectedItems( view.model.geometry, event.items.concat(), _selectedGeometryItems );
-			updateAllSelectedItems( view.model.methods, event.items.concat(), _selectedMethodsItems );
-			updateAllSelectedItems( view.model.animations, event.items.concat(), _selectedAnimationsItems );
-			updateAllSelectedItems( view.model.lights, event.items.concat(), _selectedLightsItems, view.lightsTree.selectedItems );
+			for each( var asset:AssetVO in event.items )
+			{
+				_selectedSceneItems.push( asset );
+			}
 			view.selectedSceneItems = _selectedSceneItems;
-			view.selectedMaterialsItems = _selectedMaterialsItems;
-			view.selectedTexturesItems = _selectedTexturesItems;
-			view.selectedGeometryItems = _selectedGeometryItems;
-			view.selectedMethodsItems = _selectedMethodsItems;
-			view.selectedAnimationsItems = _selectedAnimationsItems;
-			view.selectedLightsItems = _selectedLightsItems;
 			view.callLater( ensureIndexIsVisible );
 		}
 		
@@ -457,39 +440,6 @@ package awaybuilder.view.mediators
 			}
 			
 		}
-		private function updateAllSelectedItems( children:ArrayCollection, selectedItems:Array, currentSelcted:Vector.<Object>, alreadySelected:Vector.<Object>=null ):void
-		{
-			if( alreadySelected )
-			{
-				
-				for each( var alreadySelectedItem:LibraryItemVO in alreadySelected )
-				{
-					for( var i:int = 0; i < selectedItems.length; i++ )
-					{
-						if( AssetVO(selectedItems[i]).equals( alreadySelectedItem.asset ) )
-						{
-							currentSelcted.push( alreadySelectedItem );
-							selectedItems.splice( i, 1 );
-							i--;
-						}
-					}
-				}
-			}
-			for each( var item:LibraryItemVO in children )
-			{
-				if( item.asset )
-				{
-					if( getItemIsSelected( item.asset.id, selectedItems ) )
-					{
-						currentSelcted.push( item );
-					}
-				}
-				if( item.children ) 
-				{
-					updateAllSelectedItems( item.children, selectedItems, currentSelcted );
-				}
-			}
-		}
 		private function getItemIsSelected( id:String, selectedItems:Array ):Boolean
 		{
 			for each( var object:AssetVO in selectedItems )
@@ -503,26 +453,13 @@ package awaybuilder.view.mediators
 		}
 		private function updateScenegraph():void
 		{
-			view.model.scene = LibraryFactory.CreateBranch( document.scene );
-			view.model.materials = LibraryFactory.CreateBranch( document.materials );
-			view.model.animations = LibraryFactory.CreateBranch( document.animations );
-			view.model.methods = LibraryFactory.CreateBranch( document.methods );
-			view.model.textures = LibraryFactory.CreateBranch( document.textures );
-			view.model.geometry = LibraryFactory.CreateBranch( document.geometry );
-			view.model.lights = LibraryFactory.CreateBranch( document.lights );
-			
-			CollectionUtil.sync( view.model.scene, document.scene, addItemFunction );
-			CollectionUtil.sync( view.model.materials, document.materials, addItemFunction );
-			CollectionUtil.sync( view.model.animations, document.animations, addItemFunction );
-			CollectionUtil.sync( view.model.methods, document.methods, addItemFunction );
-			CollectionUtil.sync( view.model.textures, document.textures, addItemFunction );
-			CollectionUtil.sync( view.model.geometry, document.geometry, addItemFunction );
-			CollectionUtil.sync( view.model.lights, document.lights, addItemFunction );
-			
-		}
-		private function addItemFunction( asset:AssetVO ):Object
-		{
-			return LibraryFactory.CreateScenegraphChild( asset, null );
+			view.model.scene = document.scene;
+			view.model.materials = document.materials;
+			view.model.textures = document.textures;
+			view.model.geometry = document.geometry;
+			view.model.methods = document.methods;
+			view.model.lights = document.lights;
+			view.model.animations = document.animations;
 		}
 		
 	}

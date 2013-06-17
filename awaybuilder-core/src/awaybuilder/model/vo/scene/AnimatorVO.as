@@ -29,7 +29,6 @@ package awaybuilder.model.vo.scene
 			this.animationSet = asset.animationSet;
 			this.skeleton = asset.skeleton;
 			this.playbackSpeed = asset.playbackSpeed;
-			this.id = asset.id;
 			this.type = asset.type;
 		}
 	}

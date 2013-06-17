@@ -16,25 +16,26 @@ package awaybuilder.controller.scene
 
         override public function execute():void
         {
-            var vector:Vector3D = event.newValue as Vector3D;
-            var vo:ObjectVO = event.items[0] as ObjectVO;
-
-			if( !event.oldValue ) {
-				event.oldValue = new Vector3D( vo.rotationX, vo.rotationY, vo.rotationZ );
+			var newValues:Vector.<Vector3D> = event.newValue as Vector.<Vector3D>;
+			var oldValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			
+			for( var i:int = 0; i < event.items.length; i++ )
+			{
+				var asset:ObjectVO = event.items[i] as ObjectVO;
+				oldValues.push( new Vector3D( asset.rotationX, asset.rotationY, asset.rotationZ ) );
+				asset.rotationX = isNaN(newValues[i].x)?asset.rotationX:newValues[i].x;
+				asset.rotationY = isNaN(newValues[i].y)?asset.rotationY:newValues[i].y;
+				asset.rotationZ = isNaN(newValues[i].z)?asset.rotationZ:newValues[i].z;
+				
+				var lightVO:LightVO = asset as LightVO;
+				if (lightVO && lightVO.type == LightVO.DIRECTIONAL) 
+				{
+					lightVO.elevationAngle = ((asset.x + 360 + 90) % 360) - 90;
+					lightVO.azimuthAngle = (asset.y + 360) % 360;
+				} 
 			}
 			
-			var lvo:LightVO = vo as LightVO;
-			if (lvo && lvo.type == LightVO.DIRECTIONAL) 
-			{
-				lvo.elevationAngle = ((vector.x + 360 + 90) % 360) - 90;
-				lvo.azimuthAngle = (vector.y + 360) % 360;
-			} else 
-			{
-	            vo.rotationX = vector.x;
-	            vo.rotationY = vector.y;
-	            vo.rotationZ = vector.z;
-			}
-
+			saveOldValue( event, oldValues );
 			commitHistoryEvent( event );
         }
     }

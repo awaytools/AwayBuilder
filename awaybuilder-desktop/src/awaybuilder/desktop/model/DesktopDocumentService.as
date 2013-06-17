@@ -192,10 +192,6 @@ package awaybuilder.desktop.model
 		private function file_save_selectHandler(event:Event):void
 		{
 			var file:File = File(event.currentTarget);
-			trace('saving!');
-			trace(file.nativePath);
-			trace(file.nativePath.toLowerCase().lastIndexOf(FILE_EXTENSION));
-			trace(file.nativePath.length - FILE_EXTENSION.length);
 			if(file.nativePath.toLowerCase().lastIndexOf(FILE_EXTENSION) != file.nativePath.length - FILE_EXTENSION.length)
 			{
 				//this is kind of nasty, but there's no way to force AIR to add
