@@ -58,6 +58,7 @@
 		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.MaterialVO;
 		import awaybuilder.model.vo.scene.ShadowMethodVO;
+		import awaybuilder.model.vo.scene.SharedLightVO;
 		import awaybuilder.model.vo.scene.TextureVO;
 		import awaybuilder.model.vo.scene.interfaces.ITextured;
 		import awaybuilder.view.components.controls.events.DroppedEvent;
@@ -84,14 +85,14 @@
 		[Bindable] private var _selectedNormalMethod:Object;
 		[Bindable] private var _selectedSpecularMethod:Object;
 		
-		[Bindable] private var _asset:MaterialVO;
+		[Bindable] private var _asset:MaterialVO = new MaterialVO();
 		
 		[Bindable] private var _isColorMaterial:Boolean;
 		
 		override protected function validate( asset:Object ):void
 		{
 			if( !(asset is MaterialVO) ) return;
-			_asset = MaterialVO(asset).clone();
+			_asset.fillFromMaterial( asset as MaterialVO );
 			validateObjectProperties();
 		}
 		protected function validateObjectProperties():void
@@ -178,7 +179,7 @@
 				}
 				for each(a in _asset.lightPicker.lights ) 
 				{
-					lights.push( a );
+					lights.push( SharedLightVO(a).linkedAsset );
 				}
 			}
 			else 

@@ -42,6 +42,7 @@ package awaybuilder.controller.scene
 			}
 			
 			commitHistoryEvent( event );
+			dispatch( new DocumentModelEvent( DocumentModelEvent.OBJECTS_COLLECTION_UPDATED ) );
 		}
 		
 		

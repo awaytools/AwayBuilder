@@ -121,7 +121,6 @@ package awaybuilder.model.vo.scene
 			}
 			this.effectMethods = new ArrayCollection( effects );
 			
-			this.id = asset.id;
 		}
     }
 }
