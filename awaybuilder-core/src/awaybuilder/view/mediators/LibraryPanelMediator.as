@@ -410,7 +410,7 @@ package awaybuilder.view.mediators
 			{
 				_selectedSceneItems.push( asset );
 			}
-			view.selectedSceneItems = _selectedSceneItems;
+			view.selectedItems = _selectedSceneItems;
 			view.callLater( ensureIndexIsVisible );
 		}
 		

@@ -84,24 +84,14 @@
 			public var model:DocumentVO = new DocumentVO();
 			
 			[Bindable] 
-			public var selectedSceneItems:Vector.<Object> = new Vector.<Object>();
-			[Bindable] 
-			public var selectedMaterialsItems:Vector.<Object> = new Vector.<Object>();
-			[Bindable] 
-			public var selectedTexturesItems:Vector.<Object> = new Vector.<Object>();
-			[Bindable] 
-			public var selectedGeometryItems:Vector.<Object> = new Vector.<Object>();
-			[Bindable] 
-			public var selectedMethodsItems:Vector.<Object> = new Vector.<Object>();
-			[Bindable] 
-			public var selectedAnimationsItems:Vector.<Object> = new Vector.<Object>();
-			[Bindable] 
-			public var selectedLightsItems:Vector.<Object> = new Vector.<Object>();
+			public var selectedItems:Vector.<Object> = new Vector.<Object>();
 			
 			private var _expandedPanel:CollapsiblePanel;
 			private var _panels:Array;
 			
 			private var _tempSelectedItems:Vector.<Object>;
+			
+			private var _waitingForMouseUp:Boolean;
 			
 			protected function panel_collapsedChangeHandler(event:Event):void
 			{
@@ -151,16 +141,23 @@
 			
 			protected function tree_changeHandler(event:IndexChangeEvent):void
 			{
+				
 				var tree:Tree = event.target as Tree;
 				_tempSelectedItems = tree.selectedItems;
 				
-				systemManager.getSandboxRoot().addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler, false, 0, true);
-				systemManager.getSandboxRoot().addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false, 0, true);
+				if( !_waitingForMouseUp )
+				{
+					this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
+				}
 			}
 			
 			private function mouseUpHandler( event:Event ):void
 			{
-				this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
+				if( _waitingForMouseUp )
+				{
+					this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
+				}
+				_waitingForMouseUp = false;
 				systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false);
 				systemManager.getSandboxRoot().removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler, false);
 			}
@@ -282,18 +279,19 @@
 			
 			protected function tree_dragStartHandler(event:DragEvent):void
 			{
+				_waitingForMouseUp = false;
 				systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false);
 				systemManager.getSandboxRoot().removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler, false);
 			}
 			
 			protected function methodsTree_dragCompleteHandler(event:DragEvent):void
 			{
-				methodsTree.selectedItems = selectedMethodsItems;
+				methodsTree.selectedItems = selectedItems;
 			}
 			
 			protected function lightsTree_dragCompleteHandler(event:DragEvent):void
 			{
-				lightsTree.selectedItems = selectedLightsItems;
+				lightsTree.selectedItems = selectedItems;
 			}
 			
 			protected function lightsTree_itemDroppedHandler(event:TreeEvent):void
@@ -325,12 +323,12 @@
 			
 			protected function sceneTree_dragCompleteHandler(event:DragEvent):void
 			{
-				sceneTree.selectedItems = selectedSceneItems;
+				sceneTree.selectedItems = selectedItems;
 			}
 			
 			protected function animationsTree_dragCompleteHandler(event:DragEvent):void
 			{
-				animationsTree.selectedItems = selectedAnimationsItems;
+				animationsTree.selectedItems = selectedItems;
 			}
 			
 			protected function animationsTree_itemDroppedHandler(event:TreeEvent):void
@@ -360,6 +358,13 @@
 				return droppedAsses;
 			}
 			
+			protected function sceneTree_mouseDownHandler(event:MouseEvent):void
+			{
+				_waitingForMouseUp = true;
+				systemManager.getSandboxRoot().addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler, false, 0, true);
+				systemManager.getSandboxRoot().addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false, 0, true);
+			}
+			
 		]]>
 	</fx:Script>
 	<s:VGroup width="235" height="100%" gap="0">
@@ -367,28 +372,30 @@
 								   title="Scene Objects" width="100%" collapsed="false" height="100%" addEnabled="true"
 								   addNewItem="scenePanel_addNewItemHandler(event)"
 								   collapsedChange="panel_collapsedChangeHandler(event)">
-			<controls:SceneTree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedSceneItems}" indentation="16"
+			<controls:SceneTree id="sceneTree" dataProvider="{model.scene}" selectedItems="{selectedItems}" indentation="16"
 					   dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true"
 					   focusSkin="mx.core.UIComponent"
 					   change="tree_changeHandler(event)"
 					   itemDropped="sceneTree_itemDroppedHandler(event)"
 					   dragComplete="sceneTree_dragCompleteHandler(event)"
+					   mouseDown="sceneTree_mouseDownHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel  id="materialsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 									title="Materials" height="24" width="100%" collapsed="true" addEnabled="true"
 									collapsedChange="panel_collapsedChangeHandler(event)"
 									addNewItem="materialsPanel_addNewItemHandler(event)">
-			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedSceneItems}" indentation="16"
+			<tree:Tree id="materialTree" dataProvider="{model.materials}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
+					   mouseDown="sceneTree_mouseDownHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="texturesPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Textures" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
-			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedSceneItems}" indentation="16"
+			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
@@ -396,7 +403,7 @@
 		<controls:LibraryCollapsiblePanel id="geometryPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Geometry" height="24" width="100%" collapsed="true" collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
-			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedSceneItems}" indentation="16"
+			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   change="tree_changeHandler(event)"
 					   width="100%" height="100%"/>
@@ -405,7 +412,7 @@
 										  title="Effects" height="24" width="100%" collapsed="true" addEnabled="true"
 										  collapsedChange="panel_collapsedChangeHandler(event)"
 										  addNewItem="methodsPanel_addNewItemHandler(event)">
-			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedSceneItems}" indentation="16"
+			<tree:Tree id="methodsTree" dataProvider="{model.methods}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true"
 					   dragMoveEnabled="false" dragEnabled="true" 
 					   dragStart="tree_dragStartHandler(event)" dragComplete="methodsTree_dragCompleteHandler(event)"
@@ -417,7 +424,7 @@
 								   height="24" width="100%" collapsed="true" 
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="animationsPanel_addNewItemHandler(event)">
-			<controls:AnimationTree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedSceneItems}" indentation="16"
+			<controls:AnimationTree id="animationsTree" dataProvider="{model.animations}" selectedItems="{selectedItems}" indentation="16"
 									allowMultipleSelection="true"
 									focusSkin="mx.core.UIComponent"
 									dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
@@ -425,13 +432,14 @@
 									dragStart="tree_dragStartHandler(event)"
 									itemDropped="animationsTree_itemDroppedHandler(event)"
 									dragComplete="animationsTree_dragCompleteHandler(event)"
+									mouseDown="sceneTree_mouseDownHandler(event)"
 							 		width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="lightsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
 								   title="Lights" height="24" width="100%" collapsed="true" addEnabled="true"
 								   collapsedChange="panel_collapsedChangeHandler(event)"
 								   addNewItem="lightsPanel_addNewItemHandler(event)">
-			<controls:LightsTree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedSceneItems}" indentation="16"
+			<controls:LightsTree id="lightsTree" dataProvider="{model.lights}" selectedItems="{selectedItems}" indentation="16"
 								 allowMultipleSelection="true"
 							  	 dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
 								 focusSkin="mx.core.UIComponent"
@@ -439,6 +447,7 @@
 								 itemDropped="lightsTree_itemDroppedHandler(event)"
 								 change="tree_changeHandler(event)" 
 								 dragComplete="lightsTree_dragCompleteHandler(event)"
+								 mouseDown="sceneTree_mouseDownHandler(event)"
 								 width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 	</s:VGroup>
