@@ -4,6 +4,7 @@ package awaybuilder.view.components.editors
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 	
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	
@@ -54,12 +55,21 @@ package awaybuilder.view.components.editors
 				validate( _data );
 				if( _data is IEventDispatcher ) IEventDispatcher(_data).addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler )
 			}
+			if( this.owner )
+			{
+				this.owner.addEventListener( "forceUpdate", forceUpdateHandler );
+			}
 		}
 		
 		private function data_propertyChangeHandler( event:PropertyChangeEvent ):void
 		{
 			_propertiesChanged = true;
 			invalidateProperties();
+		}
+		
+		private function forceUpdateHandler( event:Event ):void
+		{
+			validate( _data );
 		}
 		 
 		override protected function commitProperties():void

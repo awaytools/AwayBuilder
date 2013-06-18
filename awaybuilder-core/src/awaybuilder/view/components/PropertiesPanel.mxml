@@ -104,12 +104,17 @@
 			this.data = data;
 		}
 		
+		public function forceUpdate():void
+		{
+			container.dispatchEvent( new Event("forceUpdate") );
+		}
+		
 	]]></fx:Script>
 	
 	<controls:PanelImage id="panelImage" includeInLayout="false" width="0"/>
 	
 	<controls:CrutchScroller id="panelsContainer" width="100%" height="100%" hasFocusableChildren="false" horizontalScrollPolicy="off">
-		<s:Group width="100%">
+		<s:Group width="100%" id="container">
 			<editors:MeshPropertiesEditor geometry="{geometry}" animators="{animators}" materials="{materials}" prevSelected="{prevSelected}" data="{data}" includeIn="mesh,initAll" />
 			<editors:MaterialPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{data}" includeIn="material,initAll"/>
 			<editors:TexturePropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="texture,initAll" />

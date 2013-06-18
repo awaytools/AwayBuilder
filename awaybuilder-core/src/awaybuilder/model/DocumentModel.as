@@ -25,7 +25,7 @@ package awaybuilder.model
 
 	public class DocumentModel extends Actor
 	{
-		private var _documentVO:DocumentVO = new DocumentVO();
+		private const _documentVO:DocumentVO = new DocumentVO();
 		
 		private var _empty:Boolean = true;
 		public function get empty():Boolean
@@ -99,9 +99,9 @@ package awaybuilder.model
 		}
 		public function set animations(value:ArrayCollection):void
 		{
-			if( _documentVO.animations ) _documentVO.animations.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( animations ) animations.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.animations = value;
-			if( _documentVO.animations ) _documentVO.animations.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( animations ) animations.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get geometry():ArrayCollection
@@ -110,9 +110,9 @@ package awaybuilder.model
 		}
 		public function set geometry(value:ArrayCollection):void
 		{
-			if( _documentVO.geometry ) _documentVO.geometry.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( geometry ) geometry.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.geometry = value;
-			if( _documentVO.geometry ) _documentVO.geometry.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( geometry ) geometry.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get materials():ArrayCollection
@@ -121,9 +121,9 @@ package awaybuilder.model
 		}
 		public function set materials(value:ArrayCollection):void
 		{
-			if( _documentVO.materials ) _documentVO.materials.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( materials ) materials.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.materials = value;
-			if( _documentVO.materials ) _documentVO.materials.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( materials ) materials.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get scene():ArrayCollection
@@ -143,9 +143,9 @@ package awaybuilder.model
 		}
 		public function set textures(value:ArrayCollection):void
 		{
-			if( _documentVO.textures ) _documentVO.textures.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( textures ) textures.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.textures = value;
-			if( _documentVO.textures ) _documentVO.textures.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( textures ) textures.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get lights():ArrayCollection
@@ -154,9 +154,9 @@ package awaybuilder.model
 		}
 		public function set lights(value:ArrayCollection):void
 		{
-			if( _documentVO.lights ) _documentVO.lights.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( lights ) lights.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.lights = value;
-			if( _documentVO.lights ) _documentVO.lights.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( lights ) lights.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function get methods():ArrayCollection
@@ -165,9 +165,9 @@ package awaybuilder.model
 		}
 		public function set methods(value:ArrayCollection):void
 		{
-			if( _documentVO.methods ) _documentVO.methods.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( methods ) methods.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 			_documentVO.methods = value;
-			if( _documentVO.methods ) _documentVO.methods.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
+			if( methods ) methods.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
 		public function getAllAssets():Array
@@ -189,7 +189,13 @@ package awaybuilder.model
 		
 		public function clear():void
 		{
-			_documentVO = new DocumentVO();
+			scene = new ArrayCollection();
+			materials = new ArrayCollection();
+			textures = new ArrayCollection();
+			geometry = new ArrayCollection();
+			methods = new ArrayCollection();
+			animations = new ArrayCollection();
+			lights = new ArrayCollection();
 			_globalOptions = new GlobalOptionsVO();
 			_selectedAssets = new Vector.<AssetVO>();
 			empty = true;

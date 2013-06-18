@@ -139,24 +139,28 @@
 			{
 				if( item.value == _asset.ambientMethod.type ) {
 					_selectedAmbientMethod = item;
+					continue;
 				}
 			}
 			for each(item in specularList) 
 			{
 				if( item.value == _asset.specularMethod.type ) {
 					_selectedSpecularMethod = item;
+					continue;
 				}
 			}
 			for each(item in normalList) 
 			{
 				if( item.value == _asset.normalMethod.type ) {
 					_selectedNormalMethod = item;
+					continue;
 				}
 			}
 			for each(item in diffuseList) 
 			{
 				if( item.value == _asset.diffuseMethod.type ) {
 					_selectedDiffuseMethod = item;
+					continue;
 				}
 			}
 			
@@ -736,28 +740,28 @@
 			<controls:PropertiesItemContainer label="Ambient Method" width="100%">
 				<s:DropDownList id="ambientMethodDropDownList" requireSelection="true"
 								change="ambientMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_selectedAmbientMethod}" dataProvider="{ambientList}"
+								selectedItem="@{_selectedAmbientMethod}" dataProvider="{ambientList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="ambientMethod_clickHandler(event)"/>
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Diffuse Method" width="100%">
 				<s:DropDownList id="diffuseMethodDropDownList" requireSelection="true"
 								change="diffuseMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_selectedDiffuseMethod}" dataProvider="{diffuseList}"
+								selectedItem="@{_selectedDiffuseMethod}" dataProvider="{diffuseList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="diffuseMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Specular Method" width="100%">
 				<s:DropDownList id="specularMethodDropDownList" requireSelection="true"
 								change="specularMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_selectedSpecularMethod}" dataProvider="{specularList}"
+								selectedItem="@{_selectedSpecularMethod}" dataProvider="{specularList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="specularMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>
 			<controls:PropertiesItemContainer label="Normal Method" width="100%">
 				<s:DropDownList id="normalMethodDropDownList" requireSelection="true"
 								change="normalMethodDropDownList_changeHandler(event)" width="100%"
-								selectedItem="{_selectedNormalMethod}" dataProvider="{normalList}"
+								selectedItem="@{_selectedNormalMethod}" dataProvider="{normalList}"
 								/>
 				<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="normalMethod_clickHandler(event)" />
 			</controls:PropertiesItemContainer>

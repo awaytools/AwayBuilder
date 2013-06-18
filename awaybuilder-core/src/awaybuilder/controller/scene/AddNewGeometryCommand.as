@@ -1,9 +1,7 @@
 package awaybuilder.controller.scene
 {
-	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.GeometryVO;
 
 	public class AddNewGeometryCommand extends HistoryCommandBase
