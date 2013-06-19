@@ -94,7 +94,7 @@ package awaybuilder.view.scene.controls
 			isContainerGizmo = currentMesh.parent as ContainerGizmo3D;
 			isTextureProjectorGizmo = currentMesh.parent as TextureProjectorGizmo3D;
 
-			var pivot:Vector3D = currentMesh.transform.deltaTransformVector(currentMesh.pivotPoint);		
+			var pivot:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
 			this.position = currentMesh.scenePosition.add(pivot);
 			if (isLightGizmo) 
 			{
