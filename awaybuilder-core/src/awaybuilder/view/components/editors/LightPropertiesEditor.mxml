@@ -109,7 +109,7 @@
 		
 		private function position_commitHandler(event:Event):void {
 			var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.LIGHT_POSITION_CHANGE, newValue));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
 		}
 		protected function colorPicker_changeHandler(event:ColorPickerEvent):void
 		{

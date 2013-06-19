@@ -128,7 +128,6 @@ package awaybuilder.view.mediators
 			addViewListener( PropertyEditorEvent.REPLACE_TEXTURE, view_replaceTextureHandler );
 			addViewListener( PropertyEditorEvent.REPLACE_CUBE_TEXTURE, view_replaceCubeTextureHandler );
 			
-			addViewListener( PropertyEditorEvent.LIGHT_POSITION_CHANGE, view_lightPositionChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_STEPPER_CHANGE, view_lightStepperChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_CHANGE, view_lightChangeHandler );
 			addViewListener( PropertyEditorEvent.LIGHT_MAPPER_CHANGE, view_lightMapperChangeHandler );
@@ -514,11 +513,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new ImportTextureEvent(ImportTextureEvent.IMPORT_AND_BITMAP_REPLACE,[view.data],event.data));
 		}
 		
-		private function view_lightPositionChangeHandler(event:PropertyEditorEvent):void
-		{
-			this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[view.data], event.data, true));
-		}
-		
 		private function view_lightChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_LIGHT,[view.data], event.data));
@@ -870,9 +864,13 @@ package awaybuilder.view.mediators
 			var initType:String = getStateByType( assets[0] );
 			for each( var asset:AssetVO in assets )
 			{
+				if( asset is LightVO )
+				{
+					if( LightVO(asset).type == LightVO.DIRECTIONAL ) return "global";
+				}
 				if( initType != getStateByType( asset ) )
 				{
-					if( initType == "mesh" )
+					if( initType == "mesh" || initType == "light" )
 					{
 						initType = "container";
 						if( initType != getStateByType( asset ) )

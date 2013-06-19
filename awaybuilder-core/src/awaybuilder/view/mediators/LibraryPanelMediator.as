@@ -244,16 +244,18 @@ package awaybuilder.view.mediators
 		private var _doNotUpdate:Boolean = false;
 		private function view_treeChangeHandler(event:LibraryPanelEvent):void
 		{
-			var items:Array = [];
-			var selectedItems:Vector.<Object> = event.data as Vector.<Object>;
-			
-			for (var i:int=0;i<selectedItems.length;i++)
+			if( event.data )
 			{
-				items.push(selectedItems[i]);
+				var items:Array = [];
+				var selectedItems:Vector.<Object> = event.data as Vector.<Object>;
+				
+				for (var i:int=0;i<selectedItems.length;i++)
+				{
+					items.push(selectedItems[i]);
+				}
+				_doNotUpdate = true;
+				this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
 			}
-			_doNotUpdate = true;
-			this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
-			
 		}
 		
 		//----------------------------------------------------------------------

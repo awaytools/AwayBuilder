@@ -201,7 +201,6 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CHANGE_ANIMATION_NODE, eventDispatcher_changeAnimationNodeHandler);
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
-//			addContextListener(SceneEvent.REPARENT_OBJECTS, eventDispatcher_reparentObjectsHandler);
 			addContextListener(SceneEvent.REPARENT_ANIMATIONS, eventDispatcher_reparentAnimationHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
@@ -277,13 +276,6 @@ package awaybuilder.view.mediators
 					CameraManager.running = true;
 					e.stopImmediatePropagation();
 					break;
-//				case Keyboard.F: 
-//					if (Scene3DManager.selectedObject != null) 
-//					{
-//						CameraManager.focusTarget(Scene3DManager.selectedObject);
-//					}
-//					e.stopImmediatePropagation();
-//					break;
 				case Keyboard.CONTROL:
 					Scene3DManager.multiSelection = true;
 					e.stopImmediatePropagation();
@@ -1773,12 +1765,9 @@ package awaybuilder.view.mediators
 						var a:Number = Math.atan2(directionalLight.direction.x, directionalLight.direction.z )*180/Math.PI;
 						lightVO.azimuthAngle = Math.round(a<0?a+360:a);
 					} 
-					else 
-					{
-						vo.rotationX = event.endValue.x;
-						vo.rotationY = event.endValue.y;
-						vo.rotationZ = event.endValue.z;
-					}
+					vo.rotationX = event.endValue.x;
+					vo.rotationY = event.endValue.y;
+					vo.rotationZ = event.endValue.z;
                     break;
                 default:
 					vo.scaleX = event.endValue.x;

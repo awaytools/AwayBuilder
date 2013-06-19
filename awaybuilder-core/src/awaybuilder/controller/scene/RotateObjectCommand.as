@@ -30,8 +30,8 @@ package awaybuilder.controller.scene
 				var lightVO:LightVO = asset as LightVO;
 				if (lightVO && lightVO.type == LightVO.DIRECTIONAL) 
 				{
-					lightVO.elevationAngle = ((asset.x + 360 + 90) % 360) - 90;
-					lightVO.azimuthAngle = (asset.y + 360) % 360;
+					lightVO.elevationAngle = ((asset.rotationX + 360 + 90) % 360) - 90;
+					lightVO.azimuthAngle = (asset.rotationY + 360) % 360;
 				} 
 			}
 			

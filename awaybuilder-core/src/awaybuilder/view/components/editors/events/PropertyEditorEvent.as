@@ -75,7 +75,6 @@ package awaybuilder.view.components.editors.events
 		public static const LIGHT_CHANGE:String = "lightChange";
 		public static const LIGHT_MAPPER_CHANGE:String = "lightMapperChange";
 		public static const LIGHT_STEPPER_CHANGE:String = "lightStepperChange";
-		public static const LIGHT_POSITION_CHANGE:String = "lightPositionChange";
 		
 		public static const LIGHT_ADD_FilteredShadowMapMethod:String = "lightAddFilteredShadowMapMethod";
 		public static const LIGHT_ADD_DitheredShadowMapMethod:String = "lightAddDitheredShadowMapMethod";
