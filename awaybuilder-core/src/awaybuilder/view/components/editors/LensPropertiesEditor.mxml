@@ -55,10 +55,10 @@
 	</s:Group>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Field of View" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="PerspectiveLens">
-			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="170" width="40" change="stepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="0.1" snapInterval="0.01" minimum="0" maximum="170" width="42" change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Projection Height" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicLens">
-			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="1" snapInterval="1" minimum="0" maximum="4096" width="40" change="stepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="1" snapInterval="1" minimum="0" maximum="4096" width="42" change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicOffCenterLens">
 			<controls:DragableNumericStepper value="@{_asset.minX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42" textAlign="right"

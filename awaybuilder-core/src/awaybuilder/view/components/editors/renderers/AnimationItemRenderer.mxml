@@ -93,7 +93,7 @@
 				  buttonDown="backButton_buttonDownHandler(event)" autoRepeat="true"/>
 		<controls:DragableNumericStepper id="positionStepper" value="{_animation.currentPosition}" 
 										 stepSize="100" snapInterval="1" minimum="0" maximum="{_animation.totalDuration}" 
-										 width="40"
+										 width="46"
 										 change="positionStepper_changeHandler(event)" />
 		<s:Button id="forwardButton" toolTip="Forward" styleName="stepForwardButton" height="23" width="23" enabled="{!_animation.isPlaying}"
 				  buttonDown="forwardButton_buttonDownHandler(event)" autoRepeat="true"/>
