@@ -225,23 +225,6 @@
 			_lights = new ArrayCollection(lights);
 		}
 		
-        private function name_changeHandler(event:Event):void 
-		{
-			_asset.name = nameInput.text;
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
-        }
-
-        private function basicProperties_changeHandler(event:Event):void 
-		{
-			_asset.repeat = repeatBox.selected;
-			_asset.smooth = smoothBox.selected;
-			_asset.bothSides = bothSidesBox.selected;
-			_asset.mipmap = mipmapBox.selected;
-			_asset.alphaBlending = alphaBlendingBox.selected;
-			_asset.alphaPremultiplied = alphaPremultipliedBox.selected;
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
-        }
-
 		private function shadowMethodDropDownList_changeHandler(event:IndexChangeEvent):void 
 		{
 			if( !shadowMethodDropDownList.selectedItem.isNull ) 
@@ -402,14 +385,13 @@
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SHOW_CHILD_PROPERTIES, _asset.specularTexture, true));
 		}
 		
-		protected function alphaStepper_changeHandler(event:Event):void
+		protected function stepper_changeHandler(event:Event):void
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
 		}
-		protected function alphaThresholdStepper_changeHandler(event:Event):void
+		protected function value_changeHandler(event:Event):void
 		{
-			_asset.alphaThreshold = alphaThresholdStepper.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_STEPPER_CHANGE, _asset, true));
+			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
 		protected function editLightButton_clickHandler(event:MouseEvent):void
@@ -426,11 +408,6 @@
 		protected function ambientColorPicker_changeHandler(event:ColorPickerEvent):void
 		{
 			_asset.ambientColor = ambientColorPicker.selectedColor;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
-		}
-		
-		protected function stepper_changeHandler(event:Event):void
-		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_CHANGE, _asset, true));
 		}
 		
@@ -557,7 +534,7 @@
 	
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="{_asset.name}" change="name_changeHandler(event)"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="value_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
@@ -570,32 +547,32 @@
 		<controls:HorizontalFormSeparator/>
         <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
 			<s:FormItem label="repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-				<s:CheckBox id="repeatBox" change="basicProperties_changeHandler(event)" selected="{_asset.repeat}" />
+				<s:CheckBox id="repeatBox" change="value_changeHandler(event)" selected="@{_asset.repeat}" />
 			</s:FormItem>
 			<s:FormItem label="smooth" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:CheckBox id="smoothBox" change="basicProperties_changeHandler(event)" selected="{_asset.smooth}"/>
+				<s:CheckBox id="smoothBox" change="value_changeHandler(event)" selected="@{_asset.smooth}"/>
 			</s:FormItem>
 			<s:FormItem label="mipmap" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-				<s:CheckBox id="mipmapBox" change="basicProperties_changeHandler(event)" selected="{_asset.mipmap}" />
+				<s:CheckBox id="mipmapBox" change="value_changeHandler(event)" selected="@{_asset.mipmap}" />
 			</s:FormItem>
 			<s:FormItem label="both sides" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-				<s:CheckBox id="bothSidesBox" change="basicProperties_changeHandler(event)" selected="{_asset.bothSides}" />
+				<s:CheckBox id="bothSidesBox" change="value_changeHandler(event)" selected="@{_asset.bothSides}" />
 			</s:FormItem>
 			<s:FormItem label="Alpha" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" excludeFrom="multipass">
-				<controls:DragableNumericStepper id="alphaStepper" value="@{_asset.alpha}" width="38"
+				<controls:DragableNumericStepper id="alphaStepper" value="@{_asset.alpha}" width="42"
 												 minimum="0" maximum="1" stepSize="0.01" snapInterval="0.001"
-												 change="alphaStepper_changeHandler(event)" />
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
-			<s:FormItem label="Alpha Blending" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
-				<s:CheckBox id="alphaBlendingBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaBlending}" />
+			<s:FormItem label="Alpha Blending" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%"  excludeFrom="multipass">
+				<s:CheckBox id="alphaBlendingBox" change="value_changeHandler(event)" selected="@{_asset.alphaBlending}" />
 			</s:FormItem>
 			<s:FormItem label="Alpha Threshold" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="alphaThresholdStepper" value="{_asset.alphaThreshold}" width="38"
+				<controls:DragableNumericStepper id="alphaThresholdStepper" value="@{_asset.alphaThreshold}" width="42"
 												 minimum="0" maximum="1" stepSize="0.01" snapInterval="0.001"
-												 change="alphaThresholdStepper_changeHandler(event)" />
+												 change="stepper_changeHandler(event)" />
 			</s:FormItem>
 			<s:FormItem label="Pre-multiplied" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:CheckBox id="alphaPremultipliedBox" change="basicProperties_changeHandler(event)" selected="{_asset.alphaPremultiplied}" />
+				<s:CheckBox id="alphaPremultipliedBox" change="value_changeHandler(event)" selected="@{_asset.alphaPremultiplied}" />
 			</s:FormItem>
 			<s:FormItem label="blend mode" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<s:DropDownList id="blendModeList" selectedItem="{_asset.blendMode}" change="blendModeList_changeHandler(event)" width="100%"

@@ -991,7 +991,8 @@ package awaybuilder.view.mediators
 				singlePassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
 				singlePassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
 				singlePassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
-				
+				singlePassMaterialBase.alphaBlending = asset.alphaBlending;
+				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
 				if( m is ColorMaterial )
 				{
 					var colorMaterial:ColorMaterial = m as ColorMaterial;
@@ -1020,10 +1021,10 @@ package awaybuilder.view.mediators
 					textureMaterial.specular = asset.specularLevel;
 					textureMaterial.specularColor = asset.specularColor;
 					textureMaterial.gloss = asset.specularGloss;
+					
 				}
 				
 				var i:int;
-				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
 				while( singlePassMaterialBase.numMethods )
 				{
 					singlePassMaterialBase.removeMethod(singlePassMaterialBase.getMethodAt(0));
@@ -1037,6 +1038,7 @@ package awaybuilder.view.mediators
 			var multiPassMaterialBase:MultiPassMaterialBase = m as MultiPassMaterialBase;
 			if( multiPassMaterialBase ) 
 			{
+				multiPassMaterialBase.alphaThreshold = asset.alphaThreshold;
 				multiPassMaterialBase.diffuseMethod = assets.GetObject(asset.diffuseMethod) as BasicDiffuseMethod;
 				multiPassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
 				multiPassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
@@ -1073,7 +1075,6 @@ package awaybuilder.view.mediators
 					textureMultiPassMaterial.gloss = asset.specularGloss;
 				}
 				
-				multiPassMaterialBase.alphaThreshold = asset.alphaThreshold;
 				while( multiPassMaterialBase.numMethods )
 				{
 					multiPassMaterialBase.removeMethod(multiPassMaterialBase.getMethodAt(0));
