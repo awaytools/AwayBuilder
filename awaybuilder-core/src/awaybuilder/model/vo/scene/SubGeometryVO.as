@@ -10,6 +10,9 @@ package awaybuilder.model.vo.scene
 		public var vertexOffset : int;
 		public var vertexStride: uint;
 		
+		public var autoDerivedNormals: Boolean;
+		public var autoDerivedTangents: Boolean;
+		
 		public var UVData : Vector.<Number>;
 		public var UVStride : uint;
 		public var UVOffset : int;
@@ -37,6 +40,8 @@ package awaybuilder.model.vo.scene
 			vo.vertexData = this.vertexData;
 			vo.vertexOffset = this.vertexOffset;
 			vo.vertexStride = this.vertexStride;
+			vo.autoDerivedNormals = this.autoDerivedNormals;
+			vo.autoDerivedTangents = this.autoDerivedTangents;
 			vo.UVData = this.UVData;
 			vo.UVStride = this.UVStride;
 			vo.UVOffset = this.UVOffset;

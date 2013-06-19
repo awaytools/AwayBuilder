@@ -444,6 +444,8 @@ package awaybuilder.model
 			asset.vertexData = obj.vertexData;
 			asset.vertexOffset = obj.vertexOffset;
 			asset.vertexStride = obj.vertexStride;
+			asset.autoDerivedNormals = obj.autoDeriveVertexNormals;
+			asset.autoDerivedTangents = obj.autoDeriveVertexTangents;
 			asset.UVData = obj.UVData;
 			asset.UVStride = obj.UVStride;
 			asset.UVOffset = obj.UVOffset;

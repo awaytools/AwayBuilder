@@ -1,18 +1,5 @@
 package awaybuilder.utils.encoders
 {
-	import flash.display.BitmapData;
-	import flash.display.BlendMode;
-	import flash.display.JPEGEncoderOptions;
-	import flash.display.PNGEncoderOptions;
-	import flash.geom.Matrix3D;
-	import flash.geom.Vector3D;
-	import flash.utils.ByteArray;
-	import flash.utils.CompressionAlgorithm;
-	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-	
-	import mx.collections.ArrayCollection;
-	
 	import away3d.animators.data.SkeletonJoint;
 	import away3d.core.base.Geometry;
 	import away3d.core.math.MathConsts;
@@ -38,6 +25,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.ShadingMethodVO;
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SharedAnimationNodeVO;
 	import awaybuilder.model.vo.scene.SkeletonPoseVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
@@ -45,6 +33,19 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
+	
+	import flash.display.BitmapData;
+	import flash.display.BlendMode;
+	import flash.display.JPEGEncoderOptions;
+	import flash.display.PNGEncoderOptions;
+	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
+	import flash.utils.ByteArray;
+	import flash.utils.CompressionAlgorithm;
+	import flash.utils.Dictionary;
+	import flash.utils.Endian;
+	
+	import mx.collections.ArrayCollection;
 		
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
@@ -200,7 +201,6 @@ package awaybuilder.utils.encoders
 			_createAwdBlocks(document.materials);
 			_createAwdBlocks(document.geometry);
 			_createAwdBlocks(document.animations);
-			
 			_encodeMetaDataBlock();			
 			_encodeNameSpaceBlock();
 			
@@ -267,8 +267,12 @@ package awaybuilder.utils.encoders
 			{
 				if (asset.isDefault)return;
 				switch(true){
-					case (asset is AnimationNodeVO):
 					case (asset is AnimationSetVO):
+						for each(var animator:AnimatorVO in AnimationSetVO(asset).animators){
+							var newanimId:uint=_getBlockIDorEncodeAsset(animator);				
+							if(_debug)trace("addional Block  = "+animator.name+" / "+animator);
+						}		
+					case (asset is AnimationNodeVO):
 					case (asset is SkeletonPoseVO):
 					case (asset is SkeletonVO):
 					case (asset is AnimatorVO):
@@ -282,7 +286,7 @@ package awaybuilder.utils.encoders
 					case (asset is MaterialVO):
 					case (asset is GeometryVO):
 						var newId:uint=_getBlockIDorEncodeAsset(asset);
-						if (_debug)trace("addional Block: = "+asset.name+" / id = "+newId);
+						if (_debug)trace("addional Block: = "+asset.name+" / asset: "+asset+" / id = "+newId);
 						break;
 				}	
 				
@@ -305,8 +309,15 @@ package awaybuilder.utils.encoders
 				}
 				if (asset.isDefault)return;
 				switch(true){
-					case (asset is AnimationNodeVO):
 					case (asset is AnimationSetVO):
+						for each(var animator:AnimatorVO in AnimationSetVO(asset).animators){
+							if (!_blockCache[animator]){
+								var newAnimatorBlock:AWDBlock=new AWDBlock();
+								_blockCache[animator]=newAnimatorBlock;								
+								if(_debug)trace("create Block for a Asset = "+animator.name+" / "+animator);
+							}						
+						}
+					case (asset is AnimationNodeVO):
 					case (asset is SkeletonPoseVO):
 					case (asset is SkeletonVO):
 					case (asset is AnimatorVO):
@@ -321,6 +332,7 @@ package awaybuilder.utils.encoders
 					case (asset is GeometryVO):
 						var newBlock:AWDBlock=new AWDBlock();
 						_blockCache[asset]=newBlock;
+						if(_debug)trace("create Block for a Asset = "+asset.name+" / "+asset);
 						break;
 				}	
 				
@@ -396,7 +408,7 @@ package awaybuilder.utils.encoders
 					break;
 				case (asset is AnimatorVO):
 					returnID=_encodeAnimator(AnimatorVO(asset));
-					if(_debug)trace("start encoding SkeletonVO = "+asset.name);
+					if(_debug)trace("start encoding AnimatorVO = "+asset.name);
 					break;
 				default:
 					if(_debug)trace("unknown asset");
@@ -440,7 +452,7 @@ package awaybuilder.utils.encoders
 					break;
 				case (vo is MeshVO):					
 					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID);
-					
+					trace("MeshVO(vo).animator = "+MeshVO(vo).animator);
 					if (MeshVO(vo).animator){
 						if(!_translateAnimatiorToMesh[MeshVO(vo).animator.id])
 							_translateAnimatiorToMesh[MeshVO(vo).animator.id]=new Vector.<MeshVO>;
@@ -536,19 +548,14 @@ package awaybuilder.utils.encoders
 				_encodeStream(1, sub.vertexData, sub.vertexOffset, sub.vertexStride);
 				_encodeStream(2, sub.indexData);
 				_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride);
-				if (_exportNormals)	_encodeStream(4, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
-				if (_exportTangents) _encodeStream(5, sub.vertexTangentData, sub.vertexTangentOffset, sub.vertexTangentStride);
+				if ( (_exportNormals) && (!sub.autoDerivedNormals) )	_encodeStream(4, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
+				if ( (_exportTangents) && (!sub.autoDerivedTangents) )	_encodeStream(5, sub.vertexTangentData, sub.vertexTangentOffset, sub.vertexTangentStride);
 				if (sub.jointIndexData){
 					_encodeStream(6, sub.jointIndexData, 0, 0);
 				}
 				if (sub.jointWeightsData){
 					_encodeStream(7, sub.jointWeightsData, 0, 0);
-				}
-				/*if(sub is SkinnedSubGeometry){
-				var skinnedSub:SkinnedSubGeometry= sub as SkinnedSubGeometry;
-				_encodeStream(6, skinnedSub., sub.vertexNormalOffset, sub.vertexNormalStride);
-				_encodeStream(7, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);				
-				}*/				
+				}			
 				_endElement(); // Sub-geom
 				
 				_beginElement(); // User attr
@@ -1608,6 +1615,8 @@ package awaybuilder.utils.encoders
 			// make shure all frames are exported before the animationSet:
 			var animationIDs:Vector.<uint>=new Vector.<uint>;
 			for each (var frame:AnimationNodeVO in animSet.animations){
+				if (frame is SharedAnimationNodeVO)
+					frame=SharedAnimationNodeVO(frame).linkedAsset as AnimationNodeVO;					
 				animationIDs.push(_getBlockIDorEncodeAsset(frame));				
 			}
 			

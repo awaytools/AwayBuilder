@@ -20,9 +20,9 @@ package awaybuilder.model.vo
 		
 		public var embedTextures:Boolean = true;
 		
-		public var includeNormal:Boolean = false;
+		public var includeNormal:Boolean = true;
 		
-		public var includeTangent:Boolean = false;
+		public var includeTangent:Boolean = true;
 		
 		public var streaming:Boolean = false;
 		
