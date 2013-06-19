@@ -911,6 +911,18 @@ package awaybuilder.model
 				}
 				asset.subMeshes.addItem( sm );
 			}
+			
+			// animators loaded not from animationSet, so animationSets know nothing about them directly
+			if( asset.animator )
+			{
+				var alreadyAdded:Boolean = false;
+				for each( var animator:AnimatorVO in asset.animator.animationSet.animators )
+				{
+					if( animator.equals( asset.animator ) ) alreadyAdded = true;	
+				}
+				if( !alreadyAdded )	asset.animator.animationSet.animators.addItem( asset.animator );
+			}
+			
 			return asset;
 		}
 		private function fillContainer( asset:ContainerVO, item:ObjectContainer3D ):ContainerVO

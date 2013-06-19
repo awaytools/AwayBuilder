@@ -44,7 +44,6 @@ package awaybuilder.view.components.controls.tree
 					var children:ArrayCollection = ChildCollectionCache[node];
 					if( !children )
 					{
-						trace( "createChildren for " + node );
 						children = new ArrayCollection();
 						ChildCollectionCache[node] = children;
 					}

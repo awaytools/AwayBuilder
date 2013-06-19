@@ -212,9 +212,6 @@
 			
 			_shadowMethods = new ArrayCollection(shadowMehtods);
 			
-			trace( "_shadowMethods", _shadowMethods );
-			
-			
 			if( _asset.shadowMethod && _asset.light && _asset.lightPicker )
 			{
 				for each(var method:AssetVO in _shadowMethods ) 
@@ -226,10 +223,6 @@
 			{
 				_selectedShadowMethod = _shadowMethods.getItemAt(0) as AssetVO;
 			}
-			trace( "_selectedShadowMethod", _selectedShadowMethod );
-			
-//			trace("shadowLightDropDownList.selectedItem ", shadowLightDropDownList.selectedItem );
-			
 		}
 		
 		private function shadowMethodDropDownList_changeHandler(event:IndexChangeEvent):void 
