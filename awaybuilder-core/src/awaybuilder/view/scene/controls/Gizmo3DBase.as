@@ -1,7 +1,7 @@
 package awaybuilder.view.scene.controls
 {
+	import flash.geom.Matrix3D;
 	import away3d.containers.ObjectContainer3D;
-	import away3d.entities.Entity;
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.lightpickers.StaticLightPicker;
@@ -74,11 +74,13 @@ package awaybuilder.view.scene.controls
 			content.scaleX = scale;
 			content.scaleY = scale;
 			content.scaleZ = scale;
-			
+//trace("this.position:"+this.position)			
 			if (!active && currentMesh != null) 
 			{
-				if (!(isLightGizmo && isLightGizmo.type == LightGizmo3D.DIRECTIONAL_LIGHT))
-					this.position = currentMesh.scenePosition;
+				if (!(isLightGizmo && isLightGizmo.type == LightGizmo3D.DIRECTIONAL_LIGHT)) {
+//					var pivot:Vector3D = currentMesh.transform.deltaTransformVector(currentMesh.pivotPoint);		
+//					this.position = currentMesh.scenePosition.add(pivot);
+				}
 			}
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
@@ -91,14 +93,15 @@ package awaybuilder.view.scene.controls
 			isLightGizmo = currentMesh.parent as LightGizmo3D;
 			isContainerGizmo = currentMesh.parent as ContainerGizmo3D;
 			isTextureProjectorGizmo = currentMesh.parent as TextureProjectorGizmo3D;
+
+			var pivot:Vector3D = currentMesh.transform.deltaTransformVector(currentMesh.pivotPoint);		
+			this.position = currentMesh.scenePosition.add(pivot);
 			if (isLightGizmo) 
 			{
-				this.position = isLightGizmo.sceneObject.scenePosition;
 				content.rotationX = content.rotationY = content.rotationZ = 0;		
 			}
 			else if (isTextureProjectorGizmo) 
 			{
-				this.position = isTextureProjectorGizmo.sceneObject.scenePosition;
 				if (type == TRANSLATE_GIZMO) {
 					content.rotationX = content.rotationY = content.rotationZ = 0;		
 				} else {
@@ -109,7 +112,6 @@ package awaybuilder.view.scene.controls
 			}
 			else
  			{
-				this.position = sceneObject.scenePosition;
 				if (type == TRANSLATE_GIZMO) {
 					content.rotationX = content.rotationY = content.rotationZ = 0;		
 				} else {
@@ -118,7 +120,6 @@ package awaybuilder.view.scene.controls
 					content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : sceneObject.rotationZ;
 				}
 			}
-			
 
 			this.visible = true;
 		}

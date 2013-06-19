@@ -30,7 +30,8 @@ package awaybuilder.view.scene.controls
 		
 		private var startValue:Vector3D;
 		
-		private var actualMesh:ObjectContainer3D;
+		private var actualMesh : ObjectContainer3D;
+		private var startScenePosition : Vector3D;
 		
 		public function TranslateGizmo3D()
 		{
@@ -172,7 +173,7 @@ package awaybuilder.view.scene.controls
 		
 		protected function handleMouseDown(e:Event):void
 		{
-			currentAxis = e.target.name
+			currentAxis = e.target.name;
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
@@ -180,7 +181,9 @@ package awaybuilder.view.scene.controls
 			if (currentMesh.parent is ISceneRepresentation) actualMesh = (currentMesh.parent as ISceneRepresentation).sceneObject;
 			else actualMesh = currentMesh;
 			
-			startValue = actualMesh.position;
+			startValue = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
+			var pivot:Vector3D = actualMesh.transform.deltaTransformVector(actualMesh.pivotPoint);		
+			startScenePosition = actualMesh.scenePosition.add(pivot);
 
 			switch(currentAxis)
 			{
@@ -266,19 +269,15 @@ package awaybuilder.view.scene.controls
 			
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
-			
-			var pos:Vector3D = this.position.clone();
-			var rad:Number = 180/Math.PI;
-			var objectEulers:Vector3D = Vector3DUtils.matrix2euler(actualMesh.parent.transform);
-			objectEulers.x *= -rad;
-			objectEulers.y *= -rad;
-			objectEulers.z *= -rad;
-			pos = Vector3DUtils.rotatePoint(pos, objectEulers);
-			actualMesh.position = pos;
+
+			var pos:Vector3D = this.position.subtract(startScenePosition).add(startValue);
+			actualMesh.x = pos.x;
+			actualMesh.y = pos.y;
+			actualMesh.z = pos.z;
 			
 			Scene3DManager.updateDefaultCameraFarPlane();
 
-			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position));
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, pos, startValue, pos));
 		}
 		
 		protected function handleMouseUp(event:Event):void
@@ -297,7 +296,8 @@ package awaybuilder.view.scene.controls
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
 
-			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, actualMesh.position, startValue, actualMesh.position.clone()));
+			var pos:Vector3D = this.position.subtract(actualMesh.pivotPoint).subtract(actualMesh.parent.scenePosition);
+			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, pos, startValue, pos));
 		}		
 		
 	}
