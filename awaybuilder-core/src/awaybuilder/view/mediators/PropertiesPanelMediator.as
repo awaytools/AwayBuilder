@@ -767,7 +767,7 @@ package awaybuilder.view.mediators
 				var lightVO:LightVO = item as LightVO;
 				if( lightVO && lightVO.shadowMethods && lightVO.shadowMethods.length )
 				{
-					if( getAssetIsInList( asset, container.children.source ) ) return true;
+					if( getAssetIsInList( asset, lightVO.shadowMethods.source ) ) return true;
 					if( lightVO.shadowMapper.equals( asset ) ) return true;
 				}
 				var cameraVO:CameraVO = item as CameraVO;

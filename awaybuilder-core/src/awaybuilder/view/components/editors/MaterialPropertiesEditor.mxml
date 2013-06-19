@@ -191,10 +191,11 @@
 				_selectedLightPicker = lightPickers.getItemAt(0) as AssetVO;
 			}
 			
+			_lights = new ArrayCollection(lights);
 			
 			if( _asset.light && _asset.lightPicker )
 			{
-				for each(var light:AssetVO in lights ) 
+				for each(var light:AssetVO in _lights ) 
 				{
 					if( light.equals( _asset.light ) ) _selectedLight = light;
 				}
@@ -206,23 +207,29 @@
 			}
 			else 
 			{
-				_selectedLight = lights[0] as AssetVO;
+				_selectedLight = _lights.getItemAt(0) as AssetVO;
 			}
+			
+			_shadowMethods = new ArrayCollection(shadowMehtods);
+			
+			trace( "_shadowMethods", _shadowMethods );
+			
 			
 			if( _asset.shadowMethod && _asset.light && _asset.lightPicker )
 			{
-				for each(var method:AssetVO in shadowMehtods ) 
+				for each(var method:AssetVO in _shadowMethods ) 
 				{
 					if( method.equals( _asset.shadowMethod ) ) _selectedShadowMethod = method;
 				}
 			}
 			else 
 			{
-				_selectedShadowMethod = shadowMehtods[0] as AssetVO;
+				_selectedShadowMethod = _shadowMethods.getItemAt(0) as AssetVO;
 			}
+			trace( "_selectedShadowMethod", _selectedShadowMethod );
 			
-			_shadowMethods = new ArrayCollection(shadowMehtods);
-			_lights = new ArrayCollection(lights);
+//			trace("shadowLightDropDownList.selectedItem ", shadowLightDropDownList.selectedItem );
+			
 		}
 		
 		private function shadowMethodDropDownList_changeHandler(event:IndexChangeEvent):void 
