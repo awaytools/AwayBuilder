@@ -703,7 +703,8 @@ package awaybuilder.view.mediators
 				{
 					var fresnelSpecularMethod:FresnelSpecularMethod = obj as FresnelSpecularMethod;
 					fresnelSpecularMethod.basedOnSurface = asset.basedOnSurface;
-					fresnelSpecularMethod.fresnelPower = asset.value;
+					fresnelSpecularMethod.normalReflectance = asset.value;
+					fresnelSpecularMethod.fresnelPower = asset.fresnelPower;
 					fresnelSpecularMethod.baseMethod = assets.GetObject( asset.baseMethod ) as BasicSpecularMethod;
 					break;
 				}
@@ -999,7 +1000,6 @@ package awaybuilder.view.mediators
 					colorMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 					colorMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
 					colorMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
-//					colorMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
 					colorMaterial.ambient = asset.ambientLevel;
 					colorMaterial.ambientColor = asset.ambientColor;
 					colorMaterial.specular = asset.specularLevel;
@@ -1049,7 +1049,6 @@ package awaybuilder.view.mediators
 					colorMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 					colorMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
 					colorMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
-//					colorMultiPassMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
 					colorMultiPassMaterial.ambient = asset.ambientLevel;
 					colorMultiPassMaterial.ambientColor = asset.ambientColor;
 					colorMultiPassMaterial.specular = asset.specularLevel;
@@ -1064,7 +1063,6 @@ package awaybuilder.view.mediators
 					textureMultiPassMaterial.shadowMethod = assets.GetObject(asset.shadowMethod) as ShadowMapMethodBase;
 					textureMultiPassMaterial.texture = assets.GetObject(asset.diffuseTexture) as Texture2DBase;
 					
-//					textureMultiPassMaterial.alpha = asset.alpha;
 					textureMultiPassMaterial.normalMap = assets.GetObject(asset.normalTexture) as Texture2DBase;
 					textureMultiPassMaterial.specularMap = assets.GetObject(asset.specularTexture) as Texture2DBase;
 					textureMultiPassMaterial.ambientTexture = assets.GetObject(asset.ambientTexture) as Texture2DBase;
