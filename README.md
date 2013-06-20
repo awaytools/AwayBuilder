@@ -10,7 +10,7 @@ Flex library project that contains shared sources for all Away Builder applicati
 Project type: Flex library for desktop  
 
 ### Project file structure:
-_src/_ - main source directory
+_src/_ - main source directory  
 _libs/_ - library directory with .swc files.
 
 ### Files to include in the library:
