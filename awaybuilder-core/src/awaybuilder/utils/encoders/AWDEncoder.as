@@ -26,6 +26,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SharedAnimationNodeVO;
+	import awaybuilder.model.vo.scene.SharedLightVO;
 	import awaybuilder.model.vo.scene.SkeletonPoseVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
@@ -265,6 +266,7 @@ package awaybuilder.utils.encoders
 		{			
 			for each ( var asset:AssetVO in assetList )
 			{
+				if (asset is SharedLightVO) asset=SharedLightVO(asset).linkedAsset as LightVO;
 				if (asset.isDefault)return;
 				switch(true){
 					case (asset is AnimationSetVO):
@@ -298,12 +300,9 @@ package awaybuilder.utils.encoders
 		{
 			for each ( var asset:AssetVO in assetList )
 			{
-				
 				if (asset is LightVO){
+					if (asset is SharedLightVO) asset=SharedLightVO(asset).linkedAsset as LightVO;
 					for each (var shadowMeth:ShadowMethodVO in LightVO(asset).shadowMethods){
-						if (_shadowMethodsToLightsDic[shadowMeth]){
-							trace("unexpected issue: Shadowmethod is used by more than 1 light. Please let us know on Github (https://github.com/awaytools/AwayBuilder) that this had happened");
-						}
 						_shadowMethodsToLightsDic[shadowMeth]=asset;
 					}
 				}
@@ -342,6 +341,7 @@ package awaybuilder.utils.encoders
 		// gets the AWDBlock-ID for a Asset. Blocks that have not been encoded will get encoded here		
 		private function _getBlockIDorEncodeAsset(asset:AssetVO) : uint
 		{
+			if (asset is SharedLightVO) asset=SharedLightVO(asset).linkedAsset as LightVO;
 			if (!asset){
 				if(_debug)trace("assetNotFound");
 				return 0;
@@ -994,7 +994,8 @@ package awaybuilder.utils.encoders
 			var allMethods:Vector.<AWDmethod>=_encodeAllShadingMethods(mtl);
 			if (mtl.diffuseTexture) texture=_getBlockIDorEncodeAsset(mtl.diffuseTexture);
 			if (mtl.ambientTexture) ambientTexture=_getBlockIDorEncodeAsset(mtl.ambientTexture);	
-			if ((texture)||(ambientTexture)) matType=2;				
+			if ((texture)||(ambientTexture)) matType=2;	
+			if ((texture==0)||(ambientTexture==0)) matType=2;	
 			if (matType==1) color=mtl.diffuseColor;			
 			if (mtl.type==MaterialVO.SINGLEPASS){
 				if (mtl.alpha!=1.0)	alpha=mtl.alpha;
