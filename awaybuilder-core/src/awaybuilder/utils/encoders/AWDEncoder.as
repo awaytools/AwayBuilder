@@ -1981,13 +1981,13 @@ package awaybuilder.utils.encoders
 		}		
 		//check if a transparent pixel was found in a bitmap (use PNG vs JPG)
 		private function bitMapHasTransparency(bmd:BitmapData,w:Number,h:Number):Boolean {
-			
+			/*
 			var i:int;
 			var j:int;
 			
-			for(i=0;i<w;i++) for(j=0;j<h;j++) if(bmd.getPixel32(i, j) == 0) return true;
-			
-			return false;
+			for(i=0;i<w;i++) for(j=0;j<h;j++) if(bmd.getPixel32(i, j) < 1) return true;
+			*/
+			return bmd.transparent;
 			
 		}
 		
