@@ -305,7 +305,7 @@
 			<s:FormItem label="Ambient Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<mx:ColorPicker id="ambientColorPicker" selectedColor="@{_asset.ambientColor}" change="ambientColorPicker_changeHandler(event)"/>
 			</s:FormItem>
-			<s:FormItem label="Diffuse Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:FormItem label="Diffuse Level" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 				<controls:DragableNumericStepper id="diffuseStepper" stepSize="0.1" snapInterval="0.001"
 												 width="42" value="@{_asset.diffuse}" minimum="0" maximum="100"
 												 change="stepper_changeHandler(event)" />
