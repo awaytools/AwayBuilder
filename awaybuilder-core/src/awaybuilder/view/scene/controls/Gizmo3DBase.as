@@ -1,6 +1,5 @@
 package awaybuilder.view.scene.controls
 {
-	import flash.geom.Matrix3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.ColorMaterial;
@@ -74,14 +73,8 @@ package awaybuilder.view.scene.controls
 			content.scaleX = scale;
 			content.scaleY = scale;
 			content.scaleZ = scale;
-//trace("this.position:"+this.position)			
-			if (!active && currentMesh != null) 
-			{
-				if (!(isLightGizmo && isLightGizmo.type == LightGizmo3D.DIRECTIONAL_LIGHT)) {
-//					var pivot:Vector3D = currentMesh.transform.deltaTransformVector(currentMesh.pivotPoint);		
-//					this.position = currentMesh.scenePosition.add(pivot);
-				}
-			}
+
+			content.transform = content.transform.clone(); // Force the transform invalidation
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
 		}			
@@ -94,34 +87,31 @@ package awaybuilder.view.scene.controls
 			isContainerGizmo = currentMesh.parent as ContainerGizmo3D;
 			isTextureProjectorGizmo = currentMesh.parent as TextureProjectorGizmo3D;
 
-			var pivot:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
-			this.position = currentMesh.scenePosition.add(pivot);
-			if (isLightGizmo) 
+			content.transform.identity();
+			this.transform = currentMesh.parent.sceneTransform.clone();
+				
+			if (isTextureProjectorGizmo) 
 			{
-				content.rotationX = content.rotationY = content.rotationZ = 0;		
+				if (type != TRANSLATE_GIZMO) {
+					content.rotationX = isTextureProjectorGizmo.sceneObject.rotationX;
+					content.rotationY = isTextureProjectorGizmo.sceneObject.rotationY;
+					content.rotationZ = isTextureProjectorGizmo.sceneObject.rotationZ;
+				} else this.rotationX = this.rotationY = this.rotationZ = 0;
 			}
-			else if (isTextureProjectorGizmo) 
-			{
-				if (type == TRANSLATE_GIZMO) {
-					content.rotationX = content.rotationY = content.rotationZ = 0;		
-				} else {
-					content.rotationX = isTextureProjectorGizmo.sceneObject.rotationX;		
-					content.rotationY = isTextureProjectorGizmo.sceneObject.rotationY;		
-					content.rotationZ = isTextureProjectorGizmo.sceneObject.rotationZ;		
-				}
-			}
-			else
+			else if (!isLightGizmo)
  			{
-				if (type == TRANSLATE_GIZMO) {
-					content.rotationX = content.rotationY = content.rotationZ = 0;		
-				} else {
-					content.rotationX = (isContainerGizmo) ? isContainerGizmo.parent.rotationX : sceneObject.rotationX;
-					content.rotationY = (isContainerGizmo) ? isContainerGizmo.parent.rotationY : sceneObject.rotationY;
-					content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : sceneObject.rotationZ;
-				}
+				if (type != TRANSLATE_GIZMO) {
+					content.rotationX = (isContainerGizmo) ? isContainerGizmo.parent.rotationX : currentMesh.rotationX;
+					content.rotationY = (isContainerGizmo) ? isContainerGizmo.parent.rotationY : currentMesh.rotationY;
+					content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : currentMesh.rotationZ;
+				} else this.rotationX = this.rotationY = this.rotationZ = 0;
 			}
 
+			var pivot:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
+			this.position = (type == TRANSLATE_GIZMO) ? currentMesh.scenePosition.clone() : currentMesh.scenePosition.add(pivot);
 			this.visible = true;
+			
+			update();
 		}
 		
 		public function hide():void

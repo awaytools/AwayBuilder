@@ -1,7 +1,7 @@
 package awaybuilder.view.scene.controls
 {
+	import away3d.primitives.WireframeRegularPolygon;
 	import awaybuilder.view.scene.representations.ISceneRepresentation;
-	import away3d.core.math.Vector3DUtils;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Mesh;
@@ -32,6 +32,7 @@ package awaybuilder.view.scene.controls
 		
 		private var actualMesh : ObjectContainer3D;
 		private var startScenePosition : Vector3D;
+		private var pivot : ObjectContainer3D;
 		
 		public function TranslateGizmo3D()
 		{
@@ -103,7 +104,14 @@ package awaybuilder.view.scene.controls
 			zCone.addEventListener(MouseEvent3D.MOUSE_DOWN, handleMouseDown);		
 			zCone.rotationX = 180;
 			zCone.z = 100 + (coneGeom.height/2);
-			content.addChild(zCone);	
+			content.addChild(zCone);
+			
+			pivot = new ObjectContainer3D();
+			var p1:WireframeRegularPolygon = new WireframeRegularPolygon(15, 20, 0xffffff, 0.5, "xy");
+			var p2:WireframeRegularPolygon = new WireframeRegularPolygon(5, 20, 0xff0000, 0.5, "xy");
+			pivot.addChild(p1);
+			pivot.addChild(p2);
+			this.addChild(pivot);
 		}
 		
 		protected function handleMouseOut(event:MouseEvent3D):void
@@ -169,6 +177,12 @@ package awaybuilder.view.scene.controls
 		override public function update():void
 		{			
 			super.update();
+			
+			if (pivot && currentMesh) {
+				pivot.eulers = CameraManager.camera.eulers.clone();
+				var piv:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
+				pivot.position = piv;
+			}
 		}			
 		
 		protected function handleMouseDown(e:Event):void
@@ -182,8 +196,7 @@ package awaybuilder.view.scene.controls
 			else actualMesh = currentMesh;
 			
 			startValue = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
-			var pivot:Vector3D = actualMesh.transform.deltaTransformVector(actualMesh.pivotPoint);		
-			startScenePosition = actualMesh.scenePosition.add(pivot);
+			startScenePosition = actualMesh.scenePosition.clone();
 
 			switch(currentAxis)
 			{
@@ -270,7 +283,9 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
 
-			var pos:Vector3D = this.position.subtract(startScenePosition).add(startValue);
+			var pos:Vector3D = this.position.subtract(startScenePosition);
+			pos = actualMesh.parent.inverseSceneTransform.deltaTransformVector(pos).add(startValue);
+
 			actualMesh.x = pos.x;
 			actualMesh.y = pos.y;
 			actualMesh.z = pos.z;
@@ -296,7 +311,7 @@ package awaybuilder.view.scene.controls
 			zCone.material = zAxisMaterial;
 			zCylinder.material = zAxisMaterial;			
 
-			var pos:Vector3D = this.position.subtract(actualMesh.pivotPoint).subtract(actualMesh.parent.scenePosition);
+			var pos:Vector3D = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, pos, startValue, pos));
 		}		
 		

@@ -4,7 +4,6 @@ package awaybuilder.view.scene.controls
 	import away3d.primitives.CylinderGeometry;
 	import away3d.lights.DirectionalLight;
 	import away3d.containers.ObjectContainer3D;
-	import away3d.core.math.Quaternion;
 	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Mesh;
 	import away3d.entities.SegmentSet;
@@ -42,6 +41,7 @@ package awaybuilder.view.scene.controls
 		private var actualMesh:ObjectContainer3D;
 		
 		private var startValue:Vector3D;
+		//private var startSceneRotation:Vector3D;
 		private var behindGizmoPlane : Boolean;
 		
 		public function RotateGizmo3D()
@@ -238,7 +238,7 @@ package awaybuilder.view.scene.controls
 			CameraManager.active = false;			
 			
 			startValue = actualMesh.eulers.clone();
-			
+
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 		}
@@ -311,8 +311,8 @@ package awaybuilder.view.scene.controls
 			}					
 		
 			if (isLightGizmo && isLightGizmo.type == LightGizmo3D.DIRECTIONAL_LIGHT) updateDirectionalLight();
-			else actualMesh.eulers = content.eulers;
-			
+			else actualMesh.eulers = content.eulers.clone();
+
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;			
 
