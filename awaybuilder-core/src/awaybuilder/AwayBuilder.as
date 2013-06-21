@@ -11,7 +11,7 @@ package awaybuilder
 		
 		public static const MINOR_VERSION:uint = 9;
 		
-		public static const REVISION:uint = 7;
+		public static const REVISION:uint = 8;
 		
 		public static const SUFFIX:String = "Beta";
 	}
