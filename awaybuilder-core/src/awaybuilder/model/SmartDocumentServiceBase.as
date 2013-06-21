@@ -132,12 +132,7 @@ package awaybuilder.model
 			
 		}
 		
-		
-		private function testBitflag(flags:uint, testFlag:uint):Boolean
-		{
-			return (flags & testFlag) == testFlag;
-		}
-		
+				
 		private function resourceCompleteHandler( event:LoaderEvent ):void
 		{
 			AssetLibrary.removeEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
@@ -320,6 +315,10 @@ package awaybuilder.model
 			}
 		}
 		
+		private function testBitflag(flags:uint, testFlag:uint):Boolean
+		{
+			return (flags & testFlag) == testFlag;
+		}
 		private function isGeometryInList( geometry:GeometryVO ):Boolean
 		{
 			for each ( var asset:AssetVO in _document.geometry )
