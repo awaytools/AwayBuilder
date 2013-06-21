@@ -59,6 +59,9 @@ package awaybuilder.controller.document
 			
 			document.methods = new ArrayCollection(document.methods.source.concat( data.methods.source ));
 			
+			if(document.empty)
+				document.globalOptions.fill(data.globalOptions);
+			
 			document.empty = false;
 			
 			if( event.canUndo ) 

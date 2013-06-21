@@ -93,6 +93,7 @@ package awaybuilder.utils.encoders
 		private var _geomStoragePrecision:uint=0; 
 		private var _matrixStoragePrecision:uint=0; 
 		private var _propsStoragePrecision:uint=0; 
+		private var _attrStoragePrecision:uint=0; 
 		private var _embedtextures:Boolean=true; 
 		
 		private var _matrixNrType : uint;
@@ -153,7 +154,6 @@ package awaybuilder.utils.encoders
 			_nameSpaceID=1;
 			_nameSpaceString=document.globalOptions.namespace;
 			_embedtextures=document.globalOptions.embedTextures;
-				
 			// get the type of compression to use
 			_compression=0;
 			if(document.globalOptions.compression=="UNCOMPRESSED")
@@ -168,7 +168,6 @@ package awaybuilder.utils.encoders
 				_blockCompress=_compression;
 				_compression=0;
 			}
-			
 			// set the global - storage - precision
 			_matrixNrType=FLOAT32;
 			if (document.globalOptions.matrixStorage=="Precision"){
@@ -188,11 +187,24 @@ package awaybuilder.utils.encoders
 			_attributeNrType=FLOAT32;
 			if (document.globalOptions.attributesStorage=="Precision"){
 				_attributeNrType=FLOAT64;
+				_attrStoragePrecision=1;	
 			}
 			
-			_exportNormals=document.globalOptions.includeNormal;
-			_exportTangents=document.globalOptions.includeTangent;	
 			
+			var _embedtexturesInt:int=0;
+			var _exportNormalsInt:int=0;
+			var _exportTangentsInt:int=0;
+			if (document.globalOptions.embedTextures) {
+				_embedtexturesInt=1;
+			}
+			if (document.globalOptions.includeNormal) {
+				_exportNormalsInt=1;
+			}
+			if (document.globalOptions.includeTangent) {
+				_exportTangentsInt=1;
+			}
+			
+				
 			if(_debug)trace("start encoding");
 			
 			//create a AWDBlock class for all supported Assets
@@ -237,10 +249,10 @@ package awaybuilder.utils.encoders
 			bf |= 0<<10; //Set bit 11
 			bf |= 0<<9; //Set bit 10
 			bf |= 0<<8; //Set bit 9
-			bf |= 0<<7; //Set bit 8
-			bf |= 0<<6; //Set bit 7
-			bf |= 0<<5; //Set bit 6
-			bf |= 0<<4; //Set bit 5
+			bf |= _embedtexturesInt<<7; //Set bit 8 embed textures AwayBuilder settings
+			bf |= _exportTangentsInt<<6; //Set bit 7 includeTangents AwayBuilder settings
+			bf |= _exportNormalsInt<<5; //Set bit 6 includeNormals AwayBuilder settings
+			bf |= _attrStoragePrecision<<4; //Set bit 5 attrStoragePrecision AwayBuilder settings
 			bf |= _propsStoragePrecision<<3; //Set bit 4
 			bf |= _geomStoragePrecision<<2; //Set bit 3
 			bf |= _matrixStoragePrecision<<1; //Set bit 2
@@ -451,8 +463,8 @@ package awaybuilder.utils.encoders
 					thisBlock.id=newParentID;
 					break;
 				case (vo is MeshVO):					
-					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID);
-					trace("MeshVO(vo).animator = "+MeshVO(vo).animator);
+					if(_debug)trace("MeshVO = "+MeshVO(vo).name+" parentID = "+parentID+" | animator = "+MeshVO(vo).animator);
+					
 					if (MeshVO(vo).animator){
 						if(!_translateAnimatiorToMesh[MeshVO(vo).animator.id])
 							_translateAnimatiorToMesh[MeshVO(vo).animator.id]=new Vector.<MeshVO>;
@@ -990,13 +1002,15 @@ package awaybuilder.utils.encoders
 			var gloss:Number;//19
 			var specularColor:uint;//20
 			var specularTexture:uint;//21
-			var lightPicker:int;//22			
+			var lightPicker:int;//22	
 			var allMethods:Vector.<AWDmethod>=_encodeAllShadingMethods(mtl);
+			texture=-1;
 			if (mtl.diffuseTexture) texture=_getBlockIDorEncodeAsset(mtl.diffuseTexture);
+			ambientTexture=-1;
 			if (mtl.ambientTexture) ambientTexture=_getBlockIDorEncodeAsset(mtl.ambientTexture);	
-			if ((texture)||(ambientTexture)) matType=2;	
-			if ((texture==0)||(ambientTexture==0)) matType=2;	
-			if (matType==1) color=mtl.diffuseColor;			
+			if ((texture>=0)||(ambientTexture>=0)) matType=2;	
+			if (matType==1) color=mtl.diffuseColor;	
+			
 			if (mtl.type==MaterialVO.SINGLEPASS){
 				if (mtl.alpha!=1.0)	alpha=mtl.alpha;
 				if (mtl.alphaBlending!=false) alphaBlending=mtl.alphaBlending;
@@ -1037,7 +1051,7 @@ package awaybuilder.utils.encoders
 			// Property list
 			_beginElement(); // Prop list
 			if (color){	_encodeProperty(1,color, COLOR);}//color
-			if (texture){_encodeProperty(2,texture, BADDR);}//texture
+			if (texture>=0){_encodeProperty(2,texture, BADDR);}//texture
 			if (normalTexture){_encodeProperty(3,normalTexture, BADDR);}//normalMap 
 			if (spezialType){_encodeProperty(4,spezialType, UINT8);}// multi/singlepass	
 			if (smooth==false){_encodeProperty(5, smooth, BOOL);} // smooth
@@ -1052,7 +1066,7 @@ package awaybuilder.utils.encoders
 			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
 			if (ambient){_encodeProperty(15, ambient, _propNrType);}// ambient-level
 			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
-			if (ambientTexture){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap 		
+			if (ambientTexture>=0){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap 		
 			if (specular){_encodeProperty(18, specular, _propNrType);}// specular-level
 			if (gloss){_encodeProperty(19, gloss, _propNrType);}// specular-gloss 
 			if (specularColor){_encodeProperty(20, specularColor, COLOR);}// specular-color

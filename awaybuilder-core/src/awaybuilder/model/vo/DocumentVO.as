@@ -20,5 +20,7 @@ package awaybuilder.model.vo
 		public var lights:ArrayCollection = new ArrayCollection();
 		
 		public var methods:ArrayCollection = new ArrayCollection();
+		
+		public var globalOptions:GlobalOptionsVO = new GlobalOptionsVO();
 	}
 }

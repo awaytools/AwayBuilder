@@ -1,18 +1,5 @@
 package awaybuilder.model
 {
-	import flash.display.Bitmap;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
-	import flash.events.Event;
-	import flash.net.URLRequest;
-	import flash.utils.ByteArray;
-	
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.managers.CursorManager;
-	
-	import spark.components.Application;
-	
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
@@ -23,8 +10,11 @@ package awaybuilder.model
 	import away3d.library.assets.AssetType;
 	import away3d.library.assets.BitmapDataAsset;
 	import away3d.lights.LightBase;
+	import away3d.loaders.AssetLoader;
+	import away3d.loaders.misc.AssetLoaderToken;
 	import away3d.loaders.parsers.AWDParser;
 	import away3d.loaders.parsers.Parsers;
+	import away3d.loaders.parsers.utils.ParserUtil;
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.methods.EffectMethodBase;
@@ -38,7 +28,21 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.utils.ByteArray;
+	import flash.utils.Endian;
+	
+	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
+	import mx.managers.CursorManager;
+	
 	import org.robotlegs.mvcs.Actor;
+	
+	import spark.components.Application;
 	
 	public class SmartDocumentServiceBase extends Actor
 	{
@@ -49,6 +53,7 @@ package awaybuilder.model
 		private var _document:DocumentVO;
 		
 		private var _objects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
+		private var _loaderToken:AssetLoaderToken;
 		
 		protected function loadBitmap( url:String  ):void
 		{
@@ -80,7 +85,8 @@ package awaybuilder.model
 			AssetLibrary.addEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
 			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.addEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
-			AssetLibrary.load(new URLRequest(url));	
+			_loaderToken=AssetLibrary.load(new URLRequest(url));	
+			_loaderToken.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);			
 			
 			CursorManager.setBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
@@ -98,7 +104,8 @@ package awaybuilder.model
 			AssetLibrary.addEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
 			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.addEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
-			AssetLibrary.loadData(data);	
+			_loaderToken=AssetLibrary.loadData(data);	
+			_loaderToken.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);
 			
 			CursorManager.setBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
@@ -113,6 +120,22 @@ package awaybuilder.model
 		{
 			var bdAsset:BitmapDataAsset = event.asset as BitmapDataAsset;
 			AwayBuilderLoadErrorLogger.logError("WARN:"+bdAsset.name+" - Bitmap dimensions are not a power of 2 or larger than 2048. Size:"+bdAsset.bitmapData.width+"x"+bdAsset.bitmapData.height, { assetEvent:bdAsset });
+		}
+		
+		private function resourceCompleteHandlerToken( event:LoaderEvent ):void
+		{
+			if(AssetLoader(event.target).baseDependency.data)
+				if(AssetLoader(event.target).baseDependency.data is ByteArray)
+					parseGlobalSettings(AssetLoader(event.target).baseDependency.data);
+			_loaderToken.removeEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);
+			documentReady( _document );	
+			
+		}
+		
+		
+		private function testBitflag(flags:uint, testFlag:uint):Boolean
+		{
+			return (flags & testFlag) == testFlag;
 		}
 		
 		private function resourceCompleteHandler( event:LoaderEvent ):void
@@ -134,7 +157,6 @@ package awaybuilder.model
 				dispatch( new ErrorLogEvent(ErrorLogEvent.LOG_ENTRY_MADE));
 			}
 			
-			documentReady( _document );
 			
 			CursorManager.removeBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = true;
@@ -198,8 +220,8 @@ package awaybuilder.model
 					_document.lights.addItem( assets.GetAsset( event.asset ) );
 					break;
 				case AssetType.MATERIAL:
-					if(!( event.asset is TextureMaterial))
-						_document.materials.addItem( assets.GetAsset( event.asset ) );
+					if(!( event.asset is TextureMaterial)){
+						_document.materials.addItem( assets.GetAsset( event.asset ) );}
 					else
 						if (!assets.checkIfMaterialIsDefault(TextureMaterial(event.asset)))
 							_document.materials.addItem( assets.GetAsset( event.asset ) );
@@ -223,6 +245,78 @@ package awaybuilder.model
 //				case AssetType.SKELETON_POSE:
 					_document.animations.addItem( assets.GetAsset( event.asset ) );
 					break;
+			}
+		}
+		
+		private function parseGlobalSettings(byteData:ByteArray):void
+		{
+			byteData.position=0;
+			var magicString:String=byteData.readUTFBytes(3);
+			if (magicString=="AWD"){
+				
+				var awdVersionMajor:uint=byteData.readUnsignedByte();//_version[0]
+				var awdVersionMinor:uint=byteData.readUnsignedByte();//_version[1] 			
+				
+				var flags:uint = byteData.readUnsignedShort(); // Parse bit flags 
+				//_streaming = bitFlags.test(flags, bitFlags.FLAG1);//streaming is disabled for now, because it is not used in the parsersystem anyway
+				if ((awdVersionMajor == 2) && (awdVersionMinor == 1)){
+					if (testBitflag(flags, 2))//flag 2
+						_document.globalOptions.matrixStorage="Precision";
+					if (testBitflag(flags, 4))//flag 3
+						_document.globalOptions.geometryStorage="Precision";
+					if (testBitflag(flags, 8))//flag 4
+						_document.globalOptions.propertyStorage ="Precision";
+					if (testBitflag(flags, 16))//flag 5
+						_document.globalOptions.attributesStorage ="Precision";
+					if (!testBitflag(flags, 32))//flag 6
+						_document.globalOptions.includeNormal=false;
+					if (!testBitflag(flags, 64))//flag 7
+						_document.globalOptions.includeTangent=false;
+					if (!testBitflag(flags, 128))//flag 7
+						_document.globalOptions.embedTextures=false;
+				}
+				var _compression:uint = byteData.readUnsignedByte(); // Get Compression
+				var body_len:uint = byteData.readUnsignedInt();
+				var _body:ByteArray;
+				var _curPosition:uint=byteData.position;			
+				switch (_compression)
+				{
+					case 0: 
+						_document.globalOptions.compression="UNCOMPRESSED";
+						_body = byteData;
+						break;
+					case 1: 
+						_document.globalOptions.compression="DEFLATE";
+						_body = new ByteArray();
+						byteData.readBytes(_body, 0, byteData.bytesAvailable);
+						_body.uncompress();
+						break;
+					case 2: 
+						_document.globalOptions.compression="LZMA";
+						_body = new ByteArray();
+						byteData.readBytes(_body, 0, byteData.bytesAvailable);
+						_body.uncompress("lzma");
+						break;
+				}
+				_body.endian = Endian.LITTLE_ENDIAN;			
+				var foundNameSpaceBlock:Boolean;
+				var blockType:uint;
+				var blockLength:uint;
+				while ((_body.bytesAvailable>0) && (!foundNameSpaceBlock)){
+					_body.position+=5; //id=4, ns=1,
+					blockType=_body.readUnsignedByte();
+					_body.position+=1; //flags=1;
+					blockLength=_body.readUnsignedInt();
+					if(blockType==254){
+						foundNameSpaceBlock=true;					
+						_body.position+=1; //ns-id
+						var len:uint = _body.readUnsignedShort();
+						_document.globalOptions.namespace = _body.readUTFBytes(len);
+					}
+					else{
+						_body.position+=blockLength;
+					}
+				}				
 			}
 		}
 		
