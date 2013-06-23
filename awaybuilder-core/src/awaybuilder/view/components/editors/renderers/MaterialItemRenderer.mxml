@@ -25,6 +25,15 @@
 				super.data = value;
 				_material = value as MaterialVO;
 			}
+			
+			private function getMaterialIcon(item:MaterialVO):Object 
+			{
+				if( item.diffuseTexture )
+				{
+					return item.diffuseTexture.bitmapData;
+				}
+				return new BitmapData(32, 32, false, item.diffuseColor);
+			}
 		]]>
 	</fx:Script>
 	<s:Rect height="{this.height}" width="{this.width}" y="1" includeIn="hovered,selected" alpha.hovered="0.3" includeInLayout="false">
@@ -44,7 +53,7 @@
 				<s:SolidColorStroke color="0xAAAAAA"/>
 			</s:stroke>
 		</s:Rect>
-		<s:BitmapImage source="{_material.diffuseTexture.bitmapData}" top="1" bottom="1" left="1" right="1"/>
+		<s:BitmapImage source="{getMaterialIcon(_material)}" top="1" bottom="1" left="1" right="1"/>
 		
 	</s:Group>
 	
