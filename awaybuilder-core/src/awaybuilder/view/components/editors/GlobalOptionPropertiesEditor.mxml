@@ -21,10 +21,10 @@
 		[Bindable]
 		private var _asset:GlobalOptionsVO;
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is GlobalOptionsVO) ) return;
-			_asset = GlobalOptionsVO(asset).clone();
+			if( !(data is GlobalOptionsVO) ) return;
+			_asset = GlobalOptionsVO(data).clone();
 		}
 		
 		private function value_changeHandler(event:Event):void 
