@@ -1,6 +1,9 @@
 package awaybuilder.model.vo.scene
 {
-
+	
+	import away3d.core.base.ISubGeometry;
+	
+	[Bindable]
 	public class SubGeometryVO extends AssetVO
 	{
 		
@@ -12,6 +15,10 @@ package awaybuilder.model.vo.scene
 		
 		public var autoDerivedNormals: Boolean;
 		public var autoDerivedTangents: Boolean;
+		public var numVerts:Number;
+		public var numTris:Number;
+		public var scaleU:Number;
+		public var scaleV:Number;
 		
 		public var UVData : Vector.<Number>;
 		public var UVStride : uint;
@@ -37,6 +44,11 @@ package awaybuilder.model.vo.scene
 			var vo:SubGeometryVO = new SubGeometryVO();
 			vo.id = this.id;
 			vo.type = this.type;
+			vo.name = this.name;
+			vo.numVerts = this.numVerts;
+			vo.numTris = this.numTris;
+			vo.scaleU = this.scaleU;
+			vo.scaleV = this.scaleV;
 			vo.vertexData = this.vertexData;
 			vo.vertexOffset = this.vertexOffset;
 			vo.vertexStride = this.vertexStride;

@@ -27,6 +27,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadowMethodVO;
     import awaybuilder.model.vo.scene.SkeletonVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
+    import awaybuilder.model.vo.scene.SubGeometryVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureProjectorVO;
     import awaybuilder.model.vo.scene.TextureVO;
@@ -915,6 +916,8 @@ package awaybuilder.view.mediators
 					return "shadingMethod";
 				case(asset is GeometryVO):
 					return "geometry";
+				case(asset is SubGeometryVO):
+					return "subGeometry";
 				case(asset is AnimationSetVO):
 					return "animationSet";
 				case(asset is AnimationNodeVO):

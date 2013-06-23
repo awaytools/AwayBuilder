@@ -36,6 +36,9 @@ package awaybuilder.model.vo.scene
 		public var segmentsR:uint;
 		public var segmentsT:Number;
 		
+		public var scaleU:Number;
+		public var scaleV:Number;
+		
 		public var subGeometries:ArrayCollection;
 		
 		public function clone():GeometryVO
@@ -73,6 +76,8 @@ package awaybuilder.model.vo.scene
 			this.topClosed = asset.topClosed;
 			this.bottomClosed = asset.bottomClosed;
 			this.surfaceClosed = asset.surfaceClosed;
+			this.scaleU = asset.scaleU;
+			this.scaleV = asset.scaleV;
 			
 			this.id = asset.id;
 		}

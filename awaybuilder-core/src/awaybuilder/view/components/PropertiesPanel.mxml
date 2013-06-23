@@ -18,6 +18,7 @@
         <s:State name="light"/>
 		<s:State name="lightPicker"/>
         <s:State name="geometry"/>
+		<s:State name="subGeometry"/>
         <s:State name="container"/>
 		<s:State name="shadowMethod"/>
 		<s:State name="effectMethod"/>
@@ -127,6 +128,7 @@
 			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{data}" includeIn="shadowMapper,initAll" />
 			<editors:ShadingPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{data}" includeIn="shadingMethod,initAll" />
 			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="geometry,initAll" />
+			<editors:SubGeometryPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="subGeometry,initAll" />
 			<editors:SkyBoxPropertiesEditor prevSelected="{prevSelected}" cubeTextures="{cubeTextures}" data="{data}" includeIn="skyBox,initAll" />
 			<editors:TextureProjectorPropertiesEditor prevSelected="{prevSelected}" textures="{defaultableTextures}" data="{data}" includeIn="textureProjector,initAll"/>
 			<editors:AnimationSetPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="animationSet,initAll"/>

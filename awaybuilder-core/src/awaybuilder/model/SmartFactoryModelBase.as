@@ -441,6 +441,10 @@ package awaybuilder.model
 		{
 			asset = fillAsset( asset, obj ) as SubGeometryVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
+			asset.numVerts = obj.numVertices
+			asset.numTris = obj.numTriangles;
+			asset.scaleU = obj.scaleU
+			asset.scaleV = obj.scaleV;
 			asset.vertexData = obj.vertexData;
 			asset.vertexOffset = obj.vertexOffset;
 			asset.vertexStride = obj.vertexStride;
@@ -467,10 +471,8 @@ package awaybuilder.model
 			asset = fillAsset( asset, obj ) as GeometryVO;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			asset.subGeometries = new ArrayCollection();
-			for each( var sub:ISubGeometry in obj.subGeometries )
-			{
-				asset.subGeometries.addItem( GetAsset(sub) );
-			}
+			asset.scaleU=1;
+			asset.scaleV=1;
 			switch (true){
 				case (obj is PlaneGeometry):
 					var planeGeometry:PlaneGeometry = obj as PlaneGeometry;
@@ -534,6 +536,19 @@ package awaybuilder.model
 					asset.segmentsT = torusGeometry.segmentsT;
 					asset.yUp = torusGeometry.yUp;
 					break;
+			}
+			if( obj.subGeometries.length>0)
+			{
+				asset.scaleU=obj.subGeometries[0].scaleU;
+				asset.scaleV=obj.subGeometries[0].scaleV;			
+			}
+			var subGeoCounter:uint=0;
+			for each( var sub:ISubGeometry in obj.subGeometries )
+			{
+				subGeoCounter++;
+				var subGeometryVO:SubGeometryVO = GetAsset(sub) as SubGeometryVO;
+				subGeometryVO.name="SubGeometry #"+subGeoCounter;
+				asset.subGeometries.addItem( subGeometryVO );
 			}
 			return asset;
 		}

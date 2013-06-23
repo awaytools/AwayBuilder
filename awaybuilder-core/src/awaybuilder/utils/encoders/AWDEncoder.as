@@ -3,6 +3,7 @@ package awaybuilder.utils.encoders
 	import away3d.animators.data.SkeletonJoint;
 	import away3d.core.base.Geometry;
 	import away3d.core.math.MathConsts;
+	import away3d.entities.Mesh;
 	
 	import awaybuilder.AwayBuilder;
 	import awaybuilder.model.DocumentModel;
@@ -550,16 +551,22 @@ package awaybuilder.utils.encoders
 			_blockBody.writeShort(geom.subGeometries.length);
 			
 			_beginElement(); // Prop list
+			if(geom.scaleU!=1) _encodeProperty(1,geom.scaleU, _geoNrType);
+			if(geom.scaleV!=1) _encodeProperty(2,geom.scaleV, _geoNrType);
 			_endElement(); // Prop list
 			
 			for each (sub in geom.subGeometries) {
 				_beginElement(); // Sub-geom
 				_beginElement(); // Prop list
+				if(sub.scaleU!=1) _encodeProperty(1,sub.scaleU, _geoNrType);
+				if(sub.scaleV!=1) _encodeProperty(2,sub.scaleV, _geoNrType);
 				_endElement(); // Prop list
 				
 				_encodeStream(1, sub.vertexData, sub.vertexOffset, sub.vertexStride);
 				_encodeStream(2, sub.indexData);
-				_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride);
+				var scaleU : Number = 1/sub.scaleU;
+				var scaleV : Number = 1/sub.scaleV;
+				_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride, scaleU, scaleV);
 				if ( (_exportNormals) && (!sub.autoDerivedNormals) )	_encodeStream(4, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
 				if ( (_exportTangents) && (!sub.autoDerivedTangents) )	_encodeStream(5, sub.vertexTangentData, sub.vertexTangentOffset, sub.vertexTangentStride);
 				if (sub.jointIndexData){
@@ -590,7 +597,6 @@ package awaybuilder.utils.encoders
 			returnID=_encodeBlockHeader(11);
 			
 			_blockBody.writeUTF(geom.name);
-			var geometryproperties:Vector.<AWDmethod>=new Vector.<AWDmethod>;
 			switch(geom.type){ 
 				case "PlaneGeometry":
 					_blockBody.writeByte(1);
@@ -601,6 +607,8 @@ package awaybuilder.utils.encoders
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
 					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);		
 					if (geom.doubleSided!=false)_encodeProperty(702,geom.doubleSided, BOOL);	
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
 					break;
 				case "CubeGeometry":
@@ -613,6 +621,8 @@ package awaybuilder.utils.encoders
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);
 					if (geom.segmentsD!=1)_encodeProperty(303,geom.segmentsD, UINT16);
 					if (geom.tile6!=true)_encodeProperty(701,geom.tile6, BOOL);
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
 					break;
 				case "SphereGeometry":
@@ -621,7 +631,9 @@ package awaybuilder.utils.encoders
 					if (geom.radius!=50)_encodeProperty(101,geom.radius, _geoNrType);
 					if (geom.segmentsSW!=16)_encodeProperty(301,geom.segmentsSW, UINT16);
 					if (geom.segmentsSH!=12)_encodeProperty(302,geom.segmentsSH, UINT16);		
-					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);			
+					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);		
 					_endElement(); 
 					break;
 				case "CylinderGeometry":
@@ -635,6 +647,8 @@ package awaybuilder.utils.encoders
 					if (Boolean(geom.topClosed)!=true)_encodeProperty(701,Boolean(geom.topClosed), BOOL);		
 					if (Boolean(geom.bottomClosed)!=true)_encodeProperty(702,Boolean(geom.bottomClosed), BOOL);		
 					if (Boolean(geom.yUp)!=true)_encodeProperty(703,Boolean(geom.yUp), BOOL);	
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
 					break;
 				case "ConeGeometry":
@@ -646,6 +660,8 @@ package awaybuilder.utils.encoders
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
 					if (Boolean(geom.topClosed)!=true)_encodeProperty(701,Boolean(geom.topClosed), BOOL);			
 					if (Boolean(geom.yUp)!=true)_encodeProperty(702,Boolean(geom.yUp), BOOL);	
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
 					break;
 				case "CapsuleGeometry":
@@ -656,6 +672,8 @@ package awaybuilder.utils.encoders
 					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
 					if (geom.segmentsC!=12)_encodeProperty(302,geom.segmentsC, UINT16);		
 					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
 					break;
 				case "TorusGeometry":
@@ -666,6 +684,8 @@ package awaybuilder.utils.encoders
 					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
 					if (geom.segmentsT!=8)_encodeProperty(302,geom.segmentsT, UINT16);		
 					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
+					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
 					break;
 				default:
@@ -1845,7 +1865,7 @@ package awaybuilder.utils.encoders
 		}
 		
 		// encode a geometry stream 		
-		private function _encodeStream(type : uint, data : *, offset : uint = 0, stride : uint = 0) : void
+		private function _encodeStream(type : uint, data : *, offset : uint = 0, stride : uint = 0, scaleU:Number=1, scaleV:Number=1) : void
 		{
 			_blockBody.writeByte(type);
 			var valueType:uint;
@@ -1869,7 +1889,7 @@ package awaybuilder.utils.encoders
 				case 3:
 					_blockBody.writeByte(_geoNrType);
 					_beginElement();
-					_encodeFloatStream( Vector.<Number>(data), 2, offset, stride);
+					_encodeUVStream( Vector.<Number>(data), 2, offset, stride,scaleU, scaleV);
 					_endElement();
 					break;
 				
@@ -1909,7 +1929,7 @@ package awaybuilder.utils.encoders
 			}
 		}
 		
-		private function _encodeFloatStream(str : Vector.<Number>, numPerVertex : uint, offset : uint, stride : uint) : void
+		private function _encodeFloatStream(str : Vector.<Number>, numPerVertex : uint, offset : uint, stride : uint, scaleU:Number=1, scaleV:Number=1) : void
 		{
 			var i : uint;			
 			i = 0;
@@ -1922,6 +1942,16 @@ package awaybuilder.utils.encoders
 			}
 		}
 		
+		private function _encodeUVStream(str : Vector.<Number>, numPerVertex : uint, offset : uint, stride : uint, scaleU:Number=1, scaleV:Number=1) : void
+		{
+			var i : uint;			
+			i = 0;
+			for (i=offset; i < str.length; i += stride) {
+				_writeNumber(_geomStoragePrecision,(str[i] * scaleU));
+				_writeNumber(_geomStoragePrecision,(str[i+1] * scaleV));
+				
+			}
+		}
 		private function _encodeUnsignedShortStream(str : Vector.<uint>) : void
 		{
 			var i : uint;

@@ -15,7 +15,9 @@ package awaybuilder.view.mediators
     import away3d.cameras.lenses.PerspectiveLens;
     import away3d.containers.ObjectContainer3D;
     import away3d.core.base.Geometry;
+    import away3d.core.base.ISubGeometry;
     import away3d.core.base.Object3D;
+    import away3d.core.base.SubGeometry;
     import away3d.core.base.SubMesh;
     import away3d.entities.Mesh;
     import away3d.entities.TextureProjector;
@@ -116,6 +118,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.SharedLightVO;
     import awaybuilder.model.vo.scene.SkeletonVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
+    import awaybuilder.model.vo.scene.SubGeometryVO;
     import awaybuilder.model.vo.scene.SubMeshVO;
     import awaybuilder.model.vo.scene.TextureProjectorVO;
     import awaybuilder.model.vo.scene.TextureVO;
@@ -1351,7 +1354,9 @@ package awaybuilder.view.mediators
 		{
 			var asset:GeometryVO = event.items[0] as GeometryVO;
 			if( asset ) 
-			{
+			{		
+				
+				asset.subGeometries = new ArrayCollection();
 				var obj:Geometry = assets.GetObject( asset ) as Geometry;
 				obj.name = asset.name;
 				if( obj is PlaneGeometry )
@@ -1414,7 +1419,7 @@ package awaybuilder.view.mediators
 					capsuleGeometry.segmentsH = asset.segmentsC;
 					capsuleGeometry.yUp = asset.yUp;
 				}
-				 else if( obj is TorusGeometry )
+				else if( obj is TorusGeometry )
 				{
 					var torusGeometry:TorusGeometry = obj as TorusGeometry;
 					torusGeometry.radius = asset.radius;
@@ -1423,6 +1428,20 @@ package awaybuilder.view.mediators
 					torusGeometry.segmentsT = asset.segmentsT;
 					torusGeometry.yUp = asset.yUp;
 				}
+				
+				var subGeoCounter:uint=0;
+				for each( var sub:ISubGeometry in obj.subGeometries )
+				{
+					subGeoCounter++;
+					var subGeometryVO:SubGeometryVO = assets.GetAsset(sub) as SubGeometryVO;
+					subGeometryVO.name="SubGeometry #"+subGeoCounter;
+					subGeometryVO.scaleU=asset.scaleU;
+					subGeometryVO.scaleV=asset.scaleV;
+					subGeometryVO.numTris=sub.numTriangles;
+					subGeometryVO.numVerts=sub.numVertices;
+					asset.subGeometries.addItem( subGeometryVO );
+				}
+				obj.scaleUV(asset.scaleU,asset.scaleV)
 			}
 		}
 		private function eventDispatcher_changeTextureHandler(event:SceneEvent):void
