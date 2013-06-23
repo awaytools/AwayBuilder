@@ -18,10 +18,10 @@
 		[Bindable]
 		private var _asset:MeshVO = new MeshVO();
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is MeshVO) ) return;
-			_asset.fillFromMesh( asset as MeshVO );
+			if( !(data is MeshVO) ) return;
+			_asset.fillFromMesh( data as MeshVO );
 		}
 
         private function position_commitHandler(event:Event):void 
@@ -48,12 +48,12 @@
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue));
         }
 
-        private function name_changeHandler(event:Event):void 
+        private function stepper_changeHandler(event:Event):void 
 		{
             dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
         }
 
-        private function castShadowBox_changeHandler(event:Event):void 
+        private function value_changeHandler(event:Event):void 
 		{
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_CHANGE, _asset));
         }
@@ -149,7 +149,7 @@
 	
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="name_changeHandler(event)"/>
+			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="stepper_changeHandler(event)"/>
 		</s:FormItem>
 	</s:Form>
 	<s:Spacer height="6"/>
@@ -160,7 +160,7 @@
 				<s:FormLayout paddingLeft="-10" paddingTop="-2"/>
 			</s:layout>
 			<s:FormItem label="Cast Shadows" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<s:CheckBox id="castShadowBox" change="castShadowBox_changeHandler(event)" selected="@{_asset.castsShadows}"/>
+				<s:CheckBox id="castShadowBox" change="value_changeHandler(event)" selected="@{_asset.castsShadows}"/>
 			</s:FormItem>
 		</s:Form>
 		<controls:PropertiesItemContainer label="Geometry" width="100%" paddingTop="6">

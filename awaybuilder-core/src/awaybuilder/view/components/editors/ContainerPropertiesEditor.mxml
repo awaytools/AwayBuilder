@@ -17,10 +17,10 @@
 		[Bindable]
 		private var _asset:ContainerVO = new ContainerVO();
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is ContainerVO) ) return;
-			_asset.fillFromContainer( asset as ContainerVO );
+			if( !(data is ContainerVO) ) return;
+			_asset.fillFromContainer( data as ContainerVO );
 		}
 		
 		private function position_commitHandler(event:Event):void 

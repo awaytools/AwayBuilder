@@ -52,7 +52,7 @@ package awaybuilder.view.components.editors
 			if( value ) 
 			{
 				_data = value;
-				validate( _data );
+				validate();
 				if( _data is IEventDispatcher ) IEventDispatcher(_data).addEventListener( PropertyChangeEvent.PROPERTY_CHANGE, data_propertyChangeHandler )
 			}
 			if( this.owner )
@@ -70,7 +70,7 @@ package awaybuilder.view.components.editors
 		private function forceUpdateHandler( event:Event ):void
 		{
 			trace( "forceUpdateHandler" );
-			validate( _data );
+			validate();
 		}
 		 
 		override protected function commitProperties():void
@@ -79,7 +79,7 @@ package awaybuilder.view.components.editors
 			if(_propertiesChanged)
 			{
 				_propertiesChanged = false;
-				validate( _data );
+				validate();
 			}
 		}
 		
@@ -162,7 +162,7 @@ package awaybuilder.view.components.editors
 			_lightPickers = value;
 		}
 		
-		protected function validate( asset:Object ):void 
+		protected function validate():void 
 		{
 			throw new Error( "Abstract method" );
 		}

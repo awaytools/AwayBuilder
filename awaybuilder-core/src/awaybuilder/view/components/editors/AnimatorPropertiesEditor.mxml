@@ -20,10 +20,10 @@
 		[Bindable]
 		private var _asset:AnimatorVO = new AnimatorVO();
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is AnimatorVO) ) return;
-			_asset.fillFromAnimator( asset as AnimatorVO );
+			if( !(data is AnimatorVO) ) return;
+			_asset.fillFromAnimator( data as AnimatorVO );
 		}
 		
 		private function stepper_changeHandler( event:Event ):void

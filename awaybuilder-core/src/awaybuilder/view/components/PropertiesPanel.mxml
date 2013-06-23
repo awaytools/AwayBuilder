@@ -37,6 +37,7 @@
 		
 		<s:State name="meshGroup"/>
 		<s:State name="containerGroup"/>
+		<s:State name="materialGroup"/>
     </controls:states>
 	<fx:Declarations>
 		<s:Parallel id="nextTransitionEffect">
@@ -138,7 +139,9 @@
 			<editors:CameraPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="camera,initAll"/>
 			<editors:LensPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="lens,initAll"/>
 			
-			<editors:ContainerGroupPropertiesEditor data="{data}" includeIn="containerGroup,meshGroup,initAll"/>
+			<editors:ContainerGroupPropertiesEditor data="{data}" includeIn="containerGroup,initAll"/>
+			<editors:MeshGroupPropertiesEditor data="{data}" includeIn="meshGroup,initAll"/>
+			<editors:MaterialGroupPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{data}" includeIn="materialGroup,initAll"/>
 			
 			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global,initAll" />
 		</s:Group>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
-          xmlns:s="library://ns.adobe.com/flex/spark" 
-		  xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
-		  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" 
-		  currentState="{_asset.type}">
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
+					xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:editors="awaybuilder.view.components.editors.*" 
+					currentState="{_asset.type}">
 	<editors:states>
 		<s:State name="singlepass"/>
 		<s:State name="multipass"/>
 	</editors:states>
-    <fx:Declarations>
+	<fx:Declarations>
 		<s:RadioButtonGroup id="typeRadioGroup" selectedValue="{_asset.type}" change="typeRadioGroup_changeHandler(event)"/>
 		<s:ArrayCollection id="ambientList">
 			<fx:Object label="BasicAmbientMethod" value="BasicAmbientMethod"/>
@@ -35,24 +35,8 @@
 			<!--<fx:Object label="HeightMapNormalMethod" value="HeightMapNormalMethod"/>-->
 			<fx:Object label="SimpleWaterNormalMethod" value="SimpleWaterNormalMethod"/>
 		</s:ArrayCollection>
-		<fx:Component className="NewEffectPopup">
-			<s:SkinnablePopUpContainer skinClass="awaybuilder.view.skins.LibrarySkinnablePopUpContainer" chromeColor="0x1d1d1c" color="0xdbdbdb"
-									   mouseDownOutside="close();">
-				<s:Button width="100%" label="New LightMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'LightMapMethod')"/>
-				<s:Button width="100%" label="New ProjectiveTextureMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ProjectiveTextureMethod')"/>
-				<s:Button width="100%" label="New RimLightMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'RimLightMethod')"/>
-				<s:Button width="100%" label="New ColorTransformMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ColorTransformMethod')"/>
-				<s:Button width="100%" label="New AlphaMaskMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'AlphaMaskMethod')"/>
-				<s:Button width="100%" label="New ColorMatrixMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'ColorMatrixMethod')"/>
-				<s:Button width="100%" label="New RefractionEnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'RefractionEnvMapMethod')"/>
-				<s:Button width="100%" label="New OutlineMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'OutlineMethod')"/>
-				<s:Button width="100%" label="New FresnelEnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'FresnelEnvMapMethod')"/>
-				<s:Button width="100%" label="New FogMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'FogMethod')"/>
-				<s:Button width="100%" label="New EnvMapMethod" styleName="addItemButton" cornerRadius="0" click="close(true,'EnvMapMethod')"/>
-			</s:SkinnablePopUpContainer>
-		</fx:Component>
-    </fx:Declarations>
-    <fx:Script><![CDATA[
+	</fx:Declarations>
+	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.LightPickerVO;
 		import awaybuilder.model.vo.scene.LightVO;
@@ -71,7 +55,7 @@
 		import spark.components.supportClasses.ButtonBase;
 		import spark.events.IndexChangeEvent;
 		import spark.events.PopUpEvent;
-
+		
 		[Bindable] private var _selectedLightPicker:AssetVO;
 		
 		[Bindable] private var _lights:ArrayCollection;
@@ -87,13 +71,25 @@
 		
 		[Bindable] private var _asset:MaterialVO = new MaterialVO();
 		
+		private var _assets:Array;
+		
 		[Bindable] private var _isColorMaterial:Boolean;
 		
 		override protected function validate():void
 		{
-			if( !(data is MaterialVO) ) return;
-			_asset.fillFromMaterial( data as MaterialVO );
+			if( !(data is Array) ) return;
+			_assets = data as Array;
+			validateGroup();
+			
 			validateObjectProperties();
+		}
+		private function validateGroup():void
+		{
+			_asset.fillFromMaterial( _assets[0] as MaterialVO );
+			
+			for each( var asset:MaterialVO in _assets )
+			{
+			}
 		}
 		protected function validateObjectProperties():void
 		{
@@ -317,13 +313,6 @@
 			if (!event.commit) return;
 			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_ADD_EFFECT_METHOD, event.data));
 		}   
-		protected function deleteEffectMethodButton_clickHandler(event:MouseEvent):void
-		{
-			if( effectMethodsList.selectedItem )
-			{
-				dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MATERIAL_REMOVE_EFFECT_METHOD, effectMethodsList.selectedItem));
-			}
-		}
 		
 		protected function editPickerButton_clickHandler(event:MouseEvent):void
 		{
@@ -518,7 +507,7 @@
 		}
 		
 	]]></fx:Script>
-
+	
 	<s:Group width="100%" top="0">
 		<s:Rect left="0" right="0" top="3" bottom="3">
 			<s:fill>
@@ -528,24 +517,17 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="Material [ ]" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="Material" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	
-	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-		<s:FormItem label="Name" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="value_changeHandler(event)"/>
-		</s:FormItem>
-	</s:Form>
-	<s:Spacer height="6"/>
-	
-    <controls:CollapsiblePanel width="100%" title="General" collapsed="true">
+	<controls:CollapsiblePanel width="100%" title="General" collapsed="false">
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="6" paddingRight="6" paddingTop="1" paddingBottom="1" enabled="{!_asset.isDefault}" horizontalAlign="center">
 			<s:RadioButton label="Singlepass" width="100%" group="{typeRadioGroup}" value="{MaterialVO.SINGLEPASS}"/>
 			<s:RadioButton label="Multipass" width="100%" group="{typeRadioGroup}" value="{MaterialVO.MULTIPASS}"/>
 		</s:HGroup>
 		<controls:HorizontalFormSeparator/>
-        <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
+		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
 			<s:FormItem label="repeat" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
 				<s:CheckBox id="repeatBox" change="value_changeHandler(event)" selected="@{_asset.repeat}" />
 			</s:FormItem>
@@ -579,8 +561,8 @@
 								dataProvider="{new ArrayCollection([BlendMode.NORMAL,BlendMode.MULTIPLY,BlendMode.ADD,BlendMode.ALPHA,BlendMode.LAYER])}"
 								/>
 			</s:FormItem>
-        </s:Form>
-    </controls:CollapsiblePanel>
+		</s:Form>
+	</controls:CollapsiblePanel>
 	
 	<controls:CollapsiblePanel width="100%" title="Colors &amp; Textures" collapsed="true" enabled="{!_asset.isDefault}">
 		<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" enabled="{!_asset.isDefault}">
@@ -745,16 +727,4 @@
 		</s:VGroup>
 	</controls:CollapsiblePanel>
 	
-	<controls:CollapsiblePanel width="100%" title="Effects" collapsed="true" enabled="{!_asset.isDefault}">
-		<controls:DroppableEffectsList id="effectMethodsList" dataProvider="{_asset.effectMethods}" 
-									  dropEnabled="true" width="100%" 
-									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 
-									  itemRenderer="awaybuilder.view.components.editors.renderers.AssetChildItemRenderer"
-									  dropped="effectMethodsList_droppedHandler(event)"/>
-		<s:HGroup width="100%" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0" horizontalAlign="right">
-			
-			<s:Button id="addEffectMethodButton" toolTip="New Effect Method" styleName="addButton" click="addEffectMethodButton_clickHandler(event)" height="22" width="22"/>
-			<s:Button id="deleteEffectMethodButton" enabled="{effectMethodsList.selectedItem}" toolTip="Remove" styleName="removeButton" click="deleteEffectMethodButton_clickHandler(event)"  height="22" width="22"/>
-		</s:HGroup>
-	</controls:CollapsiblePanel>
 </editors:EditorBase>

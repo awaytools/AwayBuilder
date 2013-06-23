@@ -19,10 +19,10 @@
 		[Bindable]
 		private var _asset:SkyBoxVO;
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is SkyBoxVO) ) return;
-			_asset = SkyBoxVO(asset).clone();
+			if( !(data is SkyBoxVO) ) return;
+			_asset = SkyBoxVO(data).clone();
 		}
 		
 		private function dropDownLabelFunction(item:AssetVO):Object 

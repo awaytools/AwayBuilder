@@ -13,10 +13,10 @@
 		[Bindable]
 		private var _asset:AnimationSetVO = new AnimationSetVO();
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is AnimationSetVO) ) return;
-			_asset.fillFromAnimationSet(asset as AnimationSetVO);
+			if( !(data is AnimationSetVO) ) return;
+			_asset.fillFromAnimationSet(data as AnimationSetVO);
 			AnimationSetVO(data).animations.addEventListener(CollectionEvent.COLLECTION_CHANGE, childs_collectionChangeEvent, false, 0, true );
 			AnimationSetVO(data).animators.addEventListener(CollectionEvent.COLLECTION_CHANGE, childs_collectionChangeEvent, false, 0, true );
 		}

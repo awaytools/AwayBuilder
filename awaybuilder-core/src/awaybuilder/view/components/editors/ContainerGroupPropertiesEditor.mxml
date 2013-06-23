@@ -20,13 +20,12 @@
 		[Bindable]
 		private var _asset:ContainerVO = new ContainerVO();
 		
-		[Bindable]
 		private var _assets:Array;
 		
-		override protected function validate(items:Object):void
+		override protected function validate():void
 		{
-			if( !(items is Array) ) return;
-			_assets = items as Array;
+			if( !(data is Array) ) return;
+			_assets = data as Array;
 			validateGroup();
 			this.owner.addEventListener( "updateGroupCollection", updateGroupCollectionHandler );
 		}
@@ -121,7 +120,7 @@
 		<s:HGroup width="100%" verticalAlign="middle" paddingLeft="2" paddingRight="2" paddingTop="4" paddingBottom="4">
 			<s:Button id="editParentObjectButton" styleName="editParentObjectButtonStyle" visible="{prevSelected.length>0}"
 					  width="32" height="32" click="editParentObjectButton_clickHandler(event)"/>
-			<s:Label width="100%" text="Object3D[]" fontWeight="bold" fontSize="14"/>
+			<s:Label width="100%" text="Object3D [ ]" fontWeight="bold" fontSize="14"/>
 		</s:HGroup>
 	</s:Group>
 	

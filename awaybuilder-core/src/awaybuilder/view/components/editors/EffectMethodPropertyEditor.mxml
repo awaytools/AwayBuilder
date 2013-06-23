@@ -42,10 +42,10 @@
 		
 		[Bindable] private var _selectedTexture:TextureVO;
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is EffectMethodVO) ) return;
-			_asset = EffectMethodVO(asset).clone();
+			if( !(data is EffectMethodVO) ) return;
+			_asset = EffectMethodVO(data).clone();
 		}
 		
 		private function dropDownIconFunction(item:TextureVO):Object 

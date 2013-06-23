@@ -25,10 +25,10 @@
 		[Bindable]
 		private var _asset:ShadowMapperVO;
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is ShadowMapperVO) ) return;
-			_asset = ShadowMapperVO(asset).clone();
+			if( !(data is ShadowMapperVO) ) return;
+			_asset = ShadowMapperVO(data).clone();
 		}
 		
 		private function stepper_changeHandler(event:Event):void 

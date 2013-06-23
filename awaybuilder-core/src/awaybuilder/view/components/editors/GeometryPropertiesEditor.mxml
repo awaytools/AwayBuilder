@@ -22,10 +22,10 @@
 		[Bindable]
 		private var _asset:GeometryVO;
 		
-		override protected function validate(asset:Object):void
+		override protected function validate():void
 		{
-			if( !(asset is GeometryVO) ) return;
-			_asset = GeometryVO(asset).clone() as GeometryVO;
+			if( !(data is GeometryVO) ) return;
+			_asset = GeometryVO(data).clone() as GeometryVO;
 		}
 		
 		private function stepper_changeHandler(event:Event):void {

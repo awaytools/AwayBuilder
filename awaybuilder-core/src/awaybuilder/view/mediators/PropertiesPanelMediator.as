@@ -871,7 +871,7 @@ package awaybuilder.view.mediators
 				}
 				if( initType != getStateByType( asset ) )
 				{
-					if( initType == "mesh" || initType == "light" )
+					if( initType == "light" )
 					{
 						initType = "container";
 						if( initType != getStateByType( asset ) )
@@ -882,7 +882,11 @@ package awaybuilder.view.mediators
 					
 				}
 			}
-			return initType+"Group";
+			if( initType == "container" || initType == "material" || initType == "mesh" )
+			{
+				return initType+"Group";
+			}
+			return "global";
 		}		
 		private static function getStateByType( asset:Object ):String
 		{
