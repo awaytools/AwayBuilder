@@ -179,6 +179,10 @@ package awaybuilder.view.scene.controls
 			super.update();
 			
 			if (pivot && currentMesh) {
+				pivot.scaleX = content.scaleX;
+				pivot.scaleY = content.scaleY;
+				pivot.scaleZ = content.scaleZ;
+	
 				pivot.eulers = CameraManager.camera.eulers.clone();
 				var piv:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
 				pivot.position = piv;
