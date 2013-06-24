@@ -281,9 +281,9 @@
 	</s:Form>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin" includeIn="FogMethod" >
 		<s:FormItem label="Distance" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-			<controls:DragableNumericStepper value="@{_asset.minDistance}" stepSize="1" snapInterval="0.01" minimum="1" maximum="1000" width="40" change="valueStepper_changeHandler(event)" />
+			<controls:DragableNumericStepper value="@{_asset.minDistance}" stepSize="1" snapInterval="0.01" minimum="1" maximum="10000000" width="40" change="valueStepper_changeHandler(event)" />
 			<s:Label text=" - " height="100%" verticalAlign="middle" fontWeight="bold"/>
-			<controls:DragableNumericStepper value="@{_asset.maxDistance}" stepSize="1" snapInterval="0.01" minimum="{_asset.minDistance}" maximum="1000" width="40"
+			<controls:DragableNumericStepper value="@{_asset.maxDistance}" stepSize="1" snapInterval="0.01" minimum="{_asset.minDistance}" maximum="10000000" width="40"
 											 change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Color" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
