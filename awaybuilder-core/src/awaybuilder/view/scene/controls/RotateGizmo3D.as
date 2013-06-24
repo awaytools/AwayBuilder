@@ -174,7 +174,7 @@ package awaybuilder.view.scene.controls
 			
 			xLine.end = freeXAxis;
 			yLine.end = freeYAxis;			
-			zLine.end = freeZAxis;			
+			zLine.end = freeZAxis;
 		}
 	
 		protected function handleMouseDown(e:MouseEvent3D):void

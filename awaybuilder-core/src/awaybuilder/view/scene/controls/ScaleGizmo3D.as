@@ -198,11 +198,6 @@ package awaybuilder.view.scene.controls
 			}			
 		}			
 		
-		override public function update():void
-		{			
-			super.update();
-		}			
-		
 		protected function handleMouseDown(e:Event):void
 		{
 			currentAxis = e.target.name;

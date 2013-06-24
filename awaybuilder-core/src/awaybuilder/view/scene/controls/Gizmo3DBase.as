@@ -67,7 +67,7 @@ package awaybuilder.view.scene.controls
 		}
 		
 		public function update():void
-		{			
+		{
 			var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(this.scenePosition);
 			var scale:Number = dist.length/1000;
 			content.scaleX = scale;
@@ -77,6 +77,8 @@ package awaybuilder.view.scene.controls
 			content.transform = content.transform.clone(); // Force the transform invalidation
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
+			
+			if (currentMesh && !active) updatePositionAndRotation();
 		}			
 		
 		public function show(sceneObject:ObjectContainer3D):void
@@ -89,33 +91,39 @@ package awaybuilder.view.scene.controls
 
 			content.transform.identity();
 			this.transform = currentMesh.parent.sceneTransform.clone();
-				
-			if (isTextureProjectorGizmo) 
-			{
-				if (type != TRANSLATE_GIZMO) {
-					content.rotationX = isTextureProjectorGizmo.sceneObject.rotationX;
-					content.rotationY = isTextureProjectorGizmo.sceneObject.rotationY;
-					content.rotationZ = isTextureProjectorGizmo.sceneObject.rotationZ;
-				} else this.rotationX = this.rotationY = this.rotationZ = 0;
-			}
-			else if (!isLightGizmo)
- 			{
-				if (type != TRANSLATE_GIZMO) {
-					content.rotationX = (isContainerGizmo) ? isContainerGizmo.parent.rotationX : currentMesh.rotationX;
-					content.rotationY = (isContainerGizmo) ? isContainerGizmo.parent.rotationY : currentMesh.rotationY;
-					content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : currentMesh.rotationZ;
-				} else this.rotationX = this.rotationY = this.rotationZ = 0;
-			}
-
-			var pivot:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
-			this.position = (type == TRANSLATE_GIZMO) ? currentMesh.scenePosition.clone() : currentMesh.scenePosition.add(pivot);
+			
 			this.visible = true;
 			
 			update();
 		}
 		
+		protected function updatePositionAndRotation() : void {
+			if (type == TRANSLATE_GIZMO) {
+				this.rotationX = this.rotationY = this.rotationZ = 0;
+				this.position = currentMesh.scenePosition.clone();
+				return;
+			}
+			
+			if (isTextureProjectorGizmo) {
+				content.rotationX = isTextureProjectorGizmo.sceneObject.rotationX;
+				content.rotationY = isTextureProjectorGizmo.sceneObject.rotationY;
+				content.rotationZ = isTextureProjectorGizmo.sceneObject.rotationZ;
+			} else if (!isLightGizmo) {
+				content.rotationX = (isContainerGizmo) ? isContainerGizmo.parent.rotationX : currentMesh.rotationX;
+				content.rotationY = (isContainerGizmo) ? isContainerGizmo.parent.rotationY : currentMesh.rotationY;
+				content.rotationZ = (isContainerGizmo) ? isContainerGizmo.parent.rotationZ : currentMesh.rotationZ;
+			}
+
+			var pivot:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
+			this.position = currentMesh.scenePosition.add(pivot);
+		}
+		
 		public function hide():void
 		{
+			isLightGizmo = null;
+			isContainerGizmo = null;
+			isTextureProjectorGizmo = null;
+			
 			this.visible = false;
 			hasMoved = false;
 		}		
