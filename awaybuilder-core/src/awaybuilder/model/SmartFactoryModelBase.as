@@ -1007,6 +1007,7 @@ package awaybuilder.model
 				var material:TextureMaterial = DefaultMaterialManager.getDefaultMaterial();
 				material.name = "Default";
 				material.texture = DefaultMaterialManager.getDefaultTexture();
+				material.repeat=true;
 				_defaultMaterial = GetAsset( material ) as MaterialVO;
 				_defaultMaterial.isDefault = true;
 			}

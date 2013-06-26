@@ -605,8 +605,8 @@ package awaybuilder.utils.encoders
 					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
 					if (geom.segmentsW!=1)_encodeProperty(301,geom.segmentsW, UINT16);		
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
-					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);		
-					if (geom.doubleSided!=false)_encodeProperty(702,geom.doubleSided, BOOL);	
+					if (!geom.yUp)_encodeProperty(701,geom.yUp, BOOL);		
+					if (!geom.doubleSided)_encodeProperty(702,geom.doubleSided, BOOL);	
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
@@ -620,7 +620,7 @@ package awaybuilder.utils.encoders
 					if (geom.segmentsW!=1)_encodeProperty(301,geom.segmentsW, UINT16);
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);
 					if (geom.segmentsD!=1)_encodeProperty(303,geom.segmentsD, UINT16);
-					if (geom.tile6!=true)_encodeProperty(701,geom.tile6, BOOL);
+					if (!geom.tile6)_encodeProperty(701,geom.tile6, BOOL);
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
@@ -631,7 +631,7 @@ package awaybuilder.utils.encoders
 					if (geom.radius!=50)_encodeProperty(101,geom.radius, _geoNrType);
 					if (geom.segmentsSW!=16)_encodeProperty(301,geom.segmentsSW, UINT16);
 					if (geom.segmentsSH!=12)_encodeProperty(302,geom.segmentsSH, UINT16);		
-					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					if (!geom.yUp)_encodeProperty(701,geom.yUp, BOOL);	
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);		
 					_endElement(); 
@@ -644,9 +644,9 @@ package awaybuilder.utils.encoders
 					if (geom.height!=100)_encodeProperty(103,geom.height, _geoNrType);
 					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
-					if (Boolean(geom.topClosed)!=true)_encodeProperty(701,Boolean(geom.topClosed), BOOL);		
-					if (Boolean(geom.bottomClosed)!=true)_encodeProperty(702,Boolean(geom.bottomClosed), BOOL);		
-					if (Boolean(geom.yUp)!=true)_encodeProperty(703,Boolean(geom.yUp), BOOL);	
+					if (!geom.topClosed)_encodeProperty(701,Boolean(geom.topClosed), BOOL);		
+					if (!geom.bottomClosed)_encodeProperty(702,Boolean(geom.bottomClosed), BOOL);		
+					if (!geom.yUp)_encodeProperty(703,Boolean(geom.yUp), BOOL);	
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
@@ -658,8 +658,8 @@ package awaybuilder.utils.encoders
 					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
 					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
 					if (geom.segmentsH!=1)_encodeProperty(302,geom.segmentsH, UINT16);		
-					if (Boolean(geom.topClosed)!=true)_encodeProperty(701,Boolean(geom.topClosed), BOOL);			
-					if (Boolean(geom.yUp)!=true)_encodeProperty(702,Boolean(geom.yUp), BOOL);	
+					if (!geom.bottomClosed)_encodeProperty(701,Boolean(geom.bottomClosed), BOOL);			
+					if (!geom.yUp)_encodeProperty(702,Boolean(geom.yUp), BOOL);	
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
@@ -671,7 +671,7 @@ package awaybuilder.utils.encoders
 					if (geom.height!=100)_encodeProperty(102,geom.height, _geoNrType);
 					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
 					if (geom.segmentsC!=12)_encodeProperty(302,geom.segmentsC, UINT16);		
-					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					if (!geom.yUp)_encodeProperty(701,geom.yUp, BOOL);	
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
@@ -683,7 +683,7 @@ package awaybuilder.utils.encoders
 					if (geom.tubeRadius!=50)_encodeProperty(102,geom.tubeRadius, _geoNrType);
 					if (geom.segmentsR!=16)_encodeProperty(301,geom.segmentsR, UINT16);
 					if (geom.segmentsT!=8)_encodeProperty(302,geom.segmentsT, UINT16);		
-					if (geom.yUp!=true)_encodeProperty(701,geom.yUp, BOOL);	
+					if (!geom.yUp)_encodeProperty(701,geom.yUp, BOOL);	
 					if (geom.scaleU!=1) _encodeProperty(110,geom.scaleU, _geoNrType);
 					if (geom.scaleV!=1) _encodeProperty(111,geom.scaleV, _geoNrType);
 					_endElement(); 
@@ -759,7 +759,7 @@ package awaybuilder.utils.encoders
 			if(mesh.pivotX!=0)_encodeProperty(1,mesh.pivotX,  _matrixNrType);
 			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  _matrixNrType);
 			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  _matrixNrType);
-			if(mesh.castsShadows==false)_encodeProperty(5,mesh.castsShadows,  BOOL);
+			if(!mesh.castsShadows)_encodeProperty(5,mesh.castsShadows,  BOOL);
 			_endElement(); // Prop list			
 			
 			_beginElement(); // Attr list
@@ -1082,7 +1082,7 @@ package awaybuilder.utils.encoders
 			if (alpha){_encodeProperty(10, alpha, _propNrType);}// alpha
 			if (alphaBlending==true){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
 			if (alphaThreshold){_encodeProperty(12, alphaThreshold, _propNrType);}// alphaThreshold
-			if (repeat==false){_encodeProperty(13, repeat, BOOL);}// repeat
+			if (repeat==true){_encodeProperty(13, repeat, BOOL);}// repeat
 			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
 			if (ambient){_encodeProperty(15, ambient, _propNrType);}// ambient-level
 			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
