@@ -61,17 +61,17 @@
 			<controls:DragableNumericStepper value="@{_asset.value}" stepSize="1" snapInterval="1" minimum="0" maximum="4096" width="42" change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="X" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicOffCenterLens">
-			<controls:DragableNumericStepper value="@{_asset.minX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42" textAlign="right"
+			<controls:DragableNumericStepper value="@{_asset.minX}" stepSize="1" snapInterval="1" minimum="-2048" maximum="2048" width="42" textAlign="right"
 											 change="stepper_changeHandler(event)" />
 			<s:Label text="-" fontWeight="bold" verticalAlign="middle" paddingLeft="2" paddingRight="2" height="100%"/>
-			<controls:DragableNumericStepper value="@{_asset.maxX}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42"
+			<controls:DragableNumericStepper value="@{_asset.maxX}" stepSize="1" snapInterval="1" minimum="-2048" maximum="2048" width="42"
 											 change="stepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Y" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeIn="OrthographicOffCenterLens">
-			<controls:DragableNumericStepper value="@{_asset.minY}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42" textAlign="right"
+			<controls:DragableNumericStepper value="@{_asset.minY}" stepSize="1" snapInterval="1" minimum="-2048" maximum="2048" width="42" textAlign="right"
 											 change="stepper_changeHandler(event)" />
 			<s:Label text="-" fontWeight="bold" verticalAlign="middle" paddingLeft="2" paddingRight="2" height="100%"/>
-			<controls:DragableNumericStepper value="@{_asset.maxY}" stepSize="1" snapInterval="1" minimum="0" maximum="2048" width="42"
+			<controls:DragableNumericStepper value="@{_asset.maxY}" stepSize="1" snapInterval="1" minimum="-2048" maximum="2048" width="42"
 											 change="stepper_changeHandler(event)" />
 		</s:FormItem>
 	</s:Form>
