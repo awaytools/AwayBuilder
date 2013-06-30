@@ -1164,9 +1164,6 @@ package awaybuilder.utils.encoders
 				case "WrapDiffuseMethod":
 					materialMethods.push(new AWDmethod(53, [101], [diffuseMethVO.value], [0.5], [_propNrType]));
 					break;
-				case "DepthDiffuseMethod":
-					materialMethods.push(new AWDmethod(51, [], [], [], []));
-					break;
 				case "GradientDiffuseMethod":
 					texID=_getBlockIDorEncodeAsset(diffuseMethVO.texture);
 					materialMethods.push(new AWDmethod(52, [1], [texID], [0], [BADDR]));

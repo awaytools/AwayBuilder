@@ -39,7 +39,6 @@ package awaybuilder.model
 	import away3d.materials.methods.CelSpecularMethod;
 	import away3d.materials.methods.ColorMatrixMethod;
 	import away3d.materials.methods.ColorTransformMethod;
-	import away3d.materials.methods.DepthDiffuseMethod;
 	import away3d.materials.methods.DitheredShadowMapMethod;
 	import away3d.materials.methods.EffectMethodBase;
 	import away3d.materials.methods.EnvMapAmbientMethod;
@@ -446,9 +445,6 @@ package awaybuilder.model
 					break;
 				case "BasicDiffuseMethod":
 					method = new BasicDiffuseMethod();
-					break;
-				case "DepthDiffuseMethod":
-					method = new DepthDiffuseMethod();
 					break;
 				case "GradientDiffuseMethod":
 					method = new GradientDiffuseMethod(GetObject(defaultTexture) as Texture2DBase);

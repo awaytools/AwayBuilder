@@ -17,7 +17,6 @@
 		</s:ArrayCollection>
 		<s:ArrayCollection id="diffuseList">
 			<fx:Object label="BasicDiffuseMethod" value="BasicDiffuseMethod"/>
-			<fx:Object label="DepthDiffuseMethod" value="DepthDiffuseMethod"/>
 			<fx:Object label="GradientDiffuseMethod" value="GradientDiffuseMethod"/>
 			<fx:Object label="WrapDiffuseMethod" value="WrapDiffuseMethod"/>
 			<fx:Object label="LightMapDiffuseMethod" value="LightMapDiffuseMethod"/>

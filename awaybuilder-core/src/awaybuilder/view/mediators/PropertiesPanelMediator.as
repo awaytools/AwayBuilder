@@ -307,19 +307,9 @@ package awaybuilder.view.mediators
 		private function view_materialDiffuseMethodHandler(event:PropertyEditorEvent):void
 		{
 			var newMaterial:MaterialVO = MaterialVO(view.data).clone() as MaterialVO;
-			if( event.data == "DepthDiffuseMethod" && !newMaterial.diffuseTexture )
-			{
-				view.callLater( depthDiffuseWarningCalledLater );
-				return;
-			}
 			var method:ShadingMethodVO = assets.CreateShadingMethod( event.data.toString() );
 			newMaterial.diffuseMethod = method;
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], newMaterial));
-		}
-		private function depthDiffuseWarningCalledLater():void
-		{
-			Alert.show( "You cannot assign DepthDiffuseMethod to ColorMaterial","DepthDiffuseMethod requires texture!");
-			view.forceUpdate();
 		}
 		private function view_materialNormalMethodHandler(event:PropertyEditorEvent):void
 		{

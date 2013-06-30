@@ -10,7 +10,6 @@
 	<fx:Declarations>
 		<s:ArrayCollection id="diffuseList">
 			<fx:Object label="BasicDiffuseMethod" value="BasicDiffuseMethod"/>
-			<fx:Object label="DepthDiffuseMethod" value="DepthDiffuseMethod"/>
 			<fx:Object label="GradientDiffuseMethod" value="GradientDiffuseMethod"/>
 			<fx:Object label="WrapDiffuseMethod" value="WrapDiffuseMethod"/>
 		</s:ArrayCollection>
@@ -24,7 +23,6 @@
 		<s:State name="BasicAmbientMethod"/>
 		<s:State name="EnvMapAmbientMethod"/>
 		<s:State name="BasicDiffuseMethod"/>
-		<s:State name="DepthDiffuseMethod"/>
 		<s:State name="GradientDiffuseMethod"/>
 		<s:State name="WrapDiffuseMethod"/>
 		<s:State name="LightMapDiffuseMethod"/>
