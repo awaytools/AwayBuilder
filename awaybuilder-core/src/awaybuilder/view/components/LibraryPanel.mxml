@@ -144,10 +144,10 @@
 				
 				var tree:Tree = event.target as Tree;
 				_tempSelectedItems = tree.selectedItems;
-				
 				if( !_waitingForMouseUp )
 				{
 					this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
+					_tempSelectedItems = null;
 				}
 			}
 			
@@ -156,6 +156,7 @@
 				if( _waitingForMouseUp )
 				{
 					this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
+					_tempSelectedItems = null;
 				}
 				_waitingForMouseUp = false;
 				systemManager.getSandboxRoot().removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false);
