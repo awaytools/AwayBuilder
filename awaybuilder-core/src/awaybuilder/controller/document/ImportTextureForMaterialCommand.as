@@ -15,7 +15,6 @@ package awaybuilder.controller.document
 		[Inject]
 		public var fileService:IDocumentService;
 		
-		
 		override public function execute():void
 		{
 			var nextEvent:SceneEvent = new SceneEvent(SceneEvent.ADD_NEW_TEXTURE, event.items );

@@ -304,9 +304,9 @@ s|RadioButton.toolbarButton
 	icon: Embed("assets/images/page_white_gear.png");
 }
 
-.toolbarButton#reportBugButton
+.toolbarButton#statsButton
 {
-	icon: Embed("assets/images/bug.png");
+	icon: Embed("assets/images/information.png");
 }
 
 .toolbarButton#cutButton

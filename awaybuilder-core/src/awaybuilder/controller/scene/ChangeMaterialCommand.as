@@ -12,15 +12,17 @@ package awaybuilder.controller.scene
 	
 	    override public function execute():void
 	    {
-	        var newMaterial:MaterialVO = event.newValue as MaterialVO;
-	        var vo:MaterialVO = event.items[0] as MaterialVO;
+			var newValues:Vector.<MaterialVO> = event.newValue as Vector.<MaterialVO>;
+			var oldValues:Vector.<MaterialVO> = new Vector.<MaterialVO>();
 			
-			saveOldValue( event, vo.clone() );
+			for( var i:int = 0; i < event.items.length; i++ )
+			{
+				var asset:MaterialVO = event.items[i] as MaterialVO;
+				oldValues.push( asset.clone() );
+				asset.fillFromMaterial( newValues[i] as MaterialVO );
+			}
 			
-			vo.fillFromMaterial( newMaterial );
-			
-	        addToHistory( event );
-			
+			saveOldValue( event, oldValues );
 			commitHistoryEvent( event );
 	    }
 	}

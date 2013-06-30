@@ -5,7 +5,6 @@ package awaybuilder.model.vo
 	[Bindable]
 	public class DocumentVO
 	{
-		public var name:String = "untitled";
 		
 		public var animations:ArrayCollection = new ArrayCollection();
 		
@@ -21,6 +20,5 @@ package awaybuilder.model.vo
 		
 		public var methods:ArrayCollection = new ArrayCollection();
 		
-		public var globalOptions:GlobalOptionsVO = new GlobalOptionsVO();
 	}
 }

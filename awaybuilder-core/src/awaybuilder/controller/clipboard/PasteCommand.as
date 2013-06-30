@@ -1,6 +1,7 @@
 package awaybuilder.controller.clipboard
 {
 	import away3d.containers.ObjectContainer3D;
+	import away3d.core.base.Geometry;
 	import away3d.core.base.Object3D;
 	import away3d.entities.Mesh;
 	
@@ -15,6 +16,7 @@ package awaybuilder.controller.clipboard
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.ExtraItemVO;
+	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
@@ -26,7 +28,7 @@ package awaybuilder.controller.clipboard
 	import mx.collections.ArrayCollection;
 	
 	import org.robotlegs.mvcs.Command;
-
+	
 	public class PasteCommand extends Command
 	{
 		[Inject]
@@ -40,7 +42,7 @@ package awaybuilder.controller.clipboard
 		
 		override public function execute():void
 		{
-			for each( var copy:AssetVO in document.copiedObjects ) 
+			for each( var copy:AssetVO in document.copiedAssets ) 
 			{
 				var newAsset:AssetVO;
 				var newId:String;
@@ -67,6 +69,8 @@ package awaybuilder.controller.clipboard
 		}
 		private function createMesh( copy:MeshVO, parent:ContainerVO=null ):MeshVO
 		{
+			var geometry:Geometry = assets.GetObject( MeshVO(copy).geometry ) as Geometry;
+			trace( geometry );
 			var newAsset:MeshVO = assets.CreateMesh( MeshVO(copy).geometry );
 			var newObject:Object3D = assets.GetObject( newAsset ) as Object3D;
 			if( parent )

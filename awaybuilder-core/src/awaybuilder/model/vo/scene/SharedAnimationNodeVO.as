@@ -11,6 +11,7 @@ package awaybuilder.model.vo.scene
 			this.fillFromAnimationNode( animationNodeVO );
 			this.id = animationNodeVO.id;
 			this.linkedAsset = animationNodeVO;
+			trace( "SharedAnimationNodeVO" , animationNodeVO.name );
 		}
 		
 		public var linkedAsset:AssetVO;

@@ -33,10 +33,11 @@
 		
 		private function validateGroup():void
 		{
-			_asset.fillFromObject( _assets[0] as ObjectVO );
+			_asset.fillFromMesh( _assets[0] as MeshVO );
 			
-			for each( var asset:ObjectVO in _assets )
+			for each( var asset:MeshVO in _assets )
 			{
+				if( _asset.castsShadows != asset.castsShadows ) _asset.castsShadows = false;
 				if( _asset.x != asset.x ) _asset.x = Number.NaN;
 				if( _asset.y != asset.y ) _asset.y = Number.NaN;
 				if( _asset.z != asset.z ) _asset.z = Number.NaN;

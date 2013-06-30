@@ -88,7 +88,10 @@ package awaybuilder.view.mediators
     import away3d.textures.CubeTextureBase;
     import away3d.textures.Texture2DBase;
     
+    import awaybuilder.controller.document.ReplaceDocumentDataCommand;
+    import awaybuilder.controller.events.ConcatenateDataOperationEvent;
     import awaybuilder.controller.events.DocumentModelEvent;
+    import awaybuilder.controller.events.ReplaceDocumentDataEvent;
     import awaybuilder.controller.events.SceneReadyEvent;
     import awaybuilder.controller.scene.events.AnimationEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
@@ -147,6 +150,7 @@ package awaybuilder.view.mediators
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.FlexGlobals;
+    import mx.managers.FocusManager;
     
     import org.robotlegs.mvcs.Mediator;
     
@@ -1555,10 +1559,9 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_changeMaterialHandler(event:SceneEvent):void
 		{
-			var material:MaterialVO = event.items[0] as MaterialVO;
-			if( material ) 
+			for each( var asset:MaterialVO in event.items )
 			{
-				applyMaterial( material );
+				applyMaterial( asset );
 			}
 		}
 		
@@ -1736,6 +1739,8 @@ package awaybuilder.view.mediators
 		
 		private function scene_meshSelectedHandler(event:Scene3DManagerEvent):void
 		{
+			view.setFocus();
+			
 			var selected:Array = [];
 			var mesh:Mesh;
 			var asset:AssetVO;
@@ -1753,6 +1758,8 @@ package awaybuilder.view.mediators
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
+			
+			
 		}
 
 		private function scene_meshSelectedFromViewHandler(event:Scene3DManagerEvent) : void {

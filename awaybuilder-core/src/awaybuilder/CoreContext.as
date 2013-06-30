@@ -13,14 +13,16 @@ package awaybuilder
 	import awaybuilder.controller.document.ImportTextureForMaterialCommand;
 	import awaybuilder.controller.document.NewDocumentCommand;
 	import awaybuilder.controller.document.OpenDocumentCommand;
+	import awaybuilder.controller.document.ReplaceDocumentDataCommand;
 	import awaybuilder.controller.document.SaveDocumentCommand;
 	import awaybuilder.controller.document.SaveDocumentFailCommand;
 	import awaybuilder.controller.document.SaveDocumentSuccessCommand;
 	import awaybuilder.controller.document.ShowDocumentSettingsCommand;
 	import awaybuilder.controller.document.events.ImportTextureEvent;
-	import awaybuilder.controller.events.DocumentDataOperationEvent;
+	import awaybuilder.controller.events.ConcatenateDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.ReadDocumentDataResultEvent;
+	import awaybuilder.controller.events.ReplaceDocumentDataEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.events.SettingsEvent;
 	import awaybuilder.controller.history.RedoCommand;
@@ -49,6 +51,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeCubeTextureCommand;
 	import awaybuilder.controller.scene.ChangeEffectMethodCommand;
 	import awaybuilder.controller.scene.ChangeGeometryCommand;
+	import awaybuilder.controller.scene.ChangeLensCommand;
 	import awaybuilder.controller.scene.ChangeLightCommand;
 	import awaybuilder.controller.scene.ChangeLightPickerCommand;
 	import awaybuilder.controller.scene.ChangeMaterialCommand;
@@ -111,7 +114,9 @@ package awaybuilder
 			this.commandMap.mapEvent(DocumentEvent.OPEN_DOCUMENT, OpenDocumentCommand);
 			this.commandMap.mapEvent(DocumentEvent.IMPORT_DOCUMENT, ImportDocumentCommand);
 			
-			this.commandMap.mapEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA, ConcatenateDocumentDataCommand);
+			this.commandMap.mapEvent(ConcatenateDataOperationEvent.CONCAT_DOCUMENT_DATA, ConcatenateDocumentDataCommand);
+			
+			this.commandMap.mapEvent(ReplaceDocumentDataEvent.REPLACE_DOCUMENT_DATA, ReplaceDocumentDataCommand);
 			
 			this.commandMap.mapEvent(ReadDocumentDataResultEvent.READ_DOCUMENT_DATA_FAULT, ReadDocumentDataFaultCommand);
 			
@@ -158,12 +163,12 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.CHANGE_CUBE_TEXTURE, ChangeCubeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE, ChangeTextureCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_TEXTURE_PROJECTOR, ChangeTextureProjectorCommand);
-			
 			commandMap.mapEvent(SceneEvent.CHANGE_SKELETON, ChangeSkeletonCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATOR, ChangeAnimatorCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATION_NODE, ChangeAnimationNodeCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_ANIMATION_SET, ChangeAnimationSetCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CAMERA, ChangeCameraCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_LENS, ChangeLensCommand);
 			
 			commandMap.mapEvent(SceneEvent.ADD_NEW_MATERIAL, AddNewMaterialCommand);
 			commandMap.mapEvent(SceneEvent.ADD_NEW_TEXTURE, AddNewTextureCommand);

@@ -40,31 +40,36 @@ package awaybuilder.model.vo.scene
 		public function clone():SubGeometryVO
 		{
 			var vo:SubGeometryVO = new SubGeometryVO();
-			vo.id = this.id;
-			vo.type = this.type;
-			vo.name = this.name;
-			vo.numVerts = this.numVerts;
-			vo.numTris = this.numTris;
-			vo.scaleU = this.scaleU;
-			vo.scaleV = this.scaleV;
-			vo.vertexData = this.vertexData;
-			vo.vertexOffset = this.vertexOffset;
-			vo.vertexStride = this.vertexStride;
-			vo.autoDerivedNormals = this.autoDerivedNormals;
-			vo.autoDerivedTangents = this.autoDerivedTangents;
-			vo.UVData = this.UVData;
-			vo.UVStride = this.UVStride;
-			vo.UVOffset = this.UVOffset;
-			vo.vertexNormalData = this.vertexNormalData;
-			vo.vertexNormalOffset = this.vertexNormalOffset;
-			vo.vertexNormalStride = this.vertexNormalStride;
-			vo.vertexTangentData = this.vertexTangentData;
-			vo.vertexTangentOffset = this.vertexTangentOffset;
-			vo.vertexTangentStride = this.vertexTangentStride;
-			vo.indexData = this.indexData;
-			vo.jointWeightsData = this.jointWeightsData;
-			vo.jointIndexData = this.jointIndexData;
+			vo.fillFromSubGeometryVO( this );
 			return vo;
+		}
+		
+		public function fillFromSubGeometryVO( asset:SubGeometryVO ):void
+		{
+			this.id = asset.id;
+			this.type = asset.type;
+			this.name = asset.name;
+			this.numVerts = asset.numVerts;
+			this.numTris = asset.numTris;
+			this.scaleU = asset.scaleU;
+			this.scaleV = asset.scaleV;
+			this.vertexData = asset.vertexData;
+			this.vertexOffset = asset.vertexOffset;
+			this.vertexStride = asset.vertexStride;
+			this.autoDerivedNormals = asset.autoDerivedNormals;
+			this.autoDerivedTangents = asset.autoDerivedTangents;
+			this.UVData = asset.UVData;
+			this.UVStride = asset.UVStride;
+			this.UVOffset = asset.UVOffset;
+			this.vertexNormalData = asset.vertexNormalData;
+			this.vertexNormalOffset = asset.vertexNormalOffset;
+			this.vertexNormalStride = asset.vertexNormalStride;
+			this.vertexTangentData = asset.vertexTangentData;
+			this.vertexTangentOffset = asset.vertexTangentOffset;
+			this.vertexTangentStride = asset.vertexTangentStride;
+			this.indexData = asset.indexData;
+			this.jointWeightsData = asset.jointWeightsData;
+			this.jointIndexData = this.jointIndexData;
 		}
 	}
 }

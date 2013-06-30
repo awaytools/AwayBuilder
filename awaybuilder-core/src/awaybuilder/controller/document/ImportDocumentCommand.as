@@ -1,6 +1,6 @@
 package awaybuilder.controller.document
 {
-	import awaybuilder.controller.events.DocumentDataOperationEvent;
+	import awaybuilder.controller.events.ConcatenateDataOperationEvent;
 	import awaybuilder.model.IDocumentService;
 	
 	import flash.utils.setTimeout;
@@ -14,7 +14,7 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
+			var nextEvent:ConcatenateDataOperationEvent = new ConcatenateDataOperationEvent(ConcatenateDataOperationEvent.CONCAT_DOCUMENT_DATA );
 			this.fileService.open( "import", false, nextEvent );
 		}
 	}

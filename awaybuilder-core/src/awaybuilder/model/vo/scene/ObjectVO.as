@@ -47,7 +47,11 @@ package awaybuilder.model.vo.scene
 			this.pivotX = asset.pivotX;
 			this.pivotY = asset.pivotY;
 			this.pivotZ = asset.pivotZ;
-			this.name = asset.name;
+			
+			if( asset.name )
+			{
+				this.name = asset.name;
+			}
 			
 			var e:Array = new Array();
 			for each( var extra:ExtraItemVO in asset.extras )

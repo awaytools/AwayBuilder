@@ -69,7 +69,6 @@ package awaybuilder.view.components.editors
 		
 		private function forceUpdateHandler( event:Event ):void
 		{
-			trace( "forceUpdateHandler" );
 			validate();
 		}
 		 

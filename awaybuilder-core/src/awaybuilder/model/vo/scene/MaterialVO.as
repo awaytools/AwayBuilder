@@ -73,7 +73,11 @@ package awaybuilder.model.vo.scene
 		
 		public function fillFromMaterial( asset:MaterialVO ):void
 		{
-			this.name = asset.name;
+			if( asset.name )
+			{
+				this.name = asset.name;
+			}
+			
 			this.alpha = asset.alpha;
 			this.alphaThreshold = asset.alphaThreshold;
 			

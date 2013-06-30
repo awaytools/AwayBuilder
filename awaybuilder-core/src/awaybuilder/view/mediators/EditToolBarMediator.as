@@ -82,7 +82,14 @@ package awaybuilder.view.mediators
         }
 		private function context_clipboardChangeHandler(event:DocumentModelEvent):void
 		{
-			toolBar.pasteButton.enabled = document.selectedAssets?true:false;
+			if( document.selectedAssets && document.selectedAssets.length>0 )
+			{
+				toolBar.pasteButton.enabled = true;
+			}
+			else
+			{
+				toolBar.pasteButton.enabled = false;
+			}
 		}
 		
 		private function eventDispatcher_switchToScaleHandler(event:SceneEvent):void

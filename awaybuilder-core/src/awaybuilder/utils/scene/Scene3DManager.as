@@ -1,9 +1,12 @@
 package awaybuilder.utils.scene
 {
+	import avmplus.*;
+	
 	import away3d.cameras.*;
 	import away3d.containers.*;
 	import away3d.core.managers.*;
 	import away3d.core.pick.*;
+	import away3d.debug.AwayStats;
 	import away3d.entities.*;
 	import away3d.events.*;
 	import away3d.library.*;
@@ -12,15 +15,6 @@ package awaybuilder.utils.scene
 	import away3d.textures.*;
 	import away3d.tools.utils.*;
 	
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	
-	import mx.collections.*;
-	import mx.core.*;
-	
-	import avmplus.*;
-	
 	import awaybuilder.utils.*;
 	import awaybuilder.utils.scene.modes.*;
 	import awaybuilder.view.scene.*;
@@ -28,6 +22,13 @@ package awaybuilder.utils.scene
 	import awaybuilder.view.scene.events.*;
 	import awaybuilder.view.scene.representations.*;
 	import awaybuilder.view.scene.utils.*;
+	
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	
+	import mx.collections.*;
+	import mx.core.*;
 	
 	public class Scene3DManager extends EventDispatcher
 	{

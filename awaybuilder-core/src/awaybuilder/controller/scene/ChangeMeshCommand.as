@@ -23,32 +23,24 @@ package awaybuilder.controller.scene
 
         override public function execute():void
         {
-            var mesh:MeshVO = event.newValue as MeshVO;
-            var vo:MeshVO = event.items[0] as MeshVO;
+			var newValues:Vector.<MeshVO> = event.newValue as Vector.<MeshVO>;
+			var oldValues:Vector.<MeshVO> = new Vector.<MeshVO>();
 			
-			if( !event.oldValue ) {
-				event.oldValue = vo.clone();
-			}
-			
-            vo.name = mesh.name;
-
-			vo.pivotX = mesh.pivotX;
-			vo.pivotY = mesh.pivotY;
-			vo.pivotZ = mesh.pivotZ;
-			
-			vo.animator = mesh.animator;
-			
-			vo.castsShadows = mesh.castsShadows;
-			
-			vo.geometry = mesh.geometry;
-			
-			var e:Array = new Array();
-			for each( var extra:ExtraItemVO in mesh.extras )
+			for( var i:int = 0; i < event.items.length; i++ )
 			{
-				e.push(extra.clone());
+				var asset:MeshVO = event.items[i] as MeshVO;
+				oldValues.push( asset.clone() );
+				asset.fillFromMesh( newValues[i] as MeshVO );
+				
+				var e:Array = new Array();
+				for each( var extra:ExtraItemVO in MeshVO(newValues[i]).extras )
+				{
+					e.push( extra.clone() );
+				}
+				asset.extras = new ArrayCollection( e );
 			}
-			vo.extras = new ArrayCollection( e );
 			
+			saveOldValue( event, oldValues );
 			commitHistoryEvent( event );
         }
     }

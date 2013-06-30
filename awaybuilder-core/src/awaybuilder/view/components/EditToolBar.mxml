@@ -72,7 +72,7 @@
 				   group="{transformModeToolGroup}"/>
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
-	<!-- selection -->
+	<!-- operations -->
 	<s:Button id="deleteButton" styleName="toolbarButton"
 			  toolTip="Delete Selected Object"
 			  enabled="false"
@@ -80,19 +80,15 @@
 	<mx:VRule styleName="toolbarSeparator" height="21"/>
 	
 	<mx:Spacer width="100%"/>
-	<s:Button id="documentSettingsButton" styleName="toolbarButton" toolTip="Document Settings..."
-		click="documentSettingsButton_clickHandler(event)"/>
-	<!--	<s:Button id="applicationSettingsButton" styleName="toolbarButton" toolTip="Application Settings..."
-		click="applicationSettingsButton_clickHandler(event)"/>
-	<s:Button id="helpButton" styleName="toolbarButton" toolTip="Help"
-		click="helpButton_clickHandler(event)"/>
-	<s:Button id="reportBugButton" styleName="toolbarButton" toolTip="Report a Bug..."
-		visible="{showBugReportButton}" includeInLayout="{showBugReportButton}"
-		click="reportBugButton_clickHandler(event)"/>-->
+	
+	<s:Button id="statsButton" styleName="toolbarButton" toolTip="Stats" click="statsButton_clickHandler(event)" alpha="0.9"/>
+	
+	<s:Button id="documentSettingsButton" styleName="toolbarButton" toolTip="Document Settings" click="documentSettingsButton_clickHandler(event)"/>
 	
 	<fx:Script>
 	<![CDATA[
 		import awaybuilder.view.components.events.ToolBarEvent;
+		import awaybuilder.view.components.popup.StatsPopup;
 		
 		private var _showBugReportButton:Boolean = false;
 		
@@ -245,15 +241,17 @@
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.REDO));
 		}
 
-		protected function applicationSettingsButton_clickHandler(event:MouseEvent):void
-		{
-			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.APPLICATION_SETTINGS));
-		}
-		
 		protected function documentSettingsButton_clickHandler(event:MouseEvent):void
 		{
 			this.dispatchEvent(new ToolBarEvent(ToolBarEvent.DOCUMENT_SETTINGS));
 		}
+		
+		protected function statsButton_clickHandler(event:MouseEvent):void
+		{
+			StatsPopup.show();
+		}
+		
+		
 		
 		
 	]]>

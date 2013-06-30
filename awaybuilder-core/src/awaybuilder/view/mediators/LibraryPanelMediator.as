@@ -253,7 +253,7 @@ package awaybuilder.view.mediators
 				{
 					items.push(selectedItems[i]);
 				}
-				_doNotUpdate = true;
+//				_doNotUpdate = true;
 				this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
 			}
 		}

@@ -15,7 +15,6 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
 	import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
 	import awaybuilder.desktop.utils.ModalityManager;
-	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	import awaybuilder.model.vo.scene.AssetVO;
@@ -102,8 +101,6 @@ package awaybuilder.desktop.view.mediators
 		[Inject]
 		public var undoRedoModel:UndoRedoModel;
 		
-		private var _propertiesWindow:ObjectPropertiesWindow;
-		
 		private var _mainMenu:NativeMenu;
 		private var _fileMenuItem:NativeMenuItem;
 		private var _editMenuItem:NativeMenuItem;
@@ -136,9 +133,6 @@ package awaybuilder.desktop.view.mediators
 		
 		override public function onRegister():void
 		{	
-			this._propertiesWindow = new ObjectPropertiesWindow();
-			this.mediatorMap.createMediator(this._propertiesWindow);
-			
 			this.populateMenus();
 			this.updateMenuEnabled();
 			
@@ -184,17 +178,6 @@ package awaybuilder.desktop.view.mediators
 			//fix for linux window size bug
 			this.app.nativeWindow.height++;
 			this.app.nativeWindow.height--;
-			
-			this._propertiesWindow.open();
-			if(this.app.nativeWindow.displayState == NativeWindowDisplayState.MAXIMIZED)
-			{
-				this._propertiesWindow.nativeWindow.x = this.app.nativeWindow.x + this.app.nativeWindow.width - this._propertiesWindow.nativeWindow.width - 20;
-			}
-			else
-			{
-				this._propertiesWindow.nativeWindow.x = this.app.nativeWindow.x + (this.app.nativeWindow.width - this._propertiesWindow.nativeWindow.width) / 2;
-			}
-			this._propertiesWindow.nativeWindow.y = this.app.nativeWindow.y + (this.app.nativeWindow.height - this._propertiesWindow.nativeWindow.height) / 2;
 			
 			this.updateMenuEnabled();
 		}
@@ -345,29 +328,10 @@ package awaybuilder.desktop.view.mediators
 		
 		private function awaybuilder_closeHandler(event:Event):void
 		{
-			this._propertiesWindow.close();
-			this._propertiesWindow = null;
 		}
 		
 		private function awaybuilder_closingHandler(event:Event):void
 		{
-			//if any window other than the document or properties window is open
-			//cancel this attempt to close.
-			for each(var window:NativeWindow in NativeApplication.nativeApplication.openedWindows)
-			{
-				if(window != this.app.nativeWindow && window != this._propertiesWindow.nativeWindow)
-				{
-					var child:DisplayObject = window.stage.getChildAt(0);
-					//this is a hacky way to detect that the window is the
-					//updater UI. I have no intention of using Loader in any
-					//other window.
-					if(!(child is Loader))
-					{
-						event.preventDefault();
-						return;
-					}
-				}
-			}
 			if(this.documentModel.edited)
 			{
 				event.preventDefault();
@@ -398,6 +362,7 @@ package awaybuilder.desktop.view.mediators
 		
 		private function menuItem_selectHandler(event:Event):void
 		{	
+			
 			if(!this._fileMenuItem.enabled || ModalityManager.modalityManager.modalWindowCount > 0)
 			{
 				//I'm not sure if a menu item can be triggered when a modal
@@ -571,6 +536,18 @@ package awaybuilder.desktop.view.mediators
 			{
 				Scene3DManager.zoomDistanceDelta( -CameraManager.ZOOM_DELTA_VALUE );
 			}
+			else if(String.fromCharCode(event.charCode) == "c" && event.ctrlKey)
+			{
+				this.dispatch(new ClipboardEvent(ClipboardEvent.CLIPBOARD_COPY));
+			}
+			else if(String.fromCharCode(event.charCode) == "v" && event.ctrlKey)
+			{
+				this.dispatch(new PasteEvent(PasteEvent.CLIPBOARD_PASTE));
+			}
+			else if(String.fromCharCode(event.charCode) == "x" && event.ctrlKey)
+			{
+				this.dispatch(new ClipboardEvent(ClipboardEvent.CLIPBOARD_CUT));
+			}
 			else if((event.keyCode == Keyboard.DELETE) || (event.keyCode == Keyboard.BACKSPACE && event.ctrlKey))
 			{
 				if(this.documentModel.selectedAssets.length > 0)
@@ -600,7 +577,9 @@ package awaybuilder.desktop.view.mediators
 			{
 				addTo.addItem(item);
 			}
+			
 			item.addEventListener(Event.SELECT, menuItem_selectHandler);
+			
 			return item;
 		}
 		
@@ -666,9 +645,9 @@ package awaybuilder.desktop.view.mediators
             _redoItem = createMenuItem("Redo", MENU_REDO, editMenu, -1, "y");
             _redoItem.enabled = false;
 			editMenu.addItem(new NativeMenuItem("", true));
-			this._cutItem = this.createMenuItem("Cut", MENU_CUT, editMenu, -1, "x");
-			this._copyItem = this.createMenuItem("Copy", MENU_COPY, editMenu, -1, "c");
-			this.createMenuItem("Paste", MENU_PASTE, editMenu, -1, "v");
+			this._cutItem = this.createMenuItem("Cut", MENU_CUT, editMenu, -1, " x"); // https://issues.apache.org/jira/browse/FLEX-26025
+			this._copyItem = this.createMenuItem("Copy", MENU_COPY, editMenu, -1, " c");// https://issues.apache.org/jira/browse/FLEX-26025
+			this.createMenuItem("Paste", MENU_PASTE, editMenu, -1, " v");// https://issues.apache.org/jira/browse/FLEX-26025
 			editMenu.addItem(new NativeMenuItem("", true));
 			if( isWin )
 			{
@@ -694,17 +673,14 @@ package awaybuilder.desktop.view.mediators
 			viewMenu.addItem(new NativeMenuItem("", true));
 			_focusItem = createMenuItem("Focus Selected", FOCUS_SELECTED, viewMenu, -1, "f",  [Keyboard.CONTROL]);
             _focusItem.enabled = false;
-//			this._snapToGridItem = this.createMenuItem("Snap To Grid", MENU_SNAP_TO_GRID, viewMenu);
-//			this._snapToGridItem.checked = this.settingsModel.snapToGrid;
-//			this._showGridItem = this.createMenuItem("Show Grid", MENU_SHOW_GRID, viewMenu);
 			this._viewMenuItem.submenu = viewMenu;
 			this._mainMenu.addItem(this._viewMenuItem);
 			
 			this._toolsMenuItem = new NativeMenuItem("Tools");
 			var toolsMenu:NativeMenu = new NativeMenu();
-			this._selectionToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "T", []);
+			this._selectionToolItem = this.createMenuItem("Target Camera Mode", MENU_TARGET_CAMERA, toolsMenu, -1, "T");
 			this._selectionToolItem.checked = true;
-			this._panToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "F", []);
+			this._panToolItem = this.createMenuItem("Free Camera Mode", MENU_FREE_CAMERA, toolsMenu, -1, "F");
 			this._panToolItem.checked = false;
 			toolsMenu.addItem(new NativeMenuItem("", true));
 			this._translateItem = this.createMenuItem("Translate Transform Mode", TRANSLATE_MODE, toolsMenu, -1, "t", [Keyboard.ALTERNATE]);
@@ -713,15 +689,11 @@ package awaybuilder.desktop.view.mediators
 			this._rotateItem.checked = false;
 			this._scaleItem = this.createMenuItem("Scale Transform Mode", SCALE_MODE, toolsMenu, -1, "s",  [Keyboard.ALTERNATE]);
 			this._scaleItem.checked = false;
-//			this._showObjectPickerItem = this.createMenuItem("Show Object Picker", MENU_SHOW_OBJECT_PICKER, toolsMenu);
-//			this._showObjectPickerItem.checked = this.settingsModel.showObjectPicker;
 			this._toolsMenuItem.submenu = toolsMenu;
 			this._mainMenu.addItem(this._toolsMenuItem);
 			
 			this._helpMenuItem = new NativeMenuItem("Help");
 			var helpMenu:NativeMenu = new NativeMenu();
-//			this.createMenuItem("Contents...", MENU_HELP_CONTENTS, helpMenu);
-//			this.createMenuItem("Report a Bug...", MENU_REPORT_BUG, helpMenu);
 			
 			if(!NativeApplication.supportsMenu)
 			{

@@ -1,5 +1,23 @@
 package awaybuilder.desktop.model
 {
+	import awaybuilder.controller.events.ConcatenateDataOperationEvent;
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.ReplaceDocumentDataEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
+	import awaybuilder.controller.history.HistoryEvent;
+	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.IDocumentService;
+	import awaybuilder.model.SmartDocumentServiceBase;
+	import awaybuilder.model.WindowModel;
+	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.GlobalOptionsVO;
+	import awaybuilder.model.vo.scene.AssetVO;
+	import awaybuilder.model.vo.scene.CubeTextureVO;
+	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.encoders.AWDEncoder;
+	import awaybuilder.utils.encoders.ISceneGraphEncoder;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.JPEGEncoderOptions;
@@ -13,37 +31,28 @@ package awaybuilder.desktop.model
 	
 	import mx.managers.CursorManager;
 	
-	import awaybuilder.controller.events.DocumentEvent;
-	import awaybuilder.controller.events.SaveDocumentEvent;
-	import awaybuilder.controller.history.HistoryEvent;
-	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.IDocumentService;
-	import awaybuilder.model.SmartDocumentServiceBase;
-	import awaybuilder.model.vo.DocumentVO;
-	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.TextureVO;
-	import awaybuilder.utils.encoders.AWDEncoder;
-	import awaybuilder.utils.encoders.ISceneGraphEncoder;
-	
 	public class DesktopDocumentService extends SmartDocumentServiceBase implements IDocumentService
 	{
 		private static const FILE_EXTENSION : String = '.awd';
 		
 		private var _fileToData:Dictionary = new Dictionary();
 		
-		private var _nextEvent:HistoryEvent;
+		private var _nextEvent:Event;
 		
 		private var _createNew:Boolean;
 		
 		private var _name:String;
 		
+		private var _path:String;
+		
 		private var _items:Array;
 		
 		private var _property:String;
 		
-		public function load( url:String, name:String, event:HistoryEvent ):void
+		[Inject]
+		public var windowModel:WindowModel;
+		
+		public function load( url:String, name:String, event:Event ):void
 		{
 			_name = name;
 			_nextEvent = event;
@@ -63,7 +72,7 @@ package awaybuilder.desktop.model
 			file.browseForOpen(title, filters);
 		}
 		
-		public function open( type:String, createNew:Boolean, event:HistoryEvent ):void
+		public function open( type:String, createNew:Boolean, event:Event ):void
 		{
 			_nextEvent = event;
 			_createNew = createNew;
@@ -182,7 +191,7 @@ package awaybuilder.desktop.model
 				saveStream.close();
 				this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_SUCCESS, file.name, file.nativePath));
 			}
-			catch(error:Error)
+			catch (error:Error)
 			{
 				this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_FAIL, file.name, file.nativePath));
 			}
@@ -220,6 +229,8 @@ package awaybuilder.desktop.model
 		
 		private function file_save_cancelHandler(event:Event):void
 		{
+			this.windowModel.isWaitingForClose = false;
+				
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_save_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_save_cancelHandler);
@@ -247,11 +258,11 @@ package awaybuilder.desktop.model
 				this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
 			}
 			
-			
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 			_name = file.name;
+			_path = file.url;
 			loadAssets( file.url );
 		}
 		
@@ -262,10 +273,21 @@ package awaybuilder.desktop.model
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 		}
 		
-		override protected function documentReady( _document:DocumentVO ):void 
+		override protected function documentReady( document:DocumentVO, globalOptions:GlobalOptionsVO=null ):void 
 		{
-			_document.name = _name;
-			_nextEvent.newValue = _document;
+			if( _nextEvent is ReplaceDocumentDataEvent )
+			{
+				var replaceDocumentDataEvent:ReplaceDocumentDataEvent = _nextEvent as ReplaceDocumentDataEvent;
+				replaceDocumentDataEvent.fileName = _name;
+				replaceDocumentDataEvent.path = _path;
+				replaceDocumentDataEvent.value = document;
+				replaceDocumentDataEvent.globalOptions = globalOptions;
+			}
+			else if( _nextEvent is ConcatenateDataOperationEvent )
+			{
+				var concatenateDataOperationEvent:ConcatenateDataOperationEvent = _nextEvent as ConcatenateDataOperationEvent;
+				concatenateDataOperationEvent.newValue = document;
+			}
 			dispatch( _nextEvent );
 		}
 		

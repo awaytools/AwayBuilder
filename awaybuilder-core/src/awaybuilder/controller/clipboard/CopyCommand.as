@@ -35,17 +35,17 @@ package awaybuilder.controller.clipboard
 				return;
 			}
 			
-			var copiedObjects:Vector.<AssetVO> = new Vector.<AssetVO>();
+			var copiedAssets:Vector.<AssetVO> = new Vector.<AssetVO>();
 			for each( var vo:AssetVO in document.selectedAssets )
 			{
 				var objectVO:ObjectVO = vo as ObjectVO;
 				if( objectVO )
 				{
-					copiedObjects.push( objectVO );
+					copiedAssets.push( objectVO );
 				}
 				
 			}
-			document.copiedObjects = copiedObjects;
+			document.copiedAssets = copiedAssets;
 			if(event.type == ClipboardEvent.CLIPBOARD_CUT)
 			{
 				this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION, [] ));

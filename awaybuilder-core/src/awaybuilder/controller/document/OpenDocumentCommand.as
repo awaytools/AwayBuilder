@@ -1,7 +1,8 @@
 package awaybuilder.controller.document
 {
+	import awaybuilder.controller.events.ConcatenateDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
-	import awaybuilder.controller.events.DocumentDataOperationEvent;
+	import awaybuilder.controller.events.ReplaceDocumentDataEvent;
 	import awaybuilder.model.IDocumentService;
 	
 	import org.robotlegs.mvcs.Command;
@@ -13,8 +14,7 @@ package awaybuilder.controller.document
 		
 		override public function execute():void
 		{
-			var nextEvent:DocumentDataOperationEvent = new DocumentDataOperationEvent(DocumentDataOperationEvent.CONCAT_DOCUMENT_DATA );
-			nextEvent.canUndo = false;
+			var nextEvent:ReplaceDocumentDataEvent = new ReplaceDocumentDataEvent(ReplaceDocumentDataEvent.REPLACE_DOCUMENT_DATA );
 			this.fileService.open( "open", true, nextEvent );
 		}
 	}

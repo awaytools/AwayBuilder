@@ -170,20 +170,31 @@ package awaybuilder.model
 			if( methods ) methods.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
+		public function fill( data:DocumentVO ):void
+		{
+			animations = new ArrayCollection( animations.source.concat( data.animations.source ) );
+			geometry = new ArrayCollection( geometry.source.concat( data.geometry.source ) );
+			materials = new ArrayCollection( materials.source.concat( data.materials.source ) );
+			scene = new ArrayCollection( scene.source.concat( data.scene.source ) );
+			textures = new ArrayCollection( textures.source.concat( data.textures.source ) );
+			lights = new ArrayCollection( lights.source.concat( data.lights.source ) );
+			methods = new ArrayCollection( methods.source.concat( data.methods.source ) );
+		}
+		
 		public function getAllAssets():Array
 		{
 			var assets:Array = scene.source.concat(materials.source.concat(textures.source.concat(animations.source.concat(methods.source.concat(geometry.source.concat(lights.source))))));
 			return assets;
 		}
 		
-		private var _copiedObjects:Vector.<AssetVO>;
-		public function get copiedObjects():Vector.<AssetVO>
+		private var _copiedAssets:Vector.<AssetVO>;
+		public function get copiedAssets():Vector.<AssetVO>
 		{
-			return _copiedObjects;
+			return _copiedAssets;
 		}
-		public function set copiedObjects(value:Vector.<AssetVO>):void
+		public function set copiedAssets(value:Vector.<AssetVO>):void
 		{
-			_copiedObjects = value;
+			_copiedAssets = value;
 			this.dispatch(new DocumentModelEvent(DocumentModelEvent.CLIPBOARD_UPDATED));
 		}
 		
@@ -198,6 +209,8 @@ package awaybuilder.model
 			lights = new ArrayCollection();
 			_globalOptions = new GlobalOptionsVO();
 			_selectedAssets = new Vector.<AssetVO>();
+			
+			copiedAssets = null;
 			empty = true;
 		}
 		

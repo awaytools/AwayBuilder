@@ -19,7 +19,7 @@
 		import awaybuilder.model.vo.scene.LensVO;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
-		[Bindable] private var _asset:LensVO;
+		[Bindable] private var _asset:LensVO = new LensVO();
 		
 		[Bindable] private var _selectedDiffuseMethod:Object;
 		[Bindable] private var _selectedSpecularMethod:Object;
@@ -27,7 +27,7 @@
 		override protected function validate():void
 		{
 			if( !(data is LensVO) ) return;
-			_asset = LensVO(data).clone();
+			_asset.fillFromLens( data as LensVO );
 		}
 		
 		private function stepper_changeHandler(event:Event):void 

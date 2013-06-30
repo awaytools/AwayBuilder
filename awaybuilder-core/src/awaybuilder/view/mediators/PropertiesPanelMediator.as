@@ -68,8 +68,9 @@ package awaybuilder.view.mediators
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
             addViewListener( PropertyEditorEvent.SCALE, view_scaleHandler );
+			
             addViewListener( PropertyEditorEvent.MESH_CHANGE, view_meshChangeHandler );
-            addViewListener( PropertyEditorEvent.MESH_STEPPER_CHANGE, view_meshNameChangeHandler );
+            addViewListener( PropertyEditorEvent.MESH_STEPPER_CHANGE, view_meshStepperChangeHandler );
             addViewListener( PropertyEditorEvent.MESH_SUBMESH_CHANGE, view_meshSubmeshChangeHandler );
 			addViewListener( PropertyEditorEvent.MESH_SUBMESH_ADD_NEW_MATERIAL, view_submeshAddNewMaterialHandler );
 			
@@ -230,11 +231,23 @@ package awaybuilder.view.mediators
 		
         private function view_meshChangeHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data));
+			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
+			var newValues:Vector.<MeshVO> = new Vector.<MeshVO>();
+			for each( var asset:MeshVO in items )
+			{
+				newValues.push( event.data );
+			}
+            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,items, newValues));
         }
-        private function view_meshNameChangeHandler(event:PropertyEditorEvent):void
+        private function view_meshStepperChangeHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], event.data, true));
+			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
+			var newValues:Vector.<MeshVO> = new Vector.<MeshVO>();
+			for each( var asset:MeshVO in items )
+			{
+				newValues.push( event.data );
+			}
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,items, newValues, true));
         }
 		private function view_globalOptionsChangeHandler(event:PropertyEditorEvent):void
 		{
@@ -262,11 +275,27 @@ package awaybuilder.view.mediators
         }
         private function view_materialChangeHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data));
+			var items:Array;
+			if( view.data is MaterialVO ) items = [view.data];
+			if( view.data is Array ) items = view.data as Array;
+			var newValues:Vector.<MaterialVO> = new Vector.<MaterialVO>();
+			for each( var asset:MaterialVO in items )
+			{
+				newValues.push( event.data );
+			}
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,items, newValues));
         }
         private function view_materialNameChangeHandler(event:PropertyEditorEvent):void
         {
-            this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,[view.data], event.data, true));
+			var items:Array;
+			if( view.data is MaterialVO ) items = [view.data];
+			if( view.data is Array ) items = view.data as Array;
+			var newValues:Vector.<MaterialVO> = new Vector.<MaterialVO>();
+			for each( var asset:MaterialVO in items )
+			{
+				newValues.push( event.data );
+			}
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,items, newValues, true));
         }
 		private function view_materialAmbientMethodHandler(event:PropertyEditorEvent):void
 		{
@@ -601,7 +630,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_SKELETON,[view.data], event.data, true));
 		}
 		
-		
 		private function view_animationNodeChangeHandler(event:PropertyEditorEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_NODE,[view.data], event.data));
@@ -657,7 +685,6 @@ package awaybuilder.view.mediators
 			}
 			this.dispatch(new SceneEvent(SceneEvent.CHANGE_ANIMATION_SET,[view.data], newAnimationSet));
 		}
-		
 		
 		private function view_animatorChangeHandler(event:PropertyEditorEvent):void
 		{
@@ -739,6 +766,10 @@ package awaybuilder.view.mediators
 					this.dispatch(new SceneEvent(SceneEvent.SELECT,[]));
 				}
 			}
+			else if ( view.data is Array )
+			{
+				view.forceUpdate();
+			}
 		}
 		private function getCurrentIsPresent( asset:AssetVO ):Boolean
 		{
@@ -781,7 +812,7 @@ package awaybuilder.view.mediators
 		}
 		private function context_objectsUpdatedHandler(event:DocumentModelEvent):void
 		{
-			view..dispatchEvent( new Event("updateGroupCollection") );
+			view.dispatchEvent( new Event("updateGroupCollection") );
 		}
 		private function context_documentUpdatedHandler(event:DocumentModelEvent):void
 		{

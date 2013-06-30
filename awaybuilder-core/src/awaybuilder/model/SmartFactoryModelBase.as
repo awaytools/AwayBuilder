@@ -610,19 +610,25 @@ package awaybuilder.model
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			for each( var animationNodeBase:AnimationNodeBase in obj.animations )
 			{
-				asset.animations.addItem( new SharedAnimationNodeVO(GetAsset( animationNodeBase ) as AnimationNodeVO) );
+				trace("animationNodeBase", animationNodeBase.name);
+				var animationNodeVO:AnimationNodeVO = GetAsset( animationNodeBase ) as AnimationNodeVO;
+				trace("animationNodeVO", animationNodeVO.name);
+				trace( animationNodeVO.id );
+				asset.animations.addItem( new SharedAnimationNodeVO(animationNodeVO) );
 			}
 			return asset;
 		}
 		private function fillAnimationNode( asset:AnimationNodeVO, obj:AnimationNodeBase ):AnimationNodeVO
 		{
 			asset = fillAsset( asset, obj ) as AnimationNodeVO;
+			asset.name = obj.name;
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			var poseCnt:uint=0;
 			var skeletonClipNode:SkeletonClipNode = obj as SkeletonClipNode;
 			if( skeletonClipNode )
 			{
-				for each (var skeletonPose:SkeletonPose in skeletonClipNode.frames){					
+				for each (var skeletonPose:SkeletonPose in skeletonClipNode.frames)
+				{					
 					asset.animationPoses.addItem( GetAsset( skeletonPose ) as SkeletonPoseVO );
 					asset.frameDurations.addItem(skeletonClipNode.durations[poseCnt] );
 					poseCnt++;
@@ -633,7 +639,8 @@ package awaybuilder.model
 			var vertexClipNode:VertexClipNode = obj as VertexClipNode;
 			if( vertexClipNode )
 			{
-			 	for each (var vertexPose:Geometry in vertexClipNode.frames){						
+			 	for each (var vertexPose:Geometry in vertexClipNode.frames)
+				{						
 						asset.animationPoses.addItem( vertexPose );
 						asset.frameDurations.addItem(vertexClipNode.durations[poseCnt] );
 						poseCnt++;
@@ -1066,6 +1073,7 @@ package awaybuilder.model
 		public function Clear():void
 		{
 			_defaultMaterial = null;
+			_defaultCubeTexture = null;
 			_defaultTexture = null;
 			_assets = new Dictionary();
 			_objectsByAsset = new Dictionary();

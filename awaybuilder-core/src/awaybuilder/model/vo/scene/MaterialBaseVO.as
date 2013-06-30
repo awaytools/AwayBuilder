@@ -21,30 +21,5 @@ package awaybuilder.model.vo.scene
 		
 		public var alphaPremultiplied:Boolean;
 		
-//		override public function apply():void
-//		{
-//			super.apply();
-//			
-//			var m:MaterialBase = linkedObject as MaterialBase;
-//			m.repeat = repeat;
-//			
-//			m.alphaPremultiplied = alphaPremultiplied;
-//			
-//			m.repeat = repeat;
-//			
-//			m.bothSides = bothSides;
-//			m.extra = extra;
-//			
-//			// TODO: check why we cannot set null
-//			if( lightPicker )
-//			{
-//				m.lightPicker = lightPicker.linkedObject as LightPickerBase;
-//			}
-//			
-//			m.mipmap = mipmap;
-//			m.smooth = smooth;
-//			m.blendMode = blendMode;
-//		}
-		
 	}
 }

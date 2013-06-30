@@ -1,5 +1,6 @@
 package awaybuilder.model
 {
+	import away3d.animators.nodes.AnimationNodeBase;
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.entities.Mesh;
@@ -23,6 +24,7 @@ package awaybuilder.model
 	
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.GlobalOptionsVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
@@ -51,10 +53,12 @@ package awaybuilder.model
 		public var assets:AssetsModel;
 		
 		private var _document:DocumentVO;
+		private var _globalOptions:GlobalOptionsVO;
 		
 		private var _objects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
 		private var _loaderToken:AssetLoaderToken;
 		
+		private var _tempAnimations:Vector.<Object>;
 		protected function loadBitmap( url:String  ):void
 		{
 			var loader:Loader = new Loader();             
@@ -75,27 +79,22 @@ package awaybuilder.model
 		
 		protected function loadAssets( url:String):void
 		{
-			_document = new DocumentVO();
-			_objects.length = 0;
-			
-			AwayBuilderLoadErrorLogger.clearLog();
-			
-			Parsers.enableAllBundled();
-			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, assetCompleteHandler);		
-			AssetLibrary.addEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
-			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
-			AssetLibrary.addEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
-			_loaderToken=AssetLibrary.load(new URLRequest(url));	
-			_loaderToken.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);			
-			
-			CursorManager.setBusyCursor();
-			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
+			prepare();
+			_loaderToken = AssetLibrary.load(new URLRequest(url));	
+			_loaderToken.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);		
 		}
 		
 		protected function parse( data:ByteArray ):void
 		{
+			prepare();
+			_loaderToken = AssetLibrary.loadData(data);	
+			_loaderToken.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);
+		}
+		private function prepare():void
+		{
 			_document = new DocumentVO();
 			_objects.length = 0;
+			_tempAnimations = new Vector.<Object>();
 			
 			AwayBuilderLoadErrorLogger.clearLog();
 			
@@ -104,8 +103,6 @@ package awaybuilder.model
 			AssetLibrary.addEventListener(AssetEvent.TEXTURE_SIZE_ERROR, textureSizeErrorHandler);
 			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandler);
 			AssetLibrary.addEventListener(LoaderEvent.LOAD_ERROR, loadErrorHandler);
-			_loaderToken=AssetLibrary.loadData(data);	
-			_loaderToken.addEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);
 			
 			CursorManager.setBusyCursor();
 			Application(FlexGlobals.topLevelApplication).mouseEnabled = false;
@@ -124,12 +121,12 @@ package awaybuilder.model
 		
 		private function resourceCompleteHandlerToken( event:LoaderEvent ):void
 		{
-			if(AssetLoader(event.target).baseDependency.data)
-				if(AssetLoader(event.target).baseDependency.data is ByteArray)
-					parseGlobalSettings(AssetLoader(event.target).baseDependency.data);
+			var data:ByteArray = AssetLoader(event.target).baseDependency.data as ByteArray;
+			_globalOptions = new GlobalOptionsVO();
+			if( data ) parseGlobalSettings( data );
 			_loaderToken.removeEventListener(LoaderEvent.RESOURCE_COMPLETE, resourceCompleteHandlerToken);
-			documentReady( _document );	
 			
+			documentReady( _document, _globalOptions );	
 		}
 		
 				
@@ -146,6 +143,11 @@ package awaybuilder.model
 				{
 					_document.scene.addItem( assets.GetAsset( o ) );
 				}
+			}
+			
+			for each( var obj:Object in _tempAnimations )
+			{
+				_document.animations.addItem( assets.GetAsset( obj ) );
 			}
 			
 			if (AwayBuilderLoadErrorLogger.log.length>0) {
@@ -167,7 +169,8 @@ package awaybuilder.model
 					if( !mesh.material )
 						mesh.material = assets.GetObject(assets.defaultMaterial) as MaterialBase;
 					
-					else{
+					else
+					{
 						if (mesh.material is TextureMaterial)
 							if (assets.checkIfMaterialIsDefault(TextureMaterial(mesh.material)))
 								mesh.material = assets.GetObject(assets.defaultMaterial) as MaterialBase;							
@@ -232,9 +235,11 @@ package awaybuilder.model
 						_document.geometry.addItem( geometry );
 					}
 					break;
+				case AssetType.ANIMATION_NODE:
+					_tempAnimations.push( event.asset );
+					break;
 				case AssetType.ANIMATION_SET:
 				case AssetType.ANIMATION_STATE:
-				case AssetType.ANIMATION_NODE:
 				case AssetType.SKELETON:
 //				case AssetType.ANIMATOR:
 //				case AssetType.SKELETON_POSE:
@@ -256,19 +261,19 @@ package awaybuilder.model
 				//_streaming = bitFlags.test(flags, bitFlags.FLAG1);//streaming is disabled for now, because it is not used in the parsersystem anyway
 				if ((awdVersionMajor == 2) && (awdVersionMinor == 1)){
 					if (testBitflag(flags, 2))//flag 2
-						_document.globalOptions.matrixStorage="Precision";
+						_globalOptions.matrixStorage="Precision";
 					if (testBitflag(flags, 4))//flag 3
-						_document.globalOptions.geometryStorage="Precision";
+						_globalOptions.geometryStorage="Precision";
 					if (testBitflag(flags, 8))//flag 4
-						_document.globalOptions.propertyStorage ="Precision";
+						_globalOptions.propertyStorage ="Precision";
 					if (testBitflag(flags, 16))//flag 5
-						_document.globalOptions.attributesStorage ="Precision";
+						_globalOptions.attributesStorage ="Precision";
 					if (!testBitflag(flags, 32))//flag 6
-						_document.globalOptions.includeNormal=false;
+						_globalOptions.includeNormal=false;
 					if (!testBitflag(flags, 64))//flag 7
-						_document.globalOptions.includeTangent=false;
+						_globalOptions.includeTangent=false;
 					if (!testBitflag(flags, 128))//flag 7
-						_document.globalOptions.embedTextures=false;
+						_globalOptions.embedTextures=false;
 				}
 				var _compression:uint = byteData.readUnsignedByte(); // Get Compression
 				var body_len:uint = byteData.readUnsignedInt();
@@ -277,17 +282,17 @@ package awaybuilder.model
 				switch (_compression)
 				{
 					case 0: 
-						_document.globalOptions.compression="UNCOMPRESSED";
+						_globalOptions.compression="UNCOMPRESSED";
 						_body = byteData;
 						break;
 					case 1: 
-						_document.globalOptions.compression="DEFLATE";
+						_globalOptions.compression="DEFLATE";
 						_body = new ByteArray();
 						byteData.readBytes(_body, 0, byteData.bytesAvailable);
 						_body.uncompress();
 						break;
 					case 2: 
-						_document.globalOptions.compression="LZMA";
+						_globalOptions.compression="LZMA";
 						_body = new ByteArray();
 						byteData.readBytes(_body, 0, byteData.bytesAvailable);
 						_body.uncompress("lzma");
@@ -306,7 +311,7 @@ package awaybuilder.model
 						foundNameSpaceBlock=true;					
 						_body.position+=1; //ns-id
 						var len:uint = _body.readUnsignedShort();
-						_document.globalOptions.namespace = _body.readUTFBytes(len);
+						_globalOptions.namespace = _body.readUTFBytes(len);
 					}
 					else{
 						_body.position+=blockLength;
@@ -329,7 +334,7 @@ package awaybuilder.model
 			return false;
 		}
 		
-		protected function documentReady( _document:DocumentVO ):void {
+		protected function documentReady( document:DocumentVO, globalOptions:GlobalOptionsVO = null ):void {
 			throw new Error( "Abstract method error" );
 		}
 		
