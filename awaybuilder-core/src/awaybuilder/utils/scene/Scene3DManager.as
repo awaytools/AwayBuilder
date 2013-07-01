@@ -582,13 +582,14 @@ package awaybuilder.utils.scene
 			
 			// Hide representations to get clear bounds
 			if (excludeGizmos) {
-				for each (rep in textureProjectorGizmos) rep.visible = false;
+				for each (rep in lightGizmos) rep.visible = false;
 				for each (rep in textureProjectorGizmos) rep.visible = false;
 				for each (rep in cameraGizmos) rep.visible = false;
 				for each (rep in containerGizmos) rep.visible = false;
 			}
 
 			// Get all scene child container bounds		
+//trace("\nSceneBounds:");
 			while (ctr < oCCount) {
 				var oC:ObjectContainer3D = Scene3DManager.view.scene.getChildAt(ctr++);
 				if (!(oC is SkyBox || oC is PointLight || oC == Scene3DManager.grid)) {
@@ -605,7 +606,7 @@ package awaybuilder.utils.scene
 
 			// Re-show representations
 			if (excludeGizmos) {
-				for each (rep in textureProjectorGizmos) rep.visible = true;
+				for each (rep in lightGizmos) rep.visible = true;
 				for each (rep in textureProjectorGizmos) rep.visible = true;
 				for each (rep in cameraGizmos) rep.visible = true;
 				for each (rep in containerGizmos) rep.visible = true;
@@ -708,6 +709,8 @@ package awaybuilder.utils.scene
 
 			if (getQualifiedClassName(container)=="away3d.containers::ObjectContainer3D" && container.numChildren == 0) {
 				addEmptyContainerRepresentation(container);
+			} else if (container is Camera3D) {
+				addCamera(container as Camera3D);
 			}
 
 			updateDefaultCameraFarPlane();

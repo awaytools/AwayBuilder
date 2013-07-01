@@ -65,12 +65,12 @@ package awaybuilder.view.scene.controls
 				_representation.rotationX -= 90;
 				_representation.scaleX = _representation.scaleY = _representation.scaleZ = Scene3DManager.stage.stageHeight/720;
 			} else {
+				_representation.transform = sceneObject.sceneTransform.clone();
 				_representation.eulers = CameraManager.camera.eulers.clone();
 				_representation.rotationX -= 90;
 				_representation.rotationY -= 1; // Temporary fix for bounds visiblity
 				var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(_representation.scenePosition);
 				_representation.scaleX = _representation.scaleZ = dist.length/1500;
-				_representation.position = sceneObject.position.clone();
 			}
 		}
 	}

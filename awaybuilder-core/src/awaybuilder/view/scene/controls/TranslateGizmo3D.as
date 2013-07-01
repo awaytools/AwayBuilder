@@ -178,14 +178,15 @@ package awaybuilder.view.scene.controls
 		{			
 			super.update();
 			
-			if (pivot && currentMesh) {
-				pivot.scaleX = content.scaleX;
-				pivot.scaleY = content.scaleY;
-				pivot.scaleZ = content.scaleZ;
-	
+			if (pivot && currentMesh && currentMesh.parent) {	
 				pivot.eulers = CameraManager.camera.eulers.clone();
-				var piv:Vector3D = currentMesh.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);		
-				pivot.position = piv;
+
+				var piv:Vector3D = currentMesh.parent.sceneTransform.deltaTransformVector(currentMesh.pivotPoint);
+				pivot.position = content.position.add(piv);
+				
+				var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(pivot.scenePosition);
+				var scale:Number = dist.length/1000;
+				pivot.scaleX =  pivot.scaleY =  pivot.scaleZ = scale;
 			}
 		}			
 		
@@ -200,7 +201,7 @@ package awaybuilder.view.scene.controls
 			else actualMesh = currentMesh;
 			
 			startValue = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
-			startScenePosition = actualMesh.scenePosition.clone();
+			startScenePosition = actualMesh.parent.scenePosition.clone();
 
 			switch(currentAxis)
 			{

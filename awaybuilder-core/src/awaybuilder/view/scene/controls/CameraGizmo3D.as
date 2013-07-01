@@ -55,8 +55,7 @@ package awaybuilder.view.scene.controls
 		}
 
 		public function updateRepresentation() : void {
-			_representation.position = sceneObject.position.clone();
-			_representation.eulers = sceneObject.eulers.clone();
+			_representation.transform = sceneObject.sceneTransform.clone();
 			var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(sceneObject.scenePosition);
 			_representation.scaleX = _representation.scaleY = _representation.scaleZ = 0.6 * dist.length / 1500;
 			

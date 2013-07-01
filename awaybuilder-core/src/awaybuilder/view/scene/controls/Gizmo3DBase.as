@@ -1,5 +1,6 @@
 package awaybuilder.view.scene.controls
 {
+	import flash.geom.Matrix3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.ColorMaterial;
@@ -68,16 +69,18 @@ package awaybuilder.view.scene.controls
 		
 		public function update():void
 		{
-			var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(this.scenePosition);
+			this.scaleX = this.scaleY = this.scaleZ = content.scaleX = content.scaleY = content.scaleZ = 1;
+				
+			var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(content.scenePosition);
 			var scale:Number = dist.length/1000;
 			content.scaleX = scale;
 			content.scaleY = scale;
 			content.scaleZ = scale;
-
+				
 			content.transform = content.transform.clone(); // Force the transform invalidation
 			
 			ambientLight.direction = Scene3DManager.camera.forwardVector;
-			
+							
 			if (currentMesh && !active) updatePositionAndRotation();
 		}			
 		
@@ -99,8 +102,19 @@ package awaybuilder.view.scene.controls
 		
 		protected function updatePositionAndRotation() : void {
 			if (type == TRANSLATE_GIZMO) {
+				if (!currentMesh.parent) return;
+			
 				this.rotationX = this.rotationY = this.rotationZ = 0;
-				this.position = currentMesh.scenePosition.clone();
+				var vecs:Vector.<Vector3D> = currentMesh.parent.sceneTransform.decompose();
+				vecs[0] = new Vector3D();
+				vecs[2] = new Vector3D(1, 1, 1);
+				var mat:Matrix3D = new Matrix3D();
+				mat.recompose(vecs);
+				var pos:Vector3D = new Vector3D(currentMesh.x, currentMesh.y, currentMesh.z);
+				pos = mat.transformVector(pos);
+				content.position = pos;
+				this.position = currentMesh.parent.scenePosition.clone();
+				
 				return;
 			}
 			
