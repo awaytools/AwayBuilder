@@ -146,6 +146,7 @@ package awaybuilder.view.mediators
     import flash.geom.Matrix;
     import flash.geom.Vector3D;
     import flash.ui.Keyboard;
+    import flash.utils.setTimeout;
     
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
@@ -985,6 +986,8 @@ package awaybuilder.view.mediators
 			m.bothSides = asset.bothSides;
 			m.extra = asset.extra;
 			
+			setTimeout( applyAgain, 50, asset ); // issue #200
+			
 			m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
 			m.mipmap = asset.mipmap;
 			m.smooth = asset.smooth;
@@ -1000,6 +1003,8 @@ package awaybuilder.view.mediators
 				singlePassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
 				singlePassMaterialBase.alphaBlending = asset.alphaBlending;
 				singlePassMaterialBase.alphaThreshold = asset.alphaThreshold;
+				singlePassMaterialBase.gloss = asset.specularGloss;
+					
 				if( m is ColorMaterial )
 				{
 					var colorMaterial:ColorMaterial = m as ColorMaterial;
@@ -1012,7 +1017,6 @@ package awaybuilder.view.mediators
 					colorMaterial.ambientColor = asset.ambientColor;
 					colorMaterial.specular = asset.specularLevel;
 					colorMaterial.specularColor = asset.specularColor;
-					colorMaterial.gloss = asset.specularGloss;
 				}
 				else if( m is TextureMaterial )
 				{
@@ -1027,8 +1031,6 @@ package awaybuilder.view.mediators
 					textureMaterial.ambientColor = asset.ambientColor;
 					textureMaterial.specular = asset.specularLevel;
 					textureMaterial.specularColor = asset.specularColor;
-					textureMaterial.gloss = asset.specularGloss;
-					
 				}
 				
 				var i:int;
@@ -1050,6 +1052,7 @@ package awaybuilder.view.mediators
 				multiPassMaterialBase.ambientMethod = assets.GetObject(asset.ambientMethod) as BasicAmbientMethod;
 				multiPassMaterialBase.normalMethod = assets.GetObject(asset.normalMethod) as BasicNormalMethod;
 				multiPassMaterialBase.specularMethod = assets.GetObject(asset.specularMethod) as BasicSpecularMethod;
+				multiPassMaterialBase.gloss = asset.specularGloss;
 				
 				if( m is ColorMultiPassMaterial )
 				{
@@ -1062,8 +1065,6 @@ package awaybuilder.view.mediators
 					colorMultiPassMaterial.ambientColor = asset.ambientColor;
 					colorMultiPassMaterial.specular = asset.specularLevel;
 					colorMultiPassMaterial.specularColor = asset.specularColor;
-					colorMultiPassMaterial.gloss = asset.specularGloss;
-					
 				}
 				else if( m is TextureMultiPassMaterial )
 				{
@@ -1079,7 +1080,6 @@ package awaybuilder.view.mediators
 					textureMultiPassMaterial.ambientColor = asset.ambientColor;
 					textureMultiPassMaterial.specular = asset.specularLevel;
 					textureMultiPassMaterial.specularColor = asset.specularColor;
-					textureMultiPassMaterial.gloss = asset.specularGloss;
 				}
 				
 				while( multiPassMaterialBase.numMethods )
@@ -1107,6 +1107,11 @@ package awaybuilder.view.mediators
 				}
 			}
 			
+		}
+		private function applyAgain( asset:MaterialVO  ):void
+		{
+			var m:MaterialBase = MaterialBase( assets.GetObject(asset) );
+			m.bothSides = asset.bothSides;
 		}
 		private function eventDispatcher_changeLightHandler(event:SceneEvent):void
 		{
