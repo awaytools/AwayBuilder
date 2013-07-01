@@ -259,18 +259,18 @@ package awaybuilder.view.mediators
 		}
         private function view_meshSubmeshChangeHandler(event:PropertyEditorEvent):void
         {
+			var currentSubmesh:SubMeshVO;
 			if( view.data )
 			{
 				var vo:MeshVO = view.data as MeshVO;
-				var newValue:MeshVO = vo.clone() as MeshVO;
-				for each( var subMesh:SubMeshVO in newValue.subMeshes )
+				for each( var subMesh:SubMeshVO in vo.subMeshes )
 				{
 					if( subMesh.equals( AssetVO(event.data) ) )
 					{
-						subMesh.material = SubMeshVO(event.data).material;
+						currentSubmesh = subMesh;
 					}
 				}
-				this.dispatch(new SceneEvent(SceneEvent.CHANGE_MESH,[view.data], newValue));
+				this.dispatch(new SceneEvent(SceneEvent.CHANGE_SUBMESH,[currentSubmesh], event.data));
 			}
         }
         private function view_materialChangeHandler(event:PropertyEditorEvent):void
@@ -278,24 +278,14 @@ package awaybuilder.view.mediators
 			var items:Array;
 			if( view.data is MaterialVO ) items = [view.data];
 			if( view.data is Array ) items = view.data as Array;
-			var newValues:Vector.<MaterialVO> = new Vector.<MaterialVO>();
-			for each( var asset:MaterialVO in items )
-			{
-				newValues.push( event.data );
-			}
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,items, newValues));
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL, items, event.data));
         }
         private function view_materialNameChangeHandler(event:PropertyEditorEvent):void
         {
 			var items:Array;
 			if( view.data is MaterialVO ) items = [view.data];
 			if( view.data is Array ) items = view.data as Array;
-			var newValues:Vector.<MaterialVO> = new Vector.<MaterialVO>();
-			for each( var asset:MaterialVO in items )
-			{
-				newValues.push( event.data );
-			}
-			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,items, newValues, true));
+			this.dispatch(new SceneEvent(SceneEvent.CHANGE_MATERIAL,items, event.data, true));
         }
 		private function view_materialAmbientMethodHandler(event:PropertyEditorEvent):void
 		{

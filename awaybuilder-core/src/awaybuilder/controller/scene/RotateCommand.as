@@ -9,7 +9,7 @@ package awaybuilder.controller.scene
     
     import flash.geom.Vector3D;
 
-    public class RotateObjectCommand extends HistoryCommandBase
+    public class RotateCommand extends HistoryCommandBase
     {
         [Inject]
         public var event:SceneEvent;

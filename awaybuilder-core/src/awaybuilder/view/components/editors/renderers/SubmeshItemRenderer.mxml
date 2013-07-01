@@ -65,9 +65,9 @@
 
         private function dropDownList1_changeHandler(event:IndexChangeEvent):void 
 		{
-			_subMesh.material = dropDownList.selectedItem as MaterialVO;
-			// TODO check why it fires twice
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, _subMesh, true));
+			var subMesh:SubMeshVO = _subMesh.clone();
+			subMesh.material = dropDownList.selectedItem as MaterialVO;
+            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_SUBMESH_CHANGE, subMesh, true));
         }
 
         private function editSubmeshMaterialButton_clickHandler(event:MouseEvent):void

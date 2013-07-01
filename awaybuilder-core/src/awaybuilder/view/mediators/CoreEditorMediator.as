@@ -188,6 +188,7 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
+			addContextListener(SceneEvent.CHANGE_SUBMESH, eventDispatcher_changeMeshHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
 			addContextListener(SceneEvent.CHANGE_MATERIAL, eventDispatcher_changeMaterialHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHTPICKER, eventDispatcher_changeLightPickerHandler);
@@ -1128,22 +1129,18 @@ package awaybuilder.view.mediators
 			}
 		}
 		
-//		private function eventDispatcher_updateMeshMaterialHandler(event:SceneEvent):void
-//		{
-//			for each (var item:ObjectContainer3D in event.items) {
-//				var mVO:MeshVO = assets.GetAsset(item) as MeshVO;
-//				for each( var sub:SubMeshVO in mVO.subMeshes )
-//				{
-//					applySubMesh( sub );
-//				}
-//			}
-//		}
-//		
 		private function eventDispatcher_changeMeshHandler(event:SceneEvent):void
 		{
-			for each( var asset:MeshVO in event.items )
+			for each( var asset:AssetVO in event.items )
 			{
-				applyMesh( asset );
+				if( asset is MeshVO )
+				{
+					applyMesh( asset as MeshVO );
+				}
+				else if( asset is SubMeshVO )
+				{
+					applyMesh( SubMeshVO(asset).parentMesh );
+				}
 			}
 		}
 		private function updateChildren( children:ArrayCollection ):void

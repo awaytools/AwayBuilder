@@ -241,7 +241,6 @@ package awaybuilder.view.mediators
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[asset]));
 		}
 		
-		private var _doNotUpdate:Boolean = false;
 		private function view_treeChangeHandler(event:LibraryPanelEvent):void
 		{
 			if( event.data )
@@ -253,7 +252,6 @@ package awaybuilder.view.mediators
 				{
 					items.push(selectedItems[i]);
 				}
-//				_doNotUpdate = true;
 				this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
 			}
 		}
@@ -401,12 +399,6 @@ package awaybuilder.view.mediators
 		
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
-			if( _doNotUpdate ) 
-			{
-				_doNotUpdate = false;
-				return;
-			}
-
 			_selectedSceneItems = new Vector.<Object>();
 			for each( var asset:AssetVO in event.items )
 			{

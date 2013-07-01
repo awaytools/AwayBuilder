@@ -61,21 +61,22 @@ package awaybuilder
 	import awaybuilder.controller.scene.ChangeShadowMethodCommand;
 	import awaybuilder.controller.scene.ChangeSkeletonCommand;
 	import awaybuilder.controller.scene.ChangeSkyBoxCommand;
+	import awaybuilder.controller.scene.ChangeSubMeshCommand;
 	import awaybuilder.controller.scene.ChangeTextureCommand;
 	import awaybuilder.controller.scene.ChangeTextureProjectorCommand;
 	import awaybuilder.controller.scene.DeleteCommand;
 	import awaybuilder.controller.scene.ReparentAnimationCommand;
 	import awaybuilder.controller.scene.ReparentLightCommand;
 	import awaybuilder.controller.scene.ReparentObjectCommand;
-	import awaybuilder.controller.scene.RotateObjectCommand;
-	import awaybuilder.controller.scene.ScaleObjectCommand;
+	import awaybuilder.controller.scene.RotateCommand;
+	import awaybuilder.controller.scene.ScaleCommand;
 	import awaybuilder.controller.scene.SelectCommand;
 	import awaybuilder.controller.scene.SwitchFreeCameraModeCommand;
 	import awaybuilder.controller.scene.SwitchTargetCameraModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformRotateModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformScaleModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
-	import awaybuilder.controller.scene.TranslateObjectCommand;
+	import awaybuilder.controller.scene.TranslateCommand;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
@@ -132,9 +133,9 @@ package awaybuilder
 			this.commandMap.mapEvent(SceneEvent.SWITCH_TRANSFORM_SCALE, SwitchTransformScaleModeCommand);
 			this.commandMap.mapEvent(SceneEvent.SWITCH_TRANSFORM_TRANSLATE, SwitchTransformTranslateModeCommand);
 
-            this.commandMap.mapEvent(SceneEvent.ROTATE_OBJECT, RotateObjectCommand);
-            this.commandMap.mapEvent(SceneEvent.TRANSLATE_OBJECT, TranslateObjectCommand);
-            this.commandMap.mapEvent(SceneEvent.SCALE_OBJECT, ScaleObjectCommand);
+            this.commandMap.mapEvent(SceneEvent.ROTATE_OBJECT, RotateCommand);
+            this.commandMap.mapEvent(SceneEvent.TRANSLATE_OBJECT, TranslateCommand);
+            this.commandMap.mapEvent(SceneEvent.SCALE_OBJECT, ScaleCommand);
 			
 			this.commandMap.mapEvent(SceneEvent.DELETE, DeleteCommand);
 			this.commandMap.mapEvent(SceneEvent.SELECT, SelectCommand);
@@ -150,6 +151,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.REPARENT_ANIMATIONS, ReparentAnimationCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
+			commandMap.mapEvent(SceneEvent.CHANGE_SUBMESH, ChangeSubMeshCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_CONTAINER, ChangeContainerCommand);
             commandMap.mapEvent(SceneEvent.CHANGE_MATERIAL, ChangeMaterialCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_LIGHT, ChangeLightCommand);

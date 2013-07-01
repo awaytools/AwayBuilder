@@ -1,7 +1,4 @@
-package awaybuilder.controller.scene
-{
-    import away3d.core.base.Object3D;
-    
+    package awaybuilder.controller.scene {
     import awaybuilder.controller.history.HistoryCommandBase;
     import awaybuilder.controller.scene.events.SceneEvent;
     import awaybuilder.model.DocumentModel;
@@ -10,7 +7,7 @@ package awaybuilder.controller.scene
     
     import flash.geom.Vector3D;
 
-    public class TranslateObjectCommand extends HistoryCommandBase
+    public class ScaleCommand extends HistoryCommandBase
     {
         [Inject]
         public var event:SceneEvent;
@@ -23,10 +20,10 @@ package awaybuilder.controller.scene
 			for( var i:int = 0; i < event.items.length; i++ )
 			{
 				var asset:ObjectVO = event.items[i] as ObjectVO;
-				oldValues.push( new Vector3D( asset.x, asset.y, asset.z ) );
-				asset.x = isNaN(newValues[i].x)?asset.x:newValues[i].x;
-				asset.y = isNaN(newValues[i].y)?asset.y:newValues[i].y;
-				asset.z = isNaN(newValues[i].z)?asset.z:newValues[i].z;
+				oldValues.push( new Vector3D( asset.scaleX, asset.scaleY, asset.scaleZ ) );
+				asset.scaleX = isNaN(newValues[i].x)?asset.scaleX:newValues[i].x;
+				asset.scaleY = isNaN(newValues[i].y)?asset.scaleY:newValues[i].y;
+				asset.scaleZ = isNaN(newValues[i].z)?asset.scaleZ:newValues[i].z;
 			}
 			
 			saveOldValue( event, oldValues );

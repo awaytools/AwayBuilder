@@ -23,7 +23,7 @@ package awaybuilder.controller.scene
 
         override public function execute():void
         {
-			var newValues:Vector.<MeshVO> = event.newValue as Vector.<MeshVO>;
+			var newValues:Vector.<MeshVO> = getNewValues();
 			var oldValues:Vector.<MeshVO> = new Vector.<MeshVO>();
 			
 			for( var i:int = 0; i < event.items.length; i++ )
@@ -43,5 +43,27 @@ package awaybuilder.controller.scene
 			saveOldValue( event, oldValues );
 			commitHistoryEvent( event );
         }
+		
+		private function getNewValues():Vector.<MeshVO>
+		{
+			var newValues:Vector.<MeshVO> = new Vector.<MeshVO>();
+			
+			if( event.newValue is Vector.<MeshVO> )
+			{
+				for each( var asset:MeshVO in event.newValue )
+				{
+					newValues.push( asset.clone() );
+				}
+			}
+			else
+			{
+				for( var i:int = 0; i < event.items.length; i++ )
+				{
+					newValues.push( MeshVO(event.newValue).clone() );
+				}
+			}
+			event.newValue = newValues;
+			return newValues;
+		}
     }
 }

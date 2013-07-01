@@ -283,9 +283,9 @@ package awaybuilder.desktop.model
 				replaceDocumentDataEvent.value = document;
 				replaceDocumentDataEvent.globalOptions = globalOptions;
 			}
-			else if( _nextEvent is ConcatenateDataOperationEvent )
+			else if( _nextEvent is HistoryEvent )
 			{
-				var concatenateDataOperationEvent:ConcatenateDataOperationEvent = _nextEvent as ConcatenateDataOperationEvent;
+				var concatenateDataOperationEvent:HistoryEvent = _nextEvent as HistoryEvent;
 				concatenateDataOperationEvent.newValue = document;
 			}
 			dispatch( _nextEvent );

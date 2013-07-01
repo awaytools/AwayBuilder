@@ -20,5 +20,15 @@ package awaybuilder.model.vo.scene
 		
 		public var parentMesh:MeshVO;
 		
+		public function clone():SubMeshVO
+		{
+			var m:SubMeshVO = new SubMeshVO();
+			m.id = this.id;
+			m.material = this.material;
+			m.subGeometry = this.subGeometry;
+			m.parentMesh = this.parentMesh;
+			return m;
+		}
+		
 	}
 }
