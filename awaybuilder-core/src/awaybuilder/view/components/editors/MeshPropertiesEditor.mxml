@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <editors:EditorBase xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="awaybuilder.view.components.*" xmlns:controls="awaybuilder.view.components.controls.*"
-		 xmlns:editors="awaybuilder.view.components.editors.*">
+		 xmlns:editors="awaybuilder.view.components.editors.*" xmlns:renderers="awaybuilder.view.components.editors.renderers.*">
 
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AnimatorVO;
@@ -23,30 +23,6 @@
 			if( !(data is MeshVO) ) return;
 			_asset.fillFromMesh( data as MeshVO );
 		}
-
-        private function position_commitHandler(event:Event):void 
-		{
-            var newValue:Vector3D = new Vector3D(xStepper.value, yStepper.value, zStepper.value);
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.TRANSLATE, newValue));
-        }
-		private function pivot_commitHandler(event:Event):void 
-		{
-			_asset.pivotX = pivotXStepper.value;
-			_asset.pivotY = pivotYStepper.value;
-			_asset.pivotZ = pivotZStepper.value;
-			dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.MESH_STEPPER_CHANGE, _asset));
-		}
-        private function rotation_commitHandler(event:Event):void 
-		{
-            var newValue:Vector3D = new Vector3D(rotationXStepper.value, rotationYStepper.value, rotationZStepper.value);
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.ROTATE, newValue));
-        }
-
-        private function scale_commitHandler(event:Event):void 
-		{
-            var newValue:Vector3D = new Vector3D(scaleXStepper.value, scaleYStepper.value, scaleZStepper.value);
-            dispatchEvent(new PropertyEditorEvent(PropertyEditorEvent.SCALE, newValue));
-        }
 
         private function stepper_changeHandler(event:Event):void 
 		{
@@ -176,34 +152,15 @@
 			<s:Button styleName="editSharedObjectButtonStyle" width="23" height="100%" click="animatorDropDownListButton_clickHandler(event)" enabled="{_asset.animator!=null}" />
 		</controls:PropertiesItemContainer>
     </controls:CollapsiblePanel>
-    <controls:CollapsiblePanel width="100%" title="Transformations" collapsed="true">
-        <s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-            <s:FormItem label="Position" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <controls:DragableNumericStepper id="xStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.x}" change="position_commitHandler(event)" />
-                <controls:DragableNumericStepper id="yStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.y}" change="position_commitHandler(event)"/>
-                <controls:DragableNumericStepper id="zStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.z}" change="position_commitHandler(event)"/>
-            </s:FormItem>
-			<s:FormItem label="Pivot Point" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-				<controls:DragableNumericStepper id="pivotXStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotX}" change="pivot_commitHandler(event)" />
-				<controls:DragableNumericStepper id="pivotYStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotY}" change="pivot_commitHandler(event)"/>
-				<controls:DragableNumericStepper id="pivotZStepper" stepSize="1" snapInterval="0.001" width="100%" value="{_asset.pivotZ}"  change="pivot_commitHandler(event)"/>
-			</s:FormItem>
-            <s:FormItem label="Rotation" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <controls:DragableNumericStepper id="rotationXStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationX}" change="rotation_commitHandler(event)"/>
-                <controls:DragableNumericStepper id="rotationYStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationY}" change="rotation_commitHandler(event)"/>
-                <controls:DragableNumericStepper id="rotationZStepper" stepSize="1" snapInterval="0.01" allowValueWrap="true" minimum="-360" maximum="360" width="100%" value="{_asset.rotationZ}" change="rotation_commitHandler(event)"/>
-            </s:FormItem>
-			<controls:HorizontalFormSeparator/>
-            <s:FormItem label="Scale" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
-                <controls:DragableNumericStepper id="scaleXStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleX}" change="scale_commitHandler(event)" />
-                <controls:DragableNumericStepper id="scaleYStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleY}" change="scale_commitHandler(event)"/>
-                <controls:DragableNumericStepper id="scaleZStepper" stepSize="0.01" snapInterval="0.01" width="100%" value="{_asset.scaleZ}" change="scale_commitHandler(event)"/>
-            </s:FormItem>
-        </s:Form>
-    </controls:CollapsiblePanel>
+	
+	<controls:CollapsiblePanel width="100%" title="Transformations" collapsed="false">
+		<renderers:TransformationsGroup asset="{_asset}"/>
+	</controls:CollapsiblePanel>
+        
     <controls:CollapsiblePanel width="100%" title="Materials" collapsed="false">
         <controls:SubMeshesList dataProvider="{_asset.subMeshes}" materials="{materials}" width="100%" skinClass="awaybuilder.view.skins.SubMeshesListSkin"/>
     </controls:CollapsiblePanel>
+	
 	<controls:CollapsiblePanel width="100%" title="Extras" collapsed="true">
 		<s:DataGrid width="100%" id="extrasGrid" dataProvider="{_asset.extras}" focusEnabled="false"
 					editable="true" requestedMinRowCount="4" requestedMaxRowCount="6"

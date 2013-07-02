@@ -66,6 +66,7 @@ package awaybuilder.view.mediators
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, context_documentUpdatedHandler);
 
             addViewListener( PropertyEditorEvent.TRANSLATE, view_translateHandler );
+			addViewListener( PropertyEditorEvent.TRANSLATE_PIVOT, view_translatePivotHandler );
             addViewListener( PropertyEditorEvent.ROTATE, view_rotateHandler );
             addViewListener( PropertyEditorEvent.SCALE, view_scaleHandler );
 			
@@ -190,8 +191,19 @@ package awaybuilder.view.mediators
 			{
 				newValues.push( event.data );
 			}
-            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT, items, newValues, true));
+            this.dispatch(new SceneEvent(SceneEvent.TRANSLATE, items, newValues, true));
         }
+		private function view_translatePivotHandler(event:PropertyEditorEvent):void
+		{
+			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
+			var newValues:Vector.<Vector3D> = new Vector.<Vector3D>();
+			for each( var asset:ObjectVO in items )
+			{
+				newValues.push( event.data );
+			}
+			this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_PIVOT, items, newValues, true));
+		}
+		
         private function view_rotateHandler(event:PropertyEditorEvent):void
         {
 			var items:Array = (view.data is Array)?(view.data as Array):[view.data];
@@ -200,7 +212,7 @@ package awaybuilder.view.mediators
 			{
 				newValues.push( event.data );
 			}
-            this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,items, newValues, true));
+            this.dispatch(new SceneEvent(SceneEvent.ROTATE,items, newValues, true));
         }
         private function view_scaleHandler(event:PropertyEditorEvent):void
         {
@@ -210,7 +222,7 @@ package awaybuilder.view.mediators
 			{
 				newValues.push( event.data );
 			}
-            this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,items, newValues, true));
+            this.dispatch(new SceneEvent(SceneEvent.SCALE,items, newValues, true));
         }
 		private function view_containerChangeHandler(event:PropertyEditorEvent):void
 		{

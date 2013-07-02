@@ -10,9 +10,10 @@ import flash.events.Event;
 		
 		public static const SELECT:String = "sceneItemSelect";
         public static const CHANGING:String = "sceneItemChanging";
-        public static const TRANSLATE_OBJECT:String = "translateObject";
-        public static const ROTATE_OBJECT:String = "rotateObject";
-        public static const SCALE_OBJECT:String = "scaleObject";
+        public static const TRANSLATE:String = "translateObject";
+		public static const TRANSLATE_PIVOT:String = "translateObjectPivot";
+        public static const ROTATE:String = "rotateObject";
+        public static const SCALE:String = "scaleObject";
 
 		public static const CHANGE_GLOBAL_OPTIONS:String = "changeGlobalOptions";
 		

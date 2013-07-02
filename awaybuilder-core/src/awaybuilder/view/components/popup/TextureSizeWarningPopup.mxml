@@ -89,7 +89,7 @@ Note: To improve quality, it is advisable to manually adjust the source image in
 	        <s:columns>
 	            <s:ArrayList>
 	                <s:GridColumn dataField="Warning" headerText="Warning message" />
-	                <s:GridColumn dataField="Rescale" headerText="Rescale &amp; Update" width="130">
+	                <!--<s:GridColumn dataField="Rescale" headerText="Rescale &amp; Update" width="130">
 						<s:itemRenderer>
 							<fx:Component>
 								<s:GridItemRenderer>
@@ -99,7 +99,7 @@ Note: To improve quality, it is advisable to manually adjust the source image in
 								</s:GridItemRenderer>
 							</fx:Component>
 						</s:itemRenderer>
-      	        	</s:GridColumn>
+      	        	</s:GridColumn>-->
 	            </s:ArrayList>
 	        </s:columns>       
 	    </s:DataGrid>      

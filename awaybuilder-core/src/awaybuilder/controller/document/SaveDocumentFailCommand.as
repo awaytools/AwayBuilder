@@ -5,14 +5,14 @@ package awaybuilder.controller.document
 	import awaybuilder.utils.logging.AwayBuilderLogger;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.WindowModel;
+	import awaybuilder.model.ApplicationModel;
 
 	import org.robotlegs.mvcs.Command;
 	
 	public class SaveDocumentFailCommand extends Command
 	{
 		[Inject]
-		public var windowModel:WindowModel;
+		public var windowModel:ApplicationModel;
 		
 		[Inject]
 		public var event:SaveDocumentEvent;

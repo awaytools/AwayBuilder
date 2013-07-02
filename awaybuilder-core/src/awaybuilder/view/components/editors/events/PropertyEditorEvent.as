@@ -6,6 +6,7 @@ package awaybuilder.view.components.editors.events
     {
 
         public static const TRANSLATE:String = "objectTranslate";
+		public static const TRANSLATE_PIVOT:String = "objectTranslatePivot";
         public static const SCALE:String = "objectScale";
         public static const ROTATE:String = "objectRotate";
 
@@ -117,8 +118,9 @@ package awaybuilder.view.components.editors.events
 		public static const GLOBAL_OPTIONS_CHANGE:String = "globalOptionsChange";
 		public static const GLOBAL_OPTIONS_STEPPER_CHANGE:String = "globalOptionsStepperChange";
 		
-        public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=true ) {
-            super( type, bubbles, cancelable );
+        public function PropertyEditorEvent( type:String, data:Object=null, bubbles:Boolean=true ) 
+		{
+            super( type, bubbles, false );
             this.data = data;
         }
 

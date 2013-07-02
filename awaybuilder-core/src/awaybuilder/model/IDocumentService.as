@@ -6,8 +6,9 @@ package awaybuilder.model
 	
 	public interface IDocumentService
 	{
-		function save(data:Object, path:String):void;
-		function saveAs(data:Object, defaultName:String):void;
+		function save(data:DocumentModel, path:String):void;
+		function saveAs(data:DocumentModel, defaultName:String):void;
+		
 		function open( type:String, createNew:Boolean, event:Event ):void
 		
 		function openBitmap( items:Array, property:String ):void;

@@ -1,7 +1,7 @@
 package awaybuilder.desktop.controller
 {
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.WindowModel;
+	import awaybuilder.model.ApplicationModel;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -11,7 +11,7 @@ package awaybuilder.desktop.controller
 		public var window:AwayBuilderApplication;
 		
 		[Inject]
-		public var windowModel:WindowModel;
+		public var windowModel:ApplicationModel;
 		
 		[Inject]
 		public var documentModel:DocumentModel;

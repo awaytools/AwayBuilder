@@ -1,13 +1,20 @@
 package awaybuilder.web.model
 {
+	import awaybuilder.controller.events.DocumentEvent;
+	import awaybuilder.controller.events.ReplaceDocumentDataEvent;
+	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
 	import awaybuilder.model.SmartDocumentServiceBase;
 	import awaybuilder.model.vo.DocumentVO;
+	import awaybuilder.model.vo.GlobalOptionsVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.TextureVO;
+	import awaybuilder.utils.encoders.AWDEncoder;
+	import awaybuilder.utils.encoders.ISceneGraphEncoder;
 	
 	import flash.display.Bitmap;
 	import flash.display.Loader;
@@ -19,6 +26,7 @@ package awaybuilder.web.model
 	import flash.events.SecurityErrorEvent;
 	import flash.net.FileFilter;
 	import flash.net.FileReference;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
 	import mx.managers.CursorManager;
@@ -27,11 +35,13 @@ package awaybuilder.web.model
 	{
 		private static const FILE_EXTENSION : String = '.awd';
 		
-		private var _nextEvent:HistoryEvent;
+		private var _nextEvent:Event;
 		
 		private var _items:Array;
 		
 		private var _name:String;
+		
+		private var _createNew:Boolean;
 		
 		private var _property:String;
 		
@@ -39,7 +49,7 @@ package awaybuilder.web.model
 		
 		private var _file:FileReference;
 		
-		public function load( url:String, name:String, event:HistoryEvent ):void
+		public function load( url:String, name:String, event:Event ):void
 		{
 			_name = name;
 			_nextEvent = event;
@@ -59,9 +69,10 @@ package awaybuilder.web.model
 			_file.browse(filters);
 		}
 		
-		public function open( type:String, event:HistoryEvent ):void
+		public function open( type:String, createNew:Boolean, event:Event ):void
 		{
 			_nextEvent = event;
+			_createNew = createNew;
 			_file = new FileReference();
 			_file.addEventListener(Event.SELECT, file_open_selectHandler);
 			_file.addEventListener(Event.CANCEL, file_open_cancelHandler);
@@ -84,24 +95,33 @@ package awaybuilder.web.model
 					filters.push( new FileFilter("Images (*.png, *.jpg)", "*.png;*.jpg") );
 					break;
 			}
-			_file.browse( filters);
+			_file.browse( filters );
 		}
 		
-		public function saveAs(data:Object, defaultName:String):void
+		public function saveAs(data:DocumentModel, defaultName:String):void
 		{
+			var bytes:ByteArray = new ByteArray();
+			var encoder:ISceneGraphEncoder = new AWDEncoder();
+			var success:Boolean = encoder.encode( data, bytes );
+			
+			var file:FileReference = new FileReference();
+			trace( "defaultName = " +defaultName );
+			file.save( bytes, defaultName+".awd" );
+//			this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_SUCCESS, file.name, defaultName));
 		}
 		
-		public function save(data:Object, path:String):void
+		public function save(data:DocumentModel, path:String):void
 		{	
+			throw new Error( "Cannot be called frob web version");
 		}
 		
-		private function file_save_selectHandler(event:Event):void
-		{
-		}
-		
-		private function file_save_cancelHandler(event:Event):void
-		{
-		}
+//		private function file_save_selectHandler(event:Event):void
+//		{
+//		}
+//		
+//		private function file_save_cancelHandler(event:Event):void
+//		{
+//		}
 		
 		private function bitmapFile_open_selectHandler(event:Event):void
 		{
@@ -124,9 +144,17 @@ package awaybuilder.web.model
 		}	
 		private function file_open_selectHandler(event:Event):void
 		{
+			if( _createNew )
+			{
+				this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
+			}
+			
 			_file.removeEventListener(Event.SELECT, file_open_selectHandler);
 			_file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 			_file.addEventListener(Event.COMPLETE, file_open_completeHandler);
+			
+			_name = _file.name;
+			
 			_file.load();
 		}
 		
@@ -164,9 +192,20 @@ package awaybuilder.web.model
 			file.removeEventListener(Event.CANCEL, file_open_cancelHandler);
 		}
 		
-		override protected function documentReady( _document:DocumentVO ):void 
+		override protected function documentReady( document:DocumentVO, globalOptions:GlobalOptionsVO=null ):void 
 		{
-			_nextEvent.newValue = _document;
+			if( _nextEvent is ReplaceDocumentDataEvent )
+			{
+				var replaceDocumentDataEvent:ReplaceDocumentDataEvent = _nextEvent as ReplaceDocumentDataEvent;
+				replaceDocumentDataEvent.fileName = _name;
+				replaceDocumentDataEvent.value = document;
+				replaceDocumentDataEvent.globalOptions = globalOptions;
+			}
+			else if( _nextEvent is HistoryEvent )
+			{
+				var concatenateDataOperationEvent:HistoryEvent = _nextEvent as HistoryEvent;
+				concatenateDataOperationEvent.newValue = document;
+			}
 			dispatch( _nextEvent );
 		}
 		

@@ -5,7 +5,7 @@ package awaybuilder.controller.document
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.WindowModel;
+	import awaybuilder.model.ApplicationModel;
 
 	import org.robotlegs.mvcs.Command;
 	
@@ -18,7 +18,7 @@ package awaybuilder.controller.document
 		public var documentModel:DocumentModel;
 
 		[Inject]
-		public var windowModel:WindowModel;
+		public var windowModel:ApplicationModel;
 		
 		override public function execute():void
 		{

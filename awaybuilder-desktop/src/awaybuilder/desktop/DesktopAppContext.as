@@ -13,10 +13,8 @@ package awaybuilder.desktop
     import awaybuilder.desktop.controller.ShowAboutWindowCommand;
     import awaybuilder.desktop.controller.ShowDocumentLoadProgressWindowCommand;
     import awaybuilder.desktop.controller.ShowMessageBoxCommand;
-    import awaybuilder.desktop.controller.ShowTextureSizeErrorsCommand;
     import awaybuilder.desktop.controller.events.AboutEvent;
     import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-    import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
     import awaybuilder.desktop.model.DesktopDocumentService;
     import awaybuilder.desktop.view.components.AboutWindow;
     import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
@@ -63,9 +61,6 @@ package awaybuilder.desktop
 			
 			this.commandMap.mapEvent(MessageBoxEvent.SHOW_MESSAGE_BOX, ShowMessageBoxCommand);
 			this.commandMap.mapEvent(AboutEvent.SHOW_ABOUT, ShowAboutWindowCommand);
-			
-			this.commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
-			
 			
 			this.injector.mapSingletonOf(IDocumentService, DesktopDocumentService);
 			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);

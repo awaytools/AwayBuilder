@@ -59,6 +59,7 @@ package awaybuilder.model
 		private var _loaderToken:AssetLoaderToken;
 		
 		private var _tempAnimations:Vector.<Object>;
+		
 		protected function loadBitmap( url:String  ):void
 		{
 			var loader:Loader = new Loader();             

@@ -1,9 +1,8 @@
-package awaybuilder.web.controller
+package awaybuilder.controller
 {
-	import awaybuilder.view.components.popup.TextureSizeWarningPopup;
-	import awaybuilder.web.controller.events.TextureSizeErrorsEvent;
+	import awaybuilder.controller.events.TextureSizeErrorsEvent;
 	import awaybuilder.model.DocumentModel;
-	
+	import awaybuilder.view.components.popup.TextureSizeWarningPopup;
 	
 	import org.robotlegs.mvcs.Command;
 	

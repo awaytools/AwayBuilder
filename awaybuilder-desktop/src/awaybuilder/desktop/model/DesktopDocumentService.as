@@ -6,10 +6,10 @@ package awaybuilder.desktop.model
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.ApplicationModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
 	import awaybuilder.model.SmartDocumentServiceBase;
-	import awaybuilder.model.WindowModel;
 	import awaybuilder.model.vo.DocumentVO;
 	import awaybuilder.model.vo.GlobalOptionsVO;
 	import awaybuilder.model.vo.scene.AssetVO;
@@ -50,7 +50,7 @@ package awaybuilder.desktop.model
 		private var _property:String;
 		
 		[Inject]
-		public var windowModel:WindowModel;
+		public var windowModel:ApplicationModel;
 		
 		public function load( url:String, name:String, event:Event ):void
 		{
@@ -101,7 +101,7 @@ package awaybuilder.desktop.model
 			file.browseForOpen(title, filters);
 		}
 		
-		public function saveAs(data:Object, defaultName:String):void
+		public function saveAs(data:DocumentModel, defaultName:String):void
 		{
 			if(defaultName.toLowerCase().lastIndexOf(FILE_EXTENSION) != defaultName.length - FILE_EXTENSION.length)
 			{
@@ -116,25 +116,22 @@ package awaybuilder.desktop.model
 			this._fileToData[file] = data;
 		}
 		
-		public function saveDocument(data:Object, path:String):void
+		public function saveDocument(data:DocumentModel, path:String):void
 		{	
-			
-			var document : DocumentModel = DocumentModel(data);
-			if (!document.globalOptions.embedTextures){
+			if (!data.globalOptions.embedTextures){
 				saveExternalTextures(data,path)
 			}
 			
 			this.save(data,path);
 		}
 		
-		public function saveExternalTextures(data:Object, path:String):void
+		public function saveExternalTextures(document:DocumentModel, path:String):void
 		{	
 			
 			var folder:File = File.userDirectory.resolvePath(path);
 			var textureDirectory:File = folder.parent.resolvePath("textures");
 			if(!textureDirectory.exists)
 				textureDirectory.createDirectory();
-			var document : DocumentModel = DocumentModel(data);
 			for each (var tex:AssetVO in document.textures){
 				if (tex is TextureVO){
 					saveBitmapDataToFile(TextureVO(tex).bitmapData,TextureVO(tex).name,textureDirectory)
@@ -170,17 +167,11 @@ package awaybuilder.desktop.model
 			}
 			
 		}
-		public function save(data:Object, path:String):void
+		public function save(document:DocumentModel, path:String):void
 		{	
-			var bytes : ByteArray;
-			var success : Boolean;
-			var encoder : ISceneGraphEncoder;
-			var document : DocumentModel = DocumentModel(data);
-			
-			bytes = new ByteArray();
-			encoder = new AWDEncoder();
-			success = encoder.encode(document, bytes);
-			
+			var bytes:ByteArray = new ByteArray();
+			var encoder:ISceneGraphEncoder = new AWDEncoder();
+			var success:Boolean = encoder.encode(document, bytes);
 			
 			try
 			{
@@ -220,7 +211,7 @@ package awaybuilder.desktop.model
 			}
 			file.removeEventListener(Event.SELECT, file_save_selectHandler);
 			file.removeEventListener(Event.CANCEL, file_save_cancelHandler);
-			var data:Object = this._fileToData[file];
+			var data:DocumentModel = this._fileToData[file] as DocumentModel;
 			delete this._fileToData[file];
 			
 			this.saveDocument(data, file.nativePath);

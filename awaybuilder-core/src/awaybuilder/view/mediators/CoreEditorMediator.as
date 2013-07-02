@@ -184,9 +184,10 @@ package awaybuilder.view.mediators
 			addContextListener(AnimationEvent.SEEK, contect_seekHandler);
 			addContextListener(AnimationEvent.PAUSE, contect_pauseHandler);
 			
-			addContextListener(SceneEvent.TRANSLATE_OBJECT, eventDispatcher_translateHandler);
-			addContextListener(SceneEvent.SCALE_OBJECT, eventDispatcher_translateHandler);
-			addContextListener(SceneEvent.ROTATE_OBJECT, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.TRANSLATE, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.TRANSLATE_PIVOT, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.SCALE, eventDispatcher_translateHandler);
+			addContextListener(SceneEvent.ROTATE, eventDispatcher_translateHandler);
 			addContextListener(SceneEvent.CHANGE_MESH, eventDispatcher_changeMeshHandler);
 			addContextListener(SceneEvent.CHANGE_SUBMESH, eventDispatcher_changeMeshHandler);
 			addContextListener(SceneEvent.CHANGE_LIGHT, eventDispatcher_changeLightHandler);
@@ -822,7 +823,6 @@ package awaybuilder.view.mediators
 		{
 			var obj:ObjectContainer3D = assets.GetObject( asset ) as ObjectContainer3D;
 			applyObject( asset );
-			obj.pivotPoint = new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ );
 			
 			obj.extra = new Object();
 			
@@ -834,20 +834,22 @@ package awaybuilder.view.mediators
 		
 		private function applyObject( asset:ObjectVO ):void
 		{
-			var o:Object3D = Object3D( assets.GetObject(asset) );
-			o.name = asset.name;
+			var obj:Object3D = Object3D( assets.GetObject(asset) );
+			obj.name = asset.name;
 			
-			o.x = asset.x;
-			o.y = asset.y;
-			o.z = asset.z;
+			obj.pivotPoint = new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ );
 			
-			o.scaleX = asset.scaleX;
-			o.scaleY = asset.scaleY;
-			o.scaleZ = asset.scaleZ;
+			obj.x = asset.x;
+			obj.y = asset.y;
+			obj.z = asset.z;
 			
-			o.rotationX = asset.rotationX;
-			o.rotationY = asset.rotationY;
-			o.rotationZ = asset.rotationZ;
+			obj.scaleX = asset.scaleX;
+			obj.scaleY = asset.scaleY;
+			obj.scaleZ = asset.scaleZ;
+			
+			obj.rotationX = asset.rotationX;
+			obj.rotationY = asset.rotationY;
+			obj.rotationZ = asset.rotationZ;
 		}
 		
 		private function applyLight( asset:LightVO ):void
@@ -1814,13 +1816,13 @@ package awaybuilder.view.mediators
             switch( event.gizmoMode ) 
 			{
                 case GizmoMode.TRANSLATE:
-                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE_OBJECT,[vo], newValues, false, oldValues));
+                    this.dispatch(new SceneEvent(SceneEvent.TRANSLATE,[vo], newValues, false, oldValues));
                     break;
                 case GizmoMode.ROTATE:
-                    this.dispatch(new SceneEvent(SceneEvent.ROTATE_OBJECT,[vo],newValues, false, oldValues));
+                    this.dispatch(new SceneEvent(SceneEvent.ROTATE,[vo],newValues, false, oldValues));
                     break;
                 default:
-                    this.dispatch(new SceneEvent(SceneEvent.SCALE_OBJECT,[vo],newValues, false, oldValues));
+                    this.dispatch(new SceneEvent(SceneEvent.SCALE,[vo],newValues, false, oldValues));
                     break;
             }
         }

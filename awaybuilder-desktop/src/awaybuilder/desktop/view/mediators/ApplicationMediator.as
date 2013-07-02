@@ -9,11 +9,11 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.controller.events.ErrorLogEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.TextureSizeErrorsEvent;
 	import awaybuilder.controller.history.UndoRedoEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.desktop.controller.events.AboutEvent;
 	import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
-	import awaybuilder.desktop.controller.events.TextureSizeErrorsEvent;
 	import awaybuilder.desktop.utils.ModalityManager;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
@@ -23,12 +23,9 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.desktop.NativeApplication;
-	import flash.display.DisplayObject;
-	import flash.display.Loader;
 	import flash.display.NativeMenu;
 	import flash.display.NativeMenuItem;
 	import flash.display.NativeWindow;
-	import flash.display.NativeWindowDisplayState;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.filesystem.File;
@@ -206,17 +203,6 @@ package awaybuilder.desktop.view.mediators
 		{
 			this.eventMap.mapListener(this.app.stage, KeyboardEvent.KEY_DOWN, stage_keyDownHandler);
 		}
-		
-//		private function checkForUpdate():void
-//		{
-//			this.updateModel.updateLastCheckTime();
-//			navigateToURL(new URLRequest("http://sample.com/download/?update_from=" + this.version), "_blank");
-//		}
-		
-//		private function updateMessageBox_onCheckForUpdate():void
-//		{
-//			this.checkForUpdate();
-//		}
 		
 		private function eventDispatcher_documentEditedHandler(event:DocumentModelEvent):void
 		{

@@ -1,4 +1,4 @@
-package awaybuilder.web.controller.events
+package awaybuilder.controller.events
 {
 	import flash.events.Event;
 	

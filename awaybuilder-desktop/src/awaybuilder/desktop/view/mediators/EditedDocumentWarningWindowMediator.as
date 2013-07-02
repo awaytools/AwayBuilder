@@ -8,7 +8,7 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.WindowModel;
+	import awaybuilder.model.ApplicationModel;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -24,7 +24,7 @@ package awaybuilder.desktop.view.mediators
 		public var documentModel:DocumentModel;
 		
 		[Inject]
-		public var windowModel:WindowModel;
+		public var windowModel:ApplicationModel;
 		
 		private var _actionChosen:String = null;
 		

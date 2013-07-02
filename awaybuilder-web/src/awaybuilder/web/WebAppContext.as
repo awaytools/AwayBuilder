@@ -8,9 +8,7 @@ package awaybuilder.web
     import awaybuilder.web.controller.DocumentRequestCommand;
     import awaybuilder.web.controller.OpenFromInvokeCommand;
     import awaybuilder.web.controller.SceneReadyCommand;
-    import awaybuilder.web.controller.ShowTextureSizeErrorsCommand;
     import awaybuilder.web.controller.events.OpenFromInvokeEvent;
-    import awaybuilder.web.controller.events.TextureSizeErrorsEvent;
     import awaybuilder.web.model.DocumentService;
     import awaybuilder.web.view.mediators.ApplicationMediator;
     import awaybuilder.model.IDocumentService;
@@ -43,14 +41,13 @@ package awaybuilder.web
 			
 			this.commandMap.mapEvent(DocumentEvent.CLOSE_DOCUMENT, CloseDocumentCommand);
 			
-			this.commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
-			
 			this.injector.mapSingletonOf(IDocumentService, DocumentService);
 			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);
 			
 			this.mediatorMap.mapView(AwayBuilderApplication, ApplicationMediator);
 			
 			this.mediatorMap.createMediator(FlexGlobals.topLevelApplication);
+			
 			this.dispatchEvent(new ContextEvent(ContextEvent.STARTUP));
 		}
 	}

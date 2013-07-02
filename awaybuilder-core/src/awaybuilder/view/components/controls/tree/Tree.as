@@ -98,7 +98,7 @@ package awaybuilder.view.components.controls.tree
 		//  dataDescriptor
 		//----------------------------------
 		
-		private var _dataDescriptor:ITreeDataDescriptor = new SceneDataDescriptor();
+		private var _dataDescriptor:ITreeDataDescriptor = new GenericDataDescriptor();
 		
 		[Bindable("dataDescriptorChange")]
 		public function get dataDescriptor():ITreeDataDescriptor

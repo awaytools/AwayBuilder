@@ -1,6 +1,7 @@
 package awaybuilder
 {
 	import awaybuilder.controller.ReadDocumentDataFaultCommand;
+	import awaybuilder.controller.ShowTextureSizeErrorsCommand;
 	import awaybuilder.controller.StartupCommand;
 	import awaybuilder.controller.clipboard.CopyCommand;
 	import awaybuilder.controller.clipboard.PasteCommand;
@@ -25,6 +26,7 @@ package awaybuilder
 	import awaybuilder.controller.events.ReplaceDocumentDataEvent;
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.events.SettingsEvent;
+	import awaybuilder.controller.events.TextureSizeErrorsEvent;
 	import awaybuilder.controller.history.RedoCommand;
 	import awaybuilder.controller.history.UndoCommand;
 	import awaybuilder.controller.history.UndoRedoEvent;
@@ -77,11 +79,12 @@ package awaybuilder
 	import awaybuilder.controller.scene.SwitchTransformScaleModeCommand;
 	import awaybuilder.controller.scene.SwitchTransformTranslateModeCommand;
 	import awaybuilder.controller.scene.TranslateCommand;
+	import awaybuilder.controller.scene.TranslatePivotCommand;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.model.WindowModel;
+	import awaybuilder.model.ApplicationModel;
 	import awaybuilder.view.components.CoreEditor;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.EditToolBar;
@@ -133,9 +136,10 @@ package awaybuilder
 			this.commandMap.mapEvent(SceneEvent.SWITCH_TRANSFORM_SCALE, SwitchTransformScaleModeCommand);
 			this.commandMap.mapEvent(SceneEvent.SWITCH_TRANSFORM_TRANSLATE, SwitchTransformTranslateModeCommand);
 
-            this.commandMap.mapEvent(SceneEvent.ROTATE_OBJECT, RotateCommand);
-            this.commandMap.mapEvent(SceneEvent.TRANSLATE_OBJECT, TranslateCommand);
-            this.commandMap.mapEvent(SceneEvent.SCALE_OBJECT, ScaleCommand);
+            this.commandMap.mapEvent(SceneEvent.ROTATE, RotateCommand);
+            this.commandMap.mapEvent(SceneEvent.TRANSLATE, TranslateCommand);
+			this.commandMap.mapEvent(SceneEvent.TRANSLATE_PIVOT, TranslatePivotCommand);
+            this.commandMap.mapEvent(SceneEvent.SCALE, ScaleCommand);
 			
 			this.commandMap.mapEvent(SceneEvent.DELETE, DeleteCommand);
 			this.commandMap.mapEvent(SceneEvent.SELECT, SelectCommand);
@@ -198,10 +202,12 @@ package awaybuilder
             commandMap.mapEvent( UndoRedoEvent.REDO, RedoCommand );
             commandMap.mapEvent( UndoRedoEvent.UNDO, UndoCommand );
 
+			commandMap.mapEvent(TextureSizeErrorsEvent.SHOW_TEXTURE_SIZE_ERRORS, ShowTextureSizeErrorsCommand);
+			
 			this.injector.mapSingleton(DocumentModel);
 			this.injector.mapSingleton(AssetsModel);
 			this.injector.mapSingleton(UndoRedoModel);
-			this.injector.mapSingleton(WindowModel);
+			this.injector.mapSingleton(ApplicationModel);
 			
 			this.mediatorMap.mapView(CoreEditor, CoreEditorMediator);
             this.mediatorMap.mapView(PropertiesPanel, PropertiesPanelMediator);

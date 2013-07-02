@@ -19,10 +19,10 @@ package awaybuilder.controller.scene
 			for( var i:int = 0; i < event.items.length; i++ )
 			{
 				var asset:ObjectVO = event.items[i] as ObjectVO;
-				oldValues.push( new Vector3D( asset.x, asset.y, asset.z ) );
-				asset.pivotX = isNaN(newValues[i].x)?asset.x:newValues[i].x;
-				asset.pivotY = isNaN(newValues[i].y)?asset.y:newValues[i].y;
-				asset.pivotZ = isNaN(newValues[i].z)?asset.z:newValues[i].z;
+				oldValues.push( new Vector3D( asset.pivotX, asset.pivotY, asset.pivotZ ) );
+				asset.pivotX = isNaN(newValues[i].x)?asset.pivotX:newValues[i].x;
+				asset.pivotY = isNaN(newValues[i].y)?asset.pivotY:newValues[i].y;
+				asset.pivotZ = isNaN(newValues[i].z)?asset.pivotZ:newValues[i].z;
 			}
 			
 			saveOldValue( event, oldValues );

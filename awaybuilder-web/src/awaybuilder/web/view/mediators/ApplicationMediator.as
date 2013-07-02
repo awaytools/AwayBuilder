@@ -1,6 +1,7 @@
 package awaybuilder.web.view.mediators
 {
 
+	import awaybuilder.model.ApplicationModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
 	
@@ -13,10 +14,11 @@ package awaybuilder.web.view.mediators
 		public var app:AwayBuilderApplication;
 		
 		[Inject]
-		public var documentModel:DocumentModel;
+		public var model:ApplicationModel;
 		
-		[Inject]
-		public var undoRedoModel:UndoRedoModel;
-
+		override public function onRegister():void
+		{
+			model.simpleSaveEnabled = false;
+		}
 	}
 }
