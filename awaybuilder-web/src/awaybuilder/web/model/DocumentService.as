@@ -105,7 +105,6 @@ package awaybuilder.web.model
 			var success:Boolean = encoder.encode( data, bytes );
 			
 			var file:FileReference = new FileReference();
-			trace( "defaultName = " +defaultName );
 			file.save( bytes, defaultName+".awd" );
 //			this.dispatch(new SaveDocumentEvent(SaveDocumentEvent.SAVE_DOCUMENT_SUCCESS, file.name, defaultName));
 		}
