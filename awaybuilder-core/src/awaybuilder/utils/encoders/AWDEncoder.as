@@ -1224,10 +1224,10 @@ package awaybuilder.utils.encoders
 			}
 			else {
 				_blockBody.writeByte(0);//external
-				var extension:String="jpg";
+				var extension:String=".jpg";
 				if(bitMapHasTransparency(tex.bitmapData,tex.bitmapData.rect.width,tex.bitmapData.rect.height))
-					extension="png";
-				var texturePath:String="textures/"+getFileName(tex.name)+"."+extension;
+					extension=".png";
+				var texturePath:String="textures/"+getFileName(tex.name, extension);
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);				
 				}
@@ -1244,12 +1244,16 @@ package awaybuilder.utils.encoders
 			return returnID;
 			
 		}
-		private function getFileName(fullPath: String) : String
+		private function getFileName(fullPath: String, extension:String, cubeMapPrefix:String="") : String
 		{
 			var fSlash: int = fullPath.lastIndexOf("/");
 			var bSlash: int = fullPath.lastIndexOf("\\"); // reason for the double slash is just to escape the slash so it doesn't escape the quote!!!
 			var slashIndex: int = fSlash > bSlash ? fSlash : bSlash;
-			return fullPath.substr(slashIndex + 1);
+			var thisname:String=fullPath.substr(slashIndex + 1);			
+			if(thisname.toLowerCase().lastIndexOf(extension) != thisname.length - extension.length)
+				thisname+=cubeMapPrefix+extension
+			thisname = thisname.replace(" ", "%20");
+			return thisname
 		}
 		// encode TextureBlock (id=83)
 		private function _encodeCubeTextures(cubeTexture:CubeTextureVO) : uint
@@ -1284,41 +1288,40 @@ package awaybuilder.utils.encoders
 				var texturePath:String;
 				_blockBody.writeByte(0);//external
 				_blockBody.writeUTF(cubeTexture.name);
-				var extension:String="jpg";
-				extension="jpg";
+				var extension:String=".jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveX,cubeTexture.positiveX.rect.width,cubeTexture.positiveX.rect.height))
-					extension="png";
-				texturePath="textures/"+getFileName(cubeTexture.name)+"_posX."+extension;
+					extension=".png";
+				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_posX.");
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);			
-				extension="jpg";
+				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeX,cubeTexture.negativeX.rect.width,cubeTexture.negativeX.rect.height))
-					extension="png";
-				texturePath="textures/"+getFileName(cubeTexture.name)+"_negX."+extension;
+					extension=".png";
+				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_negX.");
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);		
-				extension="jpg";
+				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveY,cubeTexture.positiveY.rect.width,cubeTexture.positiveY.rect.height))
-					extension="png";
-				texturePath="textures/"+getFileName(cubeTexture.name)+"_posY."+extension;
+					extension=".png";
+				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_posY.");
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);		
-				extension="jpg";
+				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeY,cubeTexture.negativeY.rect.width,cubeTexture.negativeY.rect.height))
-					extension="png";
-				texturePath="textures/"+getFileName(cubeTexture.name)+"_negY."+extension;
+					extension=".png";
+				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_negY.");
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);	
-				extension="jpg";
+				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveZ,cubeTexture.positiveZ.rect.width,cubeTexture.positiveZ.rect.height))
-					extension="png";
-				texturePath="textures/"+getFileName(cubeTexture.name)+"_posZ."+extension;
+					extension=".png";
+				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_posZ.");
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);		
-				extension="jpg";
+				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeZ,cubeTexture.negativeZ.rect.width,cubeTexture.negativeZ.rect.height))
-					extension="png";	
-				texturePath="textures/"+getFileName(cubeTexture.name)+"_negZ."+extension;
+					extension=".png";	
+				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_negZ.");
 				_blockBody.writeUnsignedInt(texturePath.length);
 				_blockBody.writeUTFBytes(texturePath);	
 				

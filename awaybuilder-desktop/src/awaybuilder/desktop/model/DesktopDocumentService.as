@@ -142,8 +142,7 @@ package awaybuilder.desktop.model
 					saveBitmapDataToFile(CubeTextureVO(tex).positiveY,CubeTextureVO(tex).name+"_posY",textureDirectory)
 					saveBitmapDataToFile(CubeTextureVO(tex).negativeY,CubeTextureVO(tex).name+"_negY",textureDirectory)
 					saveBitmapDataToFile(CubeTextureVO(tex).positiveZ,CubeTextureVO(tex).name+"_posZ",textureDirectory)
-					saveBitmapDataToFile(CubeTextureVO(tex).negativeZ,CubeTextureVO(tex).name+"_negZ",textureDirectory)
-					
+					saveBitmapDataToFile(CubeTextureVO(tex).negativeZ,CubeTextureVO(tex).name+"_negZ",textureDirectory)					
 				}
 			}
 		}
@@ -154,28 +153,35 @@ package awaybuilder.desktop.model
 			var encoder : ISceneGraphEncoder = new AWDEncoder();
 			var returnArray:Array=AWDEncoder(encoder)._encodeBitmap(_bitmapData);
 			var bytes:ByteArray=returnArray[0];
-			extension="jpg";
+			extension=".jpg";
 			if (returnArray[1])
-				extension="png";
-			if(textureName.toLowerCase().lastIndexOf(FILE_EXTENSION) != textureName.length - extension.length)
-				textureName+="."+extension
+				extension=".png";
+			if(textureName.toLowerCase().lastIndexOf(extension) != textureName.length - extension.length)
+				textureName+=extension
+			
 			var textureFile:File = textureDirectory.resolvePath(textureName);
-			if (!textureFile.exists){						
+			if (!textureFile.exists){	
+				var textureName:String = textureFile.name;
+				textureFile=textureDirectory.resolvePath(textureName);
 				var saveStream:FileStream = new FileStream();
 				saveStream.open(textureFile, FileMode.WRITE);
 				saveStream.writeBytes(bytes);
 				saveStream.close();						
-			}
-			
+			}			
 		}
+		
 		public function save(document:DocumentModel, path:String):void
 		{	
 			var bytes:ByteArray = new ByteArray();
 			var encoder:ISceneGraphEncoder = new AWDEncoder();
 			var success:Boolean = encoder.encode(document, bytes);
 			
+			if (!document.globalOptions.embedTextures){
+				saveExternalTextures(document,path)
+			}
 			try
 			{
+				
 				var file:File = new File(path);
 				var saveStream:FileStream = new FileStream();
 				saveStream.open(file, FileMode.WRITE);
