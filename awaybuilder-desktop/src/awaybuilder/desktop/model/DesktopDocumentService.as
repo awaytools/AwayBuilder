@@ -150,7 +150,6 @@ package awaybuilder.desktop.model
 		
 		public function saveBitmapDataToFile(_bitmapData:BitmapData, textureName:String, textureDirectory:File):void
 		{	
-			var tmpFile:File = File.userDirectory.resolvePath(textureName);
 			var extension:String="";
 			var encoder : ISceneGraphEncoder = new AWDEncoder();
 			var returnArray:Array=AWDEncoder(encoder)._encodeBitmap(_bitmapData);
@@ -158,7 +157,9 @@ package awaybuilder.desktop.model
 			extension="jpg";
 			if (returnArray[1])
 				extension="png";
-			var textureFile:File = textureDirectory.resolvePath(tmpFile.name+"."+extension);
+			if(textureName.toLowerCase().lastIndexOf(FILE_EXTENSION) != textureName.length - extension.length)
+				textureName+="."+extension
+			var textureFile:File = textureDirectory.resolvePath(textureName);
 			if (!textureFile.exists){						
 				var saveStream:FileStream = new FileStream();
 				saveStream.open(textureFile, FileMode.WRITE);
