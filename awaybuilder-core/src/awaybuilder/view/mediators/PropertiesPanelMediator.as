@@ -37,6 +37,7 @@ package awaybuilder.view.mediators
     import flash.events.Event;
     import flash.geom.Vector3D;
     
+    import mx.charts.AreaChart;
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.events.CloseEvent;
@@ -500,11 +501,18 @@ package awaybuilder.view.mediators
 		{
 			if( event.data == "ProjectiveTextureMethod" )
 			{
-				Alert.show( "TextureProjector is missing", "Warning" );
+				var textureProjectors:Vector.<AssetVO> = document.getAssetsByType( TextureProjectorVO );
+				if( textureProjectors.length == 0 )
+				{
+					Alert.show( "TextureProjector is missing", "Warning" );
+				}
+				else
+				{
+					this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], assets.CreateProjectiveTextureMethod( textureProjectors[0] as TextureProjectorVO )));
+				}
 				return;
 			}
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD,[view.data], assets.CreateEffectMethod( event.data as String )));
-			
 		}
 		private function view_materialRemoveEffectMetodHandler(event:PropertyEditorEvent):void
 		{
@@ -877,6 +885,14 @@ package awaybuilder.view.mediators
 			}
 			view.animators = new ArrayCollection(animators);
 			view.skeletons = new ArrayCollection(skeletons);
+			
+			var texturePojectors:Array = [];
+			var texturePojectorsVector:Vector.<AssetVO> = document.getAssetsByType( TextureProjectorVO );
+			for each( asset in texturePojectorsVector )
+			{
+				texturePojectors.push( asset );
+			}
+			view.texturePojectors = new ArrayCollection( texturePojectors );
 			
 			var materials:ArrayCollection = new ArrayCollection();
 			materials.addAll( document.materials );

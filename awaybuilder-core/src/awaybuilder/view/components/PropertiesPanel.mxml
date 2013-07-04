@@ -80,6 +80,9 @@
 		public var cubeTextures:ArrayCollection;
 		
 		[Bindable]
+		public var texturePojectors:ArrayCollection;
+		
+		[Bindable]
 		public var lightPickers:ArrayCollection;
 		
 		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean, data:Object ):void
@@ -125,7 +128,7 @@
 			<editors:LightPickerPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="lightPicker,initAll" />
 			<editors:ContainerPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="container,initAll" />
 			<editors:ShadowMethodPropertyEditor prevSelected="{prevSelected}" data="{data}" includeIn="shadowMethod,initAll" />
-			<editors:EffectMethodPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{data}" includeIn="effectMethod,initAll" />
+			<editors:EffectMethodPropertyEditor textures="{defaultableTextures}" textureProjectors="{texturePojectors}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{data}" includeIn="effectMethod,initAll" />
 			<editors:ShadowMapperPropertyEditor prevSelected="{prevSelected}" data="{data}" includeIn="shadowMapper,initAll" />
 			<editors:ShadingPropertyEditor textures="{defaultableTextures}" cubeTextures="{cubeTextures}" prevSelected="{prevSelected}" data="{data}" includeIn="shadingMethod,initAll" />
 			<editors:GeometryPropertiesEditor prevSelected="{prevSelected}" data="{data}" includeIn="geometry,initAll" />

@@ -42,6 +42,7 @@ package awaybuilder.controller.scene
 				{
 					material.effectMethods.addItem(newValue);
 				}
+				material.fillFromMaterial( material );
 			}
 			
 			commitHistoryEvent( event );

@@ -55,6 +55,7 @@ package awaybuilder.model
 	import away3d.materials.methods.NearShadowMapMethod;
 	import away3d.materials.methods.OutlineMethod;
 	import away3d.materials.methods.PhongSpecularMethod;
+	import away3d.materials.methods.ProjectiveTextureMethod;
 	import away3d.materials.methods.RefractionEnvMapMethod;
 	import away3d.materials.methods.RimLightMethod;
 	import away3d.materials.methods.ShadingMethodBase;
@@ -246,7 +247,13 @@ package awaybuilder.model
 			camera.x = camera.y = camera.z = 0;
 			return GetAsset(camera) as CameraVO;
 		}
-		
+		public function CreateProjectiveTextureMethod( textureProjector:TextureProjectorVO ):EffectMethodVO
+		{
+			var method:EffectMethodBase = new ProjectiveTextureMethod( GetObject(textureProjector) as TextureProjector );
+			method.name =  "ProjectiveTexture " + AssetUtil.GetNextId("ProjectiveTexture");
+			
+			return GetAsset( method ) as EffectMethodVO;
+		}
 		public function CreateEffectMethod( type:String ):EffectMethodVO
 		{
 			var method:EffectMethodBase;
@@ -255,10 +262,6 @@ package awaybuilder.model
 				case "LightMapMethod":
 					method = new LightMapMethod(GetObject(defaultTexture) as Texture2DBase);
 					method.name =  "LightMap" + AssetUtil.GetNextId("LightMapMethod");
-					break;
-				case "ProjectiveTextureMethod":
-//					method = new ProjectiveTextureMethod();
-//					method.name =  "ProjectiveTexture " + AssetUtil.GetNextId("ProjectiveTexture");
 					break;
 				case "RimLightMethod":
 					method = new RimLightMethod();
