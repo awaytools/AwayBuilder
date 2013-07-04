@@ -93,7 +93,7 @@ package awaybuilder.view.mediators
 			addContextListener(DocumentModelEvent.DOCUMENT_CREATED, eventDispatcher_documentCreatedHandler);
 			addContextListener(DocumentModelEvent.OBJECTS_FILLED, eventDispatcher_objectsFilledHandler);
 			
-			addContextListener(SceneEvent.VALIDATE_DELETION, context_validateDeletionHandler);
+			addContextListener(SceneEvent.PERFORM_DELETION, context_validateDeletionHandler);
 			
 			addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			

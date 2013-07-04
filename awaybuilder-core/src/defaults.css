@@ -75,12 +75,27 @@ mx|Alert
 
 global 
 {
-	modalTransparency: 0.5;
+	modalTransparency: 0.6;
 	modalTransparencyColor: #000003;
 	modalTransparencyDuration: 200;
 	/*fontFamily: mainFont;
 	fontWeight: normal;
 	fontSize: 12;*/
+}
+
+s|TitleWindow
+{
+	color: #ebebeb;
+	backgroundColor: #2d2d2c;
+	chromeColor: #2d2d2c;
+	symbolColor: #ebebeb;
+	skinClass: ClassReference("awaybuilder.view.skins.PopupSkin");
+}
+
+s|TitleWindow #controlBar
+{
+	color: #ebebeb;
+	skinClass: ClassReference("awaybuilder.view.skins.ToolBarSkin");
 }
 
 awaybuilder|CoreEditor

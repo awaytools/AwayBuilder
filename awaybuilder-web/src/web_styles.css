@@ -8,3 +8,7 @@ s|Application
 	backgroundAlpha: 0;
 	skinClass: ClassReference("awaybuilder.web.view.skins.AwayBuilderSkin");
 }
+mx|Menu
+{
+	itemRenderer: "Button";
+}

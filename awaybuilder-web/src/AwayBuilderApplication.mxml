@@ -10,18 +10,85 @@
 				backgroundColor="0x333333"
 				preinitialize="preinitializeHandler(event)"
 				>
-	
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
 	<fx:Declarations>
+		<fx:Array id="menuProvider">
+			<fx:Object label="File">
+				<fx:children>
+					<fx:Array>
+						<fx:Object label="New" value="{EMenuItem.NEW_DOCUMENT}" keyEquivalent="n" controlKey="true"/>
+						<fx:Object label="Open..." value="{EMenuItem.OPEN}" keyEquivalent="o" controlKey="true"/>
+						<fx:Object label="Import..." value="{EMenuItem.IMPORT}" keyEquivalent="i" controlKey="true"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Save" value="{EMenuItem.SAVE}" keyEquivalent="s" controlKey="true"/>
+					</fx:Array>
+				</fx:children>
+			</fx:Object>
+			<fx:Object label="Edit">
+				<fx:children>
+					<fx:Array>
+						<fx:Object label="Undo" value="{EMenuItem.UNDO}" controlKey="true" keyEquivalent="z"/>
+						<fx:Object label="Redo" value="{EMenuItem.REDO}" controlKey="true" keyEquivalent="y"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Cut" value="{EMenuItem.CUT}" controlKey="true" keyEquivalent="x"/>
+						<fx:Object label="Copy" value="{EMenuItem.COPY}" controlKey="true" keyEquivalent="c"/>
+						<fx:Object label="Paste" value="{EMenuItem.PASTE}" controlKey="true" keyEquivalent="v"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Delete" value="{EMenuItem.DELETE}"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Select All" value="{EMenuItem.SELECT_ALL}"  controlKey="true" keyEquivalent="a"/>
+						<fx:Object label="Select None" value="{EMenuItem.SELECT_NONE}"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Document Settings" value="{EMenuItem.DOCUMENT_SETTINGS}"/>
+					</fx:Array>
+				</fx:children>
+			</fx:Object>
+			<fx:Object label="View">
+				<fx:children>
+					<fx:Array>
+						<fx:Object label="Zoom In" value="{EMenuItem.ZOOM_IN}" controlKey="true" keyEquivalent="+"/>
+						<fx:Object label="Zoom Out" value="{EMenuItem.ZOOM_OUT}" controlKey="true" keyEquivalent="-"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Focus Selected" value="{EMenuItem.FOCUS}" controlKey="true" keyEquivalent="f"/>
+					</fx:Array>
+				</fx:children>
+			</fx:Object>
+			<fx:Object label="Tools">
+				<fx:children>
+					<fx:Array>
+						<fx:Object label="Target Camera Mode" value="{EMenuItem.TARGET_CAMERA}" type="check" toggled="true" altKey="true" keyEquivalent="t"/>
+						<fx:Object label="Free Camera Mode" value="{EMenuItem.FREE_CAMERA}" type="check" altKey="true" keyEquivalent="f"/>
+						<fx:Object type="separator"/> 
+						<fx:Object label="Translate Transform Mode" value="{EMenuItem.TRANSLATE_MODE}" type="check" toggled="true" controlKey="true" keyEquivalent="t"/>
+						<fx:Object label="Rotate Transform Mode" value="{EMenuItem.ROTATE_MODE}" type="check" controlKey="true" keyEquivalent="r"/>
+						<fx:Object label="Scale Transform Mode" value="{EMenuItem.SCALE_MODE}" type="check" controlKey="true" keyEquivalent="s"/>
+					</fx:Array>
+				</fx:children>
+			</fx:Object>
+			<fx:Object label="Help">
+				<fx:children>
+					<fx:Array>
+						<fx:Object label="About" value="{EMenuItem.ABOUT}"/>
+					</fx:Array>
+				</fx:children>
+			</fx:Object>
+		</fx:Array>
 	</fx:Declarations>
 	
 	<fx:Style source="web_styles.css"/>
 	
+	<mx:MenuBar id="menu" width="100%" cornerRadius="0" dataProvider="{menuProvider}" fontFamily="Courier" fontSize="10" />
+	
 	<components:CoreEditor id="coreEditor" width="100%" height="100%"/>
 	
 	<fx:Script><![CDATA[
-		
+		import awaybuilder.utils.enumerators.EMenuItem;
 		import awaybuilder.web.WebAppContext;
+		
 		import mx.events.FlexEvent;
+		import mx.events.MenuEvent;
 		
 		private var _context:WebAppContext;
 		

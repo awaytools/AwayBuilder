@@ -182,7 +182,7 @@ package awaybuilder.view.mediators
 		
 		private function toolBar_deleteSelectionHandler(event:ToolBarEvent):void
 		{
-			this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION));
+			this.dispatch(new SceneEvent(SceneEvent.PERFORM_DELETION));
 		}
 		
 		private function toolBar_focusObjectHandler(event:ToolBarEvent):void

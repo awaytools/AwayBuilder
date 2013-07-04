@@ -48,7 +48,7 @@ package awaybuilder.controller.clipboard
 			document.copiedAssets = copiedAssets;
 			if(event.type == ClipboardEvent.CLIPBOARD_CUT)
 			{
-				this.dispatch(new SceneEvent(SceneEvent.VALIDATE_DELETION, [] ));
+				this.dispatch(new SceneEvent(SceneEvent.PERFORM_DELETION ));
 			}
 		}
 	}
