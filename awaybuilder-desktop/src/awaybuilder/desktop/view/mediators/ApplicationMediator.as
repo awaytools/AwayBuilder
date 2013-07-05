@@ -16,8 +16,6 @@ package awaybuilder.desktop.view.mediators
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
 	import awaybuilder.utils.enumerators.EMenuItem;
-	import awaybuilder.utils.scene.CameraManager;
-	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.view.mediators.BaseApplicationMediator;
 	
 	import flash.display.NativeMenuItem;
@@ -26,12 +24,12 @@ package awaybuilder.desktop.view.mediators
 	import flash.events.InvokeEvent;
 	import flash.events.KeyboardEvent;
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
 	import mx.core.DragSource;
 	import mx.core.IIMESupport;
-	import mx.events.AIREvent;
 	import mx.events.DragEvent;
 	import mx.events.FlexNativeMenuEvent;
 	import mx.managers.DragManager;
@@ -48,6 +46,9 @@ package awaybuilder.desktop.view.mediators
 		
 		[Inject]
 		public var undoRedoModel:UndoRedoModel;
+		
+		private var _isWin:Boolean; 
+		private var _isMac:Boolean; 
 		
 		private var _menuCache:Dictionary;
 		
@@ -94,7 +95,15 @@ package awaybuilder.desktop.view.mediators
 			getItemByValue( EMenuItem.CUT ).enabled = false;
 			getItemByValue( EMenuItem.COPY ).enabled = false;
 			getItemByValue( EMenuItem.PASTE ).enabled = false;
-//			this.updateMenuEnabled();
+			
+			_isWin = (Capabilities.os.indexOf("Windows") >= 0); 
+			_isMac = (Capabilities.os.indexOf("Mac OS") >= 0); 
+			
+			if( _isMac )
+			{
+				getItemByValue( EMenuItem.EXIT ).keyEquivalent = "q";
+				getItemByValue( EMenuItem.EXIT ).keyEquivalentModifiers = [Keyboard.COMMAND];
+			}
 		}
 
 		private function focusInHandler(event:FocusEvent):void
@@ -102,15 +111,15 @@ package awaybuilder.desktop.view.mediators
 			const focus:IFocusManagerComponent = app.focusManager.getFocus();
 			if( focus is IIMESupport )
 			{
-				getItemByValue( EMenuItem.CUT ).keyEquivalentModifiers = [Keyboard.ALTERNATE, Keyboard.CONTROL];
-				getItemByValue( EMenuItem.COPY ).keyEquivalentModifiers = [Keyboard.ALTERNATE, Keyboard.CONTROL];
-				getItemByValue( EMenuItem.PASTE ).keyEquivalentModifiers = [Keyboard.ALTERNATE, Keyboard.CONTROL];
+				getItemByValue( EMenuItem.CUT ).keyEquivalentModifiers = [Keyboard.ALTERNATE, app.getCommandKey()];
+				getItemByValue( EMenuItem.COPY ).keyEquivalentModifiers = [Keyboard.ALTERNATE, app.getCommandKey()];
+				getItemByValue( EMenuItem.PASTE ).keyEquivalentModifiers = [Keyboard.ALTERNATE, app.getCommandKey()];
 			}
 			else
 			{
-				getItemByValue( EMenuItem.CUT ).keyEquivalentModifiers = [Keyboard.CONTROL];
-				getItemByValue( EMenuItem.COPY ).keyEquivalentModifiers = [Keyboard.CONTROL];
-				getItemByValue( EMenuItem.PASTE ).keyEquivalentModifiers = [Keyboard.CONTROL];
+				getItemByValue( EMenuItem.CUT ).keyEquivalentModifiers = [app.getCommandKey()];
+				getItemByValue( EMenuItem.COPY ).keyEquivalentModifiers = [app.getCommandKey()];
+				getItemByValue( EMenuItem.PASTE ).keyEquivalentModifiers = [app.getCommandKey()];
 			}
 		}
 		

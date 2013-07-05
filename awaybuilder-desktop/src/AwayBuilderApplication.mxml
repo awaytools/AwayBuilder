@@ -11,7 +11,7 @@
 						preinitialize="preinitializeHandler(event)"
 						>
 	<s:menu>
-		<mx:FlexNativeMenu dataProvider="{menuProvider}"/>
+		<mx:FlexNativeMenu dataProvider="{menuProvider}" keyEquivalentModifiersFunction="keyEquivalentModifiers"/>
 	</s:menu>
 	
 	<fx:Declarations>
@@ -19,12 +19,12 @@
 			<fx:Object label="File">
 				<fx:children>
 					<fx:Array>
-						<fx:Object label="New" value="{EMenuItem.NEW_DOCUMENT}" keyEquivalent="n" controlKey="true"/>
-						<fx:Object label="Open..." value="{EMenuItem.OPEN}" keyEquivalent="o" controlKey="true"/>
-						<fx:Object label="Import..." value="{EMenuItem.IMPORT}" keyEquivalent="i" controlKey="true"/>
+						<fx:Object label="New" value="{EMenuItem.NEW_DOCUMENT}" keyEquivalent="n" modifyer="1" />
+						<fx:Object label="Open..." value="{EMenuItem.OPEN}" keyEquivalent="o" modifyer="1"/>
+						<fx:Object label="Import..." value="{EMenuItem.IMPORT}" keyEquivalent="i" modifyer="1"/>
 						<fx:Object type="separator"/> 
-						<fx:Object label="Save" value="{EMenuItem.SAVE}" keyEquivalent="s" controlKey="true"/>
-						<fx:Object label="Save As..." value="{EMenuItem.SAVE_AS}" keyEquivalent="S" controlKey="true"/>
+						<fx:Object label="Save" value="{EMenuItem.SAVE}" keyEquivalent="s" modifyer="1"/>
+						<fx:Object label="Save As..." value="{EMenuItem.SAVE_AS}" keyEquivalent="S" modifyer="1"/>
 						<fx:Object type="separator"/> 
 						<fx:Object label="Exit" value="{EMenuItem.EXIT}" />
 					</fx:Array>
@@ -33,16 +33,16 @@
 			<fx:Object label="Edit">
 				<fx:children>
 					<fx:Array>
-						<fx:Object label="Undo" value="{EMenuItem.UNDO}" controlKey="true" keyEquivalent="z"/>
-						<fx:Object label="Redo" value="{EMenuItem.REDO}" controlKey="true" keyEquivalent="y"/>
+						<fx:Object label="Undo" value="{EMenuItem.UNDO}" modifyer="1" keyEquivalent="z"/>
+						<fx:Object label="Redo" value="{EMenuItem.REDO}" modifyer="1" keyEquivalent="y"/>
 						<fx:Object type="separator"/> 
-						<fx:Object label="Cut" value="{EMenuItem.CUT}" controlKey="true" keyEquivalent="x"/>
-						<fx:Object label="Copy" value="{EMenuItem.COPY}" controlKey="true" keyEquivalent="c"/>
-						<fx:Object label="Paste" value="{EMenuItem.PASTE}" controlKey="true" keyEquivalent="v"/>
+						<fx:Object label="Cut" value="{EMenuItem.CUT}" modifyer="1" keyEquivalent="x"/>
+						<fx:Object label="Copy" value="{EMenuItem.COPY}" modifyer="1" keyEquivalent="c"/>
+						<fx:Object label="Paste" value="{EMenuItem.PASTE}" modifyer="1" keyEquivalent="v"/>
 						<fx:Object type="separator"/> 
 						<fx:Object label="Delete" value="{EMenuItem.DELETE}"/>
 						<fx:Object type="separator"/> 
-						<fx:Object label="Select All" value="{EMenuItem.SELECT_ALL}"  controlKey="true" keyEquivalent="a"/>
+						<fx:Object label="Select All" value="{EMenuItem.SELECT_ALL}" modifyer="1" keyEquivalent="a"/>
 						<fx:Object label="Select None" value="{EMenuItem.SELECT_NONE}"/>
 						<fx:Object type="separator"/> 
 						<fx:Object label="Document Settings" value="{EMenuItem.DOCUMENT_SETTINGS}"/>
@@ -52,22 +52,22 @@
 			<fx:Object label="View">
 				<fx:children>
 					<fx:Array>
-						<fx:Object label="Zoom In" value="{EMenuItem.ZOOM_IN}" controlKey="true" keyEquivalent="+"/>
-						<fx:Object label="Zoom Out" value="{EMenuItem.ZOOM_OUT}" controlKey="true" keyEquivalent="-"/>
+						<fx:Object label="Zoom In" value="{EMenuItem.ZOOM_IN}" modifyer="1" keyEquivalent="+"/>
+						<fx:Object label="Zoom Out" value="{EMenuItem.ZOOM_OUT}" modifyer="1" keyEquivalent="-"/>
 						<fx:Object type="separator"/> 
-						<fx:Object label="Focus Selected" value="{EMenuItem.FOCUS}" controlKey="true" keyEquivalent="f"/>
+						<fx:Object label="Focus Selected" value="{EMenuItem.FOCUS}" modifyer="1" keyEquivalent="f"/>
 					</fx:Array>
 				</fx:children>
 			</fx:Object>
 			<fx:Object label="Tools">
 				<fx:children>
 					<fx:Array>
-						<fx:Object label="Target Camera Mode" value="{EMenuItem.TARGET_CAMERA}" type="check" toggled="{true}" altKey="true" keyEquivalent="t"/>
-						<fx:Object label="Free Camera Mode" value="{EMenuItem.FREE_CAMERA}" type="check" altKey="true" keyEquivalent="f"/>
+						<fx:Object label="Target Camera Mode" value="{EMenuItem.TARGET_CAMERA}" type="check" toggled="{true}" modifyer="2" keyEquivalent="t"/>
+						<fx:Object label="Free Camera Mode" value="{EMenuItem.FREE_CAMERA}" type="check" modifyer="2" keyEquivalent="f"/>
 						<fx:Object type="separator"/> 
-						<fx:Object label="Translate Transform Mode" value="{EMenuItem.TRANSLATE_MODE}" type="check" controlKey="true" keyEquivalent="t"/>
-						<fx:Object label="Rotate Transform Mode" value="{EMenuItem.ROTATE_MODE}" type="check" controlKey="true" keyEquivalent="r"/>
-						<fx:Object label="Scale Transform Mode" value="{EMenuItem.SCALE_MODE}" type="check" controlKey="true" keyEquivalent="s"/>
+						<fx:Object label="Translate Transform Mode" value="{EMenuItem.TRANSLATE_MODE}" type="check" modifyer="1" keyEquivalent="t"/>
+						<fx:Object label="Rotate Transform Mode" value="{EMenuItem.ROTATE_MODE}" type="check" modifyer="1" keyEquivalent="r"/>
+						<fx:Object label="Scale Transform Mode" value="{EMenuItem.SCALE_MODE}" type="check" modifyer="1" keyEquivalent="s"/>
 					</fx:Array>
 				</fx:children>
 			</fx:Object>
@@ -103,9 +103,13 @@
 		
 		public var splashScreen:SplashScreen;
 		
+		public var isMac:Boolean;
+		
         private function preinitializeHandler(event:FlexEvent):void
         {
 			splashScreen = new SplashScreen();
+			
+			isMac = (Capabilities.os.indexOf("Mac OS") >= 0); 
 			
 			_context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
 			
@@ -115,6 +119,26 @@
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void{ trace( event )} );
         }
 		
+		private function keyEquivalentModifiers(item:Object):Array 
+		{
+			
+			if( item.modifyer == "1" )
+			{
+				return [getCommandKey()];
+			}
+			else if( item.modifyer == "2" )
+			{
+				return [getCommandKey(),Keyboard.ALTERNATE];
+			}
+			return [];
+		}
+		
+		public function getCommandKey():uint
+		{
+			if( isMac )
+				return Keyboard.COMMAND;
+			return Keyboard.CONTROL;
+		}
 		private function urlLoader_completeHandler( event:Event ):void
 		{
 			var urlLoader:URLLoader = event.target as URLLoader;
