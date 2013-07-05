@@ -2,6 +2,7 @@ package awaybuilder.controller.document
 {
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
+	import away3d.entities.TextureProjector;
 	import away3d.lights.LightBase;
 	import away3d.primitives.SkyBox;
 	
@@ -16,10 +17,12 @@ package awaybuilder.controller.document
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
+	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
 	import flash.display.DisplayObject;
+	import flash.display3D.textures.Texture;
 	import flash.events.Event;
 	
 	import mx.collections.ArrayCollection;
@@ -113,6 +116,11 @@ package awaybuilder.controller.document
 			if( cameraVO ) 
 			{
 				Scene3DManager.addCamera( assets.GetObject(cameraVO) as Camera3D );
+			}
+			var textureProjectorVO:TextureProjectorVO = value as TextureProjectorVO;
+			if( textureProjectorVO ) 
+			{
+				Scene3DManager.addTextureProjector( assets.GetObject(textureProjectorVO) as TextureProjector, textureProjectorVO.texture.bitmapData );
 			}
 		}
 		private function addLight( value:Object ):void
