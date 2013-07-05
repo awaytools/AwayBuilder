@@ -300,6 +300,7 @@ package awaybuilder.utils.encoders
 					case (asset is LightPickerVO):
 					case (asset is MaterialVO):
 					case (asset is GeometryVO):
+					case (asset is TextureProjectorVO):
 						var newId:uint=_getBlockIDorEncodeAsset(asset);
 						if (_debug)trace("addional Block: = "+asset.name+" / asset: "+asset+" / id = "+newId);
 						break;
@@ -342,6 +343,7 @@ package awaybuilder.utils.encoders
 					case (asset is LightPickerVO):
 					case (asset is MaterialVO):
 					case (asset is GeometryVO):
+					case (asset is TextureProjectorVO):
 						var newBlock:AWDBlock=new AWDBlock();
 						_blockCache[asset]=newBlock;
 						if(_debug)trace("create Block for a Asset = "+asset.name+" / "+asset);
@@ -423,6 +425,10 @@ package awaybuilder.utils.encoders
 					returnID=_encodeAnimator(AnimatorVO(asset));
 					if(_debug)trace("start encoding AnimatorVO = "+asset.name);
 					break;
+				case (asset is TextureProjectorVO):
+					returnID=_encodeTextureProjector(TextureProjectorVO(asset));
+					if(_debug)trace("start encoding TextureProjectorVO = "+asset.name);
+					break;
 				default:
 					if(_debug)trace("unknown asset");
 					break;
@@ -446,6 +452,20 @@ package awaybuilder.utils.encoders
 						}
 					else{
 						if(_debug)trace("Create CommandBlock 'PutIntoSceneGraph' for LightVO = "+LightVO(vo).name+" | light ID = "+_exportedObjects[vo.id]+" parentID = "+parentID);
+						_blockCache[vo]=thisBlock;
+						newParentID=_encodeCommand(ObjectVO(vo),_exportedObjects[vo.id],parentID);
+						thisBlock.id=newParentID;						
+					}
+					break;
+				case (vo is TextureProjectorVO):			
+					if (!_exportedObjects[vo.id]){
+						if(_debug)trace("TextureProjectorVO = "+TextureProjectorVO(vo).name+" parentID = "+parentID);
+						_blockCache[vo]=thisBlock;
+						newParentID=_encodeTextureProjector(TextureProjectorVO(vo),parentID,true);
+						thisBlock.id=newParentID;
+					}
+					else{
+						if(_debug)trace("Create CommandBlock 'PutIntoSceneGraph' for TextureProjectorVO = "+TextureProjectorVO(vo).name+" | TextureProjector ID = "+_exportedObjects[vo.id]+" parentID = "+parentID);
 						_blockCache[vo]=thisBlock;
 						newParentID=_encodeCommand(ObjectVO(vo),_exportedObjects[vo.id],parentID);
 						thisBlock.id=newParentID;						
@@ -477,12 +497,6 @@ package awaybuilder.utils.encoders
 					}					
 					_blockCache[vo]=thisBlock;
 					newParentID=_encodeMesh(MeshVO(vo),parentID);
-					thisBlock.id=newParentID;
-					break;
-				case (vo is TextureProjectorVO):
-					_blockCache[vo]=thisBlock;
-					if(_debug)trace("TextureProjectorVO = "+TextureProjectorVO(vo).name+" parentID = "+parentID);
-					newParentID=_encodeTextureProjector(TextureProjectorVO(vo),parentID);
 					thisBlock.id=newParentID;
 					break;
 				case (vo is ContainerVO):
@@ -938,13 +952,15 @@ package awaybuilder.utils.encoders
 		}
 		
 		// encode Textureprojector (id=43)
-		private function _encodeTextureProjector(texProject :TextureProjectorVO,parentId:uint) : uint
+		private function _encodeTextureProjector(texProject :TextureProjectorVO,parentId:uint=0,asSceneObject:Boolean=false) : uint
 		{
 			var returnID:uint;
 			var texID:uint;
 			texID=_getBlockIDorEncodeAsset(texProject.texture);
 			
 			returnID=_encodeBlockHeader(43);
+			
+			_exportedObjects[texProject.id]=returnID;
 			
 			_blockBody.writeUnsignedInt(parentId);
 			_encodeMatrix3D(getTransformMatrix(texProject));
@@ -1405,7 +1421,7 @@ package awaybuilder.utils.encoders
 					returnID=_encodeSharedMethodBlock(methVO.name,403, [1,101,2], [cubeTexID,methVO.alpha,texID], [0,1,0], [BADDR,_propNrType,BADDR]);
 					break;
 				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
-					texID=_getBlockIDorEncodeAsset(methVO.texture);					
+					texID=_getBlockIDorEncodeAsset(methVO.texture);	
 					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
 					break;
 				case "ProjectiveTextureMethod":
