@@ -49,6 +49,7 @@ package awaybuilder.controller.scene
 							{
 								animationSet.animations.addItem( new SharedAnimationNodeVO(item.value as AnimationNodeVO) );
 							}
+							animationSet.fillFromAnimationSet( animationSet );
 						}
 					}
 				}

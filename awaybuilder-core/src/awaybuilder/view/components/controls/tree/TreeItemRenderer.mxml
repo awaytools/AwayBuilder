@@ -192,7 +192,7 @@
 		
 		<s:BitmapImage source="{getStyle('icon')}"/>
 		
-		<s:Label id="labelDisplay" text="{(data is IShared)?IShared(data).linkedAsset.name:data.name}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
+		<s:Label id="labelDisplay" text="{data.name}" color.selected="0xFFFFFF" color.hovered="0xEEEEEE" paddingTop="2" paddingLeft="3" />
 		
 	</s:HGroup>
 	

@@ -53,7 +53,9 @@ package awaybuilder.controller.scene
 							{
 								material.effectMethods.addItem( new SharedEffectVO(item.value as EffectVO) );
 							}
+							material.fillFromMaterial( material );
 						}
+						
 					}
 				}
 			}

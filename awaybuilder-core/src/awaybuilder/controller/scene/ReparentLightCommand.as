@@ -54,6 +54,7 @@ package awaybuilder.controller.scene
 							{
 								picker.lights.addItem( new SharedLightVO(item.value as LightVO) );
 							}
+							picker.fillLightPicker( picker );
 						}
 					}
 				}
