@@ -611,10 +611,7 @@ package awaybuilder.model
 			asset.type = getQualifiedClassName( obj ).split("::")[1];
 			for each( var animationNodeBase:AnimationNodeBase in obj.animations )
 			{
-				trace("animationNodeBase", animationNodeBase.name);
 				var animationNodeVO:AnimationNodeVO = GetAsset( animationNodeBase ) as AnimationNodeVO;
-				trace("animationNodeVO", animationNodeVO.name);
-				trace( animationNodeVO.id );
 				asset.animations.addItem( new SharedAnimationNodeVO(animationNodeVO) );
 			}
 			return asset;

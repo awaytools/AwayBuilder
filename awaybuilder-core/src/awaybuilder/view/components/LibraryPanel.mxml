@@ -412,6 +412,7 @@
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
 			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true" focusSkin="mx.core.UIComponent"
+					   change="tree_changeHandler(event)"
 					   mouseDown="tree_mouseDownHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
@@ -420,6 +421,7 @@
 								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
 			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true" focusSkin="mx.core.UIComponent"
+					   change="tree_changeHandler(event)"
 					   mouseDown="tree_mouseDownHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
