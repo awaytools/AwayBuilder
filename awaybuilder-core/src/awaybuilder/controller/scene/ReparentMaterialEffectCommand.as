@@ -6,17 +6,16 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.vo.DroppedAssetVO;
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.LightPickerVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.LightVO;
-	import awaybuilder.model.vo.scene.SharedLightVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
+	import awaybuilder.model.vo.scene.SharedEffectVO;
 	
-	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.events.PropertyChangeEvent;
 
-	public class ReparentLightCommand extends HistoryCommandBase
+	public class ReparentMaterialEffectCommand extends HistoryCommandBase
 	{
 		[Inject]
 		public var event:SceneEvent;
@@ -33,26 +32,26 @@ package awaybuilder.controller.scene
 				undo();
 				return;
 			}
-			var picker:LightPickerVO;
+			var material:MaterialVO;
 			
 			for each( var item:DroppedAssetVO in event.newValue ) 
 			{
-				if( item.value is LightVO )
+				if( item.value is EffectVO )
 				{
 					if( item.newParent == item.oldParent ) return;
 					
 					if( item.newParent && !item.oldParent )
 					{
-						picker = item.newParent as LightPickerVO;
-						if( picker && !itemIsInList(picker.lights, item.value as AssetVO) ) 
+						material = item.newParent as MaterialVO;
+						if( material && !itemIsInList(material.effectMethods, item.value as AssetVO) ) 
 						{
-							if( item.newPosition < picker.lights.length )
+							if( item.newPosition < material.effectMethods.length )
 							{
-								picker.lights.addItemAt( new SharedLightVO(item.value as LightVO), item.newPosition );
+								material.effectMethods.addItemAt( new SharedEffectVO(item.value as EffectVO), item.newPosition );
 							}
 							else
 							{
-								picker.lights.addItem( new SharedLightVO(item.value as LightVO) );
+								material.effectMethods.addItem( new SharedEffectVO(item.value as EffectVO) );
 							}
 						}
 					}
@@ -63,7 +62,7 @@ package awaybuilder.controller.scene
 		}
 		private function undo():void
 		{
-			var picker:LightPickerVO;
+			var material:MaterialVO;
 			
 			for each( var item:DroppedAssetVO in event.newValue ) 
 			{
@@ -72,10 +71,10 @@ package awaybuilder.controller.scene
 					
 					if( item.oldParent )
 					{ 
-						picker = item.oldParent as LightPickerVO;
-						if( picker && itemIsInList(picker.lights, item.value as AssetVO) ) 
+						material = item.oldParent as MaterialVO;
+						if( material && itemIsInList(material.effectMethods, item.value as AssetVO) ) 
 						{
-							removeItem( picker.lights, item.value as AssetVO );
+							removeItem( material.effectMethods, item.value as AssetVO );
 						}
 					}
 				}

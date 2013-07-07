@@ -62,7 +62,7 @@ package awaybuilder.model.vo.scene
 		
 		public var shadowMethod:ShadowMethodVO;
 		
-		public var effectMethods:ArrayCollection = new ArrayCollection();
+		public var effectMethods:ArrayCollection = new ArrayCollection(); // SharedEffectMethodVO
 		
         public function clone():MaterialVO
         {

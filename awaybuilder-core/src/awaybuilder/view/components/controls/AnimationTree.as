@@ -32,7 +32,6 @@ package awaybuilder.view.components.controls
 					_druggingOverItem = true;
 				}
 			}
-			
 		}
 		
 		override protected function renderer_dragOverHandler(event:DragEvent):void

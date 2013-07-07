@@ -3,7 +3,7 @@ package awaybuilder.model.vo.scene
 	import away3d.materials.methods.EffectMethodBase;
 
 	[Bindable]
-	public class EffectMethodVO extends AssetVO
+	public class EffectVO extends AssetVO
 	{
 		
 		public var type:String;
@@ -52,14 +52,14 @@ package awaybuilder.model.vo.scene
 		public var minDistance:Number;
 		public var maxDistance:Number;
 		
-		public function clone():EffectMethodVO
+		public function clone():EffectVO
 		{
-			var vo:EffectMethodVO = new EffectMethodVO();
+			var vo:EffectVO = new EffectVO();
 			vo.fillFromEffectMethod( this );
 			return vo;
 		}
 		
-		public function fillFromEffectMethod( asset:EffectMethodVO ):void
+		public function fillFromEffectMethod( asset:EffectVO ):void
 		{
 			this.name = asset.name;
 			this.alpha = asset.alpha;

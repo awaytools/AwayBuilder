@@ -2,7 +2,7 @@ package awaybuilder.controller.scene
 {
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 
 	public class ChangeEffectMethodCommand extends HistoryCommandBase
 	{
@@ -11,9 +11,9 @@ package awaybuilder.controller.scene
 		
 		override public function execute():void
 		{
-			var newAsset:EffectMethodVO = event.newValue as EffectMethodVO;
+			var newAsset:EffectVO = event.newValue as EffectVO;
 			
-			var vo:EffectMethodVO = event.items[0] as EffectMethodVO;
+			var vo:EffectVO = event.items[0] as EffectVO;
 			
 			saveOldValue( event, vo.clone() );
 			

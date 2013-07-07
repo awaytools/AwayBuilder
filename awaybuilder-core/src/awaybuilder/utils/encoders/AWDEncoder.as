@@ -14,7 +14,7 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.ExtraItemVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LensVO;
@@ -210,7 +210,6 @@ package awaybuilder.utils.encoders
 			
 			//create a AWDBlock class for all supported Assets
 			_createAwdBlocks(document.textures);
-			_createAwdBlocks(document.methods);
 			_createAwdBlocks(document.lights);
 			_createAwdBlocks(document.materials);
 			_createAwdBlocks(document.geometry);
@@ -229,7 +228,6 @@ package awaybuilder.utils.encoders
 			
 			//_encode all supported Assets that are not encodet yet
 			_encodeAddionalBlocks(document.textures);
-			_encodeAddionalBlocks(document.methods);
 			_encodeAddionalBlocks(document.lights);
 			_encodeAddionalBlocks(document.materials);
 			_encodeAddionalBlocks(document.geometry);
@@ -294,7 +292,7 @@ package awaybuilder.utils.encoders
 					case (asset is TextureVO):
 					case (asset is CubeTextureVO):
 					case (asset is ShadowMethodVO):
-					case (asset is EffectMethodVO):
+					case (asset is EffectVO):
 					case (asset is ShadingMethodVO):
 					case (asset is LightVO):
 					case (asset is LightPickerVO):
@@ -337,7 +335,7 @@ package awaybuilder.utils.encoders
 					case (asset is TextureVO):
 					case (asset is CubeTextureVO):
 					case (asset is ShadowMethodVO):
-					case (asset is EffectMethodVO):
+					case (asset is EffectVO):
 					case (asset is ShadingMethodVO):
 					case (asset is LightVO):
 					case (asset is LightPickerVO):
@@ -385,8 +383,8 @@ package awaybuilder.utils.encoders
 					returnID=_encodeShadowMethod(ShadowMethodVO(asset));
 					if(_debug)trace("start encoding ShadowMethodVO = "+asset.name);
 					break;
-				case (asset is EffectMethodVO):
-					returnID=_encodeEffectMethod(EffectMethodVO(asset));
+				case (asset is EffectVO):
+					returnID=_encodeEffectMethod(EffectVO(asset));
 					if(_debug)trace("start encoding EffectMethodVO = "+asset.name);
 					break;
 				case (asset is LightVO):
@@ -1138,7 +1136,7 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("ShadowMethod= "+mat.shadowMethod);
 			if(_debug)trace("ShadowMethod ID= "+_getBlockIDorEncodeAsset(mat.shadowMethod));
 			if (mat.shadowMethod)materialMethods.push(new AWDmethod(998, [1], [_getBlockIDorEncodeAsset(mat.shadowMethod)], [0], [BADDR]));
-			for each (var effectMethVO:EffectMethodVO in mat.effectMethods){
+			for each (var effectMethVO:EffectVO in mat.effectMethods){
 				materialMethods.push(new AWDmethod(999, [1], [_getBlockIDorEncodeAsset(effectMethVO)], [0], [BADDR]));// to do - check the correct id for a "shared methdod block"-method 
 			}
 			return materialMethods;
@@ -1376,7 +1374,7 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("SharedMethod = "+ name + " has been encoded successfully!");
 			return returnID
 		}		
-		private function _encodeEffectMethod(methVO:EffectMethodVO) : uint
+		private function _encodeEffectMethod(methVO:EffectVO) : uint
 		{
 			var returnID:uint=0;
 			var cubeTexID:uint;

@@ -14,7 +14,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.CameraVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
-    import awaybuilder.model.vo.scene.EffectMethodVO;
+    import awaybuilder.model.vo.scene.EffectVO;
     import awaybuilder.model.vo.scene.GeometryVO;
     import awaybuilder.model.vo.scene.LensVO;
     import awaybuilder.model.vo.scene.LightPickerVO;
@@ -895,8 +895,16 @@ package awaybuilder.view.mediators
 			view.texturePojectors = new ArrayCollection( texturePojectors );
 			
 			var materials:ArrayCollection = new ArrayCollection();
-			materials.addAll( document.materials );
 			materials.addItemAt( assets.defaultMaterial, 0 );
+			
+			for each( asset in document.materials )
+			{
+				if( asset is MaterialVO ) 
+				{
+					materials.addItem( asset );
+				}
+			}
+			
 			view.materials = materials;
 		}
 		private static function getStateByGroup( assets:Array ):String
@@ -949,7 +957,7 @@ package awaybuilder.view.mediators
 					return "lightPicker";
 				case(asset is ShadowMethodVO):
 					return "shadowMethod";
-				case(asset is EffectMethodVO):
+				case(asset is EffectVO):
 					return "effectMethod";
 				case(asset is CubeTextureVO):
 					return "cubeTexture";

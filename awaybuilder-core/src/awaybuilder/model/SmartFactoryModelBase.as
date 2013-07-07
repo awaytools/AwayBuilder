@@ -89,7 +89,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.ExtraItemVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LensVO;
@@ -102,6 +102,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.ShadowMapperVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SharedAnimationNodeVO;
+	import awaybuilder.model.vo.scene.SharedEffectVO;
 	import awaybuilder.model.vo.scene.SharedLightVO;
 	import awaybuilder.model.vo.scene.SkeletonPoseVO;
 	import awaybuilder.model.vo.scene.SkeletonVO;
@@ -183,7 +184,7 @@ package awaybuilder.model
 					return fillSubMesh( new SubMeshVO(), item as SubMesh );
 					
 				case(item is EffectMethodBase):
-					return fillEffectMethod( new EffectMethodVO(), item as EffectMethodBase );
+					return fillEffectMethod( new EffectVO(), item as EffectMethodBase );
 					
 				case(item is LightPickerBase):
 					return fillLightPicker( new LightPickerVO(),  item as StaticLightPicker );
@@ -248,7 +249,7 @@ package awaybuilder.model
 			}
 			return asset;
 		}
-		private function fillEffectMethod( asset:EffectMethodVO, item:EffectMethodBase ):EffectMethodVO
+		private function fillEffectMethod( asset:EffectVO, item:EffectMethodBase ):EffectVO
 		{
 			asset.type = getQualifiedClassName( item ).split("::")[1];
 			asset.name = item.name;
@@ -899,7 +900,7 @@ package awaybuilder.model
 				asset.alphaThreshold = singlePassMaterialBase.alphaThreshold;
 				for (var i:int = 0; i < singlePassMaterialBase.numMethods; i++) 
 				{
-					asset.effectMethods.addItem( GetAsset(singlePassMaterialBase.getMethodAt( i )) );
+					asset.effectMethods.addItem( new SharedEffectVO( GetAsset(singlePassMaterialBase.getMethodAt( i )) as EffectVO ) );
 				}
 			}
 			

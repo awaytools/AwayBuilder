@@ -208,7 +208,7 @@ package awaybuilder.model
 					break;
 				case AssetType.EFFECTS_METHOD:
 					assets.checkEffectMethodForDefaulttexture(event.asset as EffectMethodBase)
-					_document.methods.addItem( assets.GetAsset( event.asset ) );
+					_document.materials.addItem( assets.GetAsset( event.asset ) );
 					break;	
 				case AssetType.LIGHT:
 					var light:LightBase = event.asset as LightBase;

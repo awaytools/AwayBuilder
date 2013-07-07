@@ -1,7 +1,7 @@
 package awaybuilder.view.components.controls
 {
 	import awaybuilder.model.vo.scene.AssetVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.view.components.controls.events.DroppedEvent;
 	
 	import flash.geom.Point;
@@ -197,10 +197,10 @@ package awaybuilder.view.components.controls
 				var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
 				for (var i:int = 0; i < items.length; i++) 
 				{
-					var asset:EffectMethodVO = items[i] as EffectMethodVO;
+					var asset:EffectVO = items[i] as EffectVO;
 					if( !asset ) 
 						return null;
-					for each( var light:EffectMethodVO in dataProvider ) 
+					for each( var light:EffectVO in dataProvider ) 
 					{
 						
 						if( light.equals(asset) ) 

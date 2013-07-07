@@ -7,7 +7,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 
 	public class AddNewCubeTextureCommand extends HistoryCommandBase
 	{

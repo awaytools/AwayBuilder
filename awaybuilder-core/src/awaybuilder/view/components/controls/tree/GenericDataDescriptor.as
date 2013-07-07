@@ -4,6 +4,7 @@ package awaybuilder.view.components.controls.tree
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.utils.DataMerger;
 	
 	import flash.utils.Dictionary;
@@ -30,6 +31,8 @@ package awaybuilder.view.components.controls.tree
 			{
 				case( node is ContainerVO ):
 					return ContainerVO( node ).children;
+				case( node is MaterialVO ):
+					return MaterialVO( node ).effectMethods;
 				case( node is LightPickerVO ):
 					return LightPickerVO( node ).lights;
 				case( node is LightVO ):

@@ -13,7 +13,7 @@ package awaybuilder.view.mediators
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -87,6 +87,8 @@ package awaybuilder.view.mediators
 			addViewListener(LibraryPanelEvent.LIGHT_DROPPED, view_lightDroppedHandler);
 			addViewListener(LibraryPanelEvent.SCENEOBJECT_DROPPED, view_sceneObjectDroppedHandler);
 			addViewListener(LibraryPanelEvent.ANIMATIONS_DROPPED, view_animationsDroppedHandler);
+			addViewListener(LibraryPanelEvent.MATERIALS_DROPPED, view_materialsDroppedHandler);
+			
 			
 			addContextListener(DocumentModelEvent.OBJECTS_COLLECTION_UPDATED, eventDispatcher_objectsCollectionHandler);
 			
@@ -107,6 +109,10 @@ package awaybuilder.view.mediators
 		//----------------------------------------------------------------------
 		
 		
+		private function view_materialsDroppedHandler(event:LibraryPanelEvent):void
+		{
+			this.dispatch(new SceneEvent(SceneEvent.REPARENT_MATERIAL_EFFECT,[], event.data));		
+		}
 		private function view_animationsDroppedHandler(event:LibraryPanelEvent):void
 		{
 			this.dispatch(new SceneEvent(SceneEvent.REPARENT_ANIMATIONS,[], event.data));		
@@ -166,7 +172,7 @@ package awaybuilder.view.mediators
 				Alert.show( "To create a ProjectiveTextureMethod, you need TextureProjector", "TextureProjector is missing" );
 				return;
 			}
-			var method:EffectMethodVO = assets.CreateEffectMethod( event.data as String );
+			var method:EffectVO = assets.CreateEffectMethod( event.data as String );
 			this.dispatch(new SceneEvent(SceneEvent.ADD_NEW_EFFECT_METHOD, null, method));
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,[method]));
 		}
@@ -281,10 +287,6 @@ package awaybuilder.view.mediators
 			for each( asset in view.geometryTree.selectedItems )
 			{
 				states.push( new DeleteStateVO( asset, TreeDataProvider(view.sceneTree.dataProvider).getItemParent( asset ) as AssetVO ) );
-			}
-			for each( asset in view.methodsTree.selectedItems )
-			{
-				states.push( new DeleteStateVO( asset, TreeDataProvider(view.methodsTree.dataProvider).getItemParent( asset ) as AssetVO ) );
 			}
 			for each( asset in view.animationsTree.selectedItems )
 			{
@@ -428,10 +430,6 @@ package awaybuilder.view.mediators
 			{
 				view.callLater( view.texturesTree.ensureIndexIsVisible, [view.texturesTree.selectedIndex] );	
 			}
-			if( view.methodsTree.selectedIndex )
-			{
-				view.callLater( view.methodsTree.ensureIndexIsVisible, [view.methodsTree.selectedIndex] );	
-			}
 			
 		}
 		private function getItemIsSelected( id:String, selectedItems:Array ):Boolean
@@ -451,7 +449,6 @@ package awaybuilder.view.mediators
 			view.model.materials = document.materials;
 			view.model.textures = document.textures;
 			view.model.geometry = document.geometry;
-			view.model.methods = document.methods;
 			view.model.lights = document.lights;
 			view.model.animations = document.animations;
 		}

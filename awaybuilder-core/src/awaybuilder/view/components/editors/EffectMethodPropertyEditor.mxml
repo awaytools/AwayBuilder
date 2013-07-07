@@ -24,7 +24,7 @@
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
 		import awaybuilder.model.vo.scene.CubeTextureVO;
-		import awaybuilder.model.vo.scene.EffectMethodVO;
+		import awaybuilder.model.vo.scene.EffectVO;
 		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.TextureVO;
 		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
@@ -36,7 +36,7 @@
 		import spark.events.IndexChangeEvent;
 		
 		[Bindable]
-		private var _asset:EffectMethodVO;
+		private var _asset:EffectVO;
 		
 		[Bindable]
 		private var _selectedLight:LightVO;
@@ -47,8 +47,8 @@
 		
 		override protected function validate():void
 		{
-			if( !(data is EffectMethodVO) ) return;
-			_asset = EffectMethodVO(data).clone();
+			if( !(data is EffectVO) ) return;
+			_asset = EffectVO(data).clone();
 		}
 		
 		private function dropDownIconFunction(item:TextureVO):Object 

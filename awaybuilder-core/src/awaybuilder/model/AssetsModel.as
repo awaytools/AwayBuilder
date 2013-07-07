@@ -82,7 +82,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LensVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
@@ -247,14 +247,14 @@ package awaybuilder.model
 			camera.x = camera.y = camera.z = 0;
 			return GetAsset(camera) as CameraVO;
 		}
-		public function CreateProjectiveTextureMethod( textureProjector:TextureProjectorVO ):EffectMethodVO
+		public function CreateProjectiveTextureMethod( textureProjector:TextureProjectorVO ):EffectVO
 		{
 			var method:EffectMethodBase = new ProjectiveTextureMethod( GetObject(textureProjector) as TextureProjector );
 			method.name =  "ProjectiveTexture " + AssetUtil.GetNextId("ProjectiveTexture");
 			
-			return GetAsset( method ) as EffectMethodVO;
+			return GetAsset( method ) as EffectVO;
 		}
-		public function CreateEffectMethod( type:String ):EffectMethodVO
+		public function CreateEffectMethod( type:String ):EffectVO
 		{
 			var method:EffectMethodBase;
 			switch( type )
@@ -302,7 +302,7 @@ package awaybuilder.model
 					EnvMapMethod(method).mask = GetObject(defaultTexture) as Texture2DBase;
 					break;
 			}
-			return GetAsset( method ) as EffectMethodVO;
+			return GetAsset( method ) as EffectVO;
 		}
 		public function CreateSkyBox():SkyBoxVO
 		{

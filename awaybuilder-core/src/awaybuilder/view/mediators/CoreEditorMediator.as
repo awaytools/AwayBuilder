@@ -106,7 +106,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.CameraVO;
     import awaybuilder.model.vo.scene.ContainerVO;
     import awaybuilder.model.vo.scene.CubeTextureVO;
-    import awaybuilder.model.vo.scene.EffectMethodVO;
+    import awaybuilder.model.vo.scene.EffectVO;
     import awaybuilder.model.vo.scene.ExtraItemVO;
     import awaybuilder.model.vo.scene.GeometryVO;
     import awaybuilder.model.vo.scene.LensVO;
@@ -118,6 +118,7 @@ package awaybuilder.view.mediators
     import awaybuilder.model.vo.scene.ShadingMethodVO;
     import awaybuilder.model.vo.scene.ShadowMapperVO;
     import awaybuilder.model.vo.scene.ShadowMethodVO;
+    import awaybuilder.model.vo.scene.SharedEffectVO;
     import awaybuilder.model.vo.scene.SharedLightVO;
     import awaybuilder.model.vo.scene.SkeletonVO;
     import awaybuilder.model.vo.scene.SkyBoxVO;
@@ -576,7 +577,7 @@ package awaybuilder.view.mediators
 			SkyBoxMaterial(obj.material).cubeMap = assets.GetObject(asset.cubeMap) as CubeTextureBase;
 			obj.name = asset.name;
 		}
-		private function applyEffectMethod( asset:EffectMethodVO ):void
+		private function applyEffectMethod( asset:EffectVO ):void
 		{
 			var obj:EffectMethodBase = assets.GetObject( asset ) as EffectMethodBase;
 			applyName( obj, asset );
@@ -991,12 +992,16 @@ package awaybuilder.view.mediators
 			
 			setTimeout( applyAgain, 50, asset ); // issue #200
 			
-			m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
 			m.mipmap = asset.mipmap;
 			m.smooth = asset.smooth;
 			m.blendMode = asset.blendMode;
 			
-			var effect:EffectMethodVO;
+			if( asset.lightPicker )
+			{
+				m.lightPicker = assets.GetObject(asset.lightPicker) as LightPickerBase;
+			}
+			
+			var effect:SharedEffectVO;
 			var singlePassMaterialBase:SinglePassMaterialBase = m as SinglePassMaterialBase;
 			if( singlePassMaterialBase ) 
 			{
@@ -1043,7 +1048,7 @@ package awaybuilder.view.mediators
 				}
 				for each( effect in asset.effectMethods )
 				{
-					singlePassMaterialBase.addMethod(assets.GetObject( effect ) as EffectMethodBase);
+					singlePassMaterialBase.addMethod(assets.GetObject( effect.linkedAsset ) as EffectMethodBase);
 				}
 				
 			}
@@ -1091,9 +1096,14 @@ package awaybuilder.view.mediators
 				}
 				for each( effect in asset.effectMethods )
 				{
-					multiPassMaterialBase.addMethod(assets.GetObject( effect ) as EffectMethodBase);
+					multiPassMaterialBase.addMethod(assets.GetObject( effect.linkedAsset ) as EffectMethodBase);
 				}
 				
+			}
+			
+			if( !asset.lightPicker )
+			{
+				m.lightPicker = null;
 			}
 			
 			if( oldMaterial ) 
@@ -1221,9 +1231,9 @@ package awaybuilder.view.mediators
 				{
 					applyMaterial( event.items[0] as MaterialVO );
 				}
-				if( event.items[0] is EffectMethodVO ) 
+				if( event.items[0] is EffectVO ) 
 				{
-					applyEffectMethod( event.items[0] as EffectMethodVO );
+					applyEffectMethod( event.items[0] as EffectVO );
 				}
 				if( event.items[0] is TextureProjectorVO ) 
 				{
@@ -1257,9 +1267,9 @@ package awaybuilder.view.mediators
 		private function eventDispatcher_addNewCubeTextureHandler(event:SceneEvent):void
 		{
 			if( event.items && event.items.length ) {
-				if( event.items[0] is EffectMethodVO ) 
+				if( event.items[0] is EffectVO ) 
 				{
-					applyEffectMethod( event.items[0] as EffectMethodVO );
+					applyEffectMethod( event.items[0] as EffectVO );
 				}
 				else if( event.items[0] is ShadingMethodVO ) 
 				{
@@ -1292,7 +1302,7 @@ package awaybuilder.view.mediators
 		
 		private function eventDispatcher_changeEffectMethodHandler(event:SceneEvent):void
 		{
-			var asset:EffectMethodVO = event.items[0] as EffectMethodVO;
+			var asset:EffectVO = event.items[0] as EffectVO;
 			if( asset ) 
 			{
 				applyEffectMethod( asset );

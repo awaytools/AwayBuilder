@@ -8,7 +8,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
-	import awaybuilder.model.vo.scene.EffectMethodVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
@@ -159,17 +159,6 @@ package awaybuilder.model
 			if( lights ) lights.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
 		}
 		
-		public function get methods():ArrayCollection
-		{
-			return _documentVO.methods;
-		}
-		public function set methods(value:ArrayCollection):void
-		{
-			if( methods ) methods.removeEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
-			_documentVO.methods = value;
-			if( methods ) methods.addEventListener(CollectionEvent.COLLECTION_CHANGE, assets_collectionChangeHandler );
-		}
-		
 		public function fill( data:DocumentVO ):void
 		{
 			animations = new ArrayCollection( animations.source.concat( data.animations.source ) );
@@ -178,12 +167,11 @@ package awaybuilder.model
 			scene = new ArrayCollection( scene.source.concat( data.scene.source ) );
 			textures = new ArrayCollection( textures.source.concat( data.textures.source ) );
 			lights = new ArrayCollection( lights.source.concat( data.lights.source ) );
-			methods = new ArrayCollection( methods.source.concat( data.methods.source ) );
 		}
 		
 		public function getAllAssets():Array
 		{
-			var assets:Array = scene.source.concat(materials.source.concat(textures.source.concat(animations.source.concat(methods.source.concat(geometry.source.concat(lights.source))))));
+			var assets:Array = scene.source.concat(materials.source.concat(textures.source.concat(animations.source.concat(geometry.source.concat(lights.source)))));
 			return assets;
 		}
 		
@@ -204,7 +192,6 @@ package awaybuilder.model
 			materials = new ArrayCollection();
 			textures = new ArrayCollection();
 			geometry = new ArrayCollection();
-			methods = new ArrayCollection();
 			animations = new ArrayCollection();
 			lights = new ArrayCollection();
 			_globalOptions = new GlobalOptionsVO();
@@ -266,6 +253,7 @@ package awaybuilder.model
 			{
 				case( asset is ObjectVO ):
 					return scene;
+				case( asset is EffectVO ):
 				case( asset is MaterialVO ):
 					return materials;
 				case( asset is TextureVO ):
@@ -273,8 +261,6 @@ package awaybuilder.model
 					return textures;
 				case( asset is GeometryVO ):
 					return geometry;
-				case( asset is EffectMethodVO ):
-					return methods;
 				case( asset is LightVO ):
 				case( asset is LightPickerVO ):
 					return lights;

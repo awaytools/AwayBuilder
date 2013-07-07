@@ -69,6 +69,7 @@ package awaybuilder
 	import awaybuilder.controller.scene.DeleteCommand;
 	import awaybuilder.controller.scene.ReparentAnimationCommand;
 	import awaybuilder.controller.scene.ReparentLightCommand;
+	import awaybuilder.controller.scene.ReparentMaterialEffectCommand;
 	import awaybuilder.controller.scene.ReparentObjectCommand;
 	import awaybuilder.controller.scene.RotateCommand;
 	import awaybuilder.controller.scene.ScaleCommand;
@@ -81,10 +82,10 @@ package awaybuilder
 	import awaybuilder.controller.scene.TranslateCommand;
 	import awaybuilder.controller.scene.TranslatePivotCommand;
 	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.ApplicationModel;
 	import awaybuilder.model.AssetsModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.model.ApplicationModel;
 	import awaybuilder.view.components.CoreEditor;
 	import awaybuilder.view.components.EditStatusBar;
 	import awaybuilder.view.components.EditToolBar;
@@ -153,6 +154,7 @@ package awaybuilder
 			commandMap.mapEvent(SceneEvent.REPARENT_OBJECTS, ReparentObjectCommand);
 			commandMap.mapEvent(SceneEvent.REPARENT_LIGHTS, ReparentLightCommand);
 			commandMap.mapEvent(SceneEvent.REPARENT_ANIMATIONS, ReparentAnimationCommand);
+			commandMap.mapEvent(SceneEvent.REPARENT_MATERIAL_EFFECT, ReparentMaterialEffectCommand);
 			
             commandMap.mapEvent(SceneEvent.CHANGE_MESH, ChangeMeshCommand);
 			commandMap.mapEvent(SceneEvent.CHANGE_SUBMESH, ChangeSubMeshCommand);

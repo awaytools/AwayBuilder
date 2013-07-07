@@ -38,23 +38,12 @@
 	</fx:Declarations>
 	<fx:Script><![CDATA[
 		import awaybuilder.model.vo.scene.AssetVO;
-		import awaybuilder.model.vo.scene.LightPickerVO;
-		import awaybuilder.model.vo.scene.LightVO;
 		import awaybuilder.model.vo.scene.MaterialVO;
-		import awaybuilder.model.vo.scene.ShadowMethodVO;
-		import awaybuilder.model.vo.scene.SharedLightVO;
-		import awaybuilder.model.vo.scene.TextureVO;
-		import awaybuilder.model.vo.scene.interfaces.ITextured;
-		import awaybuilder.view.components.controls.events.DroppedEvent;
-		import awaybuilder.view.components.controls.events.ExtendedDropDownEvent;
 		import awaybuilder.view.components.editors.events.PropertyEditorEvent;
 		
 		import mx.collections.ArrayCollection;
-		import mx.events.ColorPickerEvent;
 		
-		import spark.components.supportClasses.ButtonBase;
 		import spark.events.IndexChangeEvent;
-		import spark.events.PopUpEvent;
 		
 		[Bindable] private var _selectedLightPicker:AssetVO;
 		
