@@ -213,6 +213,7 @@ package awaybuilder.view.mediators
 			
 			addContextListener(SceneEvent.REPARENT_LIGHTS, eventDispatcher_reparentLightsHandler);
 			addContextListener(SceneEvent.REPARENT_ANIMATIONS, eventDispatcher_reparentAnimationHandler);
+			addContextListener(SceneEvent.REPARENT_MATERIAL_EFFECT, eventDispatcher_reparentMaterialEffectHandler);
 			
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE, eventDispatcher_addNewTextureHandler);
 			addContextListener(SceneEvent.ADD_NEW_TEXTURE_PROJECTOR, eventDispatcher_addNewTextureHandler);
@@ -492,6 +493,16 @@ package awaybuilder.view.mediators
 			{
 				if( (item.value is LightVO) && item.newParent && (item.newParent is LightPickerVO) ) {
 					applyLightPicker( item.newParent as LightPickerVO );
+				}
+			}
+		}
+		
+		private function eventDispatcher_reparentMaterialEffectHandler(event:SceneEvent):void
+		{
+			for each( var item:DroppedAssetVO in event.newValue ) 
+			{
+				if( (item.value is EffectVO) && item.newParent && (item.newParent is MaterialVO) ) {
+					applyMaterial( item.newParent as MaterialVO );
 				}
 			}
 		}
