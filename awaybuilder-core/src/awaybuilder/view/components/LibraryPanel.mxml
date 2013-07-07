@@ -147,12 +147,11 @@
 				
 				var tree:Tree = event.target as Tree;
 				_tempSelectedItems = tree.selectedItems;
-				trace( "tree_changeHandler", _waitingForMouseUp );
-				if( !_waitingForMouseUp )
-				{
-					this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
-					_tempSelectedItems = null;
-				}
+//				if( !_waitingForMouseUp )
+//				{
+//					this.dispatchEvent( new LibraryPanelEvent( LibraryPanelEvent.TREE_CHANGE, _tempSelectedItems ) );
+//					_tempSelectedItems = null;
+//				}
 			}
 			
 			private function mouseUpHandler( event:Event ):void
@@ -362,7 +361,6 @@
 			protected function tree_mouseDownHandler(event:MouseEvent):void
 			{
 				_waitingForMouseUp = true;
-				trace( "tree_mouseDownHandler", _waitingForMouseUp );
 				systemManager.getSandboxRoot().addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler, false, 0, true);
 				systemManager.getSandboxRoot().addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, false, 0, true);
 			}
@@ -414,7 +412,7 @@
 								   addNewItem="texturesPanel_addNewItemHandler(event)">
 			<tree:Tree id="texturesTree" dataProvider="{model.textures}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true" focusSkin="mx.core.UIComponent"
-					   change="tree_changeHandler(event)"
+					   mouseDown="tree_mouseDownHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="geometryPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"
@@ -422,7 +420,7 @@
 								   addNewItem="geometryPanel_addNewItemHandler(event)" addEnabled="true">
 			<tree:Tree id="geometryTree" dataProvider="{model.geometry}" selectedItems="{selectedItems}" indentation="16"
 					   allowMultipleSelection="true" focusSkin="mx.core.UIComponent"
-					   change="tree_changeHandler(event)"
+					   mouseDown="tree_mouseDownHandler(event)"
 					   width="100%" height="100%"/>
 		</controls:LibraryCollapsiblePanel>
 		<controls:LibraryCollapsiblePanel id="animationsPanel" skinClass="awaybuilder.view.skins.CollapsibleDropdownLibraryPanelSkin" borderVisible="false"

@@ -2,6 +2,7 @@ package awaybuilder.view.components.controls
 {
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.LightVO;
+	import awaybuilder.model.vo.scene.SharedLightVO;
 	import awaybuilder.view.components.controls.events.DroppedEvent;
 	
 	import flash.geom.Point;
@@ -152,7 +153,7 @@ package awaybuilder.view.components.controls
 			for (i = 0; i < items.length; i++)
 			{
 				// Get the item, clone if needed
-				var asset:AssetVO = items[i] as AssetVO;
+				var asset:AssetVO = new SharedLightVO(items[i] as LightVO );
 				//				if (copyItems)
 				//					item = copyItemWithUID(item);
 				

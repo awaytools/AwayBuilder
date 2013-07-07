@@ -251,6 +251,8 @@ package awaybuilder.view.mediators
 		{
 			if( event.data )
 			{
+				_alreadySelected = true;
+				
 				var items:Array = [];
 				var selectedItems:Vector.<Object> = event.data as Vector.<Object>;
 				
@@ -260,8 +262,10 @@ package awaybuilder.view.mediators
 				}
 				this.dispatch(new SceneEvent(SceneEvent.SELECT,items));
 			}
+			
 		}
 		
+		private var _alreadySelected:Boolean = false;
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
@@ -401,6 +405,12 @@ package awaybuilder.view.mediators
 		
 		private function context_itemsSelectHandler(event:SceneEvent):void
 		{
+			if( _alreadySelected ) 
+			{
+				_alreadySelected = false;
+				return;
+			}
+			
 			_selectedSceneItems = new Vector.<Object>();
 			for each( var asset:AssetVO in event.items )
 			{

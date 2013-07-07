@@ -74,7 +74,7 @@
 		<controls:layout>
 			<s:VerticalLayout/>
 		</controls:layout>
-		<controls:DroppableLightsList id="animationsList"  dataProvider="{_asset.animations}"  width="100%" 
+		<controls:DroppableAnimationsList id="animationsList"  dataProvider="{_asset.animations}"  width="100%" 
 									  skinClass="awaybuilder.view.skins.AssetChildrenListSkin" 
 									  itemRenderer="awaybuilder.view.components.editors.renderers.AnimationNodeItemRenderer"
 									 />

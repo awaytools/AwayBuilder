@@ -1,5 +1,6 @@
 package awaybuilder.view.components.controls
 {
+	import awaybuilder.model.vo.scene.AnimationNodeVO;
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.SharedEffectVO;
@@ -20,9 +21,9 @@ package awaybuilder.view.components.controls
 	
 	[Event(name="dropped", type="awaybuilder.view.components.controls.events.DroppedEvent")]
 	
-	public class DroppableEffectsList extends List
+	public class DroppableAnimationsList extends List
 	{
-		public function DroppableEffectsList()
+		public function DroppableAnimationsList()
 		{
 			super();
 		}
@@ -198,10 +199,10 @@ package awaybuilder.view.components.controls
 				var items:Vector.<Object> = event.dragSource.dataForFormat("itemsByIndex") as Vector.<Object>;
 				for (var i:int = 0; i < items.length; i++) 
 				{
-					var asset:EffectVO = items[i] as EffectVO;
+					var asset:AnimationNodeVO = items[i] as AnimationNodeVO;
 					if( !asset ) 
 						return null;
-					for each( var light:EffectVO in dataProvider ) 
+					for each( var light:AnimationNodeVO in dataProvider ) 
 					{
 						
 						if( light.equals(asset) ) 
