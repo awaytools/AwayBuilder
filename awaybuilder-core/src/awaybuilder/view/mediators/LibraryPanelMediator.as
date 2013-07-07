@@ -59,12 +59,8 @@ package awaybuilder.view.mediators
 		private var _model:DocumentVO;
 		
 		private var _selectedSceneItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedMaterialsItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedTexturesItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedGeometryItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedMethodsItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedAnimationsItems:Vector.<Object> = new Vector.<Object>();
-		private var _selectedLightsItems:Vector.<Object> = new Vector.<Object>();
+		
+		private var _alreadySelected:Boolean = false;
 		
 		override public function onRegister():void
 		{
@@ -265,7 +261,6 @@ package awaybuilder.view.mediators
 			
 		}
 		
-		private var _alreadySelected:Boolean = false;
 		//----------------------------------------------------------------------
 		//
 		//	context handlers
@@ -305,7 +300,15 @@ package awaybuilder.view.mediators
 			var assetsList:Vector.<AssetVO>;
 			for each( var state:DeleteStateVO in states )
 			{
-				if( state.asset is ShadowMethodVO )
+				if( state.asset is EffectVO )
+				{
+					assetsList = document.getAssetsByType( MaterialVO, materialsWithEffectFilterFunciton, state.asset );
+					for each( asset in assetsList )
+					{
+						additionalStates.push( new DeleteStateVO( state.asset, asset ) );
+					}
+				}
+				else if( state.asset is ShadowMethodVO )
 				{
 					assetsList = document.getAssetsByType( MaterialVO, materialsWithShadowMethodFilterFunciton, state.asset );
 					for each( asset in assetsList )
@@ -314,7 +317,7 @@ package awaybuilder.view.mediators
 					}
 					
 				}
-				if( state.asset is LightVO )
+				else if( state.asset is LightVO )
 				{
 					assetsList = document.getAssetsByType( LightPickerVO, lightPickersWithLightFilterFunciton, state.asset );
 					for each( asset in assetsList )
@@ -332,8 +335,7 @@ package awaybuilder.view.mediators
 						
 					}
 				}
-				
-				if( state.asset is LightPickerVO )
+				else if( state.asset is LightPickerVO )
 				{
 					assetsList = document.getAssetsByType( MaterialVO, materialsWithLightPickerFilterFunciton, state.asset );
 					for each( asset in assetsList )
@@ -355,6 +357,14 @@ package awaybuilder.view.mediators
 			
 		}
 		
+		private function materialsWithEffectFilterFunciton( asset:MaterialVO, filter:AssetVO ):Boolean
+		{
+			for each( var effect:EffectVO in asset.effectMethods )
+			{
+				if( effect.equals( filter ) )  return true;
+			}
+			return false;
+		}
 		private function materialsWithShadowMethodFilterFunciton( asset:MaterialVO, filter:AssetVO ):Boolean
 		{
 			return (asset.shadowMethod == filter);

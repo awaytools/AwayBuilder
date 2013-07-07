@@ -14,12 +14,14 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CameraVO;
 	import awaybuilder.model.vo.scene.ContainerVO;
+	import awaybuilder.model.vo.scene.EffectVO;
 	import awaybuilder.model.vo.scene.LightPickerVO;
 	import awaybuilder.model.vo.scene.LightVO;
 	import awaybuilder.model.vo.scene.MaterialVO;
 	import awaybuilder.model.vo.scene.MeshVO;
 	import awaybuilder.model.vo.scene.ObjectVO;
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
+	import awaybuilder.model.vo.scene.SharedEffectVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.scene.Scene3DManager;
@@ -133,6 +135,10 @@ package awaybuilder.controller.scene
 				{
 					materialVO.shadowMethod = null;
 				}
+				else if( asset is EffectVO )
+				{
+					removeAsset( materialVO.effectMethods, asset );
+				}
 				
 			}
 		}
@@ -170,6 +176,10 @@ package awaybuilder.controller.scene
 				else if( asset is ShadowMethodVO )
 				{
 					materialVO.shadowMethod = asset as ShadowMethodVO;
+				}
+				else if( asset is EffectVO )
+				{
+					materialVO.effectMethods.addItemAt( new SharedEffectVO(asset as EffectVO), index );
 				}
 			}
 		}
