@@ -60,6 +60,7 @@ package awaybuilder.view.scene.controls
 		}
 
 		public function updateRepresentation() : void {
+			_representation.transform.identity();
 			if (type == DIRECTIONAL_LIGHT) {
 				_representation.eulers = sceneObject.eulers.clone();
 				_representation.rotationX -= 90;
