@@ -1478,6 +1478,8 @@ package awaybuilder.view.mediators
 				}
 				obj.scaleUV(asset.scaleU,asset.scaleV)
 			}
+			
+			Scene3DManager.updateDefaultCameraFarPlane();
 		}
 		private function eventDispatcher_changeTextureHandler(event:SceneEvent):void
 		{

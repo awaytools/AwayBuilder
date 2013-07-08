@@ -182,8 +182,6 @@ package awaybuilder.utils.scene
 			scope.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
 			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
 			scope.addEventListener(MouseEvent.DOUBLE_CLICK, instance.onSceneDoubleClick);			
-			//scope.addEventListener(MouseEvent.MOUSE_OVER, instance.onMouseOver);
-			//scope.addEventListener(MouseEvent.MOUSE_OUT, instance.onMouseOut);
 			
 			containerBreadCrumbs = new Array();
 			
@@ -409,8 +407,6 @@ package awaybuilder.utils.scene
 			if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.addChild(gizmo);
 			else scene.addChild(gizmo);
 			if (light.parent == null) scene.addChild(light);
-			
-//			if (lights.getItemIndex(light) == -1) lights.addItem(light);
 		}
 		
 		public static function removeLight(light:LightBase):void
@@ -427,78 +423,8 @@ package awaybuilder.utils.scene
 			// Remove light from scene
 			if (light.parent)
 				light.parent.removeChild(light);
-
-//			for (var i:int=0;i<lights.length;i++)
-//			{
-//				if (lights.getItemAt(i) == light)
-//				{
-//					lights.removeItemAt(i);
-//					var lG:LightGizmo3D = lightGizmos[i];
-//					if (light is DirectionalLight) Scene3DManager.directionalLightView.scene.removeChild(lG);
-//					else scene.removeChild(lG);
-//					lightGizmos.splice(i, 1);
-//					break;
-//				}
-//			}
 		}	
-		
-//		public static function addLightToMesh(mesh:Mesh, lightName:String):void
-//		{
-//			if (mesh.material) 
-//			{
-//				if (!mesh.material.lightPicker)	mesh.material.lightPicker = new StaticLightPicker([]);
-//			
-//				for each(var l:LightBase in lights.source)
-//				{
-//					if (l.name == lightName)
-//					{
-//						var meshLights:Array = StaticLightPicker(mesh.material.lightPicker).lights;
-//						meshLights.push(l);
-//						StaticLightPicker(mesh.material.lightPicker).lights = meshLights;
-//						break;
-//					}
-//				}			
-//			}
-//		}		
-		
-//		public static function removeLightFromMesh(mesh:Mesh, lightName:String):void
-//		{
-//			if (mesh.material) 
-//			{
-//				if (mesh.material.lightPicker)
-//				{
-//					var meshLights:Array = StaticLightPicker(mesh.material.lightPicker).lights;
-//					
-//					for(var i:int=0;i<meshLights.length;i++)
-//					{
-//						if (meshLights[i].name == lightName)
-//						{
-//							meshLights.splice(i, 1);
-//							StaticLightPicker(mesh.material.lightPicker).lights = meshLights;
-//							break;
-//						}
-//					}
-//				}	
-//			}
-//		}			
-		
-//		public static function getLightByName(lightName:String):LightBase
-//		{
-//			var light:LightBase;
-//			
-//			for each(var l:LightBase in lights.source)
-//			{
-//				if (l.name == lightName)
-//				{
-//					light = l;
-//					break;
-//				}
-//			}
-//			
-//			return light;
-//		}			
-		
-		
+				
 		// Meshes Handling *********************************************************************************************************************************************
 		
 		public static function clear(disposeMaterials:Boolean=false):void
@@ -591,12 +517,10 @@ package awaybuilder.utils.scene
 			}
 
 			// Get all scene child container bounds		
-//trace("\nSceneBounds:");
 			while (ctr < oCCount) {
 				var oC:ObjectContainer3D = Scene3DManager.view.scene.getChildAt(ctr++);
 				if (!(oC is SkyBox || oC is PointLight || oC == Scene3DManager.grid)) {
 					Bounds.getObjectContainerBounds(oC);
-//trace(" - "+oC.name+" b:"+Bounds.minX+"/"+Bounds.minY+"/"+Bounds.minZ+" - "+Bounds.maxX+"/"+Bounds.maxY+"/"+Bounds.maxZ);
 					if (Bounds.minX < min.x) min.x = Bounds.minX;
 					if (Bounds.minY < min.y) min.y = Bounds.minY;
 					if (Bounds.minZ < min.z) min.z = Bounds.minZ;
@@ -840,23 +764,6 @@ package awaybuilder.utils.scene
 			updateDefaultCameraFarPlane();
 		}		
 
-//		public static function getObjectByName(mName:String):Entity
-//		{
-//			var mesh:Mesh;
-//			
-//			for each(var m:Mesh in objects.source)
-//			{
-//				if (m.name == mName)
-//				{
-//					mesh = m;
-//					break;
-//				}
-//			}
-//			
-//			return mesh;
-//		}		
-		
-
 		private static function addMousePicker(o : ObjectContainer3D) : void
 		{
 			o.mouseEnabled = true;
@@ -933,58 +840,6 @@ package awaybuilder.utils.scene
 				}
 			}
 		}
-
-//		private function pushBreadCrumb(container : ObjectContainer3D) : void {
-//			containerBreadCrumbs.push([container.name, container]);
-//			var other : ObjectContainer3D;
-//			for (var c : int = 0; c < container.parent.numChildren; c++) {
-//				other = container.parent.getChildAt(c);
-//				if (other != container) {
-//					hideItems(other);
-//				}
-//			}
-//		}
-//
-//		private function popBreadCrumb() : void {
-//			var breadCrumb:Array = containerBreadCrumbs.pop();
-//			var container:ObjectContainer3D = breadCrumb[1] as ObjectContainer3D;
-//			
-//			var other : ObjectContainer3D;
-//			for (var c : int = 0; c < container.parent.numChildren; c++) {
-//				other = container.parent.getChildAt(c);
-//				if (other != container) {
-//					showItems(other);
-//				}
-//			}
-//		}
-
-//		private static const GHOST:ColorMaterial = new ColorMaterial(0xffffff, 0.2);
-//		private function hideItems(oC:ObjectContainer3D) : void {
-//			var m:Mesh = oC as Mesh;
-//			if (m) m.material = GHOST;
-//			
-//			var other:ObjectContainer3D;
-//			for (var c:int = 0; c<oC.numChildren; c++) {
-//				other = oC.getChildAt(c);
-//				if (other != oC) {
-//					hideItems(other);
-//				}
-//			}
-//		}
-//
-//		private function showItems(oC:ObjectContainer3D) : void {
-//			var m:Mesh = oC as Mesh;
-//			instance.dispatchEvent(new SceneEvent(SceneEvent.UPDATE_MESH_MATERIAL, "", [ m ]));
-//			if (m) m.material = GHOST;
-//			
-//			var other:ObjectContainer3D;
-//			for (var c:int = 0; c<oC.numChildren; c++) {
-//				other = oC.getChildAt(c);
-//				if (other != oC) {
-//					hideItems(other);
-//				}
-//			}
-//		}
 
 		private function getContainer(o : ObjectContainer3D) : ObjectContainer3D {
 			if (o)
@@ -1087,17 +942,8 @@ package awaybuilder.utils.scene
 					break;
 				}
 			}	
-			trace( "unSelectObjectByName" );
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}		
-		
-		// TODO: Use mesh link instead of name
-//		private static function selectObjectByName(meshName:String):void // Must be used internally only, otherwise use "selectObject", event must not be dispatched
-//		{		
-//			//selectObject( meshName );
-//			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
-//			//instance.dispatchEvent(new SceneEvent(SceneEvent.SELECT, );
-//		}
 		
 		public static function selectObject(oC:ObjectContainer3D):void 
 		{			
@@ -1187,116 +1033,6 @@ package awaybuilder.utils.scene
 			currentGizmo.show(selectedObject);
 			instance.dispatchEvent(new Scene3DManagerEvent(eventType));
 		}
-		
-//		private static function getChildByName(oC:ObjectContainer3D, name:String):ObjectContainer3D {
-//			if (oC.name == name) return oC;
-//			
-//			var ctr:int = 0;
-//			var count:int = oC.numChildren;
-//			var child:ObjectContainer3D;
-//			
-//			while (ctr<count) {
-//				if ((child = getChildByName(oC.getChildAt(ctr), name))!=null) 
-//					return child;
-//				ctr++;
-//			}
-//			return null;
-//		}
-
-//		private static function selectObjectInContainer(o : ObjectContainer3D, objectName : String) : void {
-//
-//			var m:Mesh = o as Mesh;
-//			if (m && m.name == objectName)
-//			{
-//				if (!m.showBounds)
-//				{
-//					m.showBounds = true;
-//					selectedObjects.addItem(m);						
-//					selectedObject = m;
-//			if (selectedObject) {
-//				currentGizmo.show(selectedObject);
-//				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
-//			}
-//				}	
-//			} else {
-//				if (o.name == objectName) {
-//					// Check if container is already showing bounds
-//					var bounds:ObjectContainerBounds;
-//					for (var c:int = 0; c<o.numChildren; c++)
-//						bounds ||= (o.getChildAt(c) as ObjectContainerBounds);
-//					
-//					if (!bounds) bounds = new ObjectContainerBounds(o);
-//					else bounds.updateContainerBounds();
-//									
-//					selectedObject = o;
-//				} else {
-//					var cG:ContainerGizmo3D;
-//					for each (cG in containerGizmos) {
-//						if (cG.sceneObject == o && cG.representation.name == objectName) {
-//							m = cG.representation;
-//		
-//							m.showBounds = true;
-//							selectedObjects.addItem(m);						
-//							selectedObject = m;
-//						}
-//					}
-//				}
-//			}
-//			if (selectedObject) {
-//				currentGizmo.show(selectedObject);
-//				instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
-//			}
-//		}
-//
-//		private static function selectLightInContainer(o : ObjectContainer3D, meshName : String) : void {
-//
-//			var l:LightBase = o as LightBase;
-//			var m:Mesh;
-//			var lG:LightGizmo3D;
-//			for each (lG in lightGizmos) {
-//				if (lG.sceneObject == l && lG.representation.name == meshName) {
-//					m = lG.representation;
-//
-//					m.showBounds = true;
-//					selectedObjects.addItem(m);						
-//					selectedObject = m;
-//					
-//					if (lG.type==LightGizmo3D.DIRECTIONAL_LIGHT) instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.SWITCH_TRANSFORM_ROTATE));
-//					else if (lG.type==LightGizmo3D.POINT_LIGHT) instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.SWITCH_TRANSFORM_TRANSLATE));
-//				}
-//			}
-//			if (m==null) {
-//				for (var c:int = 0; c<o.numChildren; c++) {
-//					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
-//					selectLightInContainer(container, meshName);
-//				}
-//			}
-//		}
-//
-//		private static function selectTextureProjectorInContainer(o : ObjectContainer3D, meshName : String) : void {
-//
-//			var tP:TextureProjector = o as TextureProjector;
-//			var m:Mesh;
-//			var tPG:TextureProjectorGizmo3D;
-//			for each (tPG in textureProjectorGizmos) {
-//				if (tPG.sceneObject == tP && tPG.representation.name == meshName) {
-//					m = tPG.representation;
-//
-//					m.showBounds = true;
-//					selectedObjects.addItem(m);						
-//					selectedObject = m;
-//					
-//					currentGizmo.show(selectedObject);
-//					instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
-//				}
-//			}
-//			if (m==null) {
-//				for (var c:int = 0; c<o.numChildren; c++) {
-//					var container:ObjectContainer3D = o.getChildAt(c) as ObjectContainer3D;
-//					selectTextureProjectorInContainer(container, meshName);
-//				}
-//			}
-//		}
 		
 		public static function zoomDistanceDelta(delta:Number) : void {
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ZOOM_DISTANCE_DELTA, "", null, new Vector3D(delta, 0, 0)));
