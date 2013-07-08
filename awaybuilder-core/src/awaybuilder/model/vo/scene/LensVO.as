@@ -13,6 +13,9 @@ package awaybuilder.model.vo.scene
 		public var minY:Number;
 		public var maxY:Number;
 		
+		public var near:Number;
+		public var far:Number;
+		
 		public function clone():LensVO
 		{
 			var vo:LensVO = new LensVO();
@@ -30,6 +33,8 @@ package awaybuilder.model.vo.scene
 			this.maxX = asset.maxX;
 			this.minY = asset.minY;
 			this.maxY = asset.maxY;
+			this.near = asset.near;
+			this.far = asset.far;
 			
 			this.id = asset.id;
 		}

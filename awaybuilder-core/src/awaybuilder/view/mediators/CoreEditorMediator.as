@@ -551,11 +551,15 @@ package awaybuilder.view.mediators
 			if( perspectiveLens )
 			{
 				perspectiveLens.fieldOfView = asset.value;
+				perspectiveLens.near = asset.near;
+				perspectiveLens.far = asset.far;
 			}
 			var orthographicLens:OrthographicLens = obj as OrthographicLens;
 			if( orthographicLens )
 			{
 				orthographicLens.projectionHeight = asset.value;
+				orthographicLens.near = asset.near;
+				orthographicLens.far = asset.far;
 			}
 			var orthographicOffCenterLens:OrthographicOffCenterLens = obj as OrthographicOffCenterLens;
 			if( orthographicOffCenterLens )
@@ -564,6 +568,8 @@ package awaybuilder.view.mediators
 				orthographicOffCenterLens.maxX = asset.maxX;
 				orthographicOffCenterLens.minY = asset.minY;
 				orthographicOffCenterLens.maxY = asset.maxY;
+				orthographicOffCenterLens.near = asset.near;
+				orthographicOffCenterLens.far = asset.far;
 			}
 		}
 		private function applyCamera( asset:CameraVO ):void

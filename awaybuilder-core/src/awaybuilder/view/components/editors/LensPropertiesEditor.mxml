@@ -74,5 +74,11 @@
 			<controls:DragableNumericStepper value="@{_asset.maxY}" stepSize="1" snapInterval="1" minimum="-2048" maximum="2048" width="42"
 											 change="stepper_changeHandler(event)" />
 		</s:FormItem>
+		<s:FormItem label="Near" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper value="@{_asset.near}" stepSize="1" snapInterval="1" minimum="0" width="42" change="stepper_changeHandler(event)" />
+		</s:FormItem>
+		<s:FormItem label="Far" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<controls:DragableNumericStepper value="@{_asset.far}" stepSize="1" snapInterval="1" minimum="0" width="42" change="stepper_changeHandler(event)" />
+		</s:FormItem>
 	</s:Form>
 </editors:EditorBase>

@@ -589,11 +589,15 @@ package awaybuilder.model
 			if( perspectiveLens )
 			{
 				asset.value = perspectiveLens.fieldOfView;
+				asset.near = perspectiveLens.near;
+				asset.far = perspectiveLens.far;
 			}
 			var orthographicLens:OrthographicLens = obj as OrthographicLens;
 			if( orthographicLens )
 			{
 				asset.value = orthographicLens.projectionHeight;
+				asset.near = orthographicLens.near;
+				asset.far = orthographicLens.far;
 			}
 			var orthographicOffCenterLens:OrthographicOffCenterLens = obj as OrthographicOffCenterLens;
 			if( orthographicOffCenterLens )
@@ -602,6 +606,8 @@ package awaybuilder.model
 				asset.minY = orthographicOffCenterLens.minY;
 				asset.maxX = orthographicOffCenterLens.maxX;
 				asset.maxY = orthographicOffCenterLens.maxY;
+				asset.near = orthographicOffCenterLens.near;
+				asset.far = orthographicOffCenterLens.far;
 			}
 			return asset;
 		}
