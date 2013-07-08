@@ -1655,6 +1655,11 @@ package awaybuilder.view.mediators
 						var camera:CameraVO = event.items[0] as CameraVO;
 						selectCamerasScene( assets.GetObject( camera ) as Camera3D );
 					}
+					else if( event.items[0] is LensVO )
+					{
+						var lens:LensVO = event.items[0] as LensVO;
+						Scene3DManager.lensSelected = assets.GetObject( lens ) as LensBase;
+					}
 					else {
                         Scene3DManager.unselectAll();
 					}

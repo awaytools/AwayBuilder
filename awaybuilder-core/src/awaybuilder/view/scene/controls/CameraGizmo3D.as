@@ -118,25 +118,21 @@ package awaybuilder.view.scene.controls
 			bodyFrame.z = -150;
 			_camera.addChild(bodyFrame);
 
-			var cyl1:Mesh = new Mesh(new CylinderGeometry(85, 85, 50), camMat);
-			cyl1.x = -50;
-			cyl1.z = -125;
+			var cyl1:Mesh = new Mesh(new CylinderGeometry(75, 75, 50), camMat);
+			cyl1.z = -75;
 			_camera.addChild(cyl1);
-			var cyl2:Mesh = new Mesh(new CylinderGeometry(85, 85, 50), camMat);
-			cyl2.x = -50;
-			cyl2.z = -250;
+			var cyl2:Mesh = new Mesh(new CylinderGeometry(75, 75, 50), camMat);
+			cyl2.z = -225;
 			_camera.addChild(cyl2);
 			cyl1.mouseEnabled = cyl2.mouseEnabled = true;
 
-			var cylFrame1:WireframeCylinder = new WireframeCylinder(85, 85, 50, 16, 1, 0xffffff, 0.5);
-			cylFrame1.x = -50;
-			cylFrame1.z = -125;
+			var cylFrame1:WireframeCylinder = new WireframeCylinder(75, 75, 50, 16, 1, 0xffffff, 0.5);
+			cylFrame1.z = -75;
 			_camera.addChild(cylFrame1);
-			var cylFrame2:WireframeCylinder = new WireframeCylinder(85, 85, 50, 16, 1, 0xffffff, 0.5);
-			cylFrame2.x = -50;
-			cylFrame2.z = -250;
+			var cylFrame2:WireframeCylinder = new WireframeCylinder(75, 75, 50, 16, 1, 0xffffff, 0.5);
+			cylFrame2.z = -225;
 			_camera.addChild(cylFrame2);
-			cyl1.y = cyl2.y = cylFrame1.y = cylFrame2.y = 90;
+			cyl1.y = cyl2.y = cylFrame1.y = cylFrame2.y = 150;
 			cyl1.rotationZ = cyl2.rotationZ = cylFrame1.rotationZ = cylFrame2.rotationZ = -90;
 						
 			_representation.transform = originalCamera.transform.clone();
@@ -192,10 +188,11 @@ package awaybuilder.view.scene.controls
 				_orthoPlaneNear.width = _orthoPlaneFar.width = (orthoOCLens.maxX - orthoOCLens.minX);
 				_orthoPlaneNear.height = _orthoPlaneFar.height = (orthoOCLens.maxY - orthoOCLens.minY);
 			}
+			
 			var oldFrustumVis:Boolean = _frustum.visible;
 			_perspectiveCone.visible = (perspLens!=null || perspOCLens!=null); 
 			_frustum.visible = _perspectiveCone.visible && (_overrideObjectSelection || Scene3DManager.selectedObject == _representation);
-			
+
 			var oldOrthoCubeVis:Boolean = _orthoPlaneNear.visible;
 			_orthoCube.visible = !_perspectiveCone.visible;
 			_orthoPlaneNear.visible = _orthoPlaneFar.visible = _orthoCube.visible && (_overrideObjectSelection || Scene3DManager.selectedObject == _representation);

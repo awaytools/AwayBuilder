@@ -1,5 +1,6 @@
 package awaybuilder.utils.scene
 {
+	import away3d.cameras.lenses.LensBase;
 	import avmplus.*;
 	
 	import away3d.cameras.*;
@@ -56,6 +57,7 @@ package awaybuilder.utils.scene
 		public static var selectedObject:ObjectContainer3D;
 		public static var multiSelection:Boolean = false;
 		public static var mouseSelection:ObjectContainer3D;
+		public static var lensSelected:LensBase;
 		
 //		public static var objects:ArrayList = new ArrayList(); // TODO: Use vector
 //		public static var lights:ArrayList = new ArrayList();// TODO: Use vector
@@ -1037,6 +1039,8 @@ package awaybuilder.utils.scene
 		{
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.ENABLE_TRANSFORM_MODES));
 
+			lensSelected = null;
+			
 			var itemsDeselected:Boolean = false;
 			for(var i:int=0;i<selectedObjects.length;i++)
 			{
