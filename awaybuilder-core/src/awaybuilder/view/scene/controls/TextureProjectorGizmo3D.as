@@ -39,6 +39,7 @@ package awaybuilder.view.scene.controls
 			var geom:ConeGeometry = new ConeGeometry(100, 200, 4, 1, false);
 			var mat:Matrix3D = new Matrix3D();
 			mat.appendRotation(45, new Vector3D(0, 1, 0));
+			mat.appendRotation(90, new Vector3D(1, 0, 0));
 			geom.applyTransformation(mat);
 			_representation = new Mesh(geom, new ColorMaterial(0xffffff, 0.2));
 			_representation.name = projector.name + "_representation";
@@ -46,11 +47,14 @@ package awaybuilder.view.scene.controls
 			_representation.pickingCollider = PickingColliderType.AS3_BEST_HIT;
 			
 			var cameraLines:WireframeCylinder = new WireframeCylinder(0, 100, 200, 4, 1, 0xffffff, 0.5);
-			cameraLines.rotationY = 45;
+			cameraLines.rotationX = 90;
+			cameraLines.rotationZ = 45;
 			_representation.addChild(cameraLines);
 			
 			var projectorTexturePlane:Mesh = new Mesh(new PlaneGeometry(141, 141, 1, 1), projectorTexture);
-			projectorTexturePlane.y = -100;
+			projectorTexturePlane.rotationX = -90;
+			projectorTexturePlane.rotationZ = 180;
+			projectorTexturePlane.z = -100;
 			_representation.addChild(projectorTexturePlane);
 			this.addChild(_representation);
 		}
@@ -59,6 +63,8 @@ package awaybuilder.view.scene.controls
 			_representation.transform = sceneObject.sceneTransform.clone();
 			var dist:Vector3D = Scene3DManager.camera.scenePosition.subtract(sceneObject.scenePosition);
 			_representation.scaleX = _representation.scaleY = _representation.scaleZ = dist.length / 1500;
+			
+			projectorBitmap.bitmapData = ((_sceneObject as TextureProjector).texture as BitmapTexture).bitmapData;
 		}
 	}
 }
