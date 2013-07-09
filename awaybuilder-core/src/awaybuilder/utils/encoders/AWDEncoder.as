@@ -942,6 +942,8 @@ package awaybuilder.utils.encoders
 			if(_cam.pivotX!=0)_encodeProperty(1,_cam.pivotX,  _matrixNrType);
 			if(_cam.pivotY!=0)_encodeProperty(2,_cam.pivotY,  _matrixNrType);
 			if(_cam.pivotZ!=0)_encodeProperty(3,_cam.pivotZ,  _matrixNrType);
+			if(lens.near!=20)_encodeProperty(101,lens.near,  _propNrType);
+			if(lens.far!=3000)_encodeProperty(102,lens.far,  _propNrType);
 			_endElement(); // Prop list
 			
 			_beginElement(); // Attr list
