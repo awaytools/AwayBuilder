@@ -4,6 +4,7 @@ package awaybuilder.utils.encoders
 	import away3d.core.base.Geometry;
 	import away3d.core.math.MathConsts;
 	import away3d.entities.Mesh;
+	import away3d.materials.methods.MethodVO;
 	
 	import awaybuilder.AwayBuilder;
 	import awaybuilder.model.DocumentModel;
@@ -52,7 +53,7 @@ package awaybuilder.utils.encoders
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
 		// set debug to true to get some traces in the console
-		private var _debug:Boolean=false;
+		private var _debug:Boolean=true;
 		private var _body : ByteArray;
 		private var _blockBody : ByteArray;
 		private var _blockCache : Dictionary;
@@ -441,7 +442,7 @@ package awaybuilder.utils.encoders
 			var newParentID:uint=0;
 			switch (true){
 				
-				case (vo is LightVO):			
+				case (vo is LightVO):	
 					if (!_exportedObjects[vo.id]){
 						if(_debug)trace("LightVO = "+LightVO(vo).name+" parentID = "+parentID);
 						_blockCache[vo]=thisBlock;
@@ -453,6 +454,9 @@ package awaybuilder.utils.encoders
 						_blockCache[vo]=thisBlock;
 						newParentID=_encodeCommand(ObjectVO(vo),_exportedObjects[vo.id],parentID);
 						thisBlock.id=newParentID;						
+					}
+					for each(var shadowMeth:ShadowMethodVO in LightVO(vo).shadowMethods){
+						_getBlockIDorEncodeAsset(shadowMeth)
 					}
 					break;
 				case (vo is TextureProjectorVO):			

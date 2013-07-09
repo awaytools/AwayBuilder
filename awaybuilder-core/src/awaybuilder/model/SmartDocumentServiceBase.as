@@ -19,6 +19,7 @@ package awaybuilder.model
 	import away3d.materials.MaterialBase;
 	import away3d.materials.TextureMaterial;
 	import away3d.materials.methods.EffectMethodBase;
+	import away3d.materials.methods.ShadowMapMethodBase;
 	import away3d.primitives.SkyBox;
 	import away3d.textures.Texture2DBase;
 	
@@ -209,6 +210,9 @@ package awaybuilder.model
 				case AssetType.EFFECTS_METHOD:
 					assets.checkEffectMethodForDefaulttexture(event.asset as EffectMethodBase)
 					_document.materials.addItem( assets.GetAsset( event.asset ) );
+					break;	
+				case AssetType.SHADOW_MAP_METHOD:
+					 assets.GetAsset( event.asset );
 					break;	
 				case AssetType.LIGHT:
 					var light:LightBase = event.asset as LightBase;

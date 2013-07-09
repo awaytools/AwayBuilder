@@ -366,6 +366,15 @@ package awaybuilder.model
 			asset.alpha = item.alpha;
 			asset.type = getQualifiedClassName( item ).split("::")[1];
 			
+				
+			var alreadyAdded:Boolean = false;
+			for each( var method:ShadowMethodVO in asset.castingLight.shadowMethods )
+			{
+				if( method.equals( asset ) ) alreadyAdded = true;	
+			}
+			if( !alreadyAdded )	asset.castingLight.shadowMethods.addItem( asset );
+				
+				
 			if( item is SoftShadowMapMethod )
 			{
 				var softShadowMapMethod:SoftShadowMapMethod = item as SoftShadowMapMethod;
