@@ -53,7 +53,7 @@ package awaybuilder.utils.encoders
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
 		// set debug to true to get some traces in the console
-		private var _debug:Boolean=true;
+		private var _debug:Boolean=false;
 		private var _body : ByteArray;
 		private var _blockBody : ByteArray;
 		private var _blockCache : Dictionary;
