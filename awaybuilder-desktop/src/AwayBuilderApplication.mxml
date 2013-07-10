@@ -8,7 +8,7 @@
 						minWidth="1024" minHeight="720" 
 						backgroundColor="0x333333"
 						showStatusBar="false" usePreloader="false"
-						preinitialize="preinitializeHandler(event)"
+						preinitialize="preinitializeHandler(event)" xmlns:desktop="awaybuilder.desktop.*"
 						>
 	<s:menu>
 		<mx:FlexNativeMenu dataProvider="{menuProvider}" keyEquivalentModifiersFunction="keyEquivalentModifiers"/>
@@ -79,6 +79,9 @@
 				</fx:children>
 			</fx:Object>
 		</fx:Array>
+		
+		<desktop:DesktopAppContext contextView="{this}"/>
+		
 	</fx:Declarations>
 	
 	<fx:Style source="desktop_styles.css"/>
@@ -87,7 +90,6 @@
 	
 	<fx:Script><![CDATA[
 		import awaybuilder.AwayBuilder;
-		import awaybuilder.desktop.DesktopAppContext;
 		import awaybuilder.desktop.view.components.UpdatePopup;
 		import awaybuilder.utils.enumerators.EMenuItem;
 		
@@ -99,8 +101,6 @@
 		
 		private var _updateCancelled:Boolean = false;
 		
-		private var _context:DesktopAppContext;
-		
 		public var splashScreen:SplashScreen;
 		
 		public var isMac:Boolean;
@@ -110,8 +110,6 @@
 			splashScreen = new SplashScreen();
 			
 			isMac = (Capabilities.os.indexOf("Mac OS") >= 0); 
-			
-			_context = new DesktopAppContext(DisplayObjectContainer(this.systemManager));
 			
 			var urlLoader:URLLoader = new URLLoader();
 			urlLoader.load( new URLRequest( "https://raw.github.com/awaytools/AwayBuilder/master/awaybuilder-core/src/awaybuilder/AwayBuilder.as" ) );

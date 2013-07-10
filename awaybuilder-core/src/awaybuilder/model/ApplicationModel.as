@@ -9,5 +9,7 @@ package awaybuilder.model
 		public var isWaitingForClose:Boolean = false;
 		
 		public var savedNextEvent:Event;
+		
+		public var webRestrictionsEnabled:Boolean = false;
 	}
 }

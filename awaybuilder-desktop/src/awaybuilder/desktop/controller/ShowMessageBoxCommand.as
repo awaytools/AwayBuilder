@@ -4,12 +4,12 @@ package awaybuilder.desktop.controller
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.desktop.view.components.MessageBox;
 	
+	import mx.core.FlexGlobals;
+	
 	import org.robotlegs.mvcs.Command;
 	
 	public class ShowMessageBoxCommand extends Command
 	{
-		[Inject]
-		public var mainWindow:AwayBuilderApplication;
 		
 		[Inject]
 		public var event:MessageBoxEvent;
@@ -33,8 +33,10 @@ package awaybuilder.desktop.controller
 			messageBox.width = messageBox.measuredWidth;
 			messageBox.height = messageBox.measuredHeight;
 			
-			messageBox.nativeWindow.x = mainWindow.nativeWindow.x + (mainWindow.nativeWindow.width - messageBox.nativeWindow.width) / 2;
-			messageBox.nativeWindow.y = mainWindow.nativeWindow.y + (mainWindow.nativeWindow.height - messageBox.nativeWindow.height) / 2;
+			var app:AwayBuilderApplication = FlexGlobals.topLevelApplication as AwayBuilderApplication;
+			
+			messageBox.nativeWindow.x = app.nativeWindow.x + (app.nativeWindow.width - messageBox.nativeWindow.width) / 2;
+			messageBox.nativeWindow.y = app.nativeWindow.y + (app.nativeWindow.height - messageBox.nativeWindow.height) / 2;
 		}
 	}
 }

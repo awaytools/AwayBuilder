@@ -1,14 +1,14 @@
 package awaybuilder.desktop.controller
 {
-	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.ApplicationModel;
+	import awaybuilder.model.DocumentModel;
+	
+	import mx.core.FlexGlobals;
 	
 	import org.robotlegs.mvcs.Command;
 	
 	public class CloseDocumentCommand extends Command
 	{
-		[Inject]
-		public var window:AwayBuilderApplication;
 		
 		[Inject]
 		public var windowModel:ApplicationModel;
@@ -22,7 +22,8 @@ package awaybuilder.desktop.controller
 			{
 				this.documentModel.edited = false;
 			}
-			this.window.close();
+			
+			AwayBuilderApplication(FlexGlobals.topLevelApplication).close();
 		}
 	}
 }

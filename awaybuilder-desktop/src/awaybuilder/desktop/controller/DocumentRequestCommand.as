@@ -3,10 +3,14 @@ package awaybuilder.desktop.controller
 	import awaybuilder.controller.events.DocumentRequestEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
-	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.ApplicationModel;
+	import awaybuilder.model.DocumentModel;
+	
+	import mx.core.FlexGlobals;
 	
 	import org.robotlegs.mvcs.Command;
+	
+	import spark.components.Application;
 	
 	public class DocumentRequestCommand extends Command
 	{
@@ -18,9 +22,6 @@ package awaybuilder.desktop.controller
 		
 		[Inject]
 		public var windowModel:ApplicationModel;
-		
-		[Inject]
-		public var mainWindow:AwayBuilderApplication;
 		
 		override public function execute():void
 		{
@@ -44,9 +45,10 @@ package awaybuilder.desktop.controller
 				var window:EditedDocumentWarningWindow = new EditedDocumentWarningWindow();
 				this.mediatorMap.createMediator(window);
 				
+				var app:AwayBuilderApplication = FlexGlobals.topLevelApplication as AwayBuilderApplication;
 				window.open();
-				window.nativeWindow.x = mainWindow.nativeWindow.x + (mainWindow.nativeWindow.width - window.nativeWindow.width) / 2;
-				window.nativeWindow.y = mainWindow.nativeWindow.y + (mainWindow.nativeWindow.height - window.nativeWindow.height) / 2;
+				window.nativeWindow.x = app.nativeWindow.x + (app.nativeWindow.width - window.nativeWindow.width) / 2;
+				window.nativeWindow.y = app.nativeWindow.y + (app.nativeWindow.height - window.nativeWindow.height) / 2;
 				return;
 			}
 			

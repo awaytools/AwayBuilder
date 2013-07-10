@@ -50,7 +50,7 @@ package awaybuilder.desktop.model
 		private var _property:String;
 		
 		[Inject]
-		public var windowModel:ApplicationModel;
+		public var applicationModel:ApplicationModel;
 		
 		public function load( url:String, name:String, event:Event ):void
 		{
@@ -174,7 +174,7 @@ package awaybuilder.desktop.model
 		{	
 			var bytes:ByteArray = new ByteArray();
 			var encoder:ISceneGraphEncoder = new AWDEncoder();
-			var success:Boolean = encoder.encode(document, bytes);
+			var success:Boolean = encoder.encode(document, bytes, applicationModel.webRestrictionsEnabled);
 			
 			if (!document.globalOptions.embedTextures){
 				saveExternalTextures(document,path)
@@ -227,7 +227,7 @@ package awaybuilder.desktop.model
 		
 		private function file_save_cancelHandler(event:Event):void
 		{
-			this.windowModel.isWaitingForClose = false;
+			this.applicationModel.isWaitingForClose = false;
 				
 			var file:File = File(event.currentTarget);
 			file.removeEventListener(Event.SELECT, file_save_selectHandler);

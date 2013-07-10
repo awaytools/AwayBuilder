@@ -5,6 +5,7 @@ package awaybuilder.view.mediators
     import awaybuilder.controller.history.UndoRedoEvent;
     import awaybuilder.controller.scene.events.AnimationEvent;
     import awaybuilder.controller.scene.events.SceneEvent;
+    import awaybuilder.model.ApplicationModel;
     import awaybuilder.model.AssetsModel;
     import awaybuilder.model.DocumentModel;
     import awaybuilder.model.vo.scene.AnimationNodeVO;
@@ -42,6 +43,7 @@ package awaybuilder.view.mediators
     import mx.controls.Alert;
     import mx.events.CloseEvent;
     
+    import org.robotlegs.base.ContextEvent;
     import org.robotlegs.mvcs.Mediator;
 
     public class PropertiesPanelMediator extends Mediator
@@ -55,8 +57,13 @@ package awaybuilder.view.mediators
         [Inject]
         public var document:DocumentModel;
 
+		[Inject]
+		public var applicationModel:ApplicationModel;
+		
         override public function onRegister():void
         {
+			view.embedTexturesOptionEnabled = !applicationModel.webRestrictionsEnabled;
+			
             addContextListener(SceneEvent.SELECT, context_itemsSelectHandler);
 			addContextListener(UndoRedoEvent.UNDO, context_undoHandler);
 			addContextListener(SceneEvent.DELETE, context_deleteHandler);
@@ -716,7 +723,6 @@ package awaybuilder.view.mediators
         //
         //----------------------------------------------------------------------
 
-		
         private function context_itemsSelectHandler(event:SceneEvent):void
         {
             if( !event.items || event.items.length == 0)

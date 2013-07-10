@@ -7,8 +7,6 @@ package awaybuilder.web.controller
 	
 	public class CloseDocumentCommand extends Command
 	{
-		[Inject]
-		public var window:AwayBuilderApplication;
 		
 		[Inject]
 		public var windowModel:ApplicationModel;

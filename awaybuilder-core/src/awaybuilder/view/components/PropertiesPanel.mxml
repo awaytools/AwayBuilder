@@ -85,6 +85,9 @@
 		[Bindable]
 		public var lightPickers:ArrayCollection;
 		
+		[Bindable] 
+		public var embedTexturesOptionEnabled:Boolean = true;
+		
 		public function showEditor( value:String,  showNext:Boolean, showPrev:Boolean, data:Object ):void
 		{
 			panelImage.drawPanel( panelsContainer );
@@ -146,7 +149,7 @@
 			<editors:MeshGroupPropertiesEditor data="{data}" includeIn="meshGroup,initAll"/>
 			<editors:MaterialGroupPropertiesEditor textures="{nullableTextures}" lightPickers="{lightPickers}" prevSelected="{prevSelected}" data="{data}" includeIn="materialGroup,initAll"/>
 			
-			<editors:GlobalOptionPropertiesEditor data="{data}" includeIn="global,initAll" />
+			<editors:GlobalOptionPropertiesEditor data="{data}" embedTexturesOptionEnabled="{embedTexturesOptionEnabled}" includeIn="global,initAll" />
 		</s:Group>
 	</controls:CrutchScroller>
 </controls:CollapsiblePanel>

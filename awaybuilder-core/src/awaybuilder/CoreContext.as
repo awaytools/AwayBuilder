@@ -104,7 +104,7 @@ package awaybuilder
 
 	public class CoreContext extends Context
 	{
-		public function CoreContext(contextView:DisplayObjectContainer)
+		public function CoreContext()
 		{
 			super(contextView);
 		}

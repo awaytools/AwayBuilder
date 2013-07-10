@@ -5,6 +5,7 @@ package awaybuilder.web.model
 	import awaybuilder.controller.events.SaveDocumentEvent;
 	import awaybuilder.controller.history.HistoryEvent;
 	import awaybuilder.controller.scene.events.SceneEvent;
+	import awaybuilder.model.ApplicationModel;
 	import awaybuilder.model.DocumentModel;
 	import awaybuilder.model.IDocumentService;
 	import awaybuilder.model.SmartDocumentServiceBase;
@@ -48,6 +49,9 @@ package awaybuilder.web.model
 		private var _fileToData:Dictionary = new Dictionary();
 		
 		private var _file:FileReference;
+		
+		[Inject]
+		public var applicationModel:ApplicationModel;
 		
 		public function load( url:String, name:String, event:Event ):void
 		{
@@ -102,7 +106,7 @@ package awaybuilder.web.model
 		{
 			var bytes:ByteArray = new ByteArray();
 			var encoder:ISceneGraphEncoder = new AWDEncoder();
-			var success:Boolean = encoder.encode( data, bytes );
+			var success:Boolean = encoder.encode( data, bytes, applicationModel.webRestrictionsEnabled );
 			
 			var file:FileReference = new FileReference();
 			file.save( bytes, defaultName+".awd" );

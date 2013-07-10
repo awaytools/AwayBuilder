@@ -18,9 +18,6 @@ package awaybuilder.web.controller
 		[Inject]
 		public var windowModel:ApplicationModel;
 		
-		[Inject]
-		public var mainWindow:AwayBuilderApplication;
-		
 		override public function execute():void
 		{
 			if(event.type == DocumentRequestEvent.REQUEST_CLOSE_DOCUMENT)

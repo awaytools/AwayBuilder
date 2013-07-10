@@ -1,15 +1,15 @@
 package awaybuilder.desktop.controller
 {
+	import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
+	
 	import flash.display.Screen;
 	
-	import awaybuilder.desktop.view.components.DocumentLoadProgressWindow;
+	import mx.core.FlexGlobals;
 	
 	import org.robotlegs.mvcs.Command;
 	
 	public class ShowDocumentLoadProgressWindowCommand extends Command
 	{
-		[Inject]
-		public var mainWindow:AwayBuilderApplication;
 		
 		override public function execute():void
 		{
@@ -19,11 +19,12 @@ package awaybuilder.desktop.controller
 			
 			this.mediatorMap.createMediator(window);
 			
+			var app:AwayBuilderApplication = FlexGlobals.topLevelApplication as AwayBuilderApplication;
 			
 			window.width = window.measuredWidth;
 			window.height = window.measuredHeight;
-			window.nativeWindow.x = mainWindow.nativeWindow.x + (mainWindow.nativeWindow.width - window.nativeWindow.width) / 2;
-			window.nativeWindow.y = mainWindow.nativeWindow.y + (mainWindow.nativeWindow.height - window.nativeWindow.height) / 2;
+			window.nativeWindow.x = app.nativeWindow.x + (app.nativeWindow.width - window.nativeWindow.width) / 2;
+			window.nativeWindow.y = app.nativeWindow.y + (app.nativeWindow.height - window.nativeWindow.height) / 2;
 		}
 	}
 }

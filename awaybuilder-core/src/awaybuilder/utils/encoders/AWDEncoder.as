@@ -146,67 +146,68 @@ package awaybuilder.utils.encoders
 		}
 		
 		// this function is called from the app...
-		public function encode(document : DocumentModel, output : ByteArray) : Boolean
+		public function encode(document : DocumentModel, output : ByteArray, useWebRestriction:Boolean = false) : Boolean
 		{
-			
 			_body = new ByteArray();
 			_body.endian = Endian.LITTLE_ENDIAN;
 			_blockId = 0;
 			
-			_nameSpaceID=1;
-			_nameSpaceString=document.globalOptions.namespace;
-			_embedtextures=document.globalOptions.embedTextures;
+			_nameSpaceID = 1;
+			_nameSpaceString = document.globalOptions.namespace;
+			_embedtextures = document.globalOptions.embedTextures;
+			
 			// get the type of compression to use
-			_compression=0;
-			if(document.globalOptions.compression=="UNCOMPRESSED")
-				_compression=0;
-			if(document.globalOptions.compression=="DEFLATE")
-				_compression=1;
-			if(document.globalOptions.compression=="LZMA")
-				_compression=2;			
+			switch(document.globalOptions.compression)
+			{
+				case "DEFLATE":
+					_compression = 1;
+					break;
+				case "LZMA":
+					_compression = 2;		
+					break;
+				default:
+					_compression = 0;		
+					break;
+			}
 			// if the streaming option is enabled, the compression is set per block
 			if (document.globalOptions.streaming)
 			{
-				_blockCompress=_compression;
-				_compression=0;
+				_blockCompress = _compression;
+				_compression = 0;
 			}
+			
 			// set the global - storage - precision
-			_matrixNrType=FLOAT32;
+			_matrixNrType = FLOAT32;
 			if (document.globalOptions.matrixStorage=="Precision"){
-				_matrixNrType=FLOAT64;
-				_matrixStoragePrecision=1;				
+				_matrixNrType = FLOAT64;
+				_matrixStoragePrecision = 1;				
 			}
 			_geoNrType=FLOAT32;
 			if (document.globalOptions.geometryStorage=="Precision"){
-				_geoNrType=FLOAT64;
-				_geomStoragePrecision=1;	
+				_geoNrType = FLOAT64;
+				_geomStoragePrecision = 1;	
 			}
 			_propNrType=FLOAT32;
 			if (document.globalOptions.propertyStorage=="Precision"){
-				_propNrType=FLOAT64;
-				_propsStoragePrecision=1;	
+				_propNrType = FLOAT64;
+				_propsStoragePrecision = 1;	
 			}
 			_attributeNrType=FLOAT32;
 			if (document.globalOptions.attributesStorage=="Precision"){
-				_attributeNrType=FLOAT64;
-				_attrStoragePrecision=1;	
+				_attributeNrType = FLOAT64;
+				_attrStoragePrecision = 1;	
 			}
 			
 			
-			var _embedtexturesInt:int=0;
-			var _exportNormalsInt:int=0;
-			var _exportTangentsInt:int=0;
-			if (document.globalOptions.embedTextures) {
-				_embedtexturesInt=1;
-			}
-			if (document.globalOptions.includeNormal) {
-				_exportNormalsInt=1;
-			}
-			if (document.globalOptions.includeTangent) {
-				_exportTangentsInt=1;
+			var _embedtexturesInt:int = 1;
+			var _exportNormalsInt:int = document.globalOptions.includeNormal?1:0;
+			var _exportTangentsInt:int = document.globalOptions.includeTangent?1:0;
+			
+			if( !useWebRestriction )
+			{
+				_embedtexturesInt = document.globalOptions.embedTextures?1:0;
 			}
 			
-				
 			if(_debug)trace("start encoding");
 			
 			//create a AWDBlock class for all supported Assets
@@ -2171,8 +2172,8 @@ package awaybuilder.utils.encoders
 				value=int(copy);
 			}
 			if(Number(copy)){
-				type=_attributeNrType;
-				value=Number(copy);
+				type = _attributeNrType;
+				value = Number(copy);
 			}
 			if (type==AWDSTRING){
 				if((copy=="false")||(copy=="False")||(copy=="FALSE")){

@@ -43,10 +43,21 @@ package awaybuilder.web.view.mediators
 		[Inject]
 		public var undoRedoModel:UndoRedoModel;
 		
+		[Inject]
+		public var applicationModel:ApplicationModel;
+		
 		private var _menuCache:Dictionary;
+		
+		[PostConstruct] 
+		public function initialize():void
+		{ 
+			applicationModel.webRestrictionsEnabled = true;
+		}
 		
 		override public function onRegister():void
 		{	
+			applicationModel.webRestrictionsEnabled = true;
+			
 			_menuCache = new Dictionary();
 			
 			app.menu.addEventListener(MenuEvent.ITEM_CLICK, menu_itemClickHandler );
@@ -76,6 +87,7 @@ package awaybuilder.web.view.mediators
 			getItemByValue( EMenuItem.CUT ).enabled = false;
 			getItemByValue( EMenuItem.COPY ).enabled = false;
 			getItemByValue( EMenuItem.PASTE ).enabled = false;
+			
 		}
 		
 		private function getItemByValue( value:String ):Object

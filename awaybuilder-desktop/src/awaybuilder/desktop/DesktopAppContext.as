@@ -14,11 +14,11 @@ package awaybuilder.desktop
     import awaybuilder.desktop.controller.ShowMessageBoxCommand;
     import awaybuilder.desktop.controller.events.OpenFromInvokeEvent;
     import awaybuilder.desktop.model.DesktopDocumentService;
-    import awaybuilder.view.components.popup.AboutPopup;
     import awaybuilder.desktop.view.components.EditedDocumentWarningWindow;
     import awaybuilder.desktop.view.mediators.ApplicationMediator;
     import awaybuilder.desktop.view.mediators.EditedDocumentWarningWindowMediator;
     import awaybuilder.model.IDocumentService;
+    import awaybuilder.view.components.popup.AboutPopup;
     
     import flash.desktop.NativeApplication;
     import flash.display.DisplayObjectContainer;
@@ -31,10 +31,6 @@ package awaybuilder.desktop
 	
 	public class DesktopAppContext extends CoreContext
 	{
-		public function DesktopAppContext(contextView:DisplayObjectContainer)
-		{
-			super(contextView);
-		}
 		
 		override protected function get mediatorMap():IMediatorMap
 		{
@@ -59,7 +55,6 @@ package awaybuilder.desktop
 			this.commandMap.mapEvent(MessageBoxEvent.SHOW_MESSAGE_BOX, ShowMessageBoxCommand);
 			
 			this.injector.mapSingletonOf(IDocumentService, DesktopDocumentService);
-			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);
 			
 			this.mediatorMap.mapView(AwayBuilderApplication, ApplicationMediator);
 			this.mediatorMap.mapView(EditedDocumentWarningWindow, EditedDocumentWarningWindowMediator);

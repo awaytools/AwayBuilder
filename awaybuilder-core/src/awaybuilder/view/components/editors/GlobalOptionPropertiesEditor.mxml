@@ -18,8 +18,9 @@
 		
 		import spark.events.IndexChangeEvent;
 		
-		[Bindable]
-		private var _asset:GlobalOptionsVO;
+		[Bindable] public var embedTexturesOptionEnabled:Boolean = true;
+		
+		[Bindable] private var _asset:GlobalOptionsVO;
 		
 		override protected function validate():void
 		{
@@ -94,7 +95,7 @@
 	</s:VGroup>
 	<s:Spacer height="6"/>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
-		<s:FormItem label="Embed Textures" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" >
+		<s:FormItem label="Embed Textures" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%" includeInLayout="{embedTexturesOptionEnabled}" visible="{embedTexturesOptionEnabled}" >
 			<s:CheckBox change="value_changeHandler(event)" selected="@{_asset.embedTextures}" />
 		</s:FormItem>
 		<s:FormItem label="Include Normal data" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">

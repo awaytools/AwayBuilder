@@ -4,6 +4,9 @@ package awaybuilder.web
     import awaybuilder.controller.events.DocumentEvent;
     import awaybuilder.controller.events.DocumentRequestEvent;
     import awaybuilder.controller.events.SceneReadyEvent;
+    import awaybuilder.model.ApplicationModel;
+    import awaybuilder.model.IDocumentService;
+    import awaybuilder.view.components.editors.GlobalOptionPropertiesEditor;
     import awaybuilder.web.controller.CloseDocumentCommand;
     import awaybuilder.web.controller.DocumentRequestCommand;
     import awaybuilder.web.controller.OpenFromInvokeCommand;
@@ -11,7 +14,6 @@ package awaybuilder.web
     import awaybuilder.web.controller.events.OpenFromInvokeEvent;
     import awaybuilder.web.model.DocumentService;
     import awaybuilder.web.view.mediators.ApplicationMediator;
-    import awaybuilder.model.IDocumentService;
     
     import flash.display.DisplayObjectContainer;
     
@@ -21,10 +23,6 @@ package awaybuilder.web
 	
 	public class WebAppContext extends CoreContext
 	{
-		public function WebAppContext(contextView:DisplayObjectContainer)
-		{
-			super(contextView);
-		}
 		
 		override public function startup():void
 		{
@@ -42,7 +40,6 @@ package awaybuilder.web
 			this.commandMap.mapEvent(DocumentEvent.CLOSE_DOCUMENT, CloseDocumentCommand);
 			
 			this.injector.mapSingletonOf(IDocumentService, DocumentService);
-			this.injector.mapValue(AwayBuilderApplication, FlexGlobals.topLevelApplication);
 			
 			this.mediatorMap.mapView(AwayBuilderApplication, ApplicationMediator);
 			

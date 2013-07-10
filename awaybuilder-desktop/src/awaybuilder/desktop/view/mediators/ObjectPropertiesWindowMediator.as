@@ -1,22 +1,23 @@
 package awaybuilder.desktop.view.mediators
 {
+	import awaybuilder.components.IEditorObjectView;
+	import awaybuilder.controller.events.EditorStateChangeEvent;
+	import awaybuilder.desktop.utils.ModalityManager;
+	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
+	import awaybuilder.model.DocumentModel;
+	import awaybuilder.model.IEditorModel;
+	import awaybuilder.model.UndoRedoModel;
+	import awaybuilder.view.components.propertyEditors.IObjectPropertyEditor;
+	
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindowDisplayState;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	
+	import mx.core.FlexGlobals;
 	import mx.core.IIMESupport;
 	import mx.managers.IFocusManagerComponent;
 	import mx.skins.ProgrammaticSkin;
-	
-	import awaybuilder.components.IEditorObjectView;
-	import awaybuilder.desktop.utils.ModalityManager;
-	import awaybuilder.desktop.view.components.ObjectPropertiesWindow;
-	import awaybuilder.controller.events.EditorStateChangeEvent;
-	import awaybuilder.model.DocumentModel;
-	import awaybuilder.model.IEditorModel;
-	import awaybuilder.model.UndoRedoModel;
-	import awaybuilder.view.components.propertyEditors.IObjectPropertyEditor;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -35,9 +36,6 @@ package awaybuilder.desktop.view.mediators
 		
 		[Inject]
 		public var undoRedo:UndoRedoModel;
-		
-		[Inject]
-		public var mainWindow:AwayBuilderApplication;
 		
 		private var _hasDisplayedWindow:Boolean = false;
 		
@@ -64,15 +62,17 @@ package awaybuilder.desktop.view.mediators
 		
 		private function resetWindowPosition():void
 		{
-			if(this.mainWindow.nativeWindow.displayState == NativeWindowDisplayState.MAXIMIZED)
+			var app:AwayBuilderApplication = FlexGlobals.topLevelApplication as AwayBuilderApplication;
+			
+			if(app.nativeWindow.displayState == NativeWindowDisplayState.MAXIMIZED)
 			{
-				this.window.nativeWindow.x = this.mainWindow.nativeWindow.x + this.mainWindow.nativeWindow.width - this.window.nativeWindow.width - 20;
+				this.window.nativeWindow.x = app.nativeWindow.x + app.nativeWindow.width - this.window.nativeWindow.width - 20;
 			}
 			else
 			{
-				this.window.nativeWindow.x = this.mainWindow.nativeWindow.x + this.mainWindow.nativeWindow.width - this.window.nativeWindow.width / 2;
+				this.window.nativeWindow.x = app.nativeWindow.x + app.nativeWindow.width - this.window.nativeWindow.width / 2;
 			}
-			this.window.nativeWindow.y = this.mainWindow.nativeWindow.y + (this.mainWindow.nativeWindow.height - this.window.nativeWindow.height) / 2;
+			this.window.nativeWindow.y = app.nativeWindow.y + (app.nativeWindow.height - this.window.nativeWindow.height) / 2;
 		}
 		
 		private function cleanupOldPropertyEditor():void

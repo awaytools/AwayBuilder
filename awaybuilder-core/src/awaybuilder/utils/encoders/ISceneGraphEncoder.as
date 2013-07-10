@@ -6,7 +6,7 @@ package awaybuilder.utils.encoders
 
 	public interface ISceneGraphEncoder
 	{
-		function encode(scenegraph : DocumentModel, output : ByteArray) : Boolean;
+		function encode(scenegraph : DocumentModel, output : ByteArray, useWebRestriction:Boolean = false) : Boolean;
 		function dispose() : void;
 	}
 }
