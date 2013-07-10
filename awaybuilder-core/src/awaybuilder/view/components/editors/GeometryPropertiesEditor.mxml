@@ -55,15 +55,6 @@
 			<s:TextInput id="nameInput" width="100%" text="@{_asset.name}" change="stepper_changeHandler(event)"/>
 		</s:FormItem>
 		
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%"/>
-		<controls:CollapsiblePanel width="100%" title="SubGeometries" collapsed="true">
-			
-			<s:List id="subGeometriesList" dataProvider="{_asset.subGeometries}"
-					width="100%"
-					skinClass="awaybuilder.view.skins.AssetChildrenListSkin" itemRenderer="awaybuilder.view.components.editors.renderers.AssetChildItemRenderer"
-					/>
-		</controls:CollapsiblePanel>
-		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%"/>
 		<s:FormItem label="ScaleU" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<controls:DragableNumericStepper minimum="0.01" stepSize="0.01" snapInterval="0.001" width="100%" value="@{_asset.scaleU}" change="stepper_changeHandler(event)" />
 		</s:FormItem>
@@ -138,5 +129,13 @@
 			<s:CheckBox change="value_changeHandler(event)" selected="@{_asset.doubleSided}" />
 		</s:FormItem>
 	</s:Form>
+	
+	<controls:CollapsiblePanel width="100%" title="SubGeometries" collapsed="false">
+		
+		<s:List id="subGeometriesList" dataProvider="{_asset.subGeometries}"
+				width="100%"
+				skinClass="awaybuilder.view.skins.AssetChildrenListSkin" itemRenderer="awaybuilder.view.components.editors.renderers.AssetChildItemRenderer"
+				/>
+	</controls:CollapsiblePanel>
 	
 </editors:EditorBase>
