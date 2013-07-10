@@ -62,7 +62,7 @@ package awaybuilder.view.components.controls.tree
 		
 		public var allowIncorrectIndexes:Boolean = false;
 		
-		private var levelOfLastRemovedItem:int = -1;
+		protected var levelOfLastRemovedItem:int = -1;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -77,7 +77,7 @@ package awaybuilder.view.components.controls.tree
 		{
 			return _length;
 		}
-	
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Implementation of IList: methods
@@ -100,6 +100,9 @@ package awaybuilder.view.components.controls.tree
 			if (allowIncorrectIndexes && index > length)
 				index = length;
 			
+			// this code usually executes when item is dropped into tree
+			// choose correct place for drop, see
+			// https://github.com/kachurovskiy/Spark-Tree/issues/6
 			var previousItem:Object = getItemAt(index - 1);
 			var previousItemLevel:int = getItemLevel(previousItem);
 			var nextItem:Object = index < length ? getItemAt(index) : null;
@@ -117,7 +120,7 @@ package awaybuilder.view.components.controls.tree
 				indexDelta = 1;
 				effectiveItem = previousItem;
 			}
-				
+			
 			var parent:Object = getItemParent(effectiveItem);
 			var branch:IList = parent ? IList(dataDescriptor.getChildren(parent)) : _dataProvider;
 			var localIndex:int = branch.getItemIndex(effectiveItem);
@@ -128,7 +131,7 @@ package awaybuilder.view.components.controls.tree
 		{
 			if (index < 0 || index >= _length)
 				throw new Error("index " + index + " is out of bounds");
-	
+			
 			if (index < cache.length)
 				return cache[index];
 			
@@ -205,11 +208,10 @@ package awaybuilder.view.components.controls.tree
 			{
 				cache[cacheIndex++] = currentItem;
 				if (currentItem == item)
-				{
 					return index;
-				}
 				
-				if (parentObjectsToOpenedBranches[currentItem] && IList(parentObjectsToOpenedBranches[currentItem]).length > 0)
+				if (parentObjectsToOpenedBranches[currentItem] &&
+					IList(parentObjectsToOpenedBranches[currentItem]).length > 0)
 				{
 					branches.push(branch);
 					branchIndexes.push(branchIndex);
@@ -248,7 +250,7 @@ package awaybuilder.view.components.controls.tree
 		}
 		
 		public function itemUpdated(item:Object, property:Object = null, 
-			oldValue:Object = null, newValue:Object = null):void
+									oldValue:Object = null, newValue:Object = null):void
 		{
 			var parent:Object = getItemParent(item);
 			var branch:IList = parent ? IList(dataDescriptor.getChildren(parent)) : _dataProvider;
@@ -355,7 +357,7 @@ package awaybuilder.view.components.controls.tree
 		{
 			return null;
 		}
-	
+		
 		public function set sort(value:ISort):void {}
 		
 		public function createCursor():IViewCursor
@@ -386,8 +388,8 @@ package awaybuilder.view.components.controls.tree
 		//  Variables
 		//
 		//--------------------------------------------------------------------------
-	
-		private var openedBranchesToParentObjects:Dictionary;
+		
+		protected var openedBranchesToParentObjects:Dictionary;
 		
 		private var parentObjectsToOpenedBranches:Dictionary;
 		
@@ -411,7 +413,7 @@ package awaybuilder.view.components.controls.tree
 		/**
 		 * Maps branches to levels.
 		 */
-		private var branchLevels:Dictionary;
+		protected var branchLevels:Dictionary;
 		
 		/**
 		 * Caches levels since it's the most time-consuming operation.
@@ -423,7 +425,7 @@ package awaybuilder.view.components.controls.tree
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
-	
+		
 		private var _dataProvider:IList;
 		
 		public function get dataProvider():IList
@@ -436,7 +438,7 @@ package awaybuilder.view.components.controls.tree
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
-	
+		
 		private function resetDataStructures():void
 		{
 			openedBranchesToParentObjects = new Dictionary();
@@ -496,7 +498,7 @@ package awaybuilder.view.components.controls.tree
 				cache.splice(parentObjectIndex, cache.length - parentObjectIndex);
 			
 			var event:CollectionEvent = new CollectionEvent(CollectionEvent.COLLECTION_CHANGE,
-				false, false, CollectionEventKind.ADD, 
+				false, false, CollectionEventKind.ADD,
 				parentObject ? parentObjectIndex + 1 : 0, -1, branch.toArray());
 			dispatchEvent(event);
 			
@@ -512,12 +514,11 @@ package awaybuilder.view.components.controls.tree
 		
 		private function dispatchParentObjectUpdateEvent(parentObject:Object, parentObjectIndex:int):void
 		{
-			var propertyChangeEvent:PropertyChangeEvent = 
-				new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE, 
+			var propertyChangeEvent:PropertyChangeEvent =
+				new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE,
 					false, false, PropertyChangeEventKind.UPDATE, null,
 					null, null, parentObject);
-			var event:CollectionEvent = new CollectionEvent(CollectionEvent.COLLECTION_CHANGE,
-				false, false, CollectionEventKind.UPDATE, 
+			var event:CollectionEvent = new CollectionEvent(CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.UPDATE, 
 				parentObjectIndex, parentObjectIndex, [ propertyChangeEvent ]);
 			dispatchEvent(event);
 		}
@@ -540,7 +541,7 @@ package awaybuilder.view.components.controls.tree
 		
 		/**
 		 * Tries to close open branch.
-		 * 
+		 *
 		 * @return true if closing succeeded.
 		 */
 		public function closeBranch(branch:IList, parentObject:Object, cancelable:Boolean):Boolean
@@ -562,8 +563,7 @@ package awaybuilder.view.components.controls.tree
 			if (!closeAllChildBranches(branch, parentObject, cancelable))
 				return false;
 			
-			branch.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-				branch_collectionChangeHandler);
+			branch.removeEventListener(CollectionEvent.COLLECTION_CHANGE, branch_collectionChangeHandler);
 			delete openedBranchesToParentObjects[branch];
 			if (parentObject)
 				delete parentObjectsToOpenedBranches[parentObject];
@@ -609,19 +609,17 @@ package awaybuilder.view.components.controls.tree
 		
 		/**
 		 * Used when object that is root of open branch is removed.
-		 * 
+		 *
 		 * @param branchStartIndex Index of branch start if it is available.
 		 * If can be not available e.g. when we recieved refresh event and
-		 * branch parent just dissapeared in the new version. In this case remove 
+		 * branch parent just dissapeared in the new version. In this case remove
 		 * event is not dispatched.
 		 */
 		private function removeBranch(branch:IList, parentObject:Object, branchStartIndex:int = -1):void
 		{
 			if (!branch)
 				return;
-			
-			branch.removeEventListener(CollectionEvent.COLLECTION_CHANGE,
-				branch_collectionChangeHandler);
+			branch.removeEventListener(CollectionEvent.COLLECTION_CHANGE, branch_collectionChangeHandler);
 			
 			var n:int = branch.length;
 			var i:int;
@@ -629,7 +627,7 @@ package awaybuilder.view.components.controls.tree
 			for (i = 0; i < n; i++)
 			{
 				var item:Object = branch.getItemAt(i);
-	
+				
 				delete levelsCache[item];
 				
 				if (branchStartIndex >= 0)
@@ -640,6 +638,7 @@ package awaybuilder.view.components.controls.tree
 						-1, [ item ]);
 					dispatchEvent(event);
 				}
+				
 				
 				if (parentObjectsToOpenedBranches[item])
 					removeBranch(parentObjectsToOpenedBranches[item], item, branchStartIndex);
@@ -736,7 +735,7 @@ package awaybuilder.view.components.controls.tree
 		
 		private function removeLostBranches(currentlyRemovedObject:Object):void
 		{
-			var parentObjects:Vector.<*> = new Vector.<*>();
+			var parentObjects:Vector.<Object> = new Vector.<Object>();
 			var parentObject:*;
 			for (parentObject in parentObjectsToOpenedBranches)
 			{
@@ -769,7 +768,7 @@ package awaybuilder.view.components.controls.tree
 		//  Event handlers
 		//
 		//--------------------------------------------------------------------------
-	
+		
 		private function branch_collectionChangeHandler(event:CollectionEvent):void
 		{
 			var newEvent:CollectionEvent = CollectionEvent(event.clone());
@@ -786,12 +785,12 @@ package awaybuilder.view.components.controls.tree
 			// items were removed from what indexes
 			resetCache();
 			
-			// convert local locations to global 
+			// convert local locations to global
 			if (newEvent.location != -1)
-				newEvent.location = branchLocationToGlobalIndex(newEvent.location, 
+				newEvent.location = branchLocationToGlobalIndex(newEvent.location,
 					IList(event.target), branchStartIndex);
 			if (newEvent.oldLocation != -1)
-				newEvent.oldLocation = branchLocationToGlobalIndex(newEvent.oldLocation, 
+				newEvent.oldLocation = branchLocationToGlobalIndex(newEvent.oldLocation,
 					IList(event.target), branchStartIndex);
 			
 			// check if some of open branches are now empty and needs to be closed
@@ -799,7 +798,7 @@ package awaybuilder.view.components.controls.tree
 			
 			// items that were open branches could be removed. Remove links to them
 			// from internal tree structures to avoid memory leaks
-			removeLostBranches(items[0]);
+			//			removeLostBranches(items[0]);
 			
 			refreshLength();
 			
@@ -810,6 +809,7 @@ package awaybuilder.view.components.controls.tree
 				item = items[0];
 				if (parentObjectsToOpenedBranches[item])
 					removeBranch(parentObjectsToOpenedBranches[item], item, newEvent.location + 1);
+				
 			}
 			else if (kind == CollectionEventKind.UPDATE)
 			{
@@ -824,6 +824,10 @@ package awaybuilder.view.components.controls.tree
 						parentObjectsToOpenedBranches[item] != dataDescriptor.getChildren(item))
 						closeBranch(branch, item, false);
 				}
+			}
+			else if( kind == CollectionEventKind.REFRESH )
+			{
+				return;
 			}
 			
 			dispatchEvent(newEvent);

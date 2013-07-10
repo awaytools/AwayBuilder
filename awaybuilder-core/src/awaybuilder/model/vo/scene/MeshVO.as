@@ -34,7 +34,7 @@ package awaybuilder.model.vo.scene
 		public function fillFromMesh( asset:MeshVO ):void
 		{
 			this.fillFromContainer( asset );
-			this.subMeshes = new ArrayCollection(asset.subMeshes.source);
+			this.subMeshes = asset.subMeshes;
 			this.castsShadows = asset.castsShadows;
 			this.animator = asset.animator;
 			this.geometry = asset.geometry;

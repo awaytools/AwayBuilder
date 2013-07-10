@@ -229,6 +229,8 @@ package awaybuilder.view.mediators
 			addContextListener(SceneEvent.CONTAINER_CLICKED, eventDispatcher_containerClicked);
 			
 			addContextListener(DocumentModelEvent.OBJECTS_UPDATED, context_objectsUpdatedHandler);
+			addContextListener(DocumentModelEvent.VALIDATE_OBJECT, context_validateObjectHandler);
+			
 			
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.READY, scene_readyHandler);
 			Scene3DManager.instance.addEventListener(Scene3DManagerEvent.MESH_SELECTED, scene_meshSelectedHandler);
@@ -480,6 +482,13 @@ package awaybuilder.view.mediators
 			animator.time = time;
 		}
 		
+		private function context_validateObjectHandler(event:DocumentModelEvent):void
+		{
+			if( event.asset is MeshVO )
+			{
+				applyMesh( event.asset as MeshVO );
+			}
+		}
 		private function context_objectsUpdatedHandler(event:DocumentModelEvent):void
 		{
 			if( _currentAnimator )

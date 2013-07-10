@@ -2,11 +2,14 @@ package awaybuilder.controller.scene
 {
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
+	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
 	import away3d.lights.LightBase;
+	import away3d.materials.MaterialBase;
 	import away3d.primitives.SkyBox;
 	
+	import awaybuilder.controller.events.DocumentModelEvent;
 	import awaybuilder.controller.history.HistoryCommandBase;
 	import awaybuilder.controller.scene.events.SceneEvent;
 	import awaybuilder.model.AssetsModel;
@@ -23,6 +26,7 @@ package awaybuilder.controller.scene
 	import awaybuilder.model.vo.scene.ShadowMethodVO;
 	import awaybuilder.model.vo.scene.SharedEffectVO;
 	import awaybuilder.model.vo.scene.SkyBoxVO;
+	import awaybuilder.model.vo.scene.SubMeshVO;
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.utils.scene.Scene3DManager;
 	
@@ -139,7 +143,6 @@ package awaybuilder.controller.scene
 				{
 					removeAsset( materialVO.effectMethods, asset );
 				}
-				
 			}
 		}
 		
@@ -200,7 +203,10 @@ package awaybuilder.controller.scene
 		{
 			if( asset is MeshVO ) 
 			{
-				Scene3DManager.addObject( assets.GetObject(asset) as Mesh );
+				
+				this.dispatch(new DocumentModelEvent(DocumentModelEvent.VALIDATE_OBJECT, asset));
+				var mesh:Mesh =  assets.GetObject(asset) as Mesh;
+				Scene3DManager.addObject( mesh );
 			}
 			else if( asset is TextureProjectorVO ) 
 			{

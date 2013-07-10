@@ -70,7 +70,6 @@ package awaybuilder.controller.clipboard
 		private function createMesh( copy:MeshVO, parent:ContainerVO=null ):MeshVO
 		{
 			var geometry:Geometry = assets.GetObject( MeshVO(copy).geometry ) as Geometry;
-			trace( geometry );
 			var newAsset:MeshVO = assets.CreateMesh( MeshVO(copy).geometry );
 			var newObject:Object3D = assets.GetObject( newAsset ) as Object3D;
 			if( parent )
