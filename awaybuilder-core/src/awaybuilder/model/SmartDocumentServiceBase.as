@@ -3,6 +3,7 @@ package awaybuilder.model
 	import away3d.animators.nodes.AnimationNodeBase;
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
+	import away3d.core.base.ISubGeometry;
 	import away3d.entities.Mesh;
 	import away3d.entities.TextureProjector;
 	import away3d.events.AssetEvent;
@@ -29,6 +30,7 @@ package awaybuilder.model
 	import awaybuilder.model.vo.scene.AssetVO;
 	import awaybuilder.model.vo.scene.CubeTextureVO;
 	import awaybuilder.model.vo.scene.GeometryVO;
+	import awaybuilder.model.vo.scene.SubGeometryVO;
 	import awaybuilder.utils.logging.AwayBuilderLoadErrorLogger;
 	
 	import flash.display.Bitmap;
@@ -38,7 +40,9 @@ package awaybuilder.model
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
+	import flash.utils.getQualifiedClassName;
 	
+	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
 	import mx.managers.CursorManager;
@@ -183,10 +187,11 @@ package awaybuilder.model
 							if (assets.checkIfMaterialIsDefault(TextureMaterial(mesh.subMeshes[i].material)))
 								mesh.subMeshes[i].material = assets.GetObject(assets.defaultMaterial) as MaterialBase;	
 					
-					if( !isGeometryInList( assets.GetAsset(mesh.geometry) as GeometryVO ) )
-					{
+					
+					if( isGeometryInList( assets.GetAsset(mesh.geometry) as GeometryVO ) )
+						updateSubGeometries(assets.GetAsset(mesh.geometry) as GeometryVO,mesh);	
+					else
 						_document.geometry.addItem( assets.GetAsset(mesh.geometry) as GeometryVO );
-					}
 					_objects.push( mesh  );
 					break;
 				case AssetType.CONTAINER:
@@ -329,6 +334,34 @@ package awaybuilder.model
 		{
 			return (flags & testFlag) == testFlag;
 		}
+		private function updateSubGeometries( g:GeometryVO, mesh:Mesh ):void
+		{
+			var updateSubs:Boolean=false;
+			var subGeoCount:int=0;
+			for each (var subGeo:SubGeometryVO in g.subGeometries){
+				if (subGeoCount>=mesh.geometry.subGeometries.length){
+					updateSubs=true;
+					break;
+				}
+				var type:String = getQualifiedClassName( mesh.geometry.subGeometries[subGeoCount] ).split("::")[1];
+				if (type!=subGeo.type){
+					updateSubs=true;
+					break;
+				}
+			}
+			if (updateSubs){
+				g.subGeometries=new ArrayCollection();
+				subGeoCount=0;
+				for each( var sub:ISubGeometry in mesh.geometry.subGeometries )
+				{
+					subGeoCount++;
+					var subGeometryVO:SubGeometryVO = assets.GetAsset(sub) as SubGeometryVO;
+					subGeometryVO.name="SubGeometry #"+subGeoCount;
+					g.subGeometries.addItem( subGeometryVO );
+				}
+			}	
+		}
+		
 		private function isGeometryInList( geometry:GeometryVO ):Boolean
 		{
 			for each ( var asset:AssetVO in _document.geometry )
@@ -338,7 +371,6 @@ package awaybuilder.model
 			}
 			return false;
 		}
-		
 		protected function documentReady( document:DocumentVO, globalOptions:GlobalOptionsVO = null ):void {
 			throw new Error( "Abstract method error" );
 		}
