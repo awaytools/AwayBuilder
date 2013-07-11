@@ -1,6 +1,7 @@
 # Build and Release Folders
 bin/
 bin-debug/
+bin-release-temp/
 out/
 
 # Project property files
