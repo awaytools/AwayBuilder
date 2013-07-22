@@ -568,7 +568,9 @@ package awaybuilder.model
 			for (i=0;i<mat.numMethods;i++){
 				checkEffectMethodForDefaulttexture(mat.getMethodAt(i));
 			}
-			
+			// now all texutures are checked and replaced with defaults
+			// check each material-property, and return false, if it is not default
+			if ((mat.name!="Default")&& (mat.name!="defaultMaterial"))return false;
 			if (getQualifiedClassName( mat.ambientMethod ).split("::")[1]!="BasicAmbientMethod")return false;
 			if (getQualifiedClassName( mat.diffuseMethod ).split("::")[1]!="BasicDiffuseMethod")return false;
 			if (getQualifiedClassName( mat.specularMethod ).split("::")[1]!="BasicSpecularMethod")return false;
