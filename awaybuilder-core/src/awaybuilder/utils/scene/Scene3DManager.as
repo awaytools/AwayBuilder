@@ -94,6 +94,7 @@ package awaybuilder.utils.scene
 		
 		private function onContextCreated(e:Stage3DEvent):void 
 		{
+			trace( "onContextCreated" );
 			backgroundView = new View3D();
 			backgroundView.shareContext = true;
 			backgroundView.stage3DProxy = stage3DProxy;	
@@ -178,7 +179,6 @@ package awaybuilder.utils.scene
 				
 			//handle stage events
 			scope.addEventListener(MouseEvent.MOUSE_DOWN, instance.onMouseDown);
-			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);			
 			scope.addEventListener(MouseEvent.DOUBLE_CLICK, instance.onSceneDoubleClick);			
 			
 			containerBreadCrumbs = new Array();
@@ -334,13 +334,15 @@ package awaybuilder.utils.scene
 				
 		private function onMouseDown(e:MouseEvent):void
 		{
-			
+			scope.addEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);
 		}			
 		
 		private function onMouseUp(e:MouseEvent):void
 		{
+			scope.removeEventListener(MouseEvent.MOUSE_UP, instance.onMouseUp);
 			if (active)
 			{
+				if( currentGizmo.isMoving ) return;
 				if (!CameraManager.hasMoved && !multiSelection && !currentGizmo.active && !orientationTool.orientationClicked) deselectAndDispatch();	
 			}
 			orientationTool.orientationClicked = false;

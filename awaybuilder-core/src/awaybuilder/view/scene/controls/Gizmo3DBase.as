@@ -20,6 +20,7 @@ package awaybuilder.view.scene.controls
 		
 		public var active:Boolean = false;
 		public var hasMoved:Boolean = false;
+		public var isMoving : Boolean = false;
 		
 		public var currentMesh:ObjectContainer3D;	
 		public var currentAxis:String = "";
@@ -86,7 +87,6 @@ package awaybuilder.view.scene.controls
 		
 		public function show(sceneObject:ObjectContainer3D):void
 		{
-			trace( sceneObject.name );
 			currentMesh = sceneObject;
 			
 			isLightGizmo = currentMesh.parent as LightGizmo3D;

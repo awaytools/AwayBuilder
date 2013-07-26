@@ -244,11 +244,13 @@ package awaybuilder.view.scene.controls
 			}
 			
 			hasMoved = true;
+			isMoving = true;
 			active = true;
 			CameraManager.active = false;				
 				
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			
 		}
 		
 		protected function handleMouseMove(e:MouseEvent):void
@@ -315,8 +317,9 @@ package awaybuilder.view.scene.controls
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.MOVE, GizmoMode.TRANSLATE, actualMesh, pos, startValue, pos));
 		}
 		
-		protected function handleMouseUp(event:Event):void
+		protected function handleMouseUp(event:MouseEvent):void
 		{
+			isMoving = false;
 			Scene3DManager.stage.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 			
@@ -333,6 +336,7 @@ package awaybuilder.view.scene.controls
 
 			var pos:Vector3D = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
 			dispatchEvent(new Gizmo3DEvent(Gizmo3DEvent.RELEASE, GizmoMode.TRANSLATE, actualMesh, pos, startValue, pos));
+			
 		}		
 		
 	}

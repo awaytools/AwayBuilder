@@ -234,6 +234,7 @@ package awaybuilder.view.scene.controls
 			}
 			
 			hasMoved = true;
+			isMoving = true;
 			active = true;
 			CameraManager.active = false;			
 			
@@ -323,6 +324,7 @@ package awaybuilder.view.scene.controls
 		
 		protected function handleMouseUp(event:Event):void
 		{
+			isMoving = false;
 			Scene3DManager.stage.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			Scene3DManager.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 			
