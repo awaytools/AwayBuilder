@@ -1694,15 +1694,14 @@ package awaybuilder.view.mediators
 		}
 		private function selectObjectsScene( o:ObjectContainer3D ):void
 		{
-			for each( var object:ObjectContainer3D in Scene3DManager.selectedObjects.source )
+			for each( var objectContainer3D:ObjectContainer3D in Scene3DManager.selectedObjects )
 			{
-				if( object == o )
+				if( objectContainer3D == o )
 				{
 					return;
 				}
 			}
 			Scene3DManager.selectObject(o);
-			
 		}
 		private function selectContainersScene( c:ObjectContainer3D ):void
 		{
@@ -1793,9 +1792,9 @@ package awaybuilder.view.mediators
 			var asset:AssetVO;
 			var isSceneRepresentation:ISceneRepresentation;
 				
-			for each( var item:Object in Scene3DManager.selectedObjects.source )
+			for each( var objectContainer:ObjectContainer3D in Scene3DManager.selectedObjects )
 			{
-				mesh = item as Mesh;
+				mesh = objectContainer as Mesh;
 				if( mesh ) 
 				{
 					if ((isSceneRepresentation = (mesh.parent as ISceneRepresentation))!=null)
@@ -1805,7 +1804,6 @@ package awaybuilder.view.mediators
 				}
 			} 
 			this.dispatch(new SceneEvent(SceneEvent.SELECT,selected));
-			
 			
 		}
 

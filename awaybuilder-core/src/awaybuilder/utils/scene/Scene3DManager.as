@@ -1,9 +1,9 @@
 package awaybuilder.utils.scene
 {
-	import away3d.cameras.lenses.LensBase;
 	import avmplus.*;
 	
 	import away3d.cameras.*;
+	import away3d.cameras.lenses.LensBase;
 	import away3d.containers.*;
 	import away3d.core.managers.*;
 	import away3d.core.pick.*;
@@ -53,15 +53,11 @@ package awaybuilder.utils.scene
 		public static var camera:Camera3D;
 		public static var gizmoCamera:Camera3D;
 		
-		public static var selectedObjects:ArrayList = new ArrayList();// TODO: Use vector
+		public static var selectedObjects:Vector.<ObjectContainer3D> = new Vector.<ObjectContainer3D>();
 		public static var selectedObject:ObjectContainer3D;
 		public static var multiSelection:Boolean = false;
 		public static var mouseSelection:ObjectContainer3D;
 		public static var lensSelected:LensBase;
-		
-//		public static var objects:ArrayList = new ArrayList(); // TODO: Use vector
-//		public static var lights:ArrayList = new ArrayList();// TODO: Use vector
-//		public static var textureProjectors:ArrayList = new ArrayList();// TODO: Use vector
 		
 		public static var grid:WireframePlane;
 		public static var backgroundGrid:WireframePlane;
@@ -899,7 +895,7 @@ package awaybuilder.utils.scene
 			var itemsDeselected:Boolean = false;
 			for(var i:int=0;i<selectedObjects.length;i++)
 			{
-				var oC:ObjectContainer3D = selectedObjects.getItemAt(i) as ObjectContainer3D;
+				var oC:ObjectContainer3D = selectedObjects[i];
 				var m:Entity = oC as Entity;
 				var g:ISceneRepresentation = oC as ISceneRepresentation;
 				if (m && !g) g = m.parent as ISceneRepresentation;
@@ -918,7 +914,7 @@ package awaybuilder.utils.scene
 				itemsDeselected = true;
 			}
 			
-			selectedObjects = new ArrayList();
+			selectedObjects = new Vector.<ObjectContainer3D>();
 			selectedObject = null;
 			currentGizmo.hide();
 			return itemsDeselected;
@@ -929,19 +925,17 @@ package awaybuilder.utils.scene
 			if (unselectAll()) instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}
 		
-		public static function unSelectObjectByName(meshName:String):void
+		public static function unSelectObjectByName( name:String ):void
 		{
-			for(var i:int=0;i<selectedObjects.length;i++)
+			for each( var o:ObjectContainer3D in selectedObjects )
 			{
-				var m:Entity = selectedObjects.getItemAt(i) as Entity;
-				if (m.name == meshName)
+				if (o.name == name)
 				{
-					if (m is Mesh) m.showBounds = false;			
-					selectedObject = selectedObjects.getItemAt(selectedObjects.length-1) as Entity;
-					
+					if (o is Mesh) Mesh(o).showBounds = false;			
+					selectedObject = selectedObjects[selectedObjects.length-1];
 					break;
 				}
-			}	
+			}
 			instance.dispatchEvent(new Scene3DManagerEvent(Scene3DManagerEvent.MESH_SELECTED));
 		}		
 		
@@ -1016,7 +1010,7 @@ package awaybuilder.utils.scene
 					else bounds.updateContainerBounds();
 					bounds.showBounds = true;
 
-					selectedObjects.addItem(oC);
+					selectedObjects.push(oC);
 					selectedObject = oC;
 
 					currentGizmo.show(selectedObject);
@@ -1027,7 +1021,7 @@ package awaybuilder.utils.scene
 		
 		private static function addToSelection(m:ObjectContainer3D, eventType:String) : void {
 			if (m is Entity) (m as Entity).showBounds = true;
-			selectedObjects.addItem(m);						
+			selectedObjects.push(m);						
 			selectedObject = m;
 
 			currentGizmo.show(selectedObject);
