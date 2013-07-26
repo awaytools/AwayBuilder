@@ -1852,6 +1852,7 @@ package awaybuilder.view.mediators
 			var vo:ObjectVO = assets.GetAsset( event.object ) as ObjectVO;
 			var newValues:Vector.<Vector3D> = new Vector.<Vector3D>();
 			newValues.push( event.endValue );
+			trace( event.endValue );
 			var oldValues:Vector.<Vector3D> = new Vector.<Vector3D>();
 			oldValues.push( event.startValue );
             switch( event.gizmoMode ) 

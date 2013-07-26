@@ -1,18 +1,22 @@
 package awaybuilder.view.scene.controls
 {
-	import away3d.primitives.WireframeRegularPolygon;
-	import awaybuilder.view.scene.representations.ISceneRepresentation;
+	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.pick.PickingColliderType;
+	import away3d.entities.Entity;
 	import away3d.entities.Mesh;
+	import away3d.entities.TextureProjector;
 	import away3d.events.MouseEvent3D;
+	import away3d.lights.LightBase;
 	import away3d.primitives.ConeGeometry;
 	import away3d.primitives.CylinderGeometry;
+	import away3d.primitives.WireframeRegularPolygon;
 	
 	import awaybuilder.utils.scene.CameraManager;
 	import awaybuilder.utils.scene.Scene3DManager;
 	import awaybuilder.utils.scene.modes.GizmoMode;
 	import awaybuilder.view.scene.events.Gizmo3DEvent;
+	import awaybuilder.view.scene.representations.ISceneRepresentation;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -197,30 +201,42 @@ package awaybuilder.view.scene.controls
 			click.x = Scene3DManager.stage.mouseX;
 			click.y = Scene3DManager.stage.mouseY;				
 				
-			if (currentMesh.parent is ISceneRepresentation) actualMesh = (currentMesh.parent as ISceneRepresentation).sceneObject;
-			else actualMesh = currentMesh;
+			if (currentMesh.parent is ISceneRepresentation) 
+			{
+				actualMesh = (currentMesh.parent as ISceneRepresentation).sceneObject;
+				switch( true )
+				{
+					case actualMesh is TextureProjector:
+					case actualMesh is Entity:
+						startValue = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
+						break;
+					default:
+						startValue = new Vector3D(0, 0, 0);
+						break;
+				}
+			}
+			else 
+			{
+				actualMesh = currentMesh;
+				startValue = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
+			}
 			
-			startValue = new Vector3D(actualMesh.x, actualMesh.y, actualMesh.z);
 			startScenePosition = actualMesh.parent.scenePosition.clone();
-
+			
 			switch(currentAxis)
 			{
 				case "xAxis":
-					
 					xCone.material = highlightDownMaterial;
 					xCylinder.material = highlightDownMaterial;
-					
 					break;
 				
 				case "yAxis":
-					
 					yCone.material = highlightDownMaterial;
 					yCylinder.material = highlightDownMaterial;
 					
 					break;
 				
 				case "zAxis":
-					
 					zCone.material = highlightDownMaterial;
 					zCylinder.material = highlightDownMaterial;
 					
@@ -290,7 +306,6 @@ package awaybuilder.view.scene.controls
 
 			var pos:Vector3D = this.position.subtract(startScenePosition);
 			pos = actualMesh.parent.inverseSceneTransform.deltaTransformVector(pos).add(startValue);
-
 			actualMesh.x = pos.x;
 			actualMesh.y = pos.y;
 			actualMesh.z = pos.z;

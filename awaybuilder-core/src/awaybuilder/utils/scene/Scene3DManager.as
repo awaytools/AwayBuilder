@@ -35,9 +35,11 @@ package awaybuilder.utils.scene
 	{
 		// Singleton instance declaration
 		public static const instance : Scene3DManager = new Scene3DManager();
+		
+		public function Scene3DManager() { if ( instance ) throw new Error("Scene3DManager is a singleton"); }	
+		
 		private var sceneDoubleClickDetected : Boolean;
 		private var doubleClick3DMonitor : Boolean;
-		public function Scene3DManager() { if ( instance ) throw new Error("Scene3DManager is a singleton"); }		
 		
 		public static var active:Boolean = true;
 
@@ -360,20 +362,21 @@ package awaybuilder.utils.scene
 
 			switch (mode) 
 			{													
-				case GizmoMode.TRANSLATE : currentGizmo = translateGizmo;
-					
+				case GizmoMode.TRANSLATE : 
+					currentGizmo = translateGizmo;
 					break;				
 				
-				case GizmoMode.ROTATE: currentGizmo = rotateGizmo;
-					
+				case GizmoMode.ROTATE: 
+					currentGizmo = rotateGizmo;
 					break;				
 				
-				case GizmoMode.SCALE: currentGizmo = scaleGizmo;
-					
+				case GizmoMode.SCALE: 
+					currentGizmo = scaleGizmo;
 					break;													
 			}
 			
-			if (selectedObject) {
+			if (selectedObject) 
+			{
 				var isLightGizmo:LightGizmo3D = selectedObject.parent as LightGizmo3D;
 			 	if (!isLightGizmo || 
 					(isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) ||
@@ -385,7 +388,8 @@ package awaybuilder.utils.scene
 		public static function updateGizmo() : void {
 			gizmoCamera.transform = camera.transform.clone();
 			var isLightGizmo:LightGizmo3D = (selectedObject && selectedObject.parent) as LightGizmo3D;
-		 	if (isLightGizmo && isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) {
+		 	if (isLightGizmo && isLightGizmo.type==LightGizmo3D.DIRECTIONAL_LIGHT && Scene3DManager.currentGizmo==rotateGizmo) 
+			{
 				var oC:ObjectContainer3D = Scene3DManager.camera.clone() as ObjectContainer3D;
 				oC.moveForward(1000);
 				currentGizmo.position = oC.position;
@@ -625,13 +629,16 @@ package awaybuilder.utils.scene
 		
 		private static function attachGizmos(container:ObjectContainer3D) : void {			
 			var childCtr:int = 0;
-			while (childCtr < container.numChildren) {
+			while (childCtr < container.numChildren) 
+			{
 				attachGizmos(container.getChildAt(childCtr++));
 			}
 
-			if (getQualifiedClassName(container)=="away3d.containers::ObjectContainer3D" && container.numChildren == 0) {
+			if (getQualifiedClassName(container)=="away3d.containers::ObjectContainer3D" && container.numChildren == 0) 
+			{
 				addEmptyContainerRepresentation(container);
-			} else if (container is Camera3D) {
+			} 
+			else if (container is Camera3D) {
 				addCamera(container as Camera3D);
 			}
 

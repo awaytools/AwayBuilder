@@ -86,6 +86,7 @@ package awaybuilder.view.scene.controls
 		
 		public function show(sceneObject:ObjectContainer3D):void
 		{
+			trace( sceneObject.name );
 			currentMesh = sceneObject;
 			
 			isLightGizmo = currentMesh.parent as LightGizmo3D;
@@ -113,8 +114,8 @@ package awaybuilder.view.scene.controls
 				var pos:Vector3D = new Vector3D(currentMesh.x, currentMesh.y, currentMesh.z);
 				pos = mat.transformVector(pos);
 				content.position = pos;
-				this.position = currentMesh.parent.scenePosition.clone();
 				
+				this.position = currentMesh.parent.scenePosition.clone();
 				return;
 			}
 			
