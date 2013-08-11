@@ -1022,66 +1022,62 @@ package awaybuilder.utils.encoders
 			var matType:int=1;			
 			
 			// optional properties:
-			var color:uint;//1
-			var texture:int;//2
-			var normalTexture:int;//3
-			var spezialType:uint;//4
+			var color:uint=0xcccccc;//1
+			var texture:int=-1;//2
+			var normalTexture:int=0;//3
+			var spezialType:uint=0;//4
 			var smooth:Boolean=true;//5
 			var mipmap:Boolean=true;//6
 			var bothSides:Boolean=false;//7
 			var alphaPremultiplied:Boolean=false;//8
-			var blendMode:uint;//9
-			var alpha:Number;//10
+			var blendMode:uint=0;//9
+			var alpha:Number=1.0;//10
 			var alphaBlending:Boolean=false;//11
-			var alphaThreshold:Number;//12
+			var alphaThreshold:Number=0;//12
 			var repeat:Boolean=true;//13
 			//var diffuse-Level:Number;//14
-			var ambient:uint;//15
-			var ambientColor:uint;//16
-			var ambientTexture:int;//17
-			var specular:Number;//18
-			var gloss:Number;//19
-			var specularColor:uint;//20
-			var specularTexture:uint;//21
-			var lightPicker:int;//22	
+			var ambient:uint=1.0;//15
+			var ambientColor:uint=0xffffff;//16
+			var ambientTexture:int=-1;//17
+			var specular:Number=1.0;//18
+			var gloss:Number=50;//19
+			var specularColor:uint=0xffffff;//20
+			var specularTexture:uint=0;//21
+			var lightPicker:int=0;//22	
+			
 			var allMethods:Vector.<AWDmethod>=_encodeAllShadingMethods(mtl);
-			texture=-1;
 			if (mtl.diffuseTexture) texture=_getBlockIDorEncodeAsset(mtl.diffuseTexture);
-			ambientTexture=-1;
 			if (mtl.ambientTexture) ambientTexture=_getBlockIDorEncodeAsset(mtl.ambientTexture);	
 			if ((texture>=0)||(ambientTexture>=0)) matType=2;	
 			if (matType==1) color=mtl.diffuseColor;	
 			
 			if (mtl.type==MaterialVO.SINGLEPASS){
-				if (mtl.alpha!=1.0)	alpha=mtl.alpha;
-				if (mtl.alphaBlending!=false) alphaBlending=mtl.alphaBlending;
+				alpha=mtl.alpha;
+				alphaBlending=mtl.alphaBlending;
 			}
 			else{
 				spezialType=1;
 			}
 			
-			if (mtl.alphaThreshold!=Number(0.0)) alphaThreshold=mtl.alphaThreshold;
-			if (mtl.ambientLevel!=Number(1.0)) ambient=mtl.ambientLevel;
-			if (mtl.ambientColor!=uint(0xffffff)) ambientColor=mtl.ambientColor;	
-			if (mtl.specularLevel!=Number(1.0))	specular=mtl.specularLevel;	
-			if (mtl.specularGloss!=Number(50)) gloss=mtl.specularGloss;	
-			if (mtl.specularColor!=uint(0xffffff)) specularColor=mtl.specularColor;	
+			alphaThreshold=mtl.alphaThreshold;
+			ambient=mtl.ambientLevel;
+			ambientColor=mtl.ambientColor;	
+			specular=mtl.specularLevel;	
+			gloss=mtl.specularGloss;	
+			specularColor=mtl.specularColor;	
+			
 			if (mtl.normalTexture)	normalTexture=_getBlockIDorEncodeAsset(mtl.normalTexture);
 			if (mtl.specularTexture)	specularTexture=_getBlockIDorEncodeAsset(mtl.specularTexture);
 			
-			if (mtl.lightPicker){
-				if(_debug)trace("lightPicker");
-				if (_getBlockIDorEncodeAsset(mtl.lightPicker)!=0)	lightPicker=_getBlockIDorEncodeAsset(mtl.lightPicker);
-			}
+			if (mtl.lightPicker)	lightPicker=_getBlockIDorEncodeAsset(mtl.lightPicker);
 			
 			smooth=mtl.smooth;
 			mipmap=mtl.mipmap;
 			bothSides=mtl.bothSides;
 			repeat=mtl.repeat;
 			alphaPremultiplied=mtl.alphaPremultiplied;		
-			var thisBlendMode:uint=blendModeDic[mtl.blendMode];
-			if ((thisBlendMode!=1)&&(thisBlendMode!=2)&&(thisBlendMode!=8)&&(thisBlendMode!=10))	thisBlendMode=0;
-			if (thisBlendMode>0)	blendMode=thisBlendMode;
+			blendMode=blendModeDic[mtl.blendMode];
+			if ((blendMode!=1)&&(blendMode!=2)&&(blendMode!=8)&&(blendMode!=10))	blendMode=0;
 						
 			returnID=_encodeBlockHeader(81);
 			
@@ -1091,28 +1087,28 @@ package awaybuilder.utils.encoders
 			
 			// Property list
 			_beginElement(); // Prop list
-			if (color){	_encodeProperty(1,color, COLOR);}//color
-			if (texture>=0){_encodeProperty(2,texture, BADDR);}//texture
-			if (normalTexture){_encodeProperty(3,normalTexture, BADDR);}//normalMap 
+			if (color!=0xcccccc){	_encodeProperty(1,color, COLOR);}//color
+			if (texture>0){_encodeProperty(2,texture, BADDR);}//texture
+			if (normalTexture>0){_encodeProperty(3,normalTexture, BADDR);}//normalMap 
 			if (spezialType){_encodeProperty(4,spezialType, UINT8);}// multi/singlepass	
-			if (smooth==false){_encodeProperty(5, smooth, BOOL);} // smooth
-			if (mipmap==false){_encodeProperty(6, mipmap, BOOL);} // mipmap
-			if (bothSides==true){_encodeProperty(7, bothSides, BOOL);} // bothsides
-			if (alphaPremultiplied==true){_encodeProperty(8, alphaPremultiplied, BOOL);} // pre-multiplied				
-			if (blendMode){_encodeProperty(9, blendMode, UINT8);} // BlendMode
-			if (alpha){_encodeProperty(10, alpha, _propNrType);}// alpha
-			if (alphaBlending==true){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
-			if (alphaThreshold){_encodeProperty(12, alphaThreshold, _propNrType);}// alphaThreshold
-			if (repeat==true){_encodeProperty(13, repeat, BOOL);}// repeat
+			if (!smooth){_encodeProperty(5, smooth, BOOL);} // smooth
+			if (!mipmap){_encodeProperty(6, mipmap, BOOL);} // mipmap
+			if (bothSides){_encodeProperty(7, bothSides, BOOL);} // bothsides
+			if (alphaPremultiplied){_encodeProperty(8, alphaPremultiplied, BOOL);} // pre-multiplied				
+			if (blendMode>0){_encodeProperty(9, blendMode, UINT8);} // BlendMode
+			if (alpha!=1.0){_encodeProperty(10, alpha, _propNrType);}// alpha
+			if (alphaBlending){_encodeProperty(11, alphaBlending, BOOL);}// alphaBlending
+			if (alphaThreshold>0){_encodeProperty(12, alphaThreshold, _propNrType);}// alphaThreshold
+			if (repeat){_encodeProperty(13, repeat, BOOL);}// repeat
 			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
 			if (ambient!=1){_encodeProperty(15, ambient, _propNrType);}// ambient-level
-			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
-			if (ambientTexture>=0){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap 		
+			if (ambientColor!=0xffffff){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
+			if (ambientTexture>0){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap 		
 			if (specular!=1){_encodeProperty(18, specular, _propNrType);}// specular-level
 			if (gloss!=50){_encodeProperty(19, gloss, _propNrType);}// specular-gloss 
-			if (specularColor){_encodeProperty(20, specularColor, COLOR);}// specular-color
-			if (specularTexture){_encodeProperty(21, specularTexture, BADDR);}//specularMap 
-			if (lightPicker){_encodeProperty(22, lightPicker, BADDR);}//lightPicker
+			if (specularColor!=0xffffff){_encodeProperty(20, specularColor, COLOR);}// specular-color
+			if (specularTexture>0){_encodeProperty(21, specularTexture, BADDR);}//specularMap 
+			if (lightPicker>0){_encodeProperty(22, lightPicker, BADDR);}//lightPicker
 			_endElement(); // Prop list			
 			
 			// _encode all previous stored methods.
