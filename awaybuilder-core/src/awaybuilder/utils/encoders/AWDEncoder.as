@@ -1105,11 +1105,11 @@ package awaybuilder.utils.encoders
 			if (alphaThreshold){_encodeProperty(12, alphaThreshold, _propNrType);}// alphaThreshold
 			if (repeat==true){_encodeProperty(13, repeat, BOOL);}// repeat
 			//if (diffuse){_encodeProperty(14, diffuse, FLOAT32);}// diffuse-level (might come in later version)
-			if (ambient){_encodeProperty(15, ambient, _propNrType);}// ambient-level
+			if (ambient!=1){_encodeProperty(15, ambient, _propNrType);}// ambient-level
 			if (ambientColor){_encodeProperty(16, ambientColor, COLOR);}// ambient-color
 			if (ambientTexture>=0){_encodeProperty(17, ambientTexture, BADDR);}//ambientMap 		
-			if (specular){_encodeProperty(18, specular, _propNrType);}// specular-level
-			if (gloss){_encodeProperty(19, gloss, _propNrType);}// specular-gloss 
+			if (specular!=1){_encodeProperty(18, specular, _propNrType);}// specular-level
+			if (gloss!=50){_encodeProperty(19, gloss, _propNrType);}// specular-gloss 
 			if (specularColor){_encodeProperty(20, specularColor, COLOR);}// specular-color
 			if (specularTexture){_encodeProperty(21, specularTexture, BADDR);}//specularMap 
 			if (lightPicker){_encodeProperty(22, lightPicker, BADDR);}//lightPicker
