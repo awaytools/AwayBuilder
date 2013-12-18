@@ -1245,8 +1245,7 @@ package awaybuilder.utils.encoders
 				if(bitMapHasTransparency(tex.bitmapData,tex.bitmapData.rect.width,tex.bitmapData.rect.height))
 					extension=".png";
 				var texturePath:String="textures/"+getFileName(tex.name, extension);
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);				
+				_writeString(texturePath);				
 				}
 			
 			_beginElement(); // Properties (empty)
@@ -1309,38 +1308,36 @@ package awaybuilder.utils.encoders
 				if(bitMapHasTransparency(cubeTexture.positiveX,cubeTexture.positiveX.rect.width,cubeTexture.positiveX.rect.height))
 					extension=".png";
 				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_posX.");
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);			
+				_writeString(texturePath);	
+				
 				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeX,cubeTexture.negativeX.rect.width,cubeTexture.negativeX.rect.height))
 					extension=".png";
 				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_negX.");
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);		
+				_writeString(texturePath);
+				
 				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveY,cubeTexture.positiveY.rect.width,cubeTexture.positiveY.rect.height))
 					extension=".png";
-				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_posY.");
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);		
+				_writeString(texturePath);	
+				
 				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeY,cubeTexture.negativeY.rect.width,cubeTexture.negativeY.rect.height))
 					extension=".png";
 				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_negY.");
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);	
+				_writeString(texturePath);
+				
 				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.positiveZ,cubeTexture.positiveZ.rect.width,cubeTexture.positiveZ.rect.height))
 					extension=".png";
 				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_posZ.");
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);		
+				_writeString(texturePath);
+				
 				extension=".jpg";
 				if(bitMapHasTransparency(cubeTexture.negativeZ,cubeTexture.negativeZ.rect.width,cubeTexture.negativeZ.rect.height))
 					extension=".png";	
 				texturePath="textures/"+getFileName(cubeTexture.name,extension,"_negZ.");
-				_blockBody.writeUnsignedInt(texturePath.length);
-				_blockBody.writeUTFBytes(texturePath);	
+				_writeString(texturePath);
 				
 				
 			}
@@ -2096,8 +2093,7 @@ package awaybuilder.utils.encoders
 					break;
 				case AWDSTRING:
 					_blockBody.writeShort(id);
-					_blockBody.writeUnsignedInt(values[0].length);
-					_blockBody.writeUTFBytes(values[0]);
+					_writeString(values[0]);
 					return;
 			}
 			
@@ -2222,13 +2218,19 @@ package awaybuilder.utils.encoders
 					break;
 				
 				case AWDSTRING:
-					_blockBody.writeUnsignedInt(value.length);
-					_blockBody.writeUTFBytes(value);
+					_writeString(value);
 					break;
 				}
 			
 		}		
 		
+		private function _writeString(thisString:String) : void
+		{
+			var ba:ByteArray= new ByteArray();
+			ba.writeUTFBytes(thisString);					
+			_blockBody.writeUnsignedInt(ba.length);
+			_blockBody.writeUTFBytes(thisString);
+		}	
 		private function _beginElement() : void
 		{
 			_elemSizeOffsets.push(_blockBody.position);
