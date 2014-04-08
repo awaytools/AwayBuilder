@@ -725,8 +725,6 @@ package awaybuilder.utils.encoders
 		// encode Container (id=22)
 		private function _encodeContainer3D(container : ContainerVO, parentId:uint=0) : uint
 		{			
-			var i : uint;
-			var parentId : uint;
 			var returnID:uint=_encodeBlockHeader(22);
 			
 			_blockBody.writeUnsignedInt(parentId);
