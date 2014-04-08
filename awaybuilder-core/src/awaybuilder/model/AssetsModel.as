@@ -524,8 +524,10 @@ package awaybuilder.model
 				if(EnvMapMethod (method).envMap.name=="defaultTexture"){
 					EnvMapMethod (method).envMap=GetObject(defaultCubeTexture) as BitmapCubeTexture;
 				}
-				if(EnvMapMethod (method).mask.name=="defaultTexture"){
-					EnvMapMethod (method).mask=GetObject(defaultTexture) as Texture2DBase;
+				if(EnvMapMethod (method).mask){
+					if(EnvMapMethod (method).mask.name=="defaultTexture"){
+						EnvMapMethod (method).mask=GetObject(defaultTexture) as Texture2DBase;
+					}
 				}
 			}
 			if (method is LightMapMethod){

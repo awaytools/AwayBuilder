@@ -30,8 +30,9 @@ package awaybuilder.desktop.controller
 		{
 			if( document.empty ) 
 			{
-				var nextEvent:ConcatenateDataOperationEvent = new ConcatenateDataOperationEvent(ConcatenateDataOperationEvent.CONCAT_DOCUMENT_DATA );
-				documentService.load( event.file.url, event.file.name, nextEvent );
+				//var nextEvent:ConcatenateDataOperationEvent = new ConcatenateDataOperationEvent(ConcatenateDataOperationEvent.CONCAT_DOCUMENT_DATA );
+				var nextEvent:ReplaceDocumentDataEvent = new ReplaceDocumentDataEvent(ReplaceDocumentDataEvent.REPLACE_DOCUMENT_DATA );
+				documentService.load( event.file.url, event.file.name, nextEvent);
 				return;
 			}
 				
@@ -46,12 +47,12 @@ package awaybuilder.desktop.controller
 			{
 				case Alert.YES:
 					nextEvent = new ConcatenateDataOperationEvent(ConcatenateDataOperationEvent.CONCAT_DOCUMENT_DATA );
-					documentService.load( event.file.url, event.file.name, nextEvent  );
+					documentService.load( event.file.url, event.file.name, nextEvent);
 					break;
 				case Alert.NO:
 					this.dispatch(new DocumentEvent(DocumentEvent.NEW_DOCUMENT));
 					nextEvent = new ReplaceDocumentDataEvent(ReplaceDocumentDataEvent.REPLACE_DOCUMENT_DATA );
-					documentService.load( event.file.url, event.file.name, nextEvent  );
+					documentService.load( event.file.url, event.file.name, nextEvent);
 					break;
 			}
 		}

@@ -146,7 +146,7 @@ package awaybuilder.desktop.view.mediators
 		{
 			if(event.arguments.length == 1)
 			{
-				const extensions:Vector.<String> = new <String>["awd"];
+				const extensions:Vector.<String> = new <String>["awd","AWD"];
 				var filePath:String = event.arguments[0];
 				var file:File = new File(filePath);
 				if(file.exists && extensions.indexOf(file.extension) >= 0)

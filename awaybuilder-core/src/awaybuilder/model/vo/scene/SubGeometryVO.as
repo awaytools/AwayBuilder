@@ -18,9 +18,15 @@ package awaybuilder.model.vo.scene
 		public var scaleU:Number;
 		public var scaleV:Number;
 		
+		public var hasUVData : Boolean;
 		public var UVData : Vector.<Number>;
 		public var UVStride : uint;
 		public var UVOffset : int;
+		
+		public var hasSecUVData : Boolean;
+		public var SecUVData : Vector.<Number>;
+		public var SecUVStride : uint;
+		public var SecUVOffset : int;
 		
 		public var vertexNormalData : Vector.<Number>;
 		public var vertexNormalOffset : int;
@@ -58,9 +64,14 @@ package awaybuilder.model.vo.scene
 			this.vertexStride = asset.vertexStride;
 			this.autoDerivedNormals = asset.autoDerivedNormals;
 			this.autoDerivedTangents = asset.autoDerivedTangents;
+			this.hasUVData = asset.hasUVData;
 			this.UVData = asset.UVData;
 			this.UVStride = asset.UVStride;
-			this.UVOffset = asset.UVOffset;
+			this.UVOffset = asset.UVOffset;			
+			this.hasSecUVData = asset.hasSecUVData;
+			this.SecUVData = asset.SecUVData;
+			this.SecUVStride = asset.SecUVStride;
+			this.SecUVOffset = asset.SecUVOffset;
 			this.vertexNormalData = asset.vertexNormalData;
 			this.vertexNormalOffset = asset.vertexNormalOffset;
 			this.vertexNormalStride = asset.vertexNormalStride;

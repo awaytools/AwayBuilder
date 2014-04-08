@@ -13,6 +13,6 @@ package awaybuilder.model
 		
 		function openBitmap( items:Array, property:String ):void;
 		
-		function load( url:String, name:String, event:Event  ):void;
+		function load( url:String, name:String, event:Event):void;
 	}
 }

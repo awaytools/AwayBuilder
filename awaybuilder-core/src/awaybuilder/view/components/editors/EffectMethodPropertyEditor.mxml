@@ -247,12 +247,12 @@
 		</s:FormItem>
 		<s:FormItem label="Strength " skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<controls:DragableNumericStepper id="strengthStepper" value="@{_asset.strength}"
-											 stepSize="0.1" snapInterval="0.001" minimum="0" maximum="1"
+											 stepSize="0.1" snapInterval="0.001" minimum="0" maximum="1" width="100%"
 											 change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
 		<s:FormItem label="Power" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<controls:DragableNumericStepper id="powerStepper" value="@{_asset.power}"
-											 stepSize="1" snapInterval="0.01" minimum="0" maximum="10"
+											 stepSize="1" snapInterval="0.01" minimum="0" maximum="10" width="100%"
 											 change="valueStepper_changeHandler(event)" />
 		</s:FormItem>
 	</s:Form>

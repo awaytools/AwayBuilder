@@ -57,6 +57,15 @@
 	</s:Form>
 	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
 		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%"/>
+		<s:FormItem label="Has UV" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:Label width="100%" text="{_asset.hasUVData}" fontSize="12"/>
+		</s:FormItem>
+		<s:FormItem label="SecondaryUV" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
+			<s:Label width="100%" text="{_asset.hasSecUVData}" fontSize="12"/>
+		</s:FormItem>
+	</s:Form>
+	<s:Form width="100%" skinClass="awaybuilder.view.skins.PropertyFormSkin">
+		<s:FormItem label="" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%"/>
 		<s:FormItem label="AutoDerived-Normals" skinClass="awaybuilder.view.skins.PropertyFormItemSkin" width="100%">
 			<s:Label width="100%" text="{_asset.autoDerivedNormals}" fontSize="12"/>
 		</s:FormItem>

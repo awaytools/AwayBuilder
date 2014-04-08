@@ -1,9 +1,24 @@
 package awaybuilder.utils.encoders
 {
+	import flash.display.BitmapData;
+	import flash.display.BlendMode;
+	import flash.display.JPEGEncoderOptions;
+	import flash.display.PNGEncoderOptions;
+	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
+	import flash.utils.ByteArray;
+	import flash.utils.CompressionAlgorithm;
+	import flash.utils.Dictionary;
+	import flash.utils.Endian;
+	
+	import mx.collections.ArrayCollection;
+	
 	import away3d.animators.data.SkeletonJoint;
 	import away3d.core.base.Geometry;
 	import away3d.core.math.MathConsts;
 	import away3d.entities.Mesh;
+	import away3d.materials.ColorMaterial;
 	import away3d.materials.methods.MethodVO;
 	
 	import awaybuilder.AwayBuilder;
@@ -37,19 +52,6 @@ package awaybuilder.utils.encoders
 	import awaybuilder.model.vo.scene.TextureProjectorVO;
 	import awaybuilder.model.vo.scene.TextureVO;
 	
-	import flash.display.BitmapData;
-	import flash.display.BlendMode;
-	import flash.display.JPEGEncoderOptions;
-	import flash.display.PNGEncoderOptions;
-	import flash.geom.Matrix3D;
-	import flash.geom.Vector3D;
-	import flash.utils.ByteArray;
-	import flash.utils.CompressionAlgorithm;
-	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-	
-	import mx.collections.ArrayCollection;
-		
 	public class AWDEncoder implements ISceneGraphEncoder
 	{
 		// set debug to true to get some traces in the console
@@ -273,7 +275,6 @@ package awaybuilder.utils.encoders
 			if(_debug)trace("SUCCESS");
 			return true;
 		}
-		
 		// encodes all assets in a ArrayCollection, if they have not allready been _encodet
 		private function _encodeAddionalBlocks(assetList:ArrayCollection) : void
 		{			
@@ -583,7 +584,10 @@ package awaybuilder.utils.encoders
 				_encodeStream(2, sub.indexData);
 				var scaleU : Number = 1/sub.scaleU;
 				var scaleV : Number = 1/sub.scaleV;
-				_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride, scaleU, scaleV);
+				if(sub.hasUVData)
+					_encodeStream(3, sub.UVData, sub.UVOffset, sub.UVStride, scaleU, scaleV);
+				if(sub.hasSecUVData)
+					_encodeStream(8, sub.SecUVData, sub.SecUVOffset, sub.SecUVStride);
 				if ( (_exportNormals) && (!sub.autoDerivedNormals) )	_encodeStream(4, sub.vertexNormalData, sub.vertexNormalOffset, sub.vertexNormalStride);
 				if ( (_exportTangents) && (!sub.autoDerivedTangents) )	_encodeStream(5, sub.vertexTangentData, sub.vertexTangentOffset, sub.vertexTangentStride);
 				if (sub.jointIndexData){
@@ -758,8 +762,42 @@ package awaybuilder.utils.encoders
 			geomId = _getBlockIDorEncodeAsset(mesh.geometry);
 			materialIds=new Vector.<uint>;
 			var subMeshVo:SubMeshVO;
-			for each (subMeshVo in mesh.subMeshes)
+			var uvTransform:Matrix=SubMeshVO(mesh.subMeshes[0]).uvTransform;
+			var uvArray:Array=new Array();
+			var storeUV:Boolean=false;
+			var storeSubUV:Boolean=false;
+			for each (subMeshVo in mesh.subMeshes){
+				if(!storeSubUV){
+					var subUvTransform:Matrix=subMeshVo.uvTransform;
+					if (subUvTransform!=uvTransform)
+						storeSubUV=true;
+				}
 				materialIds.push( _getBlockIDorEncodeAsset(subMeshVo.material));
+			}
+			if (storeSubUV){
+				storeUV=true;
+				for each (subMeshVo in mesh.subMeshes){
+					var subUvTransform2:Matrix=subMeshVo.uvTransform;
+					uvArray.push(subUvTransform2.a);
+					uvArray.push(subUvTransform2.b);
+					uvArray.push(subUvTransform2.c);
+					uvArray.push(subUvTransform2.d);
+					uvArray.push(subUvTransform2.tx);
+					uvArray.push(subUvTransform2.ty);
+				}				
+			}
+			else{
+				var identityUV:Matrix=new Matrix();
+				if(uvTransform!=identityUV){
+					storeUV=true;
+					uvArray.push(uvTransform.a);
+					uvArray.push(uvTransform.b);
+					uvArray.push(uvTransform.c);
+					uvArray.push(uvTransform.d);
+					uvArray.push(uvTransform.tx);
+					uvArray.push(uvTransform.ty);					
+				}
+			}		
 			
 			returnID=_encodeBlockHeader(23);
 			
@@ -777,6 +815,12 @@ package awaybuilder.utils.encoders
 			if(mesh.pivotY!=0)_encodeProperty(2,mesh.pivotY,  _matrixNrType);
 			if(mesh.pivotZ!=0)_encodeProperty(3,mesh.pivotZ,  _matrixNrType);
 			if(!mesh.castsShadows)_encodeProperty(5,mesh.castsShadows,  BOOL);
+			if (storeUV){
+				if(storeSubUV)
+					_encodeProperty(902,uvArray,  _propNrType);
+				else
+					_encodeProperty(901,uvArray,  _propNrType);
+			}
 			_endElement(); // Prop list			
 			
 			_beginElement(); // Attr list
@@ -1420,7 +1464,7 @@ package awaybuilder.utils.encoders
 					break;
 				case "LightMapMethod"://EffectMethodVO.LIGHT_MAP:
 					texID=_getBlockIDorEncodeAsset(methVO.texture);	
-					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1], [blendModeDic[methVO.mode],texID], [10,0], [UINT8,BADDR]);
+					returnID=_encodeSharedMethodBlock(methVO.name,404, [401,1, 701], [blendModeDic[methVO.mode],texID, methVO.useSecondaryUV], [10,0, false], [UINT8,BADDR, BOOL]);
 					break;
 				case "ProjectiveTextureMethod":
 					texID=_getBlockIDorEncodeAsset(methVO.textureProjector);
@@ -1433,7 +1477,7 @@ package awaybuilder.utils.encoders
 					texID=_getBlockIDorEncodeAsset(methVO.texture);
 					returnID=_encodeSharedMethodBlock(methVO.name,407, [701,1], [methVO.useSecondaryUV,texID], [false,0], [BOOL,BADDR]);
 					break;
-				case "RefractionMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
+				case "RefractionEnvMapMethod"://EffectMethodVO.REFRACTION_ENV_MAP:
 					cubeTexID=_getBlockIDorEncodeAsset(methVO.cubeTexture);
 					texID=_getBlockIDorEncodeAsset(methVO.texture);
 					returnID=_encodeSharedMethodBlock(methVO.name,408, [1,101,102,103,104,105], [cubeTexID, methVO.refraction, methVO.r, methVO.g, methVO.b, methVO.alpha], [0,0.1,0.01,0.01,0.01,1], [BADDR,_propNrType,_propNrType,_propNrType,_propNrType,_propNrType]);
@@ -1774,7 +1818,8 @@ package awaybuilder.utils.encoders
 			_blockBody.writeUnsignedInt(parentId);//parent		
 			_encodeMatrix3D(getTransformMatrix(targetObj));//matrix
 			_blockBody.writeUTF(targetObj.name);//name
-			_blockBody.writeShort(1);//has sceneHeader
+			
+			_blockBody.writeShort(1);//num Commands (allways 1 for now)
 			
 			_blockBody.writeShort(1);//"PutIntoSceneGraph"-type =1
 			
@@ -1918,6 +1963,12 @@ package awaybuilder.utils.encoders
 					_blockBody.writeByte(_geoNrType);
 					_beginElement();
 					_encodeJointWeightStream( Vector.<Number>(data));
+					_endElement();
+					break;
+				case 8:
+					_blockBody.writeByte(_geoNrType);
+					_beginElement();
+					_encodeUVStream( Vector.<Number>(data), 2, offset, stride,scaleU, scaleV);
 					_endElement();
 					break;
 			}

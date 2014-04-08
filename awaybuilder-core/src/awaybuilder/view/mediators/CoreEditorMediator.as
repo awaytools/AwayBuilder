@@ -647,7 +647,7 @@ package awaybuilder.view.mediators
 			{
 				var lightMapMethod:LightMapMethod = obj as LightMapMethod;
 				lightMapMethod.texture = assets.GetObject( asset.texture ) as Texture2DBase;
-//				lightMapMethod.useSecondaryUV = assets.useSecondaryUV;
+				lightMapMethod.useSecondaryUV = assets.useSecondaryUV;
 				lightMapMethod.blendMode = asset.mode;
 			}
 			else if( obj is OutlineMethod )
