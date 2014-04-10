@@ -266,7 +266,7 @@ package awaybuilder.desktop.view.mediators
 					const extensions:Vector.<String> = new <String>["awd","3ds","obj","md2","png","jpg","atf","dae","md5"];
 					for each(var file:File in fileList)
 					{
-						if(file.exists && extensions.indexOf(file.extension) >= 0)
+						if(file.exists && extensions.indexOf(file.extension.toLowerCase()) >= 0)
 						{
 							DragManager.acceptDragDrop(this.app);
 							break;
