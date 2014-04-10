@@ -1,5 +1,18 @@
 package awaybuilder.desktop.model
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.JPEGEncoderOptions;
+	import flash.events.Event;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.net.FileFilter;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	
+	import mx.managers.CursorManager;
+	
 	import awaybuilder.controller.events.ConcatenateDataOperationEvent;
 	import awaybuilder.controller.events.DocumentEvent;
 	import awaybuilder.controller.events.ReplaceDocumentDataEvent;
@@ -17,19 +30,6 @@ package awaybuilder.desktop.model
 	import awaybuilder.model.vo.scene.TextureVO;
 	import awaybuilder.utils.encoders.AWDEncoder;
 	import awaybuilder.utils.encoders.ISceneGraphEncoder;
-	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.JPEGEncoderOptions;
-	import flash.events.Event;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
-	import flash.net.FileFilter;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	
-	import mx.managers.CursorManager;
 	
 	public class DesktopDocumentService extends SmartDocumentServiceBase implements IDocumentService
 	{
@@ -52,10 +52,14 @@ package awaybuilder.desktop.model
 		[Inject]
 		public var applicationModel:ApplicationModel;
 		
+		[Inject]
+		public var document:DocumentModel;
 		public function load( url:String, name:String, event:Event ):void
 		{
 			_name = name;
 			_nextEvent = event;
+			if (document.empty)
+				_path = url;
 			loadAssets( url );
 		}
 		
@@ -63,7 +67,9 @@ package awaybuilder.desktop.model
 		{
 			_items = items;
 			_property = property;
-			var file:File = new File();
+			var file:File=File.documentsDirectory;
+			if(document.path)
+				file = File.documentsDirectory.resolvePath(document.path);
 			file.addEventListener(Event.SELECT, bitmapFile_open_selectHandler);
 			file.addEventListener(Event.CANCEL, bitmapFile_open_cancelHandler);
 			var filters:Array = [];
@@ -76,7 +82,9 @@ package awaybuilder.desktop.model
 		{
 			_nextEvent = event;
 			_createNew = createNew;
-			var file:File = new File();
+			var file:File=File.documentsDirectory;
+			if(document.path)
+				file = File.documentsDirectory.resolvePath(document.path);
 			file.addEventListener(Event.SELECT, file_open_selectHandler);
 			file.addEventListener(Event.CANCEL, file_open_cancelHandler);
 			var filters:Array = [];
@@ -107,7 +115,9 @@ package awaybuilder.desktop.model
 			{
 				defaultName += FILE_EXTENSION;
 			}
-			var file:File = File.documentsDirectory.resolvePath("./" + defaultName);
+			var file:File=File.documentsDirectory.resolvePath("./" + defaultName);
+			if(document.path)
+				file = File.documentsDirectory.resolvePath(document.path).resolvePath("./" + defaultName);;
 			file.addEventListener(Event.SELECT, file_save_selectHandler);
 			file.addEventListener(Event.CANCEL, file_save_cancelHandler);
 			file.browseForSave("Save Document As");
