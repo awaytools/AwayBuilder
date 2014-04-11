@@ -776,6 +776,8 @@ package awaybuilder.utils.encoders
 				storeUV=true;
 				for each (subMeshVo in mesh.subMeshes){
 					var subUvTransform2:Matrix=subMeshVo.uvTransform;
+					if (subUvTransform2==null)
+						subUvTransform2=identityUV;
 					uvArray.push(subUvTransform2.a);
 					uvArray.push(subUvTransform2.b);
 					uvArray.push(subUvTransform2.c);
@@ -786,14 +788,16 @@ package awaybuilder.utils.encoders
 			}
 			else{
 				var identityUV:Matrix=new Matrix();
-				if(uvTransform!=identityUV){
-					storeUV=true;
-					uvArray.push(uvTransform.a);
-					uvArray.push(uvTransform.b);
-					uvArray.push(uvTransform.c);
-					uvArray.push(uvTransform.d);
-					uvArray.push(uvTransform.tx);
-					uvArray.push(uvTransform.ty);					
+				if (uvTransform){
+					if(uvTransform!=identityUV){
+						storeUV=true;
+						uvArray.push(uvTransform.a);
+						uvArray.push(uvTransform.b);
+						uvArray.push(uvTransform.c);
+						uvArray.push(uvTransform.d);
+						uvArray.push(uvTransform.tx);
+						uvArray.push(uvTransform.ty);	
+					}
 				}
 			}		
 			
