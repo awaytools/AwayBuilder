@@ -777,7 +777,7 @@ package awaybuilder.utils.encoders
 				for each (subMeshVo in mesh.subMeshes){
 					var subUvTransform2:Matrix=subMeshVo.uvTransform;
 					if (subUvTransform2==null)
-						subUvTransform2=identityUV;
+						subUvTransform2=new Matrix();
 					uvArray.push(subUvTransform2.a);
 					uvArray.push(subUvTransform2.b);
 					uvArray.push(subUvTransform2.c);
